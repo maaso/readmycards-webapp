@@ -41,10 +41,15 @@
                 // A card is present, determine type and read its data
                 readCard();
             }
+
+            $scope.$on('gcl', function () {
+                console.log('GCL is installed!');
+            })
         }
 
 
         function pollForReaders() {
+            controller.pollingReaders = true;
             T1C.getConnector().core().pollReaders(30, function (err, result) {
                 // Success callback
                 // Found at least one reader, poll for cards
@@ -68,6 +73,7 @@
         }
 
         function pollForCard() {
+            controller.pollingCard = true;
             T1C.getConnector().core().pollCardInserted(30, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;

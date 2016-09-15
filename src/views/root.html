@@ -1,14 +1,13 @@
 <div class="root-container">
-    Root container
-    <p>{{root.gclAvailable}}</p>
-    <p ng-repeat="reader in root.readers">{{reader}}</p>
-    <p>{{root.cardPresent}}</p>
+    <rmc-header id="rmc-header"></rmc-header>
+    <div id="rmc-content">
+        <download-gcl dl-url="root.dlLink"></download-gcl>
 
-    <download-gcl dl-url="root.dlLink"></download-gcl>
+        <reader-polling ng-if="root.pollingReaders"></reader-polling>
 
-    <reader-polling></reader-polling>
+        <card-polling ng-if="root.pollingCard"></card-polling>
 
-    <card-polling></card-polling>
-
-    <card-visualizer ng-if="root.cardData" card="root.card" card-data="root.cardData"></card-visualizer>
+        <card-visualizer ng-if="root.cardData" card="root.card" card-data="root.cardData"></card-visualizer>
+    </div>
+    <rmc-footer id="rmc-footer"></rmc-footer>
 </div>

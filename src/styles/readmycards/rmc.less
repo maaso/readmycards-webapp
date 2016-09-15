@@ -1,0 +1,107 @@
+/// Styles for RMC
+
+@t1t-green: #93C01F;
+@t1t-grey: #CFCFCF;
+
+html {
+  height: 100%;
+}
+
+.main-container {
+  height: 100%;
+  overflow: scroll;
+  position: relative;
+}
+
+.content-container {
+  height: 100%;
+  position: relative;
+}
+
+.root-container {
+  height: 100%;
+  position: relative;
+}
+
+#rmc-header {
+
+}
+
+#rmc-content {
+  //min-height: 100%;
+}
+
+#rmc-footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
+  background: @t1t-green;
+  color: white;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+
+  a {
+    color: white;
+    text-decoration: underline;
+
+    &:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+
+#navtabs {
+  padding: 10px 0 0 0;
+  margin: auto auto;
+  background: @t1t-green;
+  border-bottom: 1px solid #ccc;
+
+  .navtab-container {
+
+    padding: 0 20px;
+
+    input {
+      display: none;
+    }
+
+    label {
+      display: inline-block;
+      margin: 0 0 -1px;
+      padding: 15px 25px;
+      font-weight: 600;
+      text-align: center;
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    input.active + label {
+      color: #555;
+      background: #efefef;
+      border: 1px solid #ddd;
+      border-top: 2px solid @t1t-grey;
+      border-bottom: 1px solid #efefef;
+    }
+
+    //@media screen and (max-width: 650px) {
+    //  label {
+    //    font-size: 0;
+    //  }
+    //  label:before {
+    //    margin: 0;
+    //    font-size: 18px;
+    //  }
+    //}
+    //
+    //@media screen and (max-width: 400px) {
+    //  label {
+    //    padding: 15px;
+    //  }
+    //}
+  }
+
+}
