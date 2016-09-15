@@ -1,0 +1,47 @@
+<div id="landing">
+    <div class="logo text-center">
+        <div class="logo-wrapper">
+            <img src="images/logo.svg">
+            <h4>Demonstrates a browser-independent alternative for Java Applet.</h4>
+        </div>
+    </div>
+
+    <!-- Detect GCL is present, if not prompt for download and poll -->
+
+    <!-- Show List of readers and indicate if card is present -->
+
+
+    <div id="reader-list">
+        <div>
+            <h3>The following card readers were detected:</h3>
+        </div>
+
+        <div>
+            <a class="clickable" ng-click="refreshReaders()">Refresh list</a>
+            <a class="clickable" ng-click="pollForReaders()">Poll for readers</a>
+        </div>
+
+        <reader reader="reader" ng-repeat="reader in readers"></reader>
+    </div>
+
+    <div id="global-actions" class="text-center">
+        <button class="btn btn-default btn-w200" ng-click="getApiKey()">Get API Key</button>
+        <button class="btn btn-default btn-w200" ng-click="getJwt()">Get JWT</button>
+        <button class="btn btn-default btn-w200" ng-click="refreshJwt()">Refresh JWT</button>
+        <button class="btn btn-default btn-w200" ng-click="info()">Info</button>
+        <button class="btn btn-default btn-w200" ng-click="infoBrowser()">Info Browser</button>
+        <button class="btn btn-default btn-w200" ng-click="plugins()">Plugins</button>
+        <button class="btn btn-default btn-w200" ng-click="getPubKey()">Get Pub Key</button>
+        <button class="btn btn-default btn-w200" ng-click="getDSUrl()">DS URL</button>
+    </div>
+
+    <div id="result" ng-if="result">
+        <pre>{{ result }}</pre>
+    </div>
+
+
+    <!--<div ng-repeat="reader in readersWithCards">{{reader}}</div>-->
+
+    <!--<div ng-repeat="plugin in plugins">{{plugin}}</div>-->
+
+</div>

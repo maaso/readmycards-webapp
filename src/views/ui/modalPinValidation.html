@@ -1,0 +1,30 @@
+<div class="modal-style">	<!-- wrapper for specific style -->
+	<div class="modal-header clearfix">
+		<h4 class="modal-title">PIN Validation</h4>
+		<span class="close ion ion-android-close" ng-click="modalClose()"></span>
+	</div>
+
+	<div class="modal-body">
+		<p ng-if="!pinpad">Enter your PIN and hit the VALIDATE button to verify if you entered a correct PIN.</p>
+		<p ng-if="pinpad">Hit the submit button to send a PIN request to your reader.</p>
+
+		<div>
+			<p class="text-success text-center">{{pinresult.caption}}</p>
+			<p class="text-danger text-center">{{pinresult.error}}</p>
+		</div>
+
+		<form class="form-horizontal" name="modal-demo-form" action="javascript:;">
+			<div class="row form-group" ng-show="!pinpad">
+				<div class="col-sm-5">
+					<input type="password" placeholder="pin number" class="form-control" ng-model="pwd">
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12 text-right">
+					<button class="btn btn-success" ng-click="validatePIN()">Submit</button>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+</div>

@@ -1,0 +1,52 @@
+<div id="reader">
+    <div id="header">
+        <div id="header-content">
+            <a class="clickable" ng-click="toLanding()"><img id="logo" src="images/logo.svg"></a>
+            <div id="reader-select" class="pull-right">
+                <div class="btn-group" uib-dropdown>
+                    <button id="button-template-url" type="button" class="btn btn-default" uib-dropdown-toggle>
+                        <reader reader="reader"></reader> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+                        <li role="menuitem" class="dropdown-menu-item" ng-repeat="reader in readers">
+                            <a class="clickable" ng-click="toReader(reader)">
+                                <reader reader="reader"></reader>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="content">
+        <div id="beid-actions" class="col-sm-3" ng-if="beId">
+            <button class="btn btn-default btn-block" ng-click="readRnData()">Read Rn Data</button>
+            <button class="btn btn-default btn-block" ng-click="readAddress()">Read Address</button>
+            <button class="btn btn-default btn-block" ng-click="readPicture()">Read Picture</button>
+            <button class="btn btn-default btn-block" ng-click="getAllCerts()">Get All Certs</button>
+            <button class="btn btn-default btn-block" ng-click="getRootCert()">Get Root Cert</button>
+            <button class="btn btn-default btn-block" ng-click="getCitizenCert()">Get Citizen Cert</button>
+            <button class="btn btn-default btn-block" ng-click="getAuthCert()">Get Authentication Cert</button>
+            <button class="btn btn-default btn-block" ng-click="getNonRepCert()">Get Non Repudiation Cert</button>
+            <button class="btn btn-default btn-block" ng-click="getRRNCert()">Get RRN Cert</button>
+            <button class="btn btn-default btn-block" ng-click="verifyPin()">Verify PIN</button>
+            <button class="btn btn-default btn-block" ng-click="signData()">Sign Data</button>
+            <button class="btn btn-default btn-block" ng-click="authenticate()">Authenticate</button>
+        </div>
+        <div id="emv-actions" class="col-sm-3" ng-if="!beId">
+            <button class="btn btn-default btn-block" ng-click="getPan()">Get PAN</button>
+        </div>
+
+        <div class="viz-wrapper col-sm-9">
+            <div class="loading text-center" ng-if="loading">
+                <i class="fa fa-spinner fa-pulse fa-4x"></i>
+                <p>Loading...</p>
+            </div>
+            <beid-visualizer ng-if="!loading && beId" rn-data="rnData" address-data="addressData" pic-data="picData" cert-data="certData"></beid-visualizer>
+            <emv-visualizer ng-if="!loading && !beId" pan-data="panData"></emv-visualizer>
+        </div>
+
+    </div>
+
+</div>

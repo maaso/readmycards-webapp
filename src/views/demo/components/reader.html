@@ -1,0 +1,9 @@
+<div class="reader clickable" ng-click="$ctrl.selectReader()">
+    <span class="reader-name size-h4">{{$ctrl.reader.name}}</span>
+    <div class="capabilities right">
+        <span ng-if="$ctrl.reader.card"><span class="text-success">{{ $ctrl.CardService.detectType($ctrl.reader.card.description[0]) }}</span>&nbsp;<i class="fa fa-credit-card fa-2x text-success" uib-tooltip="Reader has card present"></i></span>
+        <i class="fa fa-credit-card fa-2x text-unavailable" uib-tooltip="Reader does not have card present" ng-if="!$ctrl.reader.card"></i>
+        <i class="fa fa-calculator fa-2x text-success" uib-tooltip="Reader with pinpad" ng-if="$ctrl.reader.pinpad"></i>
+        <i class="fa fa-calculator fa-2x text-unavailable" uib-tooltip="Reader without pinpad" ng-if="!$ctrl.reader.pinpad"></i>
+    </div>
+</div>

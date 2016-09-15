@@ -1,0 +1,39 @@
+<!-- Modal Demo Content -->
+<!-- modal, modal-dialog and modal-content divs are automatically wrapped by modal plugin -->
+
+<div class="modal-style">	<!-- wrapper for specific style -->
+	<div class="modal-header clearfix">
+		<h4 class="modal-title">Sign Example Data</h4>
+		<span class="close ion ion-android-close" ng-click="modalClose()"></span>
+	</div>
+
+	<div class="modal-body">
+		<p>Signing the following data: <strong>{{dataToSign}}</strong></p>
+		<p ng-if="!pinpad">Enter your PIN and hit the submit button to sign this data with your eID.</p>
+		<p ng-if="pinpad">Hit the submit button to sign the data with your eID. You will need to enter your PIN on your reader.</p>
+
+
+		<div>
+			<p class="text-success text-center">{{pinresult.caption}}</p>
+			<pre class="text-success text-center" ng-if="pinresult.signedData"><strong>{{pinresult.signedData}}</strong></pre>
+			<p class="text-danger text-center">{{pinresult.error}}</p>
+		</div>
+		<form class="form-horizontal" name="modal-demo-form" action="javascript:;">
+			<div class="row form-group" ng-show="!pinpad">
+				<div class="col-sm-5">
+					<input type="password" placeholder="pin number" class="form-control" ng-model="pwd">
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-sm-12 text-right">
+					<button class="btn btn-success" ng-click="signData()">Submit</button>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+</div>
+
+
+
+<!-- #end Modal Content -->

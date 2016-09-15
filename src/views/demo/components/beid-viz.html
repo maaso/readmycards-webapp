@@ -1,0 +1,72 @@
+<div id="beid-viz" class="clearfix mb15 top-info">
+    <div class="personal-info col-sm-12">
+        <div class="col-sm-12">
+            <h3 class="text-light text-primary mt0">{{$ctrl.rnData.first_names}} {{$ctrl.rnData.third_name}} {{$ctrl.rnData.name}}</h3>
+        </div>
+
+        <div class="col-sm-8">
+            <div ng-show="$ctrl.rnData">
+                <h4 class="text-info">General information</h4>
+                <strong>Card number:&nbsp;</strong>{{$ctrl.rnData.card_number}}<br/>
+                <strong>Chip number:&nbsp;</strong>{{$ctrl.rnData.chip_number}}<br/>
+                <strong>Card validity
+                    start:&nbsp;</strong>{{$ctrl.rnData.card_validity_date_begin}}<br/>
+                <strong>Card validity end:&nbsp;</strong>{{$ctrl.rnData.card_validity_date_end}}<br/>
+                <strong>First name:&nbsp;</strong>{{$ctrl.rnData.first_names}}<br/>
+                <strong>Middle name:&nbsp;</strong>{{$ctrl.rnData.third_name}}<br/>
+                <strong>Last name:&nbsp;</strong>{{$ctrl.rnData.name}}<br/>
+                <strong>Card Delivery Municipality:&nbsp;</strong>{{$ctrl.rnData.card_delivery_municipality}}<br/>
+                <strong>Nationality:&nbsp;</strong>{{$ctrl.rnData.nationality}}<br/>
+                <strong>Gender:&nbsp;</strong>{{$ctrl.rnData.sex}}<br/>
+                <strong>National number:&nbsp;</strong>{{$ctrl.rnData.national_number}}<br/>
+                <strong>Place of birth:&nbsp;</strong>{{$ctrl.rnData.birth_location}}<br/>
+                <strong>Birth date:&nbsp;</strong>{{$ctrl.rnData.birth_date}}<br/>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+
+            <div id="pic" ng-show="$ctrl.picData">
+                <h4 class="text-info">Picture</h4>
+                <img ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.picData }}" width="70" height="100" style="align: center;"/>
+            </div>
+
+            <div id="address" ng-show="$ctrl.addressData">
+                <h4 class="text-info">Address</h4>
+
+                <p><strong>Street:&nbsp;</strong>{{$ctrl.addressData.street_and_number}}<br/>
+                    <strong>City:&nbsp;</strong>{{$ctrl.addressData.zipcode}}
+                    {{$ctrl.addressData.municipality}}</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="certificates col-sm-12">
+        <div class="col-sm-12" ng-if="$ctrl.certData.root_certificate">
+            <h4 class="text-info">Root</h4>
+            <pre>{{ $ctrl.certData.root_certificate }}</pre>
+        </div>
+
+        <div class="col-sm-12" ng-if="$ctrl.certData.citizen_certificate">
+            <h4 class="text-info">Citizen</h4>
+            <pre>{{ $ctrl.certData.citizen_certificate }}</pre>
+        </div>
+
+        <div class="col-sm-12" ng-if="$ctrl.certData.authentication_certificate">
+            <h4 class="text-info">Authentication</h4>
+            <pre>{{ $ctrl.certData.authentication_certificate }}</pre>
+        </div>
+
+        <div class="col-sm-12" ng-if="$ctrl.certData.non_repudiation_certificate">
+            <h4 class="text-info">Non Repudiation</h4>
+            <pre>{{ $ctrl.certData.non_repudiation_certificate }}</pre>
+        </div>
+
+        <div class="col-sm-12" ng-if="$ctrl.certData.rrn_certificate">
+            <h4 class="text-info">RRN</h4>
+            <pre>{{ $ctrl.certData.rrn_certificate }}</pre>
+        </div>
+    </div>
+
+</div>

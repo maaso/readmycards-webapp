@@ -1,0 +1,262 @@
+<div class="page page-dashboard" ng-controller="DashboardCtrl">
+    <div class="page-wrap" ng-controller="EidControl">
+
+        <div class="row">
+            <!-- dashboard header -->
+            <div class="col-md-12">
+                <div class="dash-head clearfix mt15 mb20">
+                    <div class="left">
+                        <h4 class="mb5 text-light">Generic Connector Library (GCL)</h4>
+
+                        <p class="small"><strong>Demonstrates a browser-independent alternative for Java
+                            Applet.</strong>
+                        </p>
+                        <button class="btn btn-success btn-xs mt15" ng-click="read()">Read person</button>
+                        <button class="btn btn-success btn-xs mt15" ng-click="readAddress()">Read address</button>
+                        <button class="btn btn-success btn-xs mt15" ng-click="readPhoto()">Get picture</button>
+                        <button class="btn btn-warn btn-xs mt15" ng-click="reset()">Reset</button>
+                    </div>
+                    <!--					<div class="right mt10">
+                                            <span sparkline type="bar" bar-color="#4CAF50">10,8,4,10,7,0,3,4,6,5,9,12,9</span>
+                                            <h5 class="text-bold mb0 mt5">$1,33,404</h5>
+                                        </div>-->
+                </div>
+            </div>
+        </div>
+        <!-- #end row -->
+
+
+        <!-- row -->
+        <div class="row">
+
+            <!-- profile -->
+            <div class="col-md-6">
+                <div class="panel panel-default mb20 panel-hovered profile-widget">
+                    <div class="panel-body">
+                        <div class="clearfix mb15 top-info">
+                            <div class="left-side">
+                                <h3 class="text-light mt0">{{user.first_names}} {{user.third_name}} {{user.name}}</h3>
+
+                                <div ng-show="user">
+                                    <p> <h4 style="color:#4caf50;">General information</h4>
+                                    <strong>Card number:&nbsp;</strong>{{user.card_number}}<br/>
+                                    <strong>Chip number:&nbsp;</strong>{{user.chip_number}}<br/>
+                                    <strong>Card validity
+                                        start:&nbsp;</strong>{{user.card_validity_date_begin}}<br/>
+                                    <strong>Card validity end:&nbsp;</strong>{{user.card_validity_date_end}}<br/>
+                                    <strong>First name:&nbsp;</strong>{{user.first_names}}<br/>
+                                    <strong>Middle name:&nbsp;</strong>{{user.third_name}}<br/>
+                                    <strong>Last name:&nbsp;</strong>{{user.name}}<br/>
+                                    <strong>Card Delivery Municipality:&nbsp;</strong>{{user.card_delivery_municipality}}<br/>
+                                    <strong>Nationality:&nbsp;</strong>{{user.nationality}}<br/>
+                                    <strong>Gender:&nbsp;</strong>{{user.sex}}<br/>
+                                    <strong>National number:&nbsp;</strong>{{user.national_number}}<br/>
+                                    <strong>Place of birth:&nbsp;</strong>{{user.birth_location}}<br/>
+                                    <strong>Birth date:&nbsp;</strong>{{user.birth_date}}<br/>
+                                    </p>
+                                </div>
+                                <div ng-show="userAddress">
+                                    <h4 style="color:#4caf50;">Address</h4>
+
+                                    <p><strong>Street:&nbsp;</strong>{{userAddress.street_and_number}}<br/>
+                                        <strong>City:&nbsp;</strong>{{userAddress.zipcode}}
+                                        {{userAddress.municipality}}</p>
+                                </div>
+                            </div>
+                            <div class="right-side">
+                                <!--<img src="images/admin.jpg" alt="user">-->
+                                <div ng-show="photo"><img src={{photo}} width="70" height="100" style="align: center;"/>
+                                </div>
+                                <!--								<div ng-init="x = 4" class="rating">
+                                                                        <rating ng-model="x" max="5" state-on="'fa fa-star'" state-off="'fa fa-star-o'" class="text-warning"></rating>
+                                                                    </div>-->
+                            </div>
+                        </div>
+                        <ul class="user-badges list-unstyled row">
+                            <li class="col-xs-6">
+                                <i class="ion ion-ios-chatboxes-outline text-success"></i>
+                                <strong>Validate PIN</strong>
+                                <button class="btn btn-success btn-xs mt15" ng-click="modalOpen()">View</button>
+                            </li>
+                            <li class="col-xs-6">
+                                <i class="ion ion-ios-body text-danger"></i>
+                                <strong>Certificates</strong>
+                                <button class="btn btn-primary btn-xs mt15" ng-click="getCertificates()">View</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- #end panel-body -->
+                </div>
+            </div>
+
+            <div class="col-md-6" ng-show="certificates">
+                <div class="panel panel-default mb20 panel-hovered profile-widget">
+                    <div class="panel-body">
+                            <h4 style="color:#4caf50;">Root</h4>
+                            <pre>{{ root }}</pre>
+
+                            <h4 style="color:#4caf50;">Citizen</h4>
+                            <pre>{{ citizen }}</pre>
+
+                            <h4 style="color:#4caf50;">Authentication</h4>
+                            <pre>{{ authentication }}</pre>
+
+                            <h4 style="color:#4caf50;">Non Repudiation</h4>
+                            <pre>{{ nonRepudiation }}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- browser share -->
+            <!--			<div class="col-md-4 col-sm-6">
+                            <div class="panel panel-default mb20 panel-hovered">
+                                <div class="panel-heading">Browser Share</div>
+                                <div class="panel-body text-center">
+                                    <c3-chart id="c3chartbrowsershare" config="browserconfig"></c3-chart>
+                                </div>
+                            </div>
+                        </div>-->
+
+            <!-- recent activities -->
+            <!--			<div class="col-md-4">
+                            <div class="panel panel-default mb20 activities">
+                                <div class="panel-heading">GCL Track</div>
+                                <div class="panel-body">
+                                    <ul class="list-unstyled">
+                                        <li class="primary">
+                                            <span class="point"></span>
+                                            <span class="time small text-muted">2 mins ago</span>
+                                            <p>GCL client HAL for other devices</p>
+                                        </li>
+                                        <li class="success">
+                                            <span class="point"></span>
+                                            <span class="time small text-muted">1 hour ago</span>
+                                            <p>GCL remote loading APDU</p>
+                                        </li>
+                                        <li class="warning">
+                                            <span class="point"></span>
+                                            <span class="time small text-muted">4:30 p.m</span>
+                                            <p>GCL distribution endpoint</p>
+                                        </li>
+                                        <li class="info">
+                                            <span class="point"></span>
+                                            <span class="time small text-muted">2 days ago</span>
+                                            <p>GCL client connector</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>-->
+            <!-- #end recent activities -->
+
+            <!-- list widgets -->
+            <!--			<div class="col-md-4 col-sm-12">
+                            <div class="panel panel-default mb20 list-widget">
+                                <ul class="list-unstyled clearfix">
+                                    <li>
+                                        <i class="fa fa-file-o"></i>
+                                        <span class="text">File List</span>
+                                        <span class="badge badge-xs badge-primary right">100</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-comments-o"></i>
+                                        <span class="text">Messages</span>
+                                        <span class="badge badge-xs badge-info right">40+</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-bullhorn"></i>
+                                        <span class="text">Notifications</span>
+                                        <span class="badge badge-xs badge-success right">22</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-hdd-o"></i>
+                                        <span class="text">Bandwidth usage</span>
+                                        <span class="badge badge-xs badge-danger right">80%</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-microphone"></i>
+                                        <span class="text">Calls Attended</span>
+                                        <span class="badge badge-xs badge-info circle right">5</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-bookmark-o"></i>
+                                        <span class="text">Bookmarks Today</span>
+                                        <span class="badge badge-xs circle badge-warning right">2</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-bug"></i>
+                                        <span class="text">Bug Fix Today</span>
+                                        <span class="badge badge-xs circle badge-danger right">8</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>-->
+            <!-- #end row -->
+
+            <!-- row -->
+            <div class="row">
+
+                <!-- todo list -->
+                <!--<div class="col-md-5" ng-include=" 'views/todo.html' "></div>-->
+                <!-- Project stats -->
+                <!--			<div class="col-md-7">
+                                <div class="panel panel-default mb20 panel-hovered project-stats table-responsive">
+                                    <div class="panel-heading">Project Stats</div>
+                                    <div class="panel-body">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th class="col-sm-5">Project</th>
+                                                    <th class="col-sm-1">Progress</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>101</td>
+                                                    <td>Designing Wordpress Theme</td>
+                                                    <td class="text-center">
+                                                        <span sparkline type="pie" slice-colors="[#4CAF50,#eee]" width="2em" height="2em">2,8</span>
+                                                    </td>
+                                                    <td>20<sup>th</sup> Jan 2015</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>220</td>
+                                                    <td>Convert to SASS</td>
+                                                    <td class="text-center">
+                                                        <span sparkline type="pie" slice-colors="[#4CAF50,#eee]" width="2em" height="2em">4,6</span>
+                                                    </td>
+                                                    <td>28<sup>th</sup> Jan 2015</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>310</td>
+                                                    <td>Adding animations to template</td>
+                                                    <td class="text-center">
+                                                        <span sparkline type="pie" slice-colors="[#4CAF50,#eee]" width="2em" height="2em">7,3</span>
+                                                    </td>
+                                                    <td>02<sup>nd</sup> Feb 2015</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>405</td>
+                                                    <td>Lorem ipsum dolar sit amet</td>
+                                                    <td class="text-center">
+                                                        <span sparkline type="pie" slice-colors="[#4CAF50,#eee]" width="2em" height="2em">4,6</span>
+                                                    </td>
+                                                    <td>28<sup>th</sup> Mar 2015</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> -->
+            </div>
+            <!-- #end row -->
+
+        </div>
+        <!-- #end page-wrap -->
+    </div>
