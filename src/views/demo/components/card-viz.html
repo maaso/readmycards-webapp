@@ -1,8 +1,10 @@
-<div>
-    <p>Card type: {{$ctrl.cardType}}</p>
+<div class="card-viz">
+    <div class="card-type"><span class="text-light">Card type: </span><span class="text-bold">{{$ctrl.cardType}}</span></div>
 
-    <beid-visualizer rn-data="$ctrl.cardData.rn"
-                     address-data="$ctrl.cardData.address"
-                     pic-data="$ctrl.cardData.picture"
-                     cert-data="$ctrl.cardData"></beid-visualizer>
+    <div class="viz-container">
+        <beid-visualizer rn-data="$ctrl.cardData.rn"
+                         address-data="$ctrl.cardData.address"
+                         pic-data="$ctrl.cardData.picture"
+                         cert-data="$ctrl.cardData"></beid-visualizer>
+    </div>
 </div>
