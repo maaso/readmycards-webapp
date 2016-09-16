@@ -45,6 +45,12 @@
                 T1C.initializeAfterInstall().then(function (res) {
                     pollForReaders();
                 });
+            });
+
+            $scope.$on('read-another-card', function () {
+                controller.readerWithCard = undefined;
+                controller.cardPresent = false;
+                pollForCard();
             })
         }
 
@@ -66,10 +72,11 @@
                 $scope.$apply();
             }, function () {
                 // timeout
-                controller.pollingReaders = false;
-                controller.pollTimeout = true;
+                // controller.pollingReaders = false;
+                // controller.pollTimeout = true;
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
-                $scope.$apply();
+                // $scope.$apply();
+                pollForReaders();
             });
         }
 
@@ -96,10 +103,11 @@
                 // "Waiting for card" callback
             }, function () {
                 // timeout
-                controller.pollingCard = false;
-                controller.pollTimeout = true;
+                // controller.pollingCard = false;
+                // controller.pollTimeout = true;
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
-                $scope.$apply();
+                // $scope.$apply();
+                pollForCard();
             });
         }
 

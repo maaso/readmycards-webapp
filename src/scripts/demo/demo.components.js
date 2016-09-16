@@ -22,8 +22,9 @@
             bindings: {
                 readerWithCard: '<'
             },
-            controller: function (CardService, T1C) {
+            controller: function ($scope, CardService, T1C) {
                 var controller = this;
+                controller.readAnother = readAnother;
                 controller.cardType = CardService.detectType(controller.readerWithCard.card);
                 this.$onInit = function () {
                     controller.loading = true;
@@ -31,8 +32,13 @@
                     T1C.readAllData(controller.readerWithCard.id, controller.readerWithCard.card).then(function (res) {
                         controller.card = controller.readerWithCard.card;
                         controller.cardData = res.data;
+                        console.log(controller.cardData);
                         controller.loading = false;
                     });
+                };
+
+                function readAnother() {
+                    $scope.$emit('read-another-card');
                 }
 
             }
