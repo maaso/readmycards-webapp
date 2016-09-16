@@ -8,7 +8,13 @@
         </div>
     </div>
 
-    <div class="card-viz" ng-if="!$ctrl.loading">
+    <div class="error-block" ng-if="!$ctrl.loading && $ctrl.errorReadingCard">
+        <span class="spinner fa fa-warning"></span>
+        <p class="error-text text-thin">Error reading card</p>
+        <a id="try-again" class="clickable" ng-click="$ctrl.readAnother()">Try again?</a>
+    </div>
+
+    <div class="card-viz" ng-if="!$ctrl.loading && !$ctrl.errorReadingCard">
         <div class="card-type"><span class="text-light">
             Card type: </span><span class="text-bold">{{$ctrl.cardType}}</span>
         </div>

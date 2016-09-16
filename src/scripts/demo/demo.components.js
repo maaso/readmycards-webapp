@@ -34,6 +34,10 @@
                         controller.cardData = res.data;
                         console.log(controller.cardData);
                         controller.loading = false;
+                    }, function (error) {
+                        controller.errorReadingCard = true;
+                        controller.loading = false;
+                        console.log(error);
                     });
                 };
 
