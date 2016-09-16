@@ -9,13 +9,20 @@
     </div>
 
     <div class="card-viz" ng-if="!$ctrl.loading">
-        <div class="card-type"><span class="text-light">Card type: </span><span class="text-bold">{{$ctrl.cardType}}</span></div>
+        <div class="card-type"><span class="text-light">
+            Card type: </span><span class="text-bold">{{$ctrl.cardType}}</span>
+        </div>
 
         <div class="viz-container">
+            <div class="pull-right">
+                <span class="btn btn-default" ng-click="$ctrl.readAnother()">Read Another Card</span>
+            </div>
             <beid-visualizer rn-data="$ctrl.cardData.rn"
                              address-data="$ctrl.cardData.address"
                              pic-data="$ctrl.cardData.picture"
-                             cert-data="$ctrl.cardData"></beid-visualizer>
+                             cert-data="$ctrl.cardData"
+                             ng-show="$ctrl.cardType === 'BeID'"></beid-visualizer>
+            <emv-visualizer pan-data="$ctrl.cardData.pan" ng-show="$ctrl.cardType === 'EMV'"></emv-visualizer>
         </div>
     </div>
 </div>
