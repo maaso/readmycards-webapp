@@ -50,6 +50,7 @@
         this.verifyBeIDPin = verifyBeIDPin;
         this.authenticate = authenticate;
         // --- EMV ---
+        this.getAllEmvData = getAllEmvData;
         this.getPAN = getPAN;
         this.filterEmvData = filterEmvData;
         this.verifyEmvPin = verifyEmvPin;
@@ -393,6 +394,17 @@
         /// ===== EMV FUNCTIONALITY ======
         /// ==============================
 
+        // Get All available EMV Data
+        function getAllEmvData(readerId) {
+            console.log('get EMV data');
+            var allData = $q.defer();
+            connector.emv(readerId).allData([], function (err, res) {
+                console.log(err);
+                callbackHelper(err, res, allData);
+            });
+            return allData.promise;
+        }
+
         // Get Primary Accound Number (PAN) associated with a card
         function getPAN(readerId) {
             var panDeferred = $q.defer();
@@ -462,6 +474,8 @@
             switch (CardService.detectType(card)) {
                 case 'BeID':
                     return getAllData(readerId);
+                case 'EMV':
+                    return getAllEmvData(readerId);
                 default:
                     return $q.when('Not Supported');
             }
@@ -500,8 +514,10 @@
                     return 'BeID';
                 case 'MOBIB Card':
                     return 'MOBIB';
-                default:
+                case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
                     return 'EMV';
+                default:
+                    return 'Unknown';
             }
         }
     }
