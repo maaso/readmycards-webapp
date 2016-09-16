@@ -6,8 +6,9 @@
         .service('CardService', CardService);
 
 
-    function ConnectorService($q, CardService, _) {
-        var connector = initializeLib();
+    function ConnectorService($q, $timeout, CardService, _) {
+        var connector;
+        initializeLib();
 
         // === T1C Methods ===
         // --- Core ---
@@ -56,6 +57,7 @@
         this.isCardTypeBeId = isCardTypeBeId;
         this.isGCLAvailable = isGCLAvailable;
         this.readAllData = readAllData;
+        this.initializeAfterInstall = initializeAfterInstall;
 
 
         /// ===============================
@@ -481,7 +483,11 @@
             gclConfig.dsUrl = "https://accapim.t1t.be:443/trust1team/gclds/v1";
             gclConfig.allowAutoUpdate = true;
             gclConfig.implicitDownload = false;
-            return new GCLLib.GCLClient(gclConfig);
+            connector = new GCLLib.GCLClient(gclConfig);
+        }
+
+        function initializeAfterInstall() {
+            return $q.when(initializeLib());
         }
     }
 

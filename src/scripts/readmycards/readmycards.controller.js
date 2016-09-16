@@ -44,6 +44,10 @@
 
             $scope.$on('gcl', function () {
                 console.log('GCL is installed!');
+                controller.gclAvailable = true;
+                T1C.initializeAfterInstall().then(function (res) {
+                    pollForReaders();
+                });
             })
         }
 
