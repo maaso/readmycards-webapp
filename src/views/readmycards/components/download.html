@@ -1,6 +1,23 @@
-<div>
-    <span class="size-h1">Hello!</span>
-    <p>To use this website, you will need to install a small piece of software called the Generic Connector Library (GCL).
-        This will enable us to communicate with your card reader.</p>
-    <a ng-attr-href="{{$ctrl.dlUrl}}">Click here to download</a>
+<div class="rmc-step">
+    <span class="rmc-title hit-the-floor">ReadMyCards.eu</span>
+    <!--<p class="rmc-subtitle">Welcome to ReadMyCards.eu!</p>-->
+    <p class="rmc-promo-text text-ultralight">This website will read the contents of <strong>your smartcards</strong>, using any reader.<br>
+        The service is completely <strong>free</strong> for personal use, and we <strong>never</strong> save any of the data.</p>
+    <div class="rmc-download-prompt">
+        <div class="prompt-title">Download GCL</div>
+        <div class="prompt-text text-ultralight">
+            To use this website, you will need to install a small piece of software called the Generic Connector Library (GCL).
+            This will enable us to communicate with your card reader across all browsers.
+        </div>
+        <a class="clickable" ng-attr-href="{{$ctrl.dlUrl}}">
+            <div class="download-block clickable">
+                <span class="download-text">Click here to download</span>
+                <div class="text-small text-ultralight">
+                    <a class="info-text normal-cursor" ng-click="$event.stopPropagation();">The GCL software is provided to you under the</a>
+                    <a href="https://opensource.org/licenses/AGPL-3.0" target="_blank" ng-click="$event.stopPropagation();">AGPL v3</a>
+                    <a class="info-text normal-cursor" ng-click="$event.stopPropagation();">license.</a>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>

@@ -1,6 +1,7 @@
 /// Styles for RMC
 
 @t1t-green: #93C01F;
+@t1t-green-dark: #82aa1b;
 @t1t-grey: #CFCFCF;
 
 html {
@@ -13,6 +14,7 @@ html {
 
 .content-container {
   height: 100%;
+  background: #fff;
 }
 
 .root-container {
@@ -25,7 +27,102 @@ html {
 }
 
 #rmc-content {
-  padding-bottom: 100px;
+  padding: 10px 50px 100px 50px;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  a {
+    color: @t1t-green;
+
+    &:hover,
+    &:active {
+      color: darken(@t1t-green, 5%);
+    }
+  }
+
+  .rmc-step {
+    text-align: center;
+    font-size: 2em;
+
+    .rmc-title {
+      color: @t1t-green;
+      font-size: 100px;
+      font-weight: 300;
+
+
+      //&.hit-the-floor {
+      //  color: @t1t-green;
+      //  font-size: 6em;
+      //  font-weight: bold;
+      //  font-family: Helvetica;
+      //  text-shadow: 0 1px 0 darken(@t1t-green, 10%), 0 2px 0 darken(@t1t-green, 10%), 0 3px 0 darken(@t1t-green, 10%), 0 4px 0 darken(@t1t-green, 10%), 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+      //}
+
+    }
+
+    .rmc-subtitle {
+      text-align: center;
+      font-size: 2em;
+      color: @t1t-grey;
+    }
+
+    .rmc-promo-text {
+      padding: 0 10px;
+    }
+
+    .rmc-download-prompt {
+      margin: 50px 10%;
+      border: 5px solid @t1t-green;
+      border-radius: 10px;
+      background: #EEE;
+
+      .download-block {
+        margin: 40px 22% 20px;
+        padding: 15px 0;
+        background: @t1t-green-dark;
+        border-radius: 50px;
+
+        &:hover {
+          background: @t1t-green;
+        }
+
+        .download-text {
+          color: #fff;
+        }
+
+        .info-text {
+          color: #333;
+          &:active,
+          &:hover {
+            color: #333;
+          }
+        }
+
+        a {
+          color: #fff;
+
+          &:hover,
+          &:active {
+            color: @t1t-grey;
+          }
+        }
+      }
+    }
+
+    .prompt-title {
+      background: @t1t-green;
+      color: #fff;
+      padding: 10px;
+    }
+
+    .prompt-text {
+      margin: 20px;
+      padding: 15px;
+      font-size: 0.75em;
+      text-align: justify;
+    }
+  }
 }
 
 #rmc-footer {
@@ -105,4 +202,18 @@ html {
     }
   }
 
+}
+
+
+.clickable {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.normal-cursor {
+  cursor: default;
+}
+
+.not-clickable {
+  cursor: not-allowed;
 }
