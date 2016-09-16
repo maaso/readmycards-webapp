@@ -48,6 +48,32 @@
             });
 
             $scope.$on('read-another-card', function () {
+                T1C.getReaders().then(function (result) {
+                    console.log(result);
+                    controller.readers = result.data;
+                    controller.readerWithCard = undefined;
+                    controller.cardPresent = false;
+                    if (_.isEmpty(controller.readers)) {
+                        pollForReaders();
+                    } else {
+                        pollForCard();
+                    }
+                }, function () {
+                    controller.readers = [];
+                    controller.readerWithCard = undefined;
+                    controller.cardPresent = false;
+                    pollForReaders();
+                });
+            });
+
+            $scope.$on('retry-reader', function () {
+                controller.readerWithCard = undefined;
+                controller.cardPresent = false;
+                pollForReaders();
+            });
+
+            $scope.$on('retry-card', function () {
+                controller.readers = [];
                 controller.readerWithCard = undefined;
                 controller.cardPresent = false;
                 pollForCard();
@@ -56,16 +82,24 @@
 
 
         function pollForReaders() {
+            console.log('poll readers');
             controller.pollingReaders = true;
+            controller.error = false;
             T1C.getConnector().core().pollReaders(30, function (err, result) {
                 // Success callback
                 // Found at least one reader, poll for cards
-                controller.readers = result.data;
-                controller.pollingReaders = false;
-                $scope.$apply();
-                // if (controller.readers.length > 1) toastr.success('Readers found!');
-                // else toastr.success('Reader found!');
-                pollForCard();
+                if (err) {
+                    controller.error = true;
+                    $scope.$apply();
+                }
+                else {
+                    controller.readers = result.data;
+                    controller.pollingReaders = false;
+                    $scope.$apply();
+                    // if (controller.readers.length > 1) toastr.success('Readers found!');
+                    // else toastr.success('Reader found!');
+                    pollForCard();
+                }
             }, function () {
                 // Not used
                 controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
@@ -81,20 +115,30 @@
         }
 
         function pollForCard() {
+            console.log('poll card');
             controller.pollingCard = true;
+            controller.error = false;
             T1C.getConnector().core().pollCardInserted(30, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
-                controller.pollingCard = false;
-                $scope.$apply();
-                // if ($scope.readers.length > 1) toastr.success('Readers found!');
-                // else toastr.success('Reader found!');
-                // Found a card, attempt to read it
-                // Refresh reader list first
-                T1C.getReaders().then(function (result) {
-                    controller.readers = result.data;
-                    readCard();
-                });
+                if (err) {
+                    controller.error = true;
+                    $scope.$apply();
+                }
+                else {
+                    controller.pollingCard = false;
+                    $scope.$apply();
+                    // if ($scope.readers.length > 1) toastr.success('Readers found!');
+                    // else toastr.success('Reader found!');
+                    // Found a card, attempt to read it
+                    // Refresh reader list first
+                    T1C.getReaders().then(function (result) {
+                        controller.readers = result.data;
+                        readCard();
+                    }, function () {
+                        controller.error = true;
+                    });
+                }
             }, function () {
                 // "Waiting for reader connection" callback
                 controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
@@ -127,18 +171,6 @@
                 return _.has(o, 'card');
             });
             console.log(controller.readerWithCard);
-
-            // // Detect Type and read data
-            // T1C.readAllData(readerWithCard.id, readerWithCard.card).then(function (res) {
-            //     controller.card = readerWithCard.card;
-            //     controller.cardData = res.data;
-            //     console.log(controller.cardData);
-            //     console.log(res);
-            // });
-
-
-            // Init vizualizer for type
-
         }
     }
 

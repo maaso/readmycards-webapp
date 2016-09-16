@@ -91,10 +91,30 @@
             }
         })
         .component('readerPolling', {
-            templateUrl: 'views/readmycards/components/reader-polling.html'
+            templateUrl: 'views/readmycards/components/reader-polling.html',
+            bindings: {
+                error: '<'
+            },
+            controller: function ($scope) {
+                this.tryAgain = tryAgain;
+
+                function tryAgain() {
+                    $scope.$emit('retry-reader');
+                }
+            }
         })
         .component('cardPolling', {
-            templateUrl: 'views/readmycards/components/card-polling.html'
+            templateUrl: 'views/readmycards/components/card-polling.html',
+            bindings: {
+                error: '<'
+            },
+            controller: function ($scope) {
+                this.tryAgain = tryAgain;
+
+                function tryAgain() {
+                    $scope.$emit('retry-card');
+                }
+            }
         })
         .component('rmcHeader', {
             templateUrl: 'views/readmycards/components/header.html'

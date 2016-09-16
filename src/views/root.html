@@ -3,9 +3,9 @@
     <div id="rmc-content">
         <download-gcl dl-url="root.dlLink" ng-if="!root.gclAvailable"></download-gcl>
 
-        <reader-polling ng-if="root.pollingReaders"></reader-polling>
+        <reader-polling error="root.error" ng-if="root.pollingReaders"></reader-polling>
 
-        <card-polling ng-if="root.pollingCard"></card-polling>
+        <card-polling error="root.error" ng-if="root.pollingCard"></card-polling>
 
         <card-visualizer ng-if="root.readerWithCard" reader-with-card="root.readerWithCard"></card-visualizer>
 
