@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('app.demo')
+    angular.module('app.readmycards')
         .service('T1C', ConnectorService)
         .service('CardService', CardService);
 
