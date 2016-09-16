@@ -17,9 +17,6 @@
         init();
 
         function init() {
-            // TODO remove
-            promptDownload();
-
             // Determine initial action we need to take
             if (!controller.cardPresent) {
                 // No card is present, check if we have readers
@@ -118,18 +115,18 @@
             // Get first card found
             console.log(controller.readers);
 
-            var readerWithCard = _.find(controller.readers, function (o) {
+            controller.readerWithCard = _.find(controller.readers, function (o) {
                 return _.has(o, 'card');
             });
-            console.log(readerWithCard);
+            console.log(controller.readerWithCard);
 
-            // Detect Type and read data
-            T1C.readAllData(readerWithCard.id, readerWithCard.card).then(function (res) {
-                controller.card = readerWithCard.card;
-                controller.cardData = res.data;
-                console.log(controller.cardData);
-                console.log(res);
-            });
+            // // Detect Type and read data
+            // T1C.readAllData(readerWithCard.id, readerWithCard.card).then(function (res) {
+            //     controller.card = readerWithCard.card;
+            //     controller.cardData = res.data;
+            //     console.log(controller.cardData);
+            //     console.log(res);
+            // });
 
 
             // Init vizualizer for type

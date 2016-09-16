@@ -20,12 +20,21 @@
         .component('cardVisualizer', {
             templateUrl: 'views/demo/components/card-viz.html',
             bindings: {
-                card: '<',
-                cardData: '<'
+                readerWithCard: '<'
             },
-            controller: function (CardService) {
+            controller: function (CardService, T1C) {
                 var controller = this;
-                controller.cardType = CardService.detectType(controller.card);
+                controller.cardType = CardService.detectType(controller.readerWithCard.card);
+                this.$onInit = function () {
+                    controller.loading = true;
+                    // Detect Type and read data
+                    T1C.readAllData(controller.readerWithCard.id, controller.readerWithCard.card).then(function (res) {
+                        controller.card = controller.readerWithCard.card;
+                        controller.cardData = res.data;
+                        controller.loading = false;
+                    });
+                }
+
             }
         })
         .component('beidVisualizer', {
