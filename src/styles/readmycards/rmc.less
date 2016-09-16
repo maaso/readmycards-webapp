@@ -110,6 +110,25 @@ html {
       }
     }
 
+    .polling-block {
+      .spinner-container {
+        margin-top: 4em;
+        .spinner {
+          color: @t1t-grey;
+          font-size: 4em;
+        }
+
+        .spinner-text {
+          margin-top: 20px;
+        }
+      }
+
+    }
+
+    .timeout-block {
+
+    }
+
     .prompt-title {
       background: @t1t-green;
       color: #fff;
@@ -124,22 +143,47 @@ html {
     }
   }
 
-  .card-viz {
-    border: 5px solid @t1t-green;
-    border-radius: 10px;
+  .card-viz-container {
+    text-align: center;
 
-    .card-type {
-      background: @t1t-green;
+    .card-viz-title {
+      color: @t1t-green;
+      font-size: 100px;
+      font-weight: 300;
       text-align: center;
-      font-size: 2em;
-      padding: 10px;
-      color: #fff;
+
+
+      //&.hit-the-floor {
+      //  color: @t1t-green;
+      //  font-size: 6em;
+      //  font-weight: bold;
+      //  font-family: Helvetica;
+      //  text-shadow: 0 1px 0 darken(@t1t-green, 10%), 0 2px 0 darken(@t1t-green, 10%), 0 3px 0 darken(@t1t-green, 10%), 0 4px 0 darken(@t1t-green, 10%), 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+      //}
+
     }
 
-    .viz-container {
-      padding: 20px;
+    .card-viz {
+      border: 5px solid @t1t-green;
+      border-radius: 10px;
+      text-align: left;
+
+      .card-type {
+        background: @t1t-green;
+        text-align: center;
+        font-size: 2em;
+        padding: 10px;
+        color: #fff;
+      }
+
+      .viz-container {
+        padding: 20px;
+      }
     }
   }
+
+
+
 }
 
 #rmc-footer {

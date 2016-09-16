@@ -1,13 +1,20 @@
 <div class="root-container">
     <rmc-header id="rmc-header"></rmc-header>
     <div id="rmc-content">
-        <download-gcl dl-url="root.dlLink"></download-gcl>
+        <download-gcl dl-url="root.dlLink" ng-if="!root.gclAvailable"></download-gcl>
 
         <reader-polling ng-if="root.pollingReaders"></reader-polling>
 
         <card-polling ng-if="root.pollingCard"></card-polling>
 
         <card-visualizer ng-if="root.cardData" card="root.card" card-data="root.cardData"></card-visualizer>
+
+
+        <!--<reader-polling></reader-polling>-->
+
+        <!--<card-polling></card-polling>-->
+
+        <!--<card-visualizer></card-visualizer>-->
     </div>
     <rmc-footer id="rmc-footer"></rmc-footer>
 </div>
