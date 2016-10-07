@@ -35,6 +35,11 @@
                         },
                         controller: 'RootCtrl as root'
                     })
+                    .state('root.reader', {
+                        url: ':readerId',
+                        templateUrl: '/views/reader.html',
+                        controller: 'ReaderCtrl as ctrl'
+                    })
             }
         );
 

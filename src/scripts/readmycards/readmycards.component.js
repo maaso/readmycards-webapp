@@ -5,25 +5,29 @@
         .component('cardVisualizer', {
             templateUrl: 'views/demo/components/card-viz.html',
             bindings: {
-                readerWithCard: '<'
+                readerId: '<'
             },
             controller: function ($scope, CardService, T1C) {
                 var controller = this;
                 controller.readAnother = readAnother;
-                controller.cardType = CardService.detectType(controller.readerWithCard.card);
                 this.$onInit = function () {
                     controller.loading = true;
+                    console.log(controller.readerId);
                     // Detect Type and read data
-                    T1C.readAllData(controller.readerWithCard.id, controller.readerWithCard.card).then(function (res) {
-                        controller.card = controller.readerWithCard.card;
-                        controller.cardData = res.data;
-                        console.log(controller.cardData);
-                        controller.loading = false;
-                    }, function (error) {
-                        controller.errorReadingCard = true;
-                        controller.loading = false;
-                        console.log(error);
-                    });
+                    T1C.getReader(controller.readerId).then(function (readerInfo) {
+                        console.log(readerInfo);
+                        controller.cardType = CardService.detectType(readerInfo.data.card);
+                        T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
+                            controller.card = readerInfo.data.card;
+                            controller.cardData = res.data;
+                            console.log(controller.cardData);
+                            controller.loading = false;
+                        }, function (error) {
+                            controller.errorReadingCard = true;
+                            controller.loading = false;
+                            console.log(error);
+                        });
+                    })
                 };
 
                 function readAnother() {
@@ -119,6 +123,28 @@
                 function tryAgain() {
                     $scope.$emit('retry-card');
                 }
+            }
+        })
+        .component('readerSelect', {
+            templateUrl: 'views/readmycards/components/reader-list.html',
+            controller: function ($scope, $state, T1C, CardService, _) {
+                var controller = this;
+                this.$onInit = function () {
+                    T1C.getReadersWithCards().then(function (res) {
+                        console.log(res);
+                        controller.readers = res.data;
+                        _.forEach(controller.readers, function (reader) {
+                            reader.cardType = CardService.detectType(reader.card);
+                        })
+                    })
+                };
+            }
+        })
+        .component('readerIcon', {
+            templateUrl: 'views/readmycards/components/reader-icon.html',
+            bindings: {
+                index: '<',
+                reader: '<'
             }
         })
         .component('rmcHeader', {

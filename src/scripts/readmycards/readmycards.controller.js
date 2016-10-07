@@ -2,10 +2,11 @@
     'use strict';
 
     angular.module('app.readmycards')
-        .controller('RootCtrl', rootCtrl);
+        .controller('RootCtrl', rootCtrl)
+        .controller('ReaderCtrl', readerCtrl);
 
 
-    function rootCtrl($scope, gclAvailable, readers, cardPresent, T1C, _) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, T1C, _) {
         var controller = this;
         console.log(gclAvailable);
         console.log(readers);
@@ -170,8 +171,12 @@
             controller.readerWithCard = _.find(controller.readers, function (o) {
                 return _.has(o, 'card');
             });
-            console.log(controller.readerWithCard);
+            $state.go('root.reader', { readerId: controller.readerWithCard.id});
         }
+    }
+
+    function readerCtrl($scope, $stateParams) {
+        $scope.readerId = $stateParams.readerId;
     }
 
 })();
