@@ -72,10 +72,11 @@
             bindings: {
                 dlUrl: '<'
             },
-            controller: function ($scope, T1C, $timeout) {
+            controller: function ($scope, T1C, $timeout, WebTask) {
                 this.$onInit = function () {
                     pollForGcl();
                 };
+                this.registerDownload = registerDownload;
 
                 function pollForGcl() {
                     $timeout(function () {
@@ -87,6 +88,10 @@
                             pollForGcl();
                         });
                     }, 2500)
+                }
+
+                function registerDownload() {
+                    WebTask.storeDownloadInfo();
                 }
             }
         })

@@ -3,7 +3,8 @@
 
     angular.module('app.readmycards')
         .service('T1C', ConnectorService)
-        .service('CardService', CardService);
+        .service('CardService', CardService)
+        .service('WebTask', WebTask);
 
 
     function ConnectorService($q, $timeout, CardService, _) {
@@ -519,6 +520,32 @@
                 default:
                     return 'Unknown';
             }
+        }
+    }
+
+    function WebTask($http, $q, T1C, _) {
+        this.storeDownloadInfo = storeDownloadInfo;
+
+        function storeDownloadInfo() {
+            console.log('processing download info');
+            var promises = [ $http.get('http://ipinfo.io'), T1C.browserInfo()];
+
+            $q.all(promises).then(function (results) {
+                console.log(results);
+                var data = {
+                    type: 'GCLdownload',
+                    payload: [{ name: 'ip', value: results[0].data.ip }, { name: 'hostname', value: results[0].data.hostname },
+                        { name: 'location', value: results[0].data.loc }, { name: 'country', value: results[0].data.country },
+                        { name: 'postal', value: results[0].data.postal }, { name: 'region', value: results[0].data.region },
+                        { name: 'city', value: results[0].data.city }, { name: 'org', value: results[0].data.org },
+                        { name: 'browser', value: results[1].browser }, { name: 'user agent', value: results[1].ua },
+                        { name: 'os', value: results[1].os }, { name: 'manufacturer', value: results[1].manufacturer }]
+                };
+                console.log(data);
+                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-dl-dumper?webtask_no_cache=1', data);
+            }, function (err) {
+                console.log(err);
+            });
         }
     }
 
