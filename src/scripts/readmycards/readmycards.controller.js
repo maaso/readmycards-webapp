@@ -6,11 +6,8 @@
         .controller('ReaderCtrl', readerCtrl);
 
 
-    function rootCtrl($scope, $state, $stateParams, gclAvailable, readers, cardPresent, T1C, _) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, T1C, _) {
         var controller = this;
-        console.log(gclAvailable);
-        console.log(readers);
-        console.log(cardPresent);
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
@@ -41,7 +38,6 @@
             }
 
             $scope.$on('gcl', function () {
-                console.log('GCL is installed!');
                 controller.gclAvailable = true;
                 T1C.initializeAfterInstall().then(function (res) {
                     pollForReaders();
@@ -50,11 +46,9 @@
 
             $scope.$on('read-another-card', function (event, currentReaderId) {
                 T1C.getReaders().then(function (result) {
-                    console.log(result);
                     if (_.find(result.data, function (reader) {
                        return _.has(reader, 'card');
                     })) {
-                        console.log('card found');
                         // check if current reader has card
                         if (_.find(result.data, function (reader) {
                                 return _.has(reader, 'card') && reader.id === currentReaderId;
@@ -66,7 +60,6 @@
                             controller.cardPresent = true;
                             $scope.$broadcast('reinit-viz');
                         } else {
-                            console.log('different reader has card');
                             $state.go('root.reader', { readerId: _.find(result.data, function (reader) {
                                 return _.has(reader, 'card');
                             }).id});
@@ -105,7 +98,6 @@
 
 
         function pollForReaders() {
-            console.log('poll readers');
             controller.pollingReaders = true;
             controller.error = false;
             T1C.getConnector().core().pollReaders(30, function (err, result) {
@@ -138,7 +130,6 @@
         }
 
         function pollForCard() {
-            console.log('poll card');
             controller.pollingCard = true;
             controller.error = false;
             T1C.getConnector().core().pollCardInserted(30, function (err, result) {
@@ -186,10 +177,6 @@
         }
 
         function readCard() {
-            // TODO support multiple cards
-            // Get first card found
-            console.log(controller.readers);
-
             controller.readerWithCard = _.find(controller.readers, function (o) {
                 return _.has(o, 'card');
             });

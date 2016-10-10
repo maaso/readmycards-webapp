@@ -13,15 +13,12 @@
                 this.$onInit = function () {
                     controller.loading = true;
                     controller.errorReadingCard = false;
-                    console.log(controller.readerId);
                     // Detect Type and read data
                     T1C.getReader(controller.readerId).then(function (readerInfo) {
-                        console.log(readerInfo);
                         controller.cardType = CardService.detectType(readerInfo.data.card);
                         T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
                             controller.card = readerInfo.data.card;
                             controller.cardData = res.data;
-                            console.log(controller.cardData);
                             controller.loading = false;
                         }, function (error) {
                             controller.errorReadingCard = true;
@@ -36,7 +33,6 @@
                 });
 
                 function readAnother() {
-                    console.log('requesting re-read on readerId ', controller.readerId );
                     $scope.$emit('read-another-card', controller.readerId);
                 }
 
@@ -92,7 +88,6 @@
                     $timeout(function () {
                         T1C.getInfo().then(function (res) {
                             // Info retrieved, GCL is installed
-                            console.log(res);
                             $scope.$emit('gcl');
                         }, function (err) {
                             pollForGcl();
@@ -133,21 +128,36 @@
         })
         .component('readerSelect', {
             templateUrl: 'views/readmycards/components/reader-list.html',
-            controller: function ($scope, $state, T1C, CardService, _) {
+            controller: function ($scope, $state, $timeout, T1C, CardService, _) {
                 var controller = this;
                 this.$onInit = function () {
-                    T1C.getReadersWithCards().then(function (res) {
-                        console.log(res);
-                        controller.readers = res.data;
-                        _.forEach(controller.readers, function (reader) {
-                            reader.cardType = CardService.detectType(reader.card);
-                        })
-                    })
+                    controller.readers = [];
+                    refreshList();
                 };
 
+                function refreshList() {
+                    T1C.getReadersWithCards().then(function (res) {
+                        if (res.data.length != controller.readers.length) {
+                            controller.readers = res.data;
+                            _.forEach(controller.readers, function (reader) {
+                                reader.cardType = CardService.detectType(reader.card);
+                            });
+                        }
+                    })
+                }
+
+                function timedRefresh() {
+                    $timeout(function () {
+                        refreshList();
+                        timedRefresh();
+                    }, 2500)
+                }
+
+                timedRefresh();
+
                 $scope.$on('reinit-viz', function () {
-                    controller.$onInit();
-                })
+                    refreshList();
+                });
             }
         })
         .component('readerIcon', {
