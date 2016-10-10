@@ -2,14 +2,12 @@
     'use strict';
 
     angular.module('app.readmycards')
-        .controller('RootCtrl', rootCtrl);
+        .controller('RootCtrl', rootCtrl)
+        .controller('ReaderCtrl', readerCtrl);
 
 
-    function rootCtrl($scope, gclAvailable, readers, cardPresent, T1C, _) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, T1C, _) {
         var controller = this;
-        console.log(gclAvailable);
-        console.log(readers);
-        console.log(cardPresent);
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
@@ -40,23 +38,41 @@
             }
 
             $scope.$on('gcl', function () {
-                console.log('GCL is installed!');
                 controller.gclAvailable = true;
                 T1C.initializeAfterInstall().then(function (res) {
                     pollForReaders();
                 });
             });
 
-            $scope.$on('read-another-card', function () {
+            $scope.$on('read-another-card', function (event, currentReaderId) {
                 T1C.getReaders().then(function (result) {
-                    console.log(result);
-                    controller.readers = result.data;
-                    controller.readerWithCard = undefined;
-                    controller.cardPresent = false;
-                    if (_.isEmpty(controller.readers)) {
-                        pollForReaders();
+                    if (_.find(result.data, function (reader) {
+                       return _.has(reader, 'card');
+                    })) {
+                        // check if current reader has card
+                        if (_.find(result.data, function (reader) {
+                                return _.has(reader, 'card') && reader.id === currentReaderId;
+                            })) {
+                            controller.readers = result.data;
+                            controller.readerWithCard = _.find(result.data, function (reader) {
+                                return reader.id === currentReaderId;
+                            });
+                            controller.cardPresent = true;
+                            $scope.$broadcast('reinit-viz');
+                        } else {
+                            $state.go('root.reader', { readerId: _.find(result.data, function (reader) {
+                                return _.has(reader, 'card');
+                            }).id});
+                        }
                     } else {
-                        pollForCard();
+                        controller.readers = result.data;
+                        controller.readerWithCard = undefined;
+                        controller.cardPresent = false;
+                        if (_.isEmpty(controller.readers)) {
+                            pollForReaders();
+                        } else {
+                            pollForCard();
+                        }
                     }
                 }, function () {
                     controller.readers = [];
@@ -82,7 +98,6 @@
 
 
         function pollForReaders() {
-            console.log('poll readers');
             controller.pollingReaders = true;
             controller.error = false;
             T1C.getConnector().core().pollReaders(30, function (err, result) {
@@ -115,7 +130,6 @@
         }
 
         function pollForCard() {
-            console.log('poll card');
             controller.pollingCard = true;
             controller.error = false;
             T1C.getConnector().core().pollCardInserted(30, function (err, result) {
@@ -163,15 +177,15 @@
         }
 
         function readCard() {
-            // TODO support multiple cards
-            // Get first card found
-            console.log(controller.readers);
-
             controller.readerWithCard = _.find(controller.readers, function (o) {
                 return _.has(o, 'card');
             });
-            console.log(controller.readerWithCard);
+            $state.go('root.reader', { readerId: controller.readerWithCard.id});
         }
+    }
+
+    function readerCtrl($scope, $stateParams) {
+        $scope.readerId = $stateParams.readerId;
     }
 
 })();

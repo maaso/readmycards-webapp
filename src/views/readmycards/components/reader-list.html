@@ -1,0 +1,16 @@
+<div class="card-viz-container">
+    <span class="card-viz-title hit-the-floor">Card Contents</span>
+
+    <div class="card-list" ng-if="$ctrl.readers.length > 1">
+        <span class="reader-list-header">Select Card:</span>
+        <reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>
+        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
+        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
+        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
+        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
+    </div>
+
+    <div ui-view></div>
+</div>
+
+
