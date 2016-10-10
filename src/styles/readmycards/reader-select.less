@@ -1,24 +1,79 @@
+.card-list {
+  margin-bottom: 15px;
+  margin-top: -25px;
+  .reader-list-header {
+    display: block;
+  }
+}
+
+
 .reader-icon {
   display: inline-block;
   margin: 10px 20px 0;
 
   .index {
-    background: @brand-primary;
     position: relative;
     color: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 44px;
 
-    .index-number {
+    .card-bg {
       position: absolute;
-      font-size: 22px;
+      background: lighten(@brand-primary, 25%);
+      width: 52px;
       top: 0;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 32px;
+      height: 38px;
+      border-radius: 5px;
       margin: auto;
+
+      .fa {
+        position: absolute;
+        font-size: 48px;
+        background: transparent;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 44px;
+        margin: auto;
+        color: @brand-primary;
+      }
+    }
+
+
+    .index-number {
+      position: absolute;
+      color: whitesmoke;
+      font-weight: bolder;
+      -webkit-text-stroke-color: #888;
+      -webkit-text-stroke-width: 1px;
+      font-size: 42px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      margin: auto;
+    }
+  }
+
+  &.active,
+  &:hover {
+    .card-bg {
+      background: lighten(@brand-primary, 5%);
+
+      .fa {
+        color: darken(@brand-primary, 10%);
+      }
+
+    }
+
+    .index-number {
+      color: #fff;
+      -webkit-text-stroke-color: #777;
     }
   }
 

@@ -1,4 +1,8 @@
-<div class="reader-icon clickable" ui-sref=".reader({ readerId: $ctrl.reader.id})">
-    <p class="index"><span class="index-number">{{$ctrl.index}}</span></p>
-    <a>{{$ctrl.reader.cardType}}</a>
+<div class="reader-icon clickable" ui-sref-active="active" ui-sref=".reader({ readerId: $ctrl.reader.id})">
+    <div class="index" uib-tooltip="{{$ctrl.reader.cardType}} in {{$ctrl.reader.name}}" tooltip-placement="bottom">
+        <div class="card-bg">
+            <span class="fa fa-credit-card"></span>
+        </div>
+        <span class="index-number">{{$ctrl.index}}</span>
+    </div>
 </div>
