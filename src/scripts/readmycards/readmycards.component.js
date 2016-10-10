@@ -12,6 +12,7 @@
                 controller.readAnother = readAnother;
                 this.$onInit = function () {
                     controller.loading = true;
+                    controller.errorReadingCard = false;
                     console.log(controller.readerId);
                     // Detect Type and read data
                     T1C.getReader(controller.readerId).then(function (readerInfo) {
@@ -30,8 +31,13 @@
                     })
                 };
 
+                $scope.$on('reinit-viz', function () {
+                    controller.$onInit();
+                });
+
                 function readAnother() {
-                    $scope.$emit('read-another-card');
+                    console.log('requesting re-read on readerId ', controller.readerId );
+                    $scope.$emit('read-another-card', controller.readerId);
                 }
 
             }
@@ -138,6 +144,10 @@
                         })
                     })
                 };
+
+                $scope.$on('reinit-viz', function () {
+                    controller.$onInit();
+                })
             }
         })
         .component('readerIcon', {

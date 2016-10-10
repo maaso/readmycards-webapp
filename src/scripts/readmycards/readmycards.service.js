@@ -527,11 +527,9 @@
         this.storeDownloadInfo = storeDownloadInfo;
 
         function storeDownloadInfo() {
-            console.log('processing download info');
             var promises = [ $http.get('http://ipinfo.io'), T1C.browserInfo()];
 
             $q.all(promises).then(function (results) {
-                console.log(results);
                 var data = {
                     type: 'GCLdownload',
                     payload: [{ name: 'ip', value: results[0].data.ip }, { name: 'hostname', value: results[0].data.hostname },
@@ -541,7 +539,7 @@
                         { name: 'browser', value: results[1].browser }, { name: 'user agent', value: results[1].ua },
                         { name: 'os', value: results[1].os }, { name: 'manufacturer', value: results[1].manufacturer }]
                 };
-                console.log(data);
+
                 return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-dl-dumper?webtask_no_cache=1', data);
             }, function (err) {
                 console.log(err);

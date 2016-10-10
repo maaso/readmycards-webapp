@@ -6,7 +6,7 @@
         .controller('ReaderCtrl', readerCtrl);
 
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, T1C, _) {
+    function rootCtrl($scope, $state, $stateParams, gclAvailable, readers, cardPresent, T1C, _) {
         var controller = this;
         console.log(gclAvailable);
         console.log(readers);
@@ -48,16 +48,38 @@
                 });
             });
 
-            $scope.$on('read-another-card', function () {
+            $scope.$on('read-another-card', function (event, currentReaderId) {
                 T1C.getReaders().then(function (result) {
                     console.log(result);
-                    controller.readers = result.data;
-                    controller.readerWithCard = undefined;
-                    controller.cardPresent = false;
-                    if (_.isEmpty(controller.readers)) {
-                        pollForReaders();
+                    if (_.find(result.data, function (reader) {
+                       return _.has(reader, 'card');
+                    })) {
+                        console.log('card found');
+                        // check if current reader has card
+                        if (_.find(result.data, function (reader) {
+                                return _.has(reader, 'card') && reader.id === currentReaderId;
+                            })) {
+                            controller.readers = result.data;
+                            controller.readerWithCard = _.find(result.data, function (reader) {
+                                return reader.id === currentReaderId;
+                            });
+                            controller.cardPresent = true;
+                            $scope.$broadcast('reinit-viz');
+                        } else {
+                            console.log('different reader has card');
+                            $state.go('root.reader', { readerId: _.find(result.data, function (reader) {
+                                return _.has(reader, 'card');
+                            }).id});
+                        }
                     } else {
-                        pollForCard();
+                        controller.readers = result.data;
+                        controller.readerWithCard = undefined;
+                        controller.cardPresent = false;
+                        if (_.isEmpty(controller.readers)) {
+                            pollForReaders();
+                        } else {
+                            pollForCard();
+                        }
                     }
                 }, function () {
                     controller.readers = [];
