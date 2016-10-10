@@ -168,7 +168,20 @@
             }
         })
         .component('rmcHeader', {
-            templateUrl: 'views/readmycards/components/header.html'
+            templateUrl: 'views/readmycards/components/header.html',
+            controller: function ($scope) {
+                var controller = this;
+                this.toggleCardTypes = toggleCardTypes;
+
+                function toggleCardTypes() {
+                    controller.menuOpen = !controller.menuOpen;
+                    $scope.$emit('card-type-toggle');
+                }
+
+                $scope.$on('close-sidebar', function () {
+                    controller.menuOpen = false;
+                })
+            }
         })
         .component('rmcFooter', {
             templateUrl: 'views/readmycards/components/footer.html'
