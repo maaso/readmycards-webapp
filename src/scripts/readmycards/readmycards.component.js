@@ -79,6 +79,7 @@
                 dlUrl: '<'
             },
             controller: function ($scope, T1C, $timeout, WebTask) {
+                var controller = this;
                 this.$onInit = function () {
                     pollForGcl();
                 };
@@ -95,8 +96,8 @@
                     }, 2500)
                 }
 
-                function registerDownload() {
-                    WebTask.storeDownloadInfo();
+                function registerDownload(mail) {
+                    WebTask.storeDownloadInfo(mail, controller.dlUrl);
                 }
             }
         })
