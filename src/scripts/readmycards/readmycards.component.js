@@ -97,6 +97,7 @@
                 }
 
                 function registerDownload(mail) {
+                    controller.waitingForInstall = true;
                     WebTask.storeDownloadInfo(mail, controller.dlUrl);
                 }
             }
