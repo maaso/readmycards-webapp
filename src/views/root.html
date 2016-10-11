@@ -1,11 +1,11 @@
 <div class="root-container st-container">
     <rmc-header id="rmc-header"></rmc-header>
     <nav class="st-menu sliding-list" ng-class="{ 'st-menu-open': root.cardTypesOpen }" id="menu-1">
-        <h2 class="">Card Types</h2>
+        <h2 class="">Supported Types:</h2>
         <ul>
             <li><a class="">Belgian eID</a></li>
             <li><a class="">MoBIB</a></li>
-            <li><a class="">EMV</a></li>
+            <li><a class="">EMV (Credit/Debit Cards)</a></li>
         </ul>
     </nav>
     <div class="content-overlay" ng-show="root.cardTypesOpen" ng-class="{ 'visible': root.cardTypesOpen}" ng-click="root.closeSidebar()"></div>
