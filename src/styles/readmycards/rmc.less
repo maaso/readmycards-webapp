@@ -97,45 +97,50 @@ html {
     }
 
     .rmc-download-prompt {
-      margin: 50px 10%;
+      margin: 30px 10%;
       border: 5px solid @t1t-green;
       border-radius: 10px;
-      background: #EEE;
+      background: #fff;
 
-      .download-block {
-        margin: 40px 22% 20px;
-        padding: 15px 0;
-        background: @t1t-green-dark;
-        border-radius: 50px;
+      .download-text {
+        font-size: 22px;
+      }
 
-        &:hover {
-          background: @t1t-green;
-        }
+      .email-form {
+        padding: 10px 20px;
 
-        .download-text {
-          color: #fff;
-        }
+        input {
+          max-width: 500px;
+          text-align: center;
+          margin: 0 auto;
+          font-size: 22px;
 
-        .license-text {
-          font-size: 0.5em;
-        }
-
-        .info-text {
-          color: #333;
-          &:active,
-          &:hover {
-            color: #333;
+          &:focus {
+            border-bottom-color: @brand-primary;
+            box-shadow: inset 0 -1px @brand-primary;
           }
         }
 
-        a {
+        .btn-submit {
+          border-radius: 50px;
+          font-size: 22px;
+          margin-top: 20px;
           color: #fff;
+          background: @brand-info;
+          width: 300px;
 
-          &:hover,
-          &:active {
-            color: @t1t-grey;
+          &:hover, &:active {
+            background: darken(@brand-info, 7.5%);
           }
         }
+
+      }
+
+      .footer-text {
+        padding: 20px 20px 10px;
+        font-size: 12px;
+        color: #999;
+        font-weight: 700;
       }
     }
 
@@ -169,6 +174,11 @@ html {
       padding: 15px;
       font-size: 0.75em;
       text-align: justify;
+
+      .waiting-spinner {
+        margin-bottom: 20px;
+        color: #bbb;
+      }
     }
   }
 
@@ -350,4 +360,124 @@ html {
 
 .block {
   display: block;
+}
+
+.st-menu-open .st-pusher::after {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+.st-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  visibility: hidden;
+  width: 300px;
+  height: 100%;
+  background: @brand-primary;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.st-menu::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.2);
+  content: '';
+  opacity: 1;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+.st-menu-open .st-menu::after {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  -webkit-transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
+  transition: opacity 0.5s, width 0.1s 0.5s, height 0.1s 0.5s;
+}
+
+
+.st-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-menu h2 {
+  margin: 0;
+  padding: 1em 1em 1em .5em;
+  color: rgba(0,0,0,0.4);
+  text-shadow: 0 0 1px rgba(0,0,0,0.1);
+  font-weight: 300;
+  font-size: 2em;
+}
+
+.st-menu ul li a {
+  display: block;
+  padding: 1em 1em 1em 1.2em;
+  outline: none;
+  box-shadow: inset 0 -1px rgba(0,0,0,0.2);
+  color: #f3efe0;
+  text-transform: uppercase;
+  text-shadow: 0 0 1px rgba(255,255,255,0.1);
+  letter-spacing: 1px;
+  font-weight: 400;
+  -webkit-transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.st-menu ul li:first-child a {
+  box-shadow: inset 0 -1px rgba(0,0,0,0.2), inset 0 1px rgba(0,0,0,0.2);
+}
+
+.st-menu ul li a:hover {
+  background: rgba(0,0,0,0.2);
+  box-shadow: inset 0 -1px rgba(0,0,0,0);
+  color: #fff;
+}
+
+/* Slide in on top */
+.sliding-list {
+  &.st-menu {
+    visibility: visible;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+
+    &.st-menu-open {
+      visibility: visible;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.content-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+
+  &.visible {
+    opacity: 1;
+  }
 }

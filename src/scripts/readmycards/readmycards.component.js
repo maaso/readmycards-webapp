@@ -79,6 +79,7 @@
                 dlUrl: '<'
             },
             controller: function ($scope, T1C, $timeout, WebTask) {
+                var controller = this;
                 this.$onInit = function () {
                     pollForGcl();
                 };
@@ -95,8 +96,9 @@
                     }, 2500)
                 }
 
-                function registerDownload() {
-                    WebTask.storeDownloadInfo();
+                function registerDownload(mail) {
+                    controller.waitingForInstall = true;
+                    WebTask.storeDownloadInfo(mail, controller.dlUrl);
                 }
             }
         })
@@ -168,7 +170,20 @@
             }
         })
         .component('rmcHeader', {
-            templateUrl: 'views/readmycards/components/header.html'
+            templateUrl: 'views/readmycards/components/header.html',
+            controller: function ($scope) {
+                var controller = this;
+                this.toggleCardTypes = toggleCardTypes;
+
+                function toggleCardTypes() {
+                    controller.menuOpen = !controller.menuOpen;
+                    $scope.$emit('card-type-toggle');
+                }
+
+                $scope.$on('close-sidebar', function () {
+                    controller.menuOpen = false;
+                })
+            }
         })
         .component('rmcFooter', {
             templateUrl: 'views/readmycards/components/footer.html'

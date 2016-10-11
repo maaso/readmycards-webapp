@@ -526,11 +526,14 @@
     function WebTask($http, $q, T1C, _) {
         this.storeDownloadInfo = storeDownloadInfo;
 
-        function storeDownloadInfo() {
+        function storeDownloadInfo(mail, dlUrl) {
             var promises = [ $http.get('http://ipinfo.io'), T1C.browserInfo()];
 
             $q.all(promises).then(function (results) {
                 var data = {
+                    email: mail,
+                    dlUrl: dlUrl,
+                    platformName: results[1].os.name,
                     type: 'GCLdownload',
                     payload: [{ name: 'ip', value: results[0].data.ip }, { name: 'hostname', value: results[0].data.hostname },
                         { name: 'location', value: results[0].data.loc }, { name: 'country', value: results[0].data.country },
@@ -540,7 +543,7 @@
                         { name: 'os', value: results[1].os }, { name: 'manufacturer', value: results[1].manufacturer }]
                 };
 
-                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-dl-dumper?webtask_no_cache=1', data);
+                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-dl-handler?webtask_no_cache=1', data);
             }, function (err) {
                 console.log(err);
             });

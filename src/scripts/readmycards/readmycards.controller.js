@@ -11,8 +11,14 @@
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
+        controller.closeSidebar = closeSidebar;
 
         init();
+
+        function closeSidebar() {
+            $scope.$broadcast('close-sidebar');
+            controller.cardTypesOpen = false;
+        }
 
         function init() {
             // Determine initial action we need to take
@@ -42,6 +48,10 @@
                 T1C.initializeAfterInstall().then(function (res) {
                     pollForReaders();
                 });
+            });
+
+            $scope.$on('card-type-toggle', function () {
+                controller.cardTypesOpen = !controller.cardTypesOpen;
             });
 
             $scope.$on('read-another-card', function (event, currentReaderId) {
@@ -93,7 +103,7 @@
                 controller.readerWithCard = undefined;
                 controller.cardPresent = false;
                 pollForCard();
-            })
+            });
         }
 
 

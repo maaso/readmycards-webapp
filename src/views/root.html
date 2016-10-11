@@ -1,22 +1,22 @@
-<div class="root-container">
+<div class="root-container st-container">
     <rmc-header id="rmc-header"></rmc-header>
+    <nav class="st-menu sliding-list" ng-class="{ 'st-menu-open': root.cardTypesOpen }" id="menu-1">
+        <h2 class="">Supported Types:</h2>
+        <ul>
+            <li><a class="">Belgian eID</a></li>
+            <li><a class="">MoBIB</a></li>
+            <li><a class="">EMV (Credit/Debit Cards)</a></li>
+        </ul>
+    </nav>
+    <div class="content-overlay" ng-show="root.cardTypesOpen" ng-class="{ 'visible': root.cardTypesOpen}" ng-click="root.closeSidebar()"></div>
     <div id="rmc-content">
-        <download-gcl dl-url="root.dlLink" ng-if="!root.gclAvailable"></download-gcl>
+            <download-gcl dl-url="root.dlLink" ng-if="!root.gclAvailable"></download-gcl>
 
-        <reader-polling error="root.error" ng-if="root.pollingReaders"></reader-polling>
+            <reader-polling error="root.error" ng-if="root.pollingReaders"></reader-polling>
 
-        <card-polling error="root.error" ng-if="root.pollingCard"></card-polling>
+            <card-polling error="root.error" ng-if="root.pollingCard"></card-polling>
 
-        <reader-select ng-if="root.readerWithCard"></reader-select>
-
-        <!--<card-visualizer ng-if="root.readerWithCard" reader-with-card="root.readerWithCard"></card-visualizer>-->
-
-
-        <!--<reader-polling></reader-polling>-->
-
-        <!--<card-polling></card-polling>-->
-
-        <!--<card-visualizer></card-visualizer>-->
+            <reader-select ng-if="root.readerWithCard"></reader-select>
     </div>
     <rmc-footer id="rmc-footer"></rmc-footer>
 </div>
