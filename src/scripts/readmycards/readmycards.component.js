@@ -7,7 +7,7 @@
             bindings: {
                 readerId: '<'
             },
-            controller: function ($scope, CardService, T1C, WebTask) {
+            controller: function ($scope, $rootScope, CardService, T1C, WebTask) {
                 var controller = this;
                 controller.readAnother = readAnother;
                 this.registerUnknownType = registerUnknownType;
@@ -51,7 +51,7 @@
                 }
 
                 function toggleCardTypes() {
-                    $scope.$emit('card-type-toggle');
+                    $rootScope.$broadcast('card-type-toggle');
                 }
 
                 function readAnother() {
@@ -198,9 +198,12 @@
                 this.toggleCardTypes = toggleCardTypes;
 
                 function toggleCardTypes() {
-                    controller.menuOpen = !controller.menuOpen;
                     $scope.$emit('card-type-toggle');
                 }
+
+                $scope.$on('card-type-toggle', function () {
+                    controller.menuOpen = !controller.menuOpen;
+                });
 
                 $scope.$on('close-sidebar', function () {
                     controller.menuOpen = false;
