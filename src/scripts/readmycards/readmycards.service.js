@@ -524,7 +524,18 @@
     }
 
     function WebTask($http, $q, T1C, _) {
+        this.storeUnknownCardInfo = storeUnknownCardInfo;
         this.storeDownloadInfo = storeDownloadInfo;
+
+
+        function storeUnknownCardInfo(card, description) {
+            var data = {
+                type: 'UnknownCard',
+                atr: '121213',
+                cardDescription: description
+            };
+            return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/unknown-card?webtask_no_cache=1', data)
+        }
 
         function storeDownloadInfo(mail, dlUrl) {
             var promises = [ $http.get('http://ipinfo.io'), T1C.browserInfo()];
@@ -535,18 +546,23 @@
                     dlUrl: dlUrl,
                     platformName: results[1].os.name,
                     type: 'GCLdownload',
-                    payload: [{ name: 'ip', value: results[0].data.ip }, { name: 'hostname', value: results[0].data.hostname },
-                        { name: 'location', value: results[0].data.loc }, { name: 'country', value: results[0].data.country },
-                        { name: 'postal', value: results[0].data.postal }, { name: 'region', value: results[0].data.region },
-                        { name: 'city', value: results[0].data.city }, { name: 'org', value: results[0].data.org },
-                        { name: 'browser', value: results[1].browser }, { name: 'user agent', value: results[1].ua },
-                        { name: 'os', value: results[1].os }, { name: 'manufacturer', value: results[1].manufacturer }]
+                    payload: createPayload(results[0].data, results[1])
                 };
-
-                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-dl-handler?webtask_no_cache=1', data);
+                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/dl?webtask_no_cache=1', data);
             }, function (err) {
                 console.log(err);
             });
+
+            function createPayload(ipInfo, browserInfo) {
+                var payload = [];
+                _.forEach(ipInfo, function (value, key) {
+                    payload.push({ name: key, value: value});
+                });
+                _.forEach(browserInfo, function (value, key) {
+                    payload.push({ name: key, value: value});
+                });
+                return payload;
+            }
         }
     }
 
