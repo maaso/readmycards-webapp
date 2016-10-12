@@ -531,10 +531,20 @@
         function storeUnknownCardInfo(card, description) {
             var data = {
                 type: 'UnknownCard',
-                atr: '121213',
-                cardDescription: description
+                atr: card.atr,
+                payload: createPayload(card, description)
             };
-            return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/unknown-card?webtask_no_cache=1', data)
+            console.log(data);
+            return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/unknown-card?webtask_no_cache=1', data);
+
+            function createPayload(card, description) {
+                var payload = [];
+                _.forEach(card, function (value, key) {
+                    if (key != 'atr') payload.push({ name: key, value: value });
+                });
+                if (description) payload.push({ name: 'user description', value: description });
+                return payload;
+            }
         }
 
         function storeDownloadInfo(mail, dlUrl) {

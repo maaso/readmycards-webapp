@@ -7,30 +7,52 @@
             bindings: {
                 readerId: '<'
             },
-            controller: function ($scope, CardService, T1C) {
+            controller: function ($scope, CardService, T1C, WebTask) {
                 var controller = this;
                 controller.readAnother = readAnother;
+                this.registerUnknownType = registerUnknownType;
+                this.showSupportedCardTypes = toggleCardTypes;
+
                 this.$onInit = function () {
                     controller.loading = true;
                     controller.errorReadingCard = false;
+                    controller.unknownCard = false;
                     // Detect Type and read data
                     T1C.getReader(controller.readerId).then(function (readerInfo) {
                         controller.cardType = CardService.detectType(readerInfo.data.card);
-                        T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
-                            controller.card = readerInfo.data.card;
-                            controller.cardData = res.data;
+                        controller.card = readerInfo.data.card;
+                        console.log(readerInfo);
+
+                        if (controller.cardType === 'Unknown') {
+                            registerUnknownType();
+                            controller.unknownCard = true;
                             controller.loading = false;
-                        }, function (error) {
-                            controller.errorReadingCard = true;
-                            controller.loading = false;
-                            console.log(error);
-                        });
+                        } else {
+                            T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
+                                controller.cardData = res.data;
+                                controller.loading = false;
+                            }, function (error) {
+                                controller.errorReadingCard = true;
+                                controller.loading = false;
+                                console.log(error);
+                            });
+                        }
                     })
                 };
 
                 $scope.$on('reinit-viz', function () {
                     controller.$onInit();
                 });
+
+                function registerUnknownType(cardDescription) {
+                    WebTask.storeUnknownCardInfo(controller.card, cardDescription).then(function () {
+                        // show thank you message?
+                    })
+                }
+
+                function toggleCardTypes() {
+                    $scope.$emit('card-type-toggle');
+                }
 
                 function readAnother() {
                     $scope.$emit('read-another-card', controller.readerId);

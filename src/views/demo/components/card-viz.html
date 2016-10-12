@@ -9,10 +9,39 @@
     <div class="error-block" ng-if="!$ctrl.loading && $ctrl.errorReadingCard">
         <span class="spinner fa fa-warning"></span>
         <p class="error-text text-thin">Error reading card</p>
-        <a id="try-again" class="clickable" ng-click="$ctrl.readAnother()">Try again?</a>
+        <a class="try-again clickable" ng-click="$ctrl.readAnother()">Try again?</a>
     </div>
 
-    <div class="card-viz" ng-if="!$ctrl.loading && !$ctrl.errorReadingCard">
+    <div class="error-block" ng-if="!$ctrl.loading && $ctrl.unknownCard">
+        <span class="spinner fa fa-question-circle"></span>
+        <p class="error-text text-thin">
+            We're sorry, this type of card is currently not supported.
+        </p>
+        <p class="info-text text-thin">
+            You can find the list of currently supported card types <a class="clickable" ng-click="$ctrl.showSupportedCardTypes()">here</a>.
+        </p>
+        <a class="try-again clickable" ng-click="$ctrl.readAnother()">Want to try a different card?</a>
+        <!--<p class="info-text text-thin">-->
+            <!--If you would like us to support this type of card in the future, please let us know what kind of card it is in the box below.-->
+            <!--Thanks!-->
+        <!--</p>-->
+        <!--<div class="unknown-card-form">-->
+            <!--<p class="text-thin text-left">-->
+                <!--If you would like us to support this type of card in the future, let us know what kind of card this is.-->
+            <!--</p>-->
+            <!--<p class="text-thin text-left">Thanks!</p>-->
+            <!--<form data-ng-submit="$ctrl.registerUnknownType(cardDesc)" class="form-inline">-->
+                <!--<input type="text"-->
+                       <!--placeholder="Please describe the type of card"-->
+                       <!--class="form-control"-->
+                       <!--data-ng-model="cardDesc"-->
+                       <!--autofocus>-->
+                <!--<span type="submit" id="submit" class="btn btn-default" data-ng-click="$ctrl.registerUnknownType(cardDesc)">Submit</span>-->
+            <!--</form>-->
+        <!--</div>-->
+    </div>
+
+    <div class="card-viz" ng-if="!$ctrl.loading && !$ctrl.errorReadingCard && !$ctrl.unknownCard">
         <div class="card-type"><span class="text-light">
             Card type: </span><span class="text-bold">{{$ctrl.cardType}}</span>
         </div>
