@@ -24,7 +24,8 @@
                         console.log(readerInfo);
 
                         if (controller.cardType === 'Unknown') {
-                            registerUnknownType();
+                            // TODO Now manually triggered, should this not be automatic?
+                            // registerUnknownType();
                             controller.unknownCard = true;
                             controller.loading = false;
                         } else {
@@ -45,9 +46,8 @@
                 });
 
                 function registerUnknownType(cardDescription) {
-                    WebTask.storeUnknownCardInfo(controller.card, cardDescription).then(function () {
-                        // show thank you message?
-                    })
+                    controller.submitted = true;
+                    WebTask.storeUnknownCardInfo(controller.card, cardDescription);
                 }
 
                 function toggleCardTypes() {
