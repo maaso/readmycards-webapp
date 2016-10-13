@@ -506,19 +506,23 @@
         }
     }
 
-    function CardService() {
+    function CardService(_) {
         this.detectType = detectType;
 
         function detectType(card) {
-            switch (card.description[0]) {
-                case 'Belgium Electronic ID card':
-                    return 'BeID';
-                case 'MOBIB Card':
-                    return 'MOBIB';
-                case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
-                    return 'EMV';
-                default:
-                    return 'Unknown';
+            if (!_.isEmpty(card.description)) {
+                switch (card.description[0]) {
+                    case 'Belgium Electronic ID card':
+                        return 'BeID';
+                    case 'MOBIB Card':
+                        return 'MOBIB';
+                    case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
+                        return 'EMV';
+                    default:
+                        return 'Unknown';
+                }
+            } else {
+                return 'Unknown';
             }
         }
     }
