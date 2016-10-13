@@ -11,13 +11,14 @@
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
-        controller.closeSidebar = closeSidebar;
+        controller.dismissPanels = dismissPanels;
 
         init();
 
-        function closeSidebar() {
+        function dismissPanels() {
             $scope.$broadcast('close-sidebar');
             controller.cardTypesOpen = false;
+            controller.faqOpen = false;
         }
 
         function init() {
@@ -51,7 +52,20 @@
             });
 
             $scope.$on('card-type-toggle', function () {
+                // Make sure the FAQ panel is closed when opening sidebar
+                if (!controller.cardTypesOpen) {
+                    controller.faqOpen = false;
+                }
                 controller.cardTypesOpen = !controller.cardTypesOpen;
+            });
+
+            $scope.$on('faq-toggle', function () {
+                // Make sure the side panel is closed when opening FAQ
+                if (!controller.faqOpen) {
+                    $scope.$broadcast('close-sidebar');
+                    controller.cardTypesOpen = false;
+                }
+                controller.faqOpen = !controller.faqOpen;
             });
 
             $scope.$on('read-another-card', function (event, currentReaderId) {

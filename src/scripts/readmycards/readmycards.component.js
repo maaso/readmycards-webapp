@@ -210,7 +210,17 @@
                 })
             }
         })
+        .component('rmcFaq', {
+            templateUrl: 'views/readmycards/components/faq.html'
+        })
         .component('rmcFooter', {
-            templateUrl: 'views/readmycards/components/footer.html'
+            templateUrl: 'views/readmycards/components/footer.html',
+            controller: function ($scope) {
+                this.toggleFAQ = toggleFAQ;
+
+                function toggleFAQ() {
+                    $scope.$emit('faq-toggle');
+                }
+            }
         })
 })();
