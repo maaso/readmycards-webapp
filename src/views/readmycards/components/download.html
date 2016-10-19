@@ -1,5 +1,37 @@
-<div>
-    To use this website, you will need to install a small piece of software called the Generic Connector Library (GCL). This will enable us to communicate with your card reader.
-
-    <a ng-attr-href="{{$ctrl.dlUrl}}">Click here to download</a>
+<div class="rmc-step">
+    <span class="rmc-title hit-the-floor">ReadMyCards</span>
+    <p class="rmc-promo-text text-ultralight">This website will read the contents of <strong>your smartcards</strong>, using any reader.<br>
+        The service is completely <strong>free</strong> for personal use, and we <strong>never</strong> save any of the data.</p>
+    <div class="rmc-download-prompt" ng-if="!$ctrl.waitingForInstall">
+        <div class="prompt-title">Download the Connector</div>
+        <div class="prompt-text text-ultralight">
+            To use this website, you will need to install a small piece of software: the Trust1Connector (T1C).
+            This will enable us to communicate with your card reader, no matter which browser you use.
+        </div>
+        <div class="block">
+            <span class="download-text">Enter your email address and we'll send you a download link!</span>
+            <div class="email-form text-center">
+                <form data-ng-submit="$ctrl.registerDownload(userMail)" class="">
+                    <input type="email"
+                           placeholder="Your email address"
+                           class="form-control"
+                           data-ng-model="userMail"
+                           autofocus>
+                    <span type="submit" id="submit" class="btn btn-submit" data-ng-click="$ctrl.registerDownload(userMail)">Submit</span>
+                </form>
+            </div>
+        </div>
+        <div class="footer-text">
+            <span>Your email address is required for verification purposes only and will never be shared with any third parties.</span>
+        </div>
+    </div>
+    <div class="rmc-download-prompt" ng-if="$ctrl.waitingForInstall">
+        <div class="prompt-title">Waiting for installation...</div>
+        <div class="prompt-text text-ultralight">
+            <div class="text-center waiting-spinner">
+                <span class="fa fa-spinner fa-pulse fa-4x"></span>
+            </div>
+            <p>An email with download instructions is on its way to you. Once installation is complete, the connector will automatically be detected.</p>
+        </div>
+    </div>
 </div>

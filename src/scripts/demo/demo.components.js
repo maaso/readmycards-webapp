@@ -17,37 +17,6 @@
                 }
             }
         })
-        .component('cardVisualizer', {
-            templateUrl: 'views/demo/components/card-viz.html',
-            bindings: {
-                card: '<',
-                cardData: '<'
-            },
-            controller: function (CardService) {
-                var controller = this;
-                controller.cardType = CardService.detectType(controller.card);
-            }
-        })
-        .component('beidVisualizer', {
-            templateUrl: 'views/demo/components/beid-viz.html',
-            bindings: {
-                rnData: '<',
-                addressData: '<',
-                picData: '<',
-                certData: '<'
-            },
-            controller: function () {
-                var controller = this;
-            }
-        })
-        .component('emvVisualizer', {
-            templateUrl: 'views/demo/components/emv-viz.html',
-            bindings: {
-                panData: '<'
-            },
-            controller: function () {
-                var controller = this;
-            }
-        });
+
 
 })();

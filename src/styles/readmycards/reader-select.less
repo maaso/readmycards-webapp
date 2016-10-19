@@ -1,0 +1,102 @@
+.card-list {
+  margin-bottom: 15px;
+  margin-top: -25px;
+  .reader-list-header {
+    display: block;
+  }
+}
+
+
+.reader-icon {
+  display: inline-block;
+  margin: 10px 20px 0;
+
+  .index {
+    position: relative;
+    color: white;
+    width: 52px;
+    height: 44px;
+
+    .card-bg {
+      position: absolute;
+      background: lighten(@brand-primary, 25%);
+      width: 52px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 38px;
+      border-radius: 5px;
+      margin: auto;
+
+      .fa {
+        position: absolute;
+        font-size: 48px;
+        background: transparent;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 44px;
+        margin: auto;
+        color: @brand-primary;
+      }
+    }
+
+
+    .index-number {
+      position: absolute;
+      color: whitesmoke;
+      font-weight: bolder;
+      text-shadow:
+                -1px -1px 0 #888,
+                1px -1px 0 #888,
+              -1px 1px 0 #888,
+              1px 1px 0 #888;
+      font-size: 42px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      margin: auto;
+    }
+  }
+
+  &.active,
+  &:hover {
+    .card-bg {
+      background: lighten(@brand-primary, 5%);
+
+      .fa {
+        color: darken(@brand-primary, 10%);
+      }
+
+    }
+
+    .index-number {
+      color: #fff;
+      text-shadow:
+                -1px -1px 0 #777,
+                1px -1px 0 #777,
+              -1px 1px 0 #777,
+              1px 1px 0 #777;
+    }
+  }
+
+}
+
+@media screen and (-moz-images-in-menus:0) {
+  .reader-icon {
+    .index {
+      .card-bg {
+        .fa {
+          top: -2px;
+        }
+      }
+      .index-number {
+        top: -1px;
+      }
+    }
+  }
+}

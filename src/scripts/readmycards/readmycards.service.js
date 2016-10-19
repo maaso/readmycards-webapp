@@ -1,13 +1,15 @@
 (function () {
     'use strict';
 
-    angular.module('app.demo')
+    angular.module('app.readmycards')
         .service('T1C', ConnectorService)
-        .service('CardService', CardService);
+        .service('CardService', CardService)
+        .service('WebTask', WebTask);
 
 
-    function ConnectorService($q, CardService, _) {
-        var connector = initializeLib();
+    function ConnectorService($q, $timeout, CardService, _) {
+        var connector;
+        initializeLib();
 
         // === T1C Methods ===
         // --- Core ---
@@ -49,6 +51,7 @@
         this.verifyBeIDPin = verifyBeIDPin;
         this.authenticate = authenticate;
         // --- EMV ---
+        this.getAllEmvData = getAllEmvData;
         this.getPAN = getPAN;
         this.filterEmvData = filterEmvData;
         this.verifyEmvPin = verifyEmvPin;
@@ -56,6 +59,7 @@
         this.isCardTypeBeId = isCardTypeBeId;
         this.isGCLAvailable = isGCLAvailable;
         this.readAllData = readAllData;
+        this.initializeAfterInstall = initializeAfterInstall;
 
 
         /// ===============================
@@ -391,6 +395,17 @@
         /// ===== EMV FUNCTIONALITY ======
         /// ==============================
 
+        // Get All available EMV Data
+        function getAllEmvData(readerId) {
+            console.log('get EMV data');
+            var allData = $q.defer();
+            connector.emv(readerId).allData([], function (err, res) {
+                console.log(err);
+                callbackHelper(err, res, allData);
+            });
+            return allData.promise;
+        }
+
         // Get Primary Accound Number (PAN) associated with a card
         function getPAN(readerId) {
             var panDeferred = $q.defer();
@@ -460,6 +475,8 @@
             switch (CardService.detectType(card)) {
                 case 'BeID':
                     return getAllData(readerId);
+                case 'EMV':
+                    return getAllEmvData(readerId);
                 default:
                     return $q.when('Not Supported');
             }
@@ -476,26 +493,89 @@
         // Initialize the T1C connector with some custom config
         function initializeLib() {
             var gclConfig = new GCLLib.GCLConfig();
-            gclConfig.apiKey = "b644bdc6-74d8-4ee2-9ce5-347d5dc14cb5"; //test apikey rate limited
+            gclConfig.apiKey = "7de3b216-ade2-4391-b2e2-86b80bac4d7d"; //test apikey rate limited
             gclConfig.gclUrl = "https://localhost:10443/v1"; //override config for local dev
             gclConfig.dsUrl = "https://accapim.t1t.be:443/trust1team/gclds/v1";
             gclConfig.allowAutoUpdate = true;
             gclConfig.implicitDownload = false;
-            return new GCLLib.GCLClient(gclConfig);
+            connector = new GCLLib.GCLClient(gclConfig);
+        }
+
+        function initializeAfterInstall() {
+            return $q.when(initializeLib());
         }
     }
 
-    function CardService() {
+    function CardService(_) {
         this.detectType = detectType;
 
         function detectType(card) {
-            switch (card.description[0]) {
-                case 'Belgium Electronic ID card':
-                    return 'BeID';
-                case 'MOBIB Card':
-                    return 'MOBIB';
-                default:
-                    return 'EMV';
+            if (!_.isEmpty(card.description)) {
+                switch (card.description[0]) {
+                    case 'Belgium Electronic ID card':
+                        return 'BeID';
+                    case 'MOBIB Card':
+                        return 'MOBIB';
+                    case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
+                        return 'EMV';
+                    default:
+                        return 'Unknown';
+                }
+            } else {
+                return 'Unknown';
+            }
+        }
+    }
+
+    function WebTask($http, $q, T1C, _) {
+        this.storeUnknownCardInfo = storeUnknownCardInfo;
+        this.storeDownloadInfo = storeDownloadInfo;
+
+
+        function storeUnknownCardInfo(card, description) {
+            var data = {
+                type: 'UnknownCard',
+                atr: card.atr,
+                payload: createPayload(card, description)
+            };
+            console.log(data);
+            return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/unknown-card?webtask_no_cache=1', data);
+
+            function createPayload(card, description) {
+                var payload = [];
+                _.forEach(card, function (value, key) {
+                    if (key != 'atr') payload.push({ name: key, value: value });
+                });
+                if (description) payload.push({ name: 'user description', value: description });
+                return payload;
+            }
+        }
+
+        function storeDownloadInfo(mail, dlUrl) {
+            var promises = [ $http.get('http://ipinfo.io'), T1C.browserInfo()];
+
+            $q.all(promises).then(function (results) {
+                var data = {
+                    email: mail,
+                    dlUrl: dlUrl,
+                    platformName: results[1].os.name,
+                    type: 'GCLdownload',
+                    payload: createPayload(results[0].data, results[1])
+                };
+                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/dl?webtask_no_cache=1', data);
+            }, function (err) {
+                console.log(err);
+            });
+
+            function createPayload(ipInfo, browserInfo) {
+                var payload = [];
+                _.forEach(ipInfo, function (value, key) {
+                    payload.push({ name: key, value: value});
+                });
+                _.forEach(browserInfo, function (value, key) {
+                    payload.push({ name: key, value: value});
+                });
+                return payload;
             }
         }
     }

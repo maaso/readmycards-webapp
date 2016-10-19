@@ -1,14 +1,27 @@
-<div class="root-container">
-    Root container
-    <p>{{root.gclAvailable}}</p>
-    <p ng-repeat="reader in root.readers">{{reader}}</p>
-    <p>{{root.cardPresent}}</p>
+<div class="root-container st-container">
+    <rmc-header id="rmc-header"></rmc-header>
 
-    <download-gcl dl-url="root.dlLink"></download-gcl>
+    <nav class="st-menu sliding-list" ng-class="{ 'st-menu-open': root.cardTypesOpen }" id="menu-1">
+        <h2 class="">Supported Types:</h2>
+        <ul>
+            <li><a class="">Belgian eID</a></li>
+            <!--<li><a class="">MoBIB</a></li>-->
+            <li><a class="">EMV (Credit/Debit Cards)</a></li>
+        </ul>
+    </nav>
 
-    <reader-polling></reader-polling>
+    <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
+    <div id="rmc-content">
+        <download-gcl dl-url="root.dlLink" ng-if="!root.gclAvailable"></download-gcl>
 
-    <card-polling></card-polling>
+        <reader-polling error="root.error" ng-if="root.pollingReaders"></reader-polling>
 
-    <card-visualizer ng-if="root.cardData" card="root.card" card-data="root.cardData"></card-visualizer>
+        <card-polling error="root.error" ng-if="root.pollingCard"></card-polling>
+
+        <reader-select ng-if="root.readerWithCard"></reader-select>
+    </div>
+    <nav class="st-faq sliding-faq" ng-class="{ 'st-faq-open': root.faqOpen }" id="menu-2">
+        <rmc-faq></rmc-faq>
+    </nav>
+    <rmc-footer id="rmc-footer"></rmc-footer>
 </div>
