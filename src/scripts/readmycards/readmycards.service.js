@@ -552,7 +552,15 @@
         }
 
         function storeDownloadInfo(mail, dlUrl) {
-            var promises = [ $http.get('http://ipinfo.io'), T1C.browserInfo()];
+            var promises = [ $http.get('http://ipinfo.io').then(function (data) {
+                return data;
+            }, function () {
+                return {};
+            }), T1C.browserInfo().then(function (data) {
+                return data;
+            }, function () {
+                return {};
+            })];
 
             $q.all(promises).then(function (results) {
                 var data = {
