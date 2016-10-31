@@ -103,9 +103,6 @@
             },
             controller: function ($scope, $uibModal, T1C, $timeout, WebTask) {
                 var controller = this;
-                this.$onInit = function () {
-                    pollForGcl();
-                };
                 this.firefoxModal = firefoxModal;
                 this.registerDownload = registerDownload;
 
@@ -129,6 +126,7 @@
 
                 function registerDownload(mail) {
                     controller.waitingForInstall = true;
+                    if (!controller.isFirefox) pollForGcl();
                     WebTask.storeDownloadInfo(mail, controller.dlUrl);
                 }
             }
