@@ -98,13 +98,15 @@
         .component('downloadGcl', {
             templateUrl: 'views/readmycards/components/download.html',
             bindings: {
-                dlUrl: '<'
+                dlUrl: '<',
+                isFirefox: '<'
             },
-            controller: function ($scope, T1C, $timeout, WebTask) {
+            controller: function ($scope, $uibModal, T1C, $timeout, WebTask) {
                 var controller = this;
                 this.$onInit = function () {
                     pollForGcl();
                 };
+                this.firefoxModal = firefoxModal;
                 this.registerDownload = registerDownload;
 
                 function pollForGcl() {
@@ -116,6 +118,13 @@
                             pollForGcl();
                         });
                     }, 2500)
+                }
+
+                function firefoxModal() {
+                    $uibModal.open({
+                        templateUrl: "views/readmycards/modals/firefox-restart.html",
+                        controller: 'ModalCtrl'
+                    });
                 }
 
                 function registerDownload(mail) {

@@ -2,9 +2,23 @@
     'use strict';
 
     angular.module('app.readmycards')
+        .controller('ModalCtrl', modalCtrl)
         .controller('RootCtrl', rootCtrl)
         .controller('ReaderCtrl', readerCtrl);
 
+
+    function modalCtrl($scope, $uibModalInstance) {
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+
+        function ok() {
+            $uibModalInstance.close("ok");
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss("cancel");
+        }
+    }
 
     function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, T1C, _) {
         var controller = this;
@@ -22,6 +36,9 @@
         }
 
         function init() {
+
+            controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
             // Determine initial action we need to take
             if (!controller.cardPresent) {
                 // No card is present, check if we have readers

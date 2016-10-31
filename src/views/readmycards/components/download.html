@@ -27,11 +27,15 @@
     </div>
     <div class="rmc-download-prompt" ng-if="$ctrl.waitingForInstall">
         <div class="prompt-title">Waiting for installation...</div>
-        <div class="prompt-text text-ultralight">
+        <div class="prompt-text text-center text-ultralight">
             <div class="text-center waiting-spinner">
                 <span class="fa fa-spinner fa-pulse fa-4x"></span>
             </div>
-            <p>An email with download instructions is on its way to you. Once installation is complete, the connector will automatically be detected.</p>
+            <p>An email with download instructions is on its way to you.</p>
+            <p ng-if="!$ctrl.isFirefox">Once installation is complete, the connector will automatically be detected.</p>
+            <p ng-if="$ctrl.isFirefox"><strong>Because you are using Firefox, you will need to manually restart your browser after installation.</strong>
+                <a class="text-small text-bold clickable" ng-click="$ctrl.firefoxModal()">Why?</a>
+            </p>
         </div>
     </div>
 </div>
