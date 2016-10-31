@@ -12,7 +12,7 @@
 
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
     <div id="rmc-content">
-        <download-gcl dl-url="root.dlLink" ng-if="!root.gclAvailable"></download-gcl>
+        <download-gcl dl-url="root.dlLink" is-firefox="root.isFirefox" ng-if="!root.gclAvailable"></download-gcl>
 
         <reader-polling error="root.error" ng-if="root.pollingReaders"></reader-polling>
 
