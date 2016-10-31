@@ -552,7 +552,7 @@
         }
 
         function storeDownloadInfo(mail, dlUrl) {
-            var promises = [ $http.get('http://ipinfo.io').then(function (data) {
+            var promises = [ $http.get('//ipinfo.io').then(function (data) {
                 return data;
             }, function () {
                 return {};
