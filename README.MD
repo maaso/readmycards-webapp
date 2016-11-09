@@ -22,40 +22,23 @@ $ docker run --name t1c-webapp-demo -p9000:80 -d trust1team/t1c-webapp-demo
 ```
 
 ## Development build
+Surge should be installed
+```sh
+npm install -g surge
+```
 
 In order to run the demo, checkout the code and run
 ```ssh
 $ nmp install
 $ bower install
-$ grunt serve
+$ grunt build
 ```
 
-In order to deploy to the T1T demo page in the cloud, be sure to manually copy-paste the correct keycloak config in the keycloak.json file. 
-
-## Create new development Docker container
-1) build new image
-```ssh
-$ docker build -t t1c-webapp-demo .
-```
-2) Validate image - Launch docker dev environment (you have to expose port 9000 because authentication happens with predefined port)
-```ssh
-$ docker run --name t1c-webapp-demo -p9000:80 -d t1c-webapp-demo
-```
-3) get image ID in order to tag
-```ssh
-$ docker images
-```
-4) create tag
-```ssh
-$ docker tag cc5a5f646ae5 trust1team/t1c-webapp-demo:latest
-```
-5) login into docker hub (ask admin to add account to Trust1Team org)
-```ssh
-$ docker login
-```
-6) push the new tag
-```ssh
-$ docker push trust1team/t1c-webapp-demo:latest
+Deploy on surge:
+```sh
+cd dist
+surge
+readmycards.surge.eu
 ```
 
 ## License
