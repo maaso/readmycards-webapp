@@ -1,9 +1,11 @@
 {
-  "name": "Materia",
-  "description": "AngularJS Template",
-  "author": "solutionportal",
+  "name": "ReadMyCards.eu",
+  "description": "A smartcard-reading WebApp",
+  "author": "Trust1Team",
   "devDependencies": {
-    "grunt": "^0.4.5",
+    "bower": "^1.4.1",
+    "grunt": "~0.4.5",
+    "grunt-cli": "~0.1.11",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-compress": "^1.3.0",
     "grunt-contrib-concat": "^0.5.0",
@@ -22,5 +24,9 @@
   "dependencies": {
     "grunt-ng-annotate": "^2.0.1",
     "http-server": "^0.8.0"
+  },
+  "scripts": {
+    "bower": "./node_modules/bower/bin/bower cache clean --allow-root && ./node_modules/bower/bin/bower install --allow-root",
+    "postinstall": "npm run bower"
   }
 }
