@@ -30,4 +30,3 @@
     "postinstall": "npm run bower"
   }
 }
-//
