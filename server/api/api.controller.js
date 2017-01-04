@@ -1,6 +1,6 @@
 'use strict';
 const config = require(__base + 'modules/t1t-config');
-const gcloud = require('gcloud');
+const gcloud = require('google-cloud');
 const request = require('request');
 const _ = require('lodash');
 
