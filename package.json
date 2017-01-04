@@ -22,11 +22,34 @@
     "grunt-wiredep": "^3.0.1"
   },
   "dependencies": {
+    "async": "^2.1.4",
+    "blocked": "^1.2.1",
+    "body-parser": "^1.15.2",
+    "chalk": "^1.1.3",
+    "compression": "^1.6.2",
+    "cors": "^2.8.1",
+    "ejs": "^2.5.5",
+    "errorhandler": "^1.5.0",
+    "express": "^4.14.0",
+    "gcloud": "^0.37.0",
+    "glob": "^7.1.1",
     "grunt-ng-annotate": "^2.0.1",
-    "http-server": "^0.8.0"
+    "helmet": "^3.3.0",
+    "http-server": "^0.8.0",
+    "lodash": "^4.17.4",
+    "morgan": "^1.7.0",
+    "node-yaml-config": "0.0.4",
+    "on-finished": "^2.3.0",
+    "request": "^2.79.0",
+    "winston": "^2.3.0",
+    "winston-daily-rotate-file": "^1.4.2"
   },
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "bower": "./node_modules/bower/bin/bower cache clean --allow-root && ./node_modules/bower/bin/bower install --allow-root",
-    "postinstall": "npm run bower"
+    "postinstall": "npm run bower",
+    "grunt": "./node_modules/grunt-cli/bin/grunt build",
+    "deploy": "npm install && npm run bower && npm run grunt"
   }
 }

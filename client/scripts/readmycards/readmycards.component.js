@@ -7,7 +7,7 @@
             bindings: {
                 readerId: '<'
             },
-            controller: function ($scope, $rootScope, CardService, T1C, WebTask) {
+            controller: function ($scope, $rootScope, CardService, T1C, API) {
                 var controller = this;
                 controller.readAnother = readAnother;
                 this.registerUnknownType = registerUnknownType;
@@ -47,7 +47,7 @@
 
                 function registerUnknownType(cardDescription) {
                     controller.submitted = true;
-                    WebTask.storeUnknownCardInfo(controller.card, cardDescription);
+                    API.storeUnknownCardInfo(controller.card, cardDescription);
                 }
 
                 function toggleCardTypes() {
@@ -101,7 +101,7 @@
                 dlUrl: '<',
                 isFirefox: '<'
             },
-            controller: function ($scope, $uibModal, T1C, $timeout, WebTask) {
+            controller: function ($scope, $uibModal, T1C, $timeout, API) {
                 var controller = this;
                 this.firefoxModal = firefoxModal;
                 this.registerDownload = registerDownload;
@@ -127,7 +127,7 @@
                 function registerDownload(mail) {
                     controller.waitingForInstall = true;
                     if (!controller.isFirefox) pollForGcl();
-                    WebTask.storeDownloadInfo(mail, controller.dlUrl);
+                    API.storeDownloadInfo(mail, controller.dlUrl);
                 }
             }
         })

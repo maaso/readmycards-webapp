@@ -1,0 +1,65 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "t1t-log@~1.1.2",
+        "scope": null,
+        "escapedName": "t1t-log",
+        "name": "t1t-log",
+        "rawSpec": "~1.1.2",
+        "spec": ">=1.1.2 <1.2.0",
+        "type": "range"
+      },
+      "/Users/maarten/dev/repos/digitalvault-ui_app_nodejs"
+    ]
+  ],
+  "_from": "t1t-log@>=1.1.2 <1.2.0",
+  "_id": "t1t-log@1.1.2",
+  "_inCache": true,
+  "_location": "/t1t-log",
+  "_nodeVersion": "4.2.2",
+  "_npmUser": {},
+  "_npmVersion": "3.5.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "t1t-log@~1.1.2",
+    "scope": null,
+    "escapedName": "t1t-log",
+    "name": "t1t-log",
+    "rawSpec": "~1.1.2",
+    "spec": ">=1.1.2 <1.2.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://npm.antwerpen.be/t1t-log/-/t1t-log-1.1.2.tgz",
+  "_shasum": "c0fd34f13968cce3d539a45ab062b7a841ba9020",
+  "_shrinkwrap": null,
+  "_spec": "t1t-log@~1.1.2",
+  "_where": "/Users/maarten/dev/repos/digitalvault-ui_app_nodejs",
+  "author": {
+    "name": "Glenn Geenen"
+  },
+  "dependencies": {
+    "on-finished": "^2.3.0",
+    "winston": "^2.2.0",
+    "winston-daily-rotate-file": "^1.0.1"
+  },
+  "description": "Astad log module",
+  "devDependencies": {},
+  "dist": {
+    "shasum": "c0fd34f13968cce3d539a45ab062b7a841ba9020",
+    "tarball": "https://npm.antwerpen.be/t1t-log/-/t1t-log-1.1.2.tgz"
+  },
+  "gitHead": "93dbcd61d2055087bfe76b2509186669a607b547",
+  "main": "index.js",
+  "name": "t1t-log",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.1.2"
+}

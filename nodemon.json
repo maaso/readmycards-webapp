@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "client/**",
+    "dist/**",
+    "modules/**"
+  ],
+  "verbose": true
+}
