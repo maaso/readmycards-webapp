@@ -33,7 +33,7 @@ describe('Public assets', function onDescribe() {
     it('redirects to index if not found', function onIt(done) {
         api.get('/arandomfilethatdoesnotexist')
             .expect(302)
-            .expect('Location', 'http://localhost:3000')
+            .expect('Location', config.scheme + '://' + config.domain + ':' + config.port)
             .end(function validate(err, res) {
                 if (err) {
                     return done(err);
