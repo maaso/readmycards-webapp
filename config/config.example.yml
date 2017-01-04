@@ -1,5 +1,7 @@
 default:
   appName: "readmycards"
+  scheme: "http"
+  domain: "localhost"
   port: 3000
   environment: "local"
   apikey: "<your apikey>"
@@ -15,5 +17,7 @@ default:
 
 test:
   appName: "readmycards"
+  scheme: "http"
+  domain: "localhost"
   port: 3001
   environment: "TEST"

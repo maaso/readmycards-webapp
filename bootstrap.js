@@ -93,7 +93,7 @@ function initializeExpress(callback) {
 }
 
 function redirectUnmatched(req, res) {
-    res.redirect('http://localhost:3000');
+    res.redirect(config.scheme + '://' + config.domain + ':' + config.port);
 }
 
 function startListening(callback) {
