@@ -2,13 +2,14 @@ module.exports = function(grunt) {
     "use strict";
     // var RELOAD_PORT = 35729;
     var dirConfig = {
-        src: "src",
+        src: "client",
         dest: "dist",
+        index: "server/views",
 
         connect_port: 9000,
         connect_port_test: 9001,
         connect_live_reload: 35729,
-        connect_hostname: 'localhost',
+        connect_hostname: 'localhost'
     };
     // Project Configuration
     grunt.initConfig({
@@ -24,7 +25,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.dest %>/scripts",
                 dest: "<%= dir.dest %>/scripts",
-                src: ["**/*.js"],
+                src: ["**/*.js"]
             }
         },
         copy: {
@@ -33,6 +34,10 @@ module.exports = function(grunt) {
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.dest %>",
                 src: ["index.html", "fonts/**/*", "images/**/*", "views/**/*"]
+            },
+            index: {
+                src: '<%= dir.dest %>/index.html',
+                dest: '<%= dir.index %>/index.ejs',
             }
         },
         // Clean the distribution folder.
@@ -292,10 +297,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-json-generator');
     // Default Task (that can be run by typing only "grunt" in cmd)
-    grunt.registerTask("default", []);
+    grunt.registerTask("default", 'build');
     grunt.registerTask("cleanBuild", ["clean:dist"]);
     // grunt.registerTask("build", ["clean:dist", "copy", "less:dist", "uglify", "concat", 'ngAnnotate',"clean:tmp", "processhtml"]);
-    grunt.registerTask("build", ['clean:dist', "wiredep", "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'compress']);
+    // grunt.registerTask("build", ['clean:dist', "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'compress']);
+    grunt.registerTask("build", ['clean:dist', "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin']);
     grunt.registerTask("dev", ["less:dev"]);
     grunt.registerTask("html", ["processhtml"]);
     grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {

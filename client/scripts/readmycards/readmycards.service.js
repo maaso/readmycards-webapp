@@ -4,7 +4,7 @@
     angular.module('app.readmycards')
         .service('T1C', ConnectorService)
         .service('CardService', CardService)
-        .service('WebTask', WebTask);
+        .service('API', API);
 
 
     function ConnectorService($q, $timeout, CardService, _) {
@@ -60,6 +60,8 @@
         this.isGCLAvailable = isGCLAvailable;
         this.readAllData = readAllData;
         this.initializeAfterInstall = initializeAfterInstall;
+        this.version = version;
+
 
 
         /// ===============================
@@ -504,6 +506,10 @@
         function initializeAfterInstall() {
             return $q.when(initializeLib());
         }
+
+        function version() {
+            return GCLLib.version();
+        }
     }
 
     function CardService(_) {
@@ -527,7 +533,7 @@
         }
     }
 
-    function WebTask($http, $q, T1C, _) {
+    function API($http, $q, T1C, _) {
         this.storeUnknownCardInfo = storeUnknownCardInfo;
         this.storeDownloadInfo = storeDownloadInfo;
 
@@ -538,8 +544,7 @@
                 atr: card.atr,
                 payload: createPayload(card, description)
             };
-            console.log(data);
-            return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/unknown-card?webtask_no_cache=1', data);
+            return $http.post('/api/unknown-card', data);
 
             function createPayload(card, description) {
                 var payload = [];
@@ -570,7 +575,7 @@
                     type: 'GCLdownload',
                     payload: createPayload(results[0].data, results[1])
                 };
-                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/dl?webtask_no_cache=1', data);
+                return $http.post('/api/dl', data);
             }, function (err) {
                 console.log(err);
             });
