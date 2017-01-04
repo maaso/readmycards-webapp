@@ -12,3 +12,8 @@ default:
     user: "<mailgun api user>"
     apikey: "<mailgun api key>"
     sender: "\"ReadMyCards.eu\" <noreply@saas.t1t.be>"
+
+test:
+  appName: "readmycards"
+  port: 3001
+  environment: "TEST"

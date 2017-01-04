@@ -30,7 +30,7 @@ function processDownload(req, res) {
     let platformName = _.find(req.body, function (o, key) {
         return key === 'platformName';
     });
-    if (!platformName) return res.sttus(400).json({ success: false, data: 'Missing platform name parameter'});
+    if (!platformName) return res.status(400).json({ success: false, data: 'Missing platform name parameter'});
 
     let type = _.find(req.body, function (o, key) {
         return key === 'type';
