@@ -301,7 +301,7 @@ module.exports = function(grunt) {
     grunt.registerTask("cleanBuild", ["clean:dist"]);
     // grunt.registerTask("build", ["clean:dist", "copy", "less:dist", "uglify", "concat", 'ngAnnotate',"clean:tmp", "processhtml"]);
     // grunt.registerTask("build", ['clean:dist', "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'compress']);
-    grunt.registerTask("build", ['clean:dist', "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin']);
+    grunt.registerTask("build", ['clean:dist', 'copy:dist', 'less:dist', 'json_generator:t1tdev', 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'copy:index']);
     grunt.registerTask("dev", ["less:dev"]);
     grunt.registerTask("html", ["processhtml"]);
     grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {
