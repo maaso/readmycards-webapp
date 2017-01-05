@@ -41,10 +41,6 @@ function initializeExpress(callback) {
     app.set('port', process.env.PORT || config.port);
     app.use(helmet());
 
-    // // Use CORS to make sure our proxy works
-    // const allowedUrl = configDv.scheme + '://' + configDv.domain;
-    // app.use(cors({ origin: allowedUrl }));
-
     // Use compression to save bandwidth
     if (process.env.NODE_ENV !== 'test') {
         app.use(require('compression')());
@@ -93,7 +89,8 @@ function initializeExpress(callback) {
 }
 
 function redirectUnmatched(req, res) {
-    res.redirect(config.scheme + '://' + config.domain + ':' + config.port);
+    if (config.redirect.port) res.redirect(config.redirect.scheme + '://' + config.redirect.domain + ':' + config.redirect.port);
+    else res.redirect(config.redirect.scheme + '://' + config.redirect.domain);
 }
 
 function startListening(callback) {
