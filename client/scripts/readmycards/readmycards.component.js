@@ -21,7 +21,6 @@
                     T1C.getReader(controller.readerId).then(function (readerInfo) {
                         controller.cardType = CardService.detectType(readerInfo.data.card);
                         controller.card = readerInfo.data.card;
-                        console.log(readerInfo);
 
                         if (controller.cardType === 'Unknown') {
                             // TODO Now manually triggered, should this not be automatic?
