@@ -17,4 +17,4 @@ node_modules
 
 
 # Index.ejs is generated during the deployment process
-/server/index/index.ejs
+/server/views/index.ejs
