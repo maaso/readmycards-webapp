@@ -4,6 +4,7 @@
     angular.module('app.readmycards')
         .service('T1C', ConnectorService)
         .service('CardService', CardService)
+        .service('RMC', ReadMyCardsService)
         .service('API', API);
 
 
@@ -509,6 +510,53 @@
 
         function version() {
             return GCLLib.version();
+        }
+    }
+
+    function ReadMyCardsService($rootScope, $timeout, T1C, EVENTS, _) {
+        this.monitorCardRemoval = monitorCardRemoval;
+        this.checkReaderRemoval = checkReaderRemoval;
+
+        function monitorCardRemoval(readerId, card) {
+            // Check reader still connected
+            // Check card still inserted
+            // Check same card inserted
+            $timeout(function () {
+                T1C.getReadersWithCards().then(function (readerData) {
+                    if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
+                        // no connected readers with cards
+                        // broadcast removal event
+                        $rootScope.$broadcast(EVENTS.START_OVER);
+                    } else {
+                        // check if readerId still present
+                        var reader = _.find(readerData.data, function (reader) {
+                            return reader.id === readerId;
+                        });
+                        if (reader && reader.card.atr === card.atr) {
+                            // TODO check if it is really the same card and not just a card of the same atr?
+                            monitorCardRemoval(readerId, card);
+                        } else {
+                            // card reader no longer present,
+                            // broadcast removal event
+                            $rootScope.$broadcast(EVENTS.START_OVER);
+                        }
+                    }
+                });
+            }, 3000);
+        }
+
+        function checkReaderRemoval() {
+            // check reader still connected
+            return T1C.getReaders().then(function (readerData) {
+                if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
+                    // no connected readers
+                    // broadcast removal event
+                    $rootScope.$broadcast(EVENTS.START_OVER);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
         }
     }
 

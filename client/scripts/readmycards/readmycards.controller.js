@@ -20,7 +20,7 @@
         }
     }
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, T1C, _) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _) {
         var controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
@@ -30,7 +30,7 @@
         init();
 
         function dismissPanels() {
-            $scope.$broadcast('close-sidebar');
+            $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
             controller.cardTypesOpen = false;
             controller.faqOpen = false;
         }
@@ -62,14 +62,14 @@
                 readCard();
             }
 
-            $scope.$on('gcl', function () {
+            $scope.$on(EVENTS.GCL_INSTALLED, function () {
                 controller.gclAvailable = true;
                 T1C.initializeAfterInstall().then(function (res) {
                     pollForReaders();
                 });
             });
 
-            $scope.$on('card-type-toggle', function () {
+            $scope.$on(EVENTS.OPEN_SIDEBAR, function () {
                 // Make sure the FAQ panel is closed when opening sidebar
                 if (!controller.cardTypesOpen) {
                     controller.faqOpen = false;
@@ -77,16 +77,16 @@
                 controller.cardTypesOpen = !controller.cardTypesOpen;
             });
 
-            $scope.$on('faq-toggle', function () {
+            $scope.$on(EVENTS.OPEN_FAQ, function () {
                 // Make sure the side panel is closed when opening FAQ
                 if (!controller.faqOpen) {
-                    $scope.$broadcast('close-sidebar');
+                    $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
                     controller.cardTypesOpen = false;
                 }
                 controller.faqOpen = !controller.faqOpen;
             });
 
-            $scope.$on('read-another-card', function (event, currentReaderId) {
+            $scope.$on(EVENTS.START_OVER, function (event, currentReaderId) {
                 T1C.getReaders().then(function (result) {
                     if (_.find(result.data, function (reader) {
                        return _.has(reader, 'card');
@@ -100,7 +100,7 @@
                                 return reader.id === currentReaderId;
                             });
                             controller.cardPresent = true;
-                            $scope.$broadcast('reinit-viz');
+                            $scope.$broadcast(EVENTS.REINITIALIZE);
                         } else {
                             $state.go('root.reader', { readerId: _.find(result.data, function (reader) {
                                 return _.has(reader, 'card');
@@ -124,13 +124,13 @@
                 });
             });
 
-            $scope.$on('retry-reader', function () {
+            $scope.$on(EVENTS.RETRY_READER, function () {
                 controller.readerWithCard = undefined;
                 controller.cardPresent = false;
                 pollForReaders();
             });
 
-            $scope.$on('retry-card', function () {
+            $scope.$on(EVENTS.RETRY_CARD, function () {
                 controller.readers = [];
                 controller.readerWithCard = undefined;
                 controller.cardPresent = false;
@@ -140,7 +140,7 @@
 
 
         function pollForReaders() {
-            controller.pollingReaders = true;
+            if (!controller.pollingReaders) controller.pollingReaders = true;
             controller.error = false;
             T1C.getConnector().core().pollReaders(30, function (err, result) {
                 // Success callback
@@ -172,9 +172,9 @@
         }
 
         function pollForCard() {
-            controller.pollingCard = true;
+            if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            T1C.getConnector().core().pollCardInserted(30, function (err, result) {
+            T1C.getConnector().core().pollCardInserted(3, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
@@ -207,7 +207,10 @@
                 // controller.pollTimeout = true;
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
                 // $scope.$apply();
-                pollForCard();
+                RMC.checkReaderRemoval().then(function (removed) {
+                    if (removed) controller.pollingCard = false;
+                    else pollForCard();
+                });
             });
         }
 
