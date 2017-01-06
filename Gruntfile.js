@@ -5,11 +5,6 @@ module.exports = function(grunt) {
         src: "client",
         dest: "dist",
         index: "server/views",
-
-        connect_port: 9000,
-        connect_port_test: 9001,
-        connect_live_reload: 35729,
-        connect_hostname: 'localhost'
     };
     // Project Configuration
     grunt.initConfig({
@@ -131,69 +126,26 @@ module.exports = function(grunt) {
         // Watch //
         // ===== //
         watch: {
-            scripts: {
-                files: '<%= dir.src %>/scripts/**/*.js',
-                options: {
-                    livereload: '<%= dir.connect_live_reload %>'
-                }
+            options: {
+                livereload: 35734
             },
             gruntfile: {
                 files: ['Gruntfile.js']
             },
             livereload: {
                 options: {
-                    livereload: '<%= dir.connect_live_reload %>'
+                    livereload: true
                 },
                 files: [
                     '<%= dir.src %>/**/*.html',
                     '<%= dir.src %>/styles/**/*.less',
-                    '<%= dir.src %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}'
+                    '<%= dir.src %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
+                    '<%= dir.src %>/scripts/**/*.js'
                 ]
-            },
-            bower: {
-                files: ['bower.json'],
-                tasks: ['wiredep']
             }
 
         }, // End Watch
 
-        // ======= //
-        // Connect //
-        // ======= //
-        connect: {
-            options: {
-                port: '<%= dir.connect_port %>',
-                base: '<%= dir.app %>',
-                livereload: '<%= dir.connect_live_reload %>',
-                hostname: '<%= dir.connect_hostname %>'
-            },
-            test: {
-                options: {
-                    port: '<%= dir.connect_port_test %>',
-                    middleware: function(connect) {
-                        return [
-                            connect.static('.tmp'),
-                            connect().use('/bower_components', connect.static('./bower_components')),
-                            connect().use('/app/styles', connect.static('./app/styles')),
-                            connect.static(appConfig.src)
-                        ];
-                    }
-                }
-            },
-            livereload: {
-                options: {
-                    open: true,
-                    middleware: function(connect) {
-                        return [
-                            connect.static('.tmp'),
-                            connect().use('/bower_components', connect.static('./bower_components')),
-                            connect().use('/app/styles', connect.static('./app/styles')),
-                            connect.static(dirConfig.src)
-                        ];
-                    }
-                }
-            }
-        }, // End Connect
         // ====== //
         // Usemin //
         // ====== //
@@ -306,8 +258,8 @@ module.exports = function(grunt) {
     grunt.registerTask("html", ["processhtml"]);
     grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'connect:dist:keepalive']);
+            return grunt.task.run(['build']);
         }
-        grunt.task.run(['connect:livereload', 'watch']);
+        grunt.task.run(['watch']);
     });
 };
