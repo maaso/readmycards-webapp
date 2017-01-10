@@ -524,7 +524,7 @@
                     if (removed) $rootScope.$broadcast(EVENTS.START_OVER);
                     else monitorCardRemoval(readerId, card);
                 });
-            }, 2500);
+            }, 500);
         }
 
         function checkCardRemoval(readerId, card) {
@@ -546,6 +546,9 @@
                         // TODO deeper check to see if it is really the same card and not just a card of same type?
                         return !(reader && reader.card.atr === card.atr);
                     }
+                }, function () {
+                    // console.log('error occurred, assume card removed');
+                    return true;
                 });
             }, 500);
         }
@@ -561,6 +564,13 @@
                 } else {
                     return false;
                 }
+            }, function (error) {
+                if (error.message === EVENTS.NETWORK_ERROR) {
+                    // try again after short delay
+                    $timeout(function () {
+                        return checkCardRemoval();
+                    }, 100);
+                }
             });
         }
     }
@@ -569,7 +579,7 @@
         this.detectType = detectType;
 
         function detectType(card) {
-            if (!_.isEmpty(card.description)) {
+            if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
                 switch (card.description[0]) {
                     case 'Belgium Electronic ID card':
                         return 'BeID';

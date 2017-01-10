@@ -10,7 +10,8 @@
             'START_OVER': 'again!',
             'REINITIALIZE': 'reinit-viz',
             'RETRY_READER': 'retry-reader',
-            'RETRY_CARD': 'retry-card'
+            'RETRY_CARD': 'retry-card',
+            'NETWORK_ERROR': 'Network Error'
         })
 
 })();

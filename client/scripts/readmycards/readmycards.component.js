@@ -34,18 +34,23 @@
                                 RMC.monitorCardRemoval(controller.readerId, controller.card)
                             }, function (error) {
                                 if (error.status === 412 && error.data.code === 900) {
-                                    console.log('internal error');
                                     // this usually means the card was removed during reading, check if it is still present
                                     RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
-                                        console.log(removed);
                                         if (removed) $scope.$emit(EVENTS.START_OVER);
+                                        controller.$onInit();
                                     });
                                 } else {
                                     controller.errorReadingCard = true;
                                     controller.loading = false;
                                 }
-                                console.log(error);
                             });
+                        }
+                    }, function (error) {
+                        if (error.message === EVENTS.NETWORK_ERROR) {
+                            // try again after short delay
+                            $timeout(function () {
+                                controller.$onInit();
+                            }, 100);
                         }
                     });
 
@@ -170,6 +175,7 @@
             templateUrl: 'views/readmycards/components/reader-list.html',
             controller: function ($scope, $state, $timeout, T1C, CardService, EVENTS, _) {
                 var controller = this;
+                var timer;
                 this.$onInit = function () {
                     controller.readers = [];
                     refreshList();
@@ -183,14 +189,29 @@
                                 reader.cardType = CardService.detectType(reader.card);
                             });
                         }
+                    }, function (error) {
+                        if (error.message === EVENTS.NETWORK_ERROR) {
+                            // try again
+                            if (timer) {
+                                $timeout.cancel(timer);
+                                timer = undefined;
+                            }
+                            setTimedRefresh();
+                        }
                     })
                 }
 
                 function timedRefresh() {
-                    $timeout(function () {
+                    if (!timer) {
+                        setTimedRefresh();
+                    }
+                }
+
+                function setTimedRefresh() {
+                    timer = $timeout(function () {
                         refreshList();
                         timedRefresh();
-                    }, 2500)
+                    }, 2500);
                 }
 
                 timedRefresh();
