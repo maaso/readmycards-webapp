@@ -42,6 +42,7 @@
                                 } else {
                                     controller.errorReadingCard = true;
                                     controller.loading = false;
+                                    RMC.monitorCardRemoval(controller.readerId, controller.card)
                                 }
                             });
                         }
