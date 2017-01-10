@@ -5,6 +5,13 @@ ReadMyCards is a simple webapp that reads the contents of your smartcards using 
 
 [Website Trust1Team][Trust1Team-url]
 
+## Changelog
+
+### v1.1.1
+
+* Fix for ERR_NETWORK_CHANGED error in Chrome
+* Removed some unused scripts
+
 ## Requirements
 
 * Node.js v6.9.2 LTS or higher
