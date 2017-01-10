@@ -36,7 +36,7 @@
         }
 
         function init() {
-            // console.log('Using T1C-js ' + T1C.version());
+            console.log('Using T1C-js ' + T1C.version());
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
