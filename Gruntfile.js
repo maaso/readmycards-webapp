@@ -33,6 +33,10 @@ module.exports = function(grunt) {
             index: {
                 src: '<%= dir.dest %>/index.html',
                 dest: '<%= dir.index %>/index.ejs',
+            },
+            indexDev: {
+                src: '<%= dir.src %>/index.html',
+                dest: '<%= dir.index %>/index-dev.ejs'
             }
         },
         // Clean the distribution folder.
@@ -142,6 +146,10 @@ module.exports = function(grunt) {
                     '<%= dir.src %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
                     '<%= dir.src %>/scripts/**/*.js'
                 ]
+            },
+            index: {
+                files: [ '<%= dir.src %>/index.html' ],
+                tasks: [ 'copy:indexDev' ]
             }
 
         }, // End Watch
