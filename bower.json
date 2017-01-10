@@ -12,7 +12,7 @@
     "jquery": "3.1.0",
     "keycloak": "2.1.0",
     "angular-ui-router": "ui-router#0.3.1",
-    "trust1connector": "0.9.11",
+    "trust1connector": "1.0.0",
     "lodash": "4.15.0"
   },
   "devDependencies": {
