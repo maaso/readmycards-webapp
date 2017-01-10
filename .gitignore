@@ -3,6 +3,18 @@
 # IntelliJ project files
 .idea
 *.iml
+
+# Generated files
 dist
 bower_components
 node_modules
+
+# Config should be created manually
+/config/config.yml
+
+# Keyfile allows access to Google Cloud and should *not* be checked in to VC
+/config/keyfile.json
+
+
+# Index.ejs is generated during the deployment process
+/server/views/index.ejs

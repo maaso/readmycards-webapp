@@ -1,7 +1,7 @@
 {
-  "name": "t1c-webapp-demo",
-  "version": "1.1",
-  "description": "AngularJs Admin Template",
+  "name": "readmycards",
+  "version": "1.1.0",
+  "description": "ReadMyCards WebApp",
   "dependencies": {
     "angular": "1.5.5",
     "angular-animate": "1.5.5",
@@ -12,7 +12,7 @@
     "jquery": "3.1.0",
     "keycloak": "2.1.0",
     "angular-ui-router": "ui-router#0.3.1",
-    "trust1connector": "0.9.8",
+    "trust1connector": "1.0.0",
     "lodash": "4.15.0"
   },
   "devDependencies": {

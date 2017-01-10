@@ -4,7 +4,8 @@
     angular.module('app.readmycards')
         .service('T1C', ConnectorService)
         .service('CardService', CardService)
-        .service('WebTask', WebTask);
+        .service('RMC', ReadMyCardsService)
+        .service('API', API);
 
 
     function ConnectorService($q, $timeout, CardService, _) {
@@ -60,6 +61,8 @@
         this.isGCLAvailable = isGCLAvailable;
         this.readAllData = readAllData;
         this.initializeAfterInstall = initializeAfterInstall;
+        this.version = version;
+
 
 
         /// ===============================
@@ -504,6 +507,62 @@
         function initializeAfterInstall() {
             return $q.when(initializeLib());
         }
+
+        function version() {
+            return connector.core().version();
+        }
+    }
+
+    function ReadMyCardsService($rootScope, $timeout, T1C, EVENTS, _) {
+        this.monitorCardRemoval = monitorCardRemoval;
+        this.checkCardRemoval = checkCardRemoval;
+        this.checkReaderRemoval = checkReaderRemoval;
+
+        function monitorCardRemoval(readerId, card) {
+            $timeout(function () {
+                checkCardRemoval(readerId, card).then(function (removed) {
+                    if (removed) $rootScope.$broadcast(EVENTS.START_OVER);
+                    else monitorCardRemoval(readerId, card);
+                });
+            }, 2500);
+        }
+
+        function checkCardRemoval(readerId, card) {
+            // Check reader still connected
+            // Check card still inserted
+            // Check same card inserted
+            return $timeout(function() {
+                return T1C.getReadersWithCards().then(function (readerData) {
+                    if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
+                        // no connected readers with cards
+                        // removal is true
+                        return true;
+                    } else {
+                        // check if readerId still present
+                        var reader = _.find(readerData.data, function (reader) {
+                            return reader.id === readerId;
+                        });
+                        // check if card with same atr is present
+                        // TODO deeper check to see if it is really the same card and not just a card of same type?
+                        return !(reader && reader.card.atr === card.atr);
+                    }
+                });
+            }, 500);
+        }
+
+        function checkReaderRemoval() {
+            // check reader still connected
+            return T1C.getReaders().then(function (readerData) {
+                if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
+                    // no connected readers
+                    // broadcast removal event
+                    $rootScope.$broadcast(EVENTS.START_OVER);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        }
     }
 
     function CardService(_) {
@@ -527,7 +586,7 @@
         }
     }
 
-    function WebTask($http, $q, T1C, _) {
+    function API($http, $q, T1C, _) {
         this.storeUnknownCardInfo = storeUnknownCardInfo;
         this.storeDownloadInfo = storeDownloadInfo;
 
@@ -538,8 +597,7 @@
                 atr: card.atr,
                 payload: createPayload(card, description)
             };
-            console.log(data);
-            return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/unknown-card?webtask_no_cache=1', data);
+            return $http.post('/api/unknown-card', data);
 
             function createPayload(card, description) {
                 var payload = [];
@@ -570,7 +628,7 @@
                     type: 'GCLdownload',
                     payload: createPayload(results[0].data, results[1])
                 };
-                return $http.post('https://wt-maarten_somers-gmail_com-0.run.webtask.io/readmycards-handler/dl?webtask_no_cache=1', data);
+                return $http.post('/api/dl', data);
             }, function (err) {
                 console.log(err);
             });

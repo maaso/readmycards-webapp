@@ -7,7 +7,7 @@
             bindings: {
                 readerId: '<'
             },
-            controller: function ($scope, $rootScope, CardService, T1C, WebTask) {
+            controller: function ($scope, $timeout, $rootScope, CardService, T1C, API, RMC, EVENTS) {
                 var controller = this;
                 controller.readAnother = readAnother;
                 this.registerUnknownType = registerUnknownType;
@@ -21,7 +21,6 @@
                     T1C.getReader(controller.readerId).then(function (readerInfo) {
                         controller.cardType = CardService.detectType(readerInfo.data.card);
                         controller.card = readerInfo.data.card;
-                        console.log(readerInfo);
 
                         if (controller.cardType === 'Unknown') {
                             // TODO Now manually triggered, should this not be automatic?
@@ -32,32 +31,42 @@
                             T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
                                 controller.cardData = res.data;
                                 controller.loading = false;
+                                RMC.monitorCardRemoval(controller.readerId, controller.card)
                             }, function (error) {
-                                controller.errorReadingCard = true;
-                                controller.loading = false;
+                                if (error.status === 412 && error.data.code === 900) {
+                                    console.log('internal error');
+                                    // this usually means the card was removed during reading, check if it is still present
+                                    RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
+                                        console.log(removed);
+                                        if (removed) $scope.$emit(EVENTS.START_OVER);
+                                    });
+                                } else {
+                                    controller.errorReadingCard = true;
+                                    controller.loading = false;
+                                }
                                 console.log(error);
                             });
                         }
-                    })
+                    });
+
                 };
 
-                $scope.$on('reinit-viz', function () {
+                $scope.$on(EVENTS.REINITIALIZE, function () {
                     controller.$onInit();
                 });
 
                 function registerUnknownType(cardDescription) {
                     controller.submitted = true;
-                    WebTask.storeUnknownCardInfo(controller.card, cardDescription);
+                    API.storeUnknownCardInfo(controller.card, cardDescription);
                 }
 
                 function toggleCardTypes() {
-                    $rootScope.$broadcast('card-type-toggle');
+                    $rootScope.$broadcast(EVENTS.OPEN_SIDEBAR);
                 }
 
                 function readAnother() {
-                    $scope.$emit('read-another-card', controller.readerId);
+                    $scope.$emit(EVENTS.START_OVER, controller.readerId);
                 }
-
             }
         })
         .component('beidVisualizer', {
@@ -101,7 +110,7 @@
                 dlUrl: '<',
                 isFirefox: '<'
             },
-            controller: function ($scope, $uibModal, T1C, $timeout, WebTask) {
+            controller: function ($scope, $uibModal, T1C, $timeout, API, EVENTS) {
                 var controller = this;
                 this.firefoxModal = firefoxModal;
                 this.registerDownload = registerDownload;
@@ -110,7 +119,7 @@
                     $timeout(function () {
                         T1C.getInfo().then(function (res) {
                             // Info retrieved, GCL is installed
-                            $scope.$emit('gcl');
+                            $scope.$emit(EVENTS.GCL_INSTALLED);
                         }, function (err) {
                             pollForGcl();
                         });
@@ -127,7 +136,7 @@
                 function registerDownload(mail) {
                     controller.waitingForInstall = true;
                     if (!controller.isFirefox) pollForGcl();
-                    WebTask.storeDownloadInfo(mail, controller.dlUrl);
+                    API.storeDownloadInfo(mail, controller.dlUrl);
                 }
             }
         })
@@ -136,11 +145,11 @@
             bindings: {
                 error: '<'
             },
-            controller: function ($scope) {
+            controller: function ($scope, EVENTS) {
                 this.tryAgain = tryAgain;
 
                 function tryAgain() {
-                    $scope.$emit('retry-reader');
+                    $scope.$emit(EVENTS.RETRY_READER);
                 }
             }
         })
@@ -149,17 +158,17 @@
             bindings: {
                 error: '<'
             },
-            controller: function ($scope) {
+            controller: function ($scope, EVENTS) {
                 this.tryAgain = tryAgain;
 
                 function tryAgain() {
-                    $scope.$emit('retry-card');
+                    $scope.$emit(EVENTS.RETRY_CARD);
                 }
             }
         })
         .component('readerSelect', {
             templateUrl: 'views/readmycards/components/reader-list.html',
-            controller: function ($scope, $state, $timeout, T1C, CardService, _) {
+            controller: function ($scope, $state, $timeout, T1C, CardService, EVENTS, _) {
                 var controller = this;
                 this.$onInit = function () {
                     controller.readers = [];
@@ -186,7 +195,7 @@
 
                 timedRefresh();
 
-                $scope.$on('reinit-viz', function () {
+                $scope.$on(EVENTS.REINITIALIZE, function () {
                     refreshList();
                 });
             }
@@ -200,19 +209,24 @@
         })
         .component('rmcHeader', {
             templateUrl: 'views/readmycards/components/header.html',
-            controller: function ($scope) {
+            controller: function ($scope, EVENTS) {
                 var controller = this;
+                this.home = home;
                 this.toggleCardTypes = toggleCardTypes;
 
-                function toggleCardTypes() {
-                    $scope.$emit('card-type-toggle');
+                function home() {
+                    $scope.$emit(EVENTS.START_OVER);
                 }
 
-                $scope.$on('card-type-toggle', function () {
+                function toggleCardTypes() {
+                    $scope.$emit(EVENTS.OPEN_SIDEBAR);
+                }
+
+                $scope.$on(EVENTS.OPEN_SIDEBAR, function () {
                     controller.menuOpen = !controller.menuOpen;
                 });
 
-                $scope.$on('close-sidebar', function () {
+                $scope.$on(EVENTS.CLOSE_SIDEBAR, function () {
                     controller.menuOpen = false;
                 })
             }
@@ -222,11 +236,11 @@
         })
         .component('rmcFooter', {
             templateUrl: 'views/readmycards/components/footer.html',
-            controller: function ($scope) {
+            controller: function ($scope, EVENTS) {
                 this.toggleFAQ = toggleFAQ;
 
                 function toggleFAQ() {
-                    $scope.$emit('faq-toggle');
+                    $scope.$emit(EVENTS.OPEN_FAQ);
                 }
             }
         })

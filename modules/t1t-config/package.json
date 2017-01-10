@@ -1,0 +1,63 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "astad-config@1.0.4",
+        "scope": null,
+        "escapedName": "astad-config",
+        "name": "astad-config",
+        "rawSpec": "1.0.4",
+        "spec": "1.0.4",
+        "type": "version"
+      },
+      "/Users/maarten/dev/repos/digitalvault-ui_app_nodejs"
+    ]
+  ],
+  "_from": "astad-config@1.0.4",
+  "_id": "astad-config@1.0.4",
+  "_inCache": true,
+  "_location": "/astad-config",
+  "_nodeVersion": "4.2.2",
+  "_npmUser": {},
+  "_npmVersion": "3.5.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "astad-config@1.0.4",
+    "scope": null,
+    "escapedName": "astad-config",
+    "name": "astad-config",
+    "rawSpec": "1.0.4",
+    "spec": "1.0.4",
+    "type": "version"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://npm.antwerpen.be/astad-config/-/astad-config-1.0.4.tgz",
+  "_shasum": "d20232f82c8d24ca341182a6e2d901c74beabfc8",
+  "_shrinkwrap": null,
+  "_spec": "astad-config@1.0.4",
+  "_where": "/Users/maarten/dev/repos/digitalvault-ui_app_nodejs",
+  "author": {
+    "name": "Frank Desmettre"
+  },
+  "dependencies": {
+    "node-yaml-config": "0.0.3"
+  },
+  "description": "loads astad configuration files",
+  "devDependencies": {},
+  "dist": {
+    "shasum": "d20232f82c8d24ca341182a6e2d901c74beabfc8",
+    "tarball": "https://npm.antwerpen.be/astad-config/-/astad-config-1.0.4.tgz"
+  },
+  "gitHead": "7dc9d627ad087714a0b41df63a59b08dc0462421",
+  "main": "index.js",
+  "name": "astad-config",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.4"
+}

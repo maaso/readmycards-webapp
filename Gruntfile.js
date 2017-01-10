@@ -2,13 +2,9 @@ module.exports = function(grunt) {
     "use strict";
     // var RELOAD_PORT = 35729;
     var dirConfig = {
-        src: "src",
+        src: "client",
         dest: "dist",
-
-        connect_port: 9000,
-        connect_port_test: 9001,
-        connect_live_reload: 35729,
-        connect_hostname: 'localhost',
+        index: "server/views",
     };
     // Project Configuration
     grunt.initConfig({
@@ -24,7 +20,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.dest %>/scripts",
                 dest: "<%= dir.dest %>/scripts",
-                src: ["**/*.js"],
+                src: ["**/*.js"]
             }
         },
         copy: {
@@ -33,6 +29,14 @@ module.exports = function(grunt) {
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.dest %>",
                 src: ["index.html", "fonts/**/*", "images/**/*", "views/**/*"]
+            },
+            index: {
+                src: '<%= dir.dest %>/index.html',
+                dest: '<%= dir.index %>/index.ejs',
+            },
+            indexDev: {
+                src: '<%= dir.src %>/index.html',
+                dest: '<%= dir.index %>/index-dev.ejs'
             }
         },
         // Clean the distribution folder.
@@ -126,69 +130,30 @@ module.exports = function(grunt) {
         // Watch //
         // ===== //
         watch: {
-            scripts: {
-                files: '<%= dir.src %>/scripts/**/*.js',
-                options: {
-                    livereload: '<%= dir.connect_live_reload %>'
-                }
+            options: {
+                livereload: 35734
             },
             gruntfile: {
                 files: ['Gruntfile.js']
             },
             livereload: {
                 options: {
-                    livereload: '<%= dir.connect_live_reload %>'
+                    livereload: true
                 },
                 files: [
                     '<%= dir.src %>/**/*.html',
                     '<%= dir.src %>/styles/**/*.less',
-                    '<%= dir.src %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}'
+                    '<%= dir.src %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
+                    '<%= dir.src %>/scripts/**/*.js'
                 ]
             },
-            bower: {
-                files: ['bower.json'],
-                tasks: ['wiredep']
+            index: {
+                files: [ '<%= dir.src %>/index.html' ],
+                tasks: [ 'copy:indexDev' ]
             }
 
         }, // End Watch
 
-        // ======= //
-        // Connect //
-        // ======= //
-        connect: {
-            options: {
-                port: '<%= dir.connect_port %>',
-                base: '<%= dir.app %>',
-                livereload: '<%= dir.connect_live_reload %>',
-                hostname: '<%= dir.connect_hostname %>'
-            },
-            test: {
-                options: {
-                    port: '<%= dir.connect_port_test %>',
-                    middleware: function(connect) {
-                        return [
-                            connect.static('.tmp'),
-                            connect().use('/bower_components', connect.static('./bower_components')),
-                            connect().use('/app/styles', connect.static('./app/styles')),
-                            connect.static(appConfig.src)
-                        ];
-                    }
-                }
-            },
-            livereload: {
-                options: {
-                    open: true,
-                    middleware: function(connect) {
-                        return [
-                            connect.static('.tmp'),
-                            connect().use('/bower_components', connect.static('./bower_components')),
-                            connect().use('/app/styles', connect.static('./app/styles')),
-                            connect.static(dirConfig.src)
-                        ];
-                    }
-                }
-            }
-        }, // End Connect
         // ====== //
         // Usemin //
         // ====== //
@@ -292,16 +257,17 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-json-generator');
     // Default Task (that can be run by typing only "grunt" in cmd)
-    grunt.registerTask("default", []);
+    grunt.registerTask("default", 'build');
     grunt.registerTask("cleanBuild", ["clean:dist"]);
     // grunt.registerTask("build", ["clean:dist", "copy", "less:dist", "uglify", "concat", 'ngAnnotate',"clean:tmp", "processhtml"]);
-    grunt.registerTask("build", ['clean:dist', "wiredep", "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'compress']);
+    // grunt.registerTask("build", ['clean:dist', "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'compress']);
+    grunt.registerTask("build", ['clean:dist', 'copy:dist', 'less:dist', 'json_generator:t1tdev', 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'copy:index']);
     grunt.registerTask("dev", ["less:dev"]);
     grunt.registerTask("html", ["processhtml"]);
     grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'connect:dist:keepalive']);
+            return grunt.task.run(['build']);
         }
-        grunt.task.run(['connect:livereload', 'watch']);
+        grunt.task.run(['watch']);
     });
 };

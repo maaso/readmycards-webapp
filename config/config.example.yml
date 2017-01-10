@@ -1,0 +1,28 @@
+default:
+  appName: "readmycards"
+  port: 3000
+  environment: "local"
+  redirect:
+    scheme: "http"
+    domain: "localhost"
+    port: 3000
+  gcloud:
+    project: "<gcloud project name>"
+    keyfile: "<keyfile path>"
+  mailgun:
+    scheme: "https"
+    url: "api.mailgun.net/v3/saas.t1t.be/messages"
+    user: "<mailgun api user>"
+    apikey: "<mailgun api key>"
+    sender: "\"ReadMyCards.eu\" <noreply@saas.t1t.be>"
+
+test:
+  appName: "readmycards"
+  scheme: "http"
+  domain: "localhost"
+  port: 3001
+  environment: "TEST"
+  redirect:
+    scheme: "http"
+    domain: "localhost"
+    port: 3001
