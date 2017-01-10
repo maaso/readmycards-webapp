@@ -1,45 +1,48 @@
-# Trust1Connector DEMO page
+# ReadMyCards.eu
 [![][t1t-logo]][Trust1Team-url]
 
-This is a demo web application to show the T1C (Trust1Connector) capabilities in a simple web application.
-
-More information can be found on [Github][t1c-demo-doc]
+ReadMyCards is a simple webapp that reads the contents of your smartcards using any capable reader.
 
 [Website Trust1Team][Trust1Team-url]
 
-## Summary
+## Requirements
 
-Only works from Kong 0.8.0
+* Node.js v6.9.2 LTS or higher
 
-## Launch dev docker container
-Pull container from docker hub:
+## Running Development build
+Run npm install:
 ```ssh
-$ docker pull trust1team/t1c-webapp-demo
+$ npm install
 ```
-Launch container:
+Start the node.js process:
 ```ssh
-$ docker run --name t1c-webapp-demo -p9000:80 -d trust1team/t1c-webapp-demo
+$ npm start
 ```
-
-## Development build
-Surge should be installed
-```sh
-npm install -g surge
-```
-
-In order to run the demo, checkout the code and run
+If you have nodemon installed you can also run
 ```ssh
-$ nmp install
-$ bower install
-$ grunt build
+$ nodemon app.js
+```
+a nodemon.json configuration is present that will only trigger a nodemon restart when server files are changed.
+
+Now that the server is running, you can also start a livereload server with grunt:
+```ssh
+$ grunt serve
 ```
 
-Deploy on surge:
-```sh
-cd dist
-surge
-readmycards.surge.eu
+*If you use both nodemon and livereload, all changes made to either server or client will trigger reloads and become available in your development environment.*
+
+## Deployment
+Clone the repository in your desired directory and switch to the correct release tag.
+
+Now run the deployment script
+```ssh
+$ nmp run deploy
 ```
+This script will pull in all dependencies and build a minfied/uglified/concatted distribution package in the /dist folder
+
+Create a configuration YAML file called *config.yml* in the */config* directory. An example is provided. Make sure you change the environment to something other than *local*.
+
+A full deployment guide can be found on [Confluence][rmc-confluence-deployment-guide]
 
 ## License
 
@@ -82,4 +85,4 @@ Irrespective of your choice of license, the T1T logo as depicted below may not b
 
 [Trust1Team-url]: http://trust1team.com
 [t1t-logo]: http://imgur.com/lukAaxx.png
-[t1c-demo-doc]: https://github.com/Trust1Team/t1c-webapp-demo
+[rmc-confluence-deployment-guide]: https://trust1t.atlassian.net/wiki/display/RMC/Deployment
