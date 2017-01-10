@@ -33,8 +33,17 @@
                                 controller.loading = false;
                                 RMC.monitorCardRemoval(controller.readerId, controller.card)
                             }, function (error) {
-                                controller.errorReadingCard = true;
-                                controller.loading = false;
+                                if (error.status === 412 && error.data.code === 900) {
+                                    console.log('internal error');
+                                    // this usually means the card was removed during reading, check if it is still present
+                                    RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
+                                        console.log(removed);
+                                        if (removed) $scope.$emit(EVENTS.START_OVER);
+                                    });
+                                } else {
+                                    controller.errorReadingCard = true;
+                                    controller.loading = false;
+                                }
                                 console.log(error);
                             });
                         }

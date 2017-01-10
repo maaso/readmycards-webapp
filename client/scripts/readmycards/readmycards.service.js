@@ -509,40 +509,45 @@
         }
 
         function version() {
-            return GCLLib.version();
+            return connector.core().version();
         }
     }
 
     function ReadMyCardsService($rootScope, $timeout, T1C, EVENTS, _) {
         this.monitorCardRemoval = monitorCardRemoval;
+        this.checkCardRemoval = checkCardRemoval;
         this.checkReaderRemoval = checkReaderRemoval;
 
         function monitorCardRemoval(readerId, card) {
+            $timeout(function () {
+                checkCardRemoval(readerId, card).then(function (removed) {
+                    if (removed) $rootScope.$broadcast(EVENTS.START_OVER);
+                    else monitorCardRemoval(readerId, card);
+                });
+            }, 2500);
+        }
+
+        function checkCardRemoval(readerId, card) {
             // Check reader still connected
             // Check card still inserted
             // Check same card inserted
-            $timeout(function () {
-                T1C.getReadersWithCards().then(function (readerData) {
+            return $timeout(function() {
+                return T1C.getReadersWithCards().then(function (readerData) {
                     if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
                         // no connected readers with cards
-                        // broadcast removal event
-                        $rootScope.$broadcast(EVENTS.START_OVER);
+                        // removal is true
+                        return true;
                     } else {
                         // check if readerId still present
                         var reader = _.find(readerData.data, function (reader) {
                             return reader.id === readerId;
                         });
-                        if (reader && reader.card.atr === card.atr) {
-                            // TODO check if it is really the same card and not just a card of the same atr?
-                            monitorCardRemoval(readerId, card);
-                        } else {
-                            // card reader no longer present,
-                            // broadcast removal event
-                            $rootScope.$broadcast(EVENTS.START_OVER);
-                        }
+                        // check if card with same atr is present
+                        // TODO deeper check to see if it is really the same card and not just a card of same type?
+                        return !(reader && reader.card.atr === card.atr);
                     }
                 });
-            }, 3000);
+            }, 500);
         }
 
         function checkReaderRemoval() {
