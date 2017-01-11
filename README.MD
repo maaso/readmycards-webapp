@@ -7,6 +7,10 @@ ReadMyCards is a simple webapp that reads the contents of your smartcards using 
 
 ## Changelog
 
+### v1.1.2
+
+* Fix card selection dialog not behaving correctly when multiple readers + cards are connected
+
 ### v1.1.1
 
 * Fix for ERR_NETWORK_CHANGED error in Chrome
