@@ -533,6 +533,7 @@
             // Check same card inserted
             return $timeout(function() {
                 return T1C.getReadersWithCards().then(function (readerData) {
+                    $rootScope.$broadcast(EVENTS.READERS_WITH_CARDS, readerData);
                     if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
                         // no connected readers with cards
                         // removal is true

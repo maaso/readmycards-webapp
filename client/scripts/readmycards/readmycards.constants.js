@@ -11,7 +11,8 @@
             'REINITIALIZE': 'reinit-viz',
             'RETRY_READER': 'retry-reader',
             'RETRY_CARD': 'retry-card',
-            'NETWORK_ERROR': 'Network Error'
+            'NETWORK_ERROR': 'Network Error',
+            'READERS_WITH_CARDS': 'readers-with-cards'
         })
 
 })();

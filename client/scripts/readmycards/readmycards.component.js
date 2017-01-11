@@ -176,49 +176,17 @@
             templateUrl: 'views/readmycards/components/reader-list.html',
             controller: function ($scope, $state, $timeout, T1C, CardService, EVENTS, _) {
                 var controller = this;
-                var timer;
                 this.$onInit = function () {
                     controller.readers = [];
-                    refreshList();
                 };
 
-                function refreshList() {
-                    T1C.getReadersWithCards().then(function (res) {
-                        if (res.data.length != controller.readers.length) {
-                            controller.readers = res.data;
-                            _.forEach(controller.readers, function (reader) {
-                                reader.cardType = CardService.detectType(reader.card);
-                            });
-                        }
-                    }, function (error) {
-                        if (error.message === EVENTS.NETWORK_ERROR) {
-                            // try again
-                            if (timer) {
-                                $timeout.cancel(timer);
-                                timer = undefined;
-                            }
-                            setTimedRefresh();
-                        }
-                    })
-                }
-
-                function timedRefresh() {
-                    if (!timer) {
-                        setTimedRefresh();
+                $scope.$on(EVENTS.READERS_WITH_CARDS, function (event, args) {
+                    if (args.data.length != controller.readers.length) {
+                        controller.readers = args.data;
+                        _.forEach(controller.readers, function (reader) {
+                            reader.cardType = CardService.detectType(reader.card);
+                        });
                     }
-                }
-
-                function setTimedRefresh() {
-                    timer = $timeout(function () {
-                        refreshList();
-                        timedRefresh();
-                    }, 2500);
-                }
-
-                timedRefresh();
-
-                $scope.$on(EVENTS.REINITIALIZE, function () {
-                    refreshList();
                 });
             }
         })
