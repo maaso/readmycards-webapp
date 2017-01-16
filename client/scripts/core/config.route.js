@@ -18,7 +18,12 @@
                             },
                             readers: function ($q, gclAvailable, T1C) {
                                 if (gclAvailable) {
-                                    return T1C.getReaders();
+                                    return T1C.getReaders().then(function (response) {
+                                        return response;
+                                    }, function () {
+                                        // Should an error occur, we don't want it to block the app
+                                        return $q.when([]);
+                                    });
                                 } else {
                                     return $q.when([]);
                                 }
