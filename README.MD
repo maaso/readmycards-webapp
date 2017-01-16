@@ -7,6 +7,10 @@ ReadMyCards is a simple webapp that reads the contents of your smartcards using 
 
 ## Changelog
 
+### v1.1.3
+
+* Update T1C-JS lib to version 1.0.2 to fix error where activation of a new installation would fail, blocking the application.
+
 ### v1.1.2
 
 * Fix card selection dialog not behaving correctly when multiple readers + cards are connected
