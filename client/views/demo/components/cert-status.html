@@ -1,0 +1,5 @@
+<div class="cert-status" uib-alert
+     ng-class="{ 'alert-info': $ctrl.status === 'checking', 'alert-warning': $ctrl.status === 'error', 'alert-success': $ctrl.status === 'valid', 'alert-danger': $ctrl.status === 'invalid' }">
+        <i class="fa fa-lg" ng-class="{ 'fa-cog fa-spin': $ctrl.status === 'checking', 'fa-exclamation-triangle': $ctrl.status === 'error', 'fa-check-circle': $ctrl.status === 'valid', 'fa-times-circle': $ctrl.status === 'invalid' }"></i>
+        <span class="info-text text-ultralight">{{$ctrl.infoText}}</span>
+</div>

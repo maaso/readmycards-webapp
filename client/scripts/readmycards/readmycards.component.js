@@ -1,6 +1,35 @@
 (function () {
     'use strict';
 
+    const beidCertificateStatus = {
+        templateUrl: 'views/demo/components/cert-status.html',
+        bindings: {
+            status: '<'
+        },
+        controller: function () {
+            let controller = this;
+            controller.$onChanges = () => {
+                if (controller.status === 'checking') controller.infoText = 'Validating card certificates... please wait.';
+                if (controller.status === 'valid') controller.infoText = 'All certificates OK. Card is valid.';
+                if (controller.status === 'invalid') controller.infoText = 'Certificate validation failed. Card is invalid.';
+                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+            };
+        }
+    };
+
+    const beidCard = {
+        templateUrl: 'views/demo/components/beid-card.html',
+        bindings: {
+            rnData: '<',
+            picData: '<',
+        },
+        controller: function () {
+            let controller = this;
+
+            console.log(controller.picData);
+        }
+    };
+
     angular.module('app.readmycards')
         .component('cardVisualizer', {
             templateUrl: 'views/demo/components/card-viz.html',
@@ -8,7 +37,7 @@
                 readerId: '<'
             },
             controller: function ($scope, $timeout, $rootScope, CardService, T1C, API, RMC, EVENTS) {
-                var controller = this;
+                let controller = this;
                 controller.readAnother = readAnother;
                 this.registerUnknownType = registerUnknownType;
                 this.showSupportedCardTypes = toggleCardTypes;
@@ -81,12 +110,53 @@
                 rnData: '<',
                 addressData: '<',
                 picData: '<',
-                certData: '<'
             },
-            controller: function () {
-                var controller = this;
+            controller: function ($stateParams, $timeout, T1C) {
+                let controller = this;
+
+                console.log(controller.picData);
+                controller.$onInit = () => {
+                    controller.status = 'checking';
+                    let filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
+                    T1C.getAllCerts($stateParams.readerId, filter).then(res => {
+                        let validationReq = {
+                            certificateChain: [
+                                { order: 0, certificate: res.data.authentication_certificate },
+                                { order: 1, certificate: res.data.citizen_certificate },
+                                { order: 2, certificate: res.data.root_certificate },
+                            ]
+                        };
+                        T1C.validateCertificateChain(validationReq).then(res => {
+                            if (res.crlResponse.status && res.ocspResponse.status) controller.status = 'valid';
+                            else controller.status = 'invalid';
+                        }, () => {
+                            controller.status = 'error';
+                        });
+                    })
+                };
+
+                controller.toggleCerts = () => {
+                    if (controller.certData) {
+                        controller.doCollapse = true;
+                        $timeout(() => {
+                            controller.certData = undefined;
+                        }, 500);
+                    }
+                    else {
+                        if (!controller.loadingCerts) {
+                            controller.loadingCerts = true;
+                            T1C.getAllCerts($stateParams.readerId).then(res => {
+                                controller.loadingCerts = false;
+                                controller.certData = res.data;
+                            });
+                        }
+
+                    }
+                };
             }
         })
+        .component('beidCertificateStatus', beidCertificateStatus)
+        .component('beidCard', beidCard)
         .component('emvVisualizer', {
             templateUrl: 'views/demo/components/emv-viz.html',
             bindings: {

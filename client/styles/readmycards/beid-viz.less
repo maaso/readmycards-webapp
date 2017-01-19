@@ -9,7 +9,40 @@
     }
   }
 
-  .certificates {
+  .certificates-toggle {
     margin-top: 50px;
+    span {
+      color: @gray-light;
+
+      &:hover {
+        color: @gray-dark;
+      }
+    }
   }
+
+  .certificates {
+    margin-top: 20px;
+  }
+}
+
+.cert-status {
+  font-size: 2em;
+  border-radius: 5px;
+
+  .info-text {
+    margin-left: 10px;
+  }
+}
+
+.beid-card {
+  display: flex;
+  justify-content: space-between;
+
+  .front, .back {
+    width: 86 * 6px;
+    height: 54 * 6px;
+    border: 1px solid #000;
+    border-radius: 10px;
+  }
+
 }

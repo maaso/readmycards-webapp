@@ -57,13 +57,13 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.dest %>",
-                src: ["index.html", "apublicfile.txt", "images/**/*", "views/**/*"]
+                src: ["index.html", "apublicfile.txt", "images/**/*", "fonts/**/*", "views/**/*"]
             },
             local: {
                 expand: true,
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.local %>",
-                src: [ "images/**/*", "views/**/*", "styles/**/*" ]
+                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*" ]
             },
             fa : {
                 expand: true,
@@ -224,8 +224,8 @@ module.exports = function(grunt) {
                 options: {
                     livereload: true
                 },
-                files: ['<%= dir.src %>/styles/**/*.scss'],
-                tasks: ['sass:dev']
+                files: ['<%= dir.src %>/styles/**/*.less'],
+                tasks: ['copy:local']
             },
             index: {
                 options: {
@@ -234,7 +234,6 @@ module.exports = function(grunt) {
                 files: [ '<%= dir.src %>/index.html' ],
                 tasks: [ 'copy:indexDev' ]
             }
-
         }, // End Watch
         /**
          * USEMIN ------------------------------------
@@ -304,6 +303,6 @@ module.exports = function(grunt) {
     grunt.registerTask("build", ['clean:dist', 'copy:dist', 'copy:fa', 'copy:faCss', 'less:dist', 'useminPrepare', 'postcss:dist', 'concat', 'ngAnnotate', 'babel:dist', 'uglify', 'filerev', 'usemin', 'copy:index']);
     grunt.registerTask("html", ["processhtml"]);
     grunt.registerTask('serve', 'Compile then watch for changes to files', function() {
-        grunt.task.run(['clean:local', 'copy:local', 'babel:dev', 'watch']);
+        grunt.task.run(['clean:local', 'copy:local', 'copy:indexDev', 'babel:dev', 'watch']);
     });
 };

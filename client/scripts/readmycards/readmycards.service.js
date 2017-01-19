@@ -269,9 +269,11 @@
         }
 
         // Get all data
-        function getAllCerts(readerId) {
-            var data = $q.defer();
-            connector.beid(readerId).allCerts([], function (err, result) {
+        function getAllCerts(readerId, filter) {
+            let data = $q.defer();
+            let certFilter = [];
+            if (filter && _.isArray(filter)) certFilter = filter;
+            connector.beid(readerId).allCerts(certFilter, function (err, result) {
                 callbackHelper(err, result, data);
             });
             return data.promise;
@@ -490,12 +492,33 @@
         function readAllData(readerId, card) {
             switch (CardService.detectType(card)) {
                 case 'BeID':
-                    return getAllData(readerId);
+                    return getBeIDInitialData(readerId);
                 case 'EMV':
                     return getAllEmvData(readerId);
                 default:
                     return $q.when('Not Supported');
             }
+        }
+
+        function getBeIDInitialData(readerId) {
+            let promises = [];
+            let dataObject = { data: {}};
+            promises.push(getRnData(readerId).then(res => {
+                dataObject.data.rn = res.data;
+            }));
+            promises.push(getAddress(readerId).then(res => {
+                dataObject.data.address = res.data;
+            }));
+            promises.push(getPic(readerId).then(res => {
+                dataObject.data.picture = res.data;
+            }));
+
+            return $q.all(promises).then(() => {
+                dataObject.success = true;
+                return dataObject;
+            }, (err) => {
+                return err;
+            });
         }
 
 
