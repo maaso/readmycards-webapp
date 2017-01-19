@@ -35,6 +35,8 @@
         this.refreshJwt = refreshJwt;
         this.sendJwtToGcl = sendJwtToGcl;
         this.getDownloadLink = getDownloadLink;
+        // --- OCV ---
+        this.validateCertificateChain = validateCertificateChain;
         // --- BeID ---
         this.getAllData = getAllData;
         this.getAllCerts = getAllCerts;
@@ -239,6 +241,17 @@
                 });
             });
             return dlDeferred.promise;
+        }
+
+        /// ==============================
+        /// ===== OCV FUNCTIONALITY ======
+        /// ==============================
+        function validateCertificateChain(certs) {
+            let data = $q.defer();
+            connector.ocv().validateCertificateChain(certs, (err, info) => {
+                callbackHelper(err, info, data);
+            });
+            return data.promise;
         }
 
 
