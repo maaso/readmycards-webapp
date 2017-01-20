@@ -37,12 +37,116 @@
 .beid-card {
   display: flex;
   justify-content: space-between;
+  font-family: Arial, sans-serif;
+
+  @chip-width: 132px;
+
+  .labels {
+    font-size: 0.75em;
+  }
+
+  .values {
+    font-size: 0.85em;
+    font-weight: bold;
+  }
+
+  .section {
+    padding-top: 5px;
+  }
+
+  .inline {
+    display: inline-block;
+  }
 
   .front, .back {
     width: 86 * 6px;
     height: 54 * 6px;
-    border: 1px solid #000;
+    border: 1px solid #333;
+    color: #333;
     border-radius: 10px;
+
+  }
+
+  .front {
+    position: relative;
+
+    .header {
+      height: 15%;
+      border-bottom: 1px solid #333;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0 10px;
+
+
+      .lang {
+        line-height: 1;
+        margin: auto 0;
+
+        span {
+          display: block;
+        }
+        .belgium {
+          font-weight: bold;
+          font-size: 1.25em;
+        }
+
+        .id-card {
+          font-size: 0.75em;
+        }
+      }
+
+    }
+
+    .content {
+      padding: 0 10px;
+
+      .names {
+        padding-top: 15px;
+        .values {
+          margin-left: 3px;
+        }
+      }
+
+      .chip {
+        width: @chip-width;
+      }
+
+
+      .birth-sex-block {
+        width: calc(~"99% - " @chip-width);
+
+        .birth-sex-wrapper {
+          display: flex;
+          justify-content: space-between;
+
+          .sex {
+            padding-right: 15px;
+
+            .values {
+              text-align: right;
+              padding-right: 5px;
+            }
+          }
+        }
+      }
+
+
+      .other {
+        display: flex;
+        justify-content: space-between;
+
+        .pic {
+          padding: 15px 15px 10px 20px;
+
+          .pic-img {
+            width: 105px;
+            height: 150px;
+          }
+        }
+      }
+
+    }
   }
 
 }
