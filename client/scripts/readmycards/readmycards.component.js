@@ -23,10 +23,57 @@
             rnData: '<',
             picData: '<',
         },
-        controller: function () {
+        controller: function (_, CheckDigit) {
             let controller = this;
 
-            console.log(controller.picData);
+            controller.formatRRNR = formatRRNR;
+
+            controller.$onInit = () => {
+                controller.formattedRRNR = formatRRNR(controller.rnData.national_number);
+
+                let mrs = constructMachineReadableStrings(controller.rnData);
+
+                controller.machineReadable1 = mrs[0];
+                controller.machineReadable2 = mrs[1];
+                controller.machineReadable3 = mrs[2];
+            };
+
+            function formatRRNR(rrnrString) {
+                return rrnrString.substr(0, 2) + '.' + rrnrString.substr(2, 2) + '.' + rrnrString.substr(4,2) + '-' + rrnrString.substr(6,3) + '.' + rrnrString.substr(9,2);
+            }
+
+            function constructMachineReadableStrings(rnData) {
+                let mrs = [];
+                // First line
+                let prefix = 'ID';
+                let first = 'BEL' + rnData.card_number.substr(0, 9) + '<' + rnData.card_number.substr(9);
+                first += CheckDigit.calc(first);
+                first = pad(prefix + first);
+                mrs.push(first.toUpperCase());
+
+                // Second line
+                let second = rnData.national_number.substr(0, 6);
+                second += CheckDigit.calc(second);
+                second += rnData.sex;
+                let validity = rnData.card_validity_date_end.substr(8,2) + rnData.card_validity_date_end.substr(3,2) + rnData.card_validity_date_end.substr(0,2);
+                validity += CheckDigit.calc(validity);
+                second += validity;
+                second += rnData.nationality.substr(0,3);
+                second += rnData.national_number;
+                second += '5'; // TODO figure out this check number!
+                second = pad(second);
+                mrs.push(second.toUpperCase());
+
+                // Third line
+                let third = _.join(_.split(rnData.name,' '),'<') + '<<' + _.join(_.split(rnData.first_names,' '),'<') + '<' + _.join(_.split(rnData.third_name,' '),'<');
+                third = pad(third);
+                mrs.push(third.toUpperCase());
+                return mrs;
+            }
+
+            function pad(string) {
+                return _.padEnd(_.truncate(string, { length: 30, omission: '' }), 30, '<');
+            }
         }
     };
 
@@ -114,7 +161,6 @@
             controller: function ($stateParams, $timeout, T1C) {
                 let controller = this;
 
-                console.log(controller.picData);
                 controller.$onInit = () => {
                     controller.status = 'checking';
                     let filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];

@@ -100,6 +100,32 @@
     </div>
 
     <div class="back">
+        <div class="rrnr-barcode section">
+            <div class="rrnr inline">
+                <div class="labels">
+                    <div>Identificatienummer van het Rijksregister</div>
+                    <div><i>Identification number of the National Register</i></div>
+                </div>
+                <div class="values">
+                    <div>{{$ctrl.formattedRRNR}}</div>
+                </div>
+            </div>
+            <div class="barcode inline">
+                <div class="barcode-wrapper">{{$ctrl.rnData.national_number}}{{$ctrl.rnData.card_number.substr(3)}}</div>
+            </div>
+        </div>
 
+        <div class="issuer section">
+            <div class="issuer-place labels">
+                <div>Plaats van afgifte/<i>Place of issue</i></div>
+            </div>
+            <div class="values">{{$ctrl.rnData.card_delivery_municipality}}</div>
+        </div>
+
+        <div class="machine-readable-zone">
+            <div>{{$ctrl.machineReadable1}}</div>
+            <div>{{$ctrl.machineReadable2}}</div>
+            <div>{{$ctrl.machineReadable3}}</div>
+        </div>
     </div>
 </div>

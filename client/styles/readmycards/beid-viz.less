@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "Barcode";
+  src: url("../fonts/3of9.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "OCR-B";
+  src: url("../fonts/ocrb.ttf") format("truetype");
+}
+
 #beid-viz {
 
 
@@ -5,7 +15,6 @@
     margin-top: 30px;
 
     #address {
-      margin-top: 40px;
     }
   }
 
@@ -36,7 +45,10 @@
 
 .beid-card {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
+  align-content: center;
   font-family: Arial, sans-serif;
 
   @chip-width: 132px;
@@ -61,18 +73,20 @@
   .front, .back {
     width: 86 * 6px;
     height: 54 * 6px;
-    border: 1px solid #333;
+    border: 1px solid #999;
     color: #333;
     border-radius: 10px;
-
+    flex-shrink: 0;
+    margin: 5px 0;
   }
 
   .front {
     position: relative;
+    margin-right: 5px;
 
     .header {
       height: 15%;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #999;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -149,4 +163,42 @@
     }
   }
 
+  .back {
+    padding: 10px 20px;
+    margin-left: 5px;
+
+    .rrnr {
+      .labels {
+        line-height: 1.1;
+      }
+      .values {
+        padding-top: 2px;
+      }
+    }
+
+    .barcode {
+      font-family: 'Barcode', sans-serif;
+      transform : scale(1.25,3.3);
+
+      .barcode-wrapper {
+        margin-left: 35px;
+        margin-top: -12px;
+      }
+    }
+
+    .machine-readable-zone {
+      margin-top: 110px;
+      line-height: 1;
+      font-family: 'OCR-B', monospace;
+      font-size: 1.8em;
+    }
+
+  }
+
+  @media (max-width: 1206px) {
+    justify-content: center;
+    .front, .back {
+      margin: 5px;
+    }
+  }
 }
