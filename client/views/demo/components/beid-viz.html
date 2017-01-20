@@ -31,6 +31,10 @@
 
     </div>
 
+    <div class="col-sm-12">
+        <span class="text-small clickable" ng-click="$ctrl.printSummary()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">Print</span>
+    </div>
+
     <div class="certificates-toggle col-sm-12">
         <span class="text-small" ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.loadingCerts ? 'Loading...' : $ctrl.certData ? 'Hide Certificates': 'Show Certificates'}}</span>
     </div>

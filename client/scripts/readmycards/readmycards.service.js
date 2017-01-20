@@ -3,6 +3,7 @@
 
     angular.module('app.readmycards')
         .service('T1C', ConnectorService)
+        .service('BeID', BeID)
         .service('CardService', CardService)
         .service('CheckDigit', CheckDigit)
         .service('RMC', ReadMyCardsService)
@@ -547,6 +548,19 @@
 
         function version() {
             return connector.core().version();
+        }
+    }
+
+    function BeID() {
+        this.formatCardNumber = formatCardNumber;
+        this.formatRRNR =formatRRNR;
+
+        function formatCardNumber(card) {
+            return card.substr(0,3) + '-' + card.substr(3,7) + '-' + card.substr(10,2);
+        }
+
+        function formatRRNR(rrnrString) {
+            return rrnrString.substr(0, 2) + '.' + rrnrString.substr(2, 2) + '.' + rrnrString.substr(4,2) + '-' + rrnrString.substr(6,3) + '.' + rrnrString.substr(9,2);
         }
     }
 
