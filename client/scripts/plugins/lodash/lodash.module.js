@@ -10,9 +10,10 @@
         });
 
 
+    let _;
     function lodash( $window ) {
         // Get a local handle on the global lodash reference.
-        var _ = $window._;
+        if (!_) _ = $window._;
         // OPTIONAL: Sometimes I like to delete the global reference to make sure
         // that no one on the team gets lazy and tried to reference the library
         // without injecting it. It's an easy mistake to make, and one that won't
@@ -25,8 +26,8 @@
         // I return the given collection as a natural language list.
         _.naturalList = function( collection ) {
             if ( collection.length > 2 ) {
-                var head = collection.slice( 0, -1 );
-                var tail = collection[ collection.length - 1 ];
+                let head = collection.slice( 0, -1 );
+                let tail = collection[ collection.length - 1 ];
                 return( head.join( ", " ) + ", and " + tail );
             }
             if ( collection.length === 2 ) {
