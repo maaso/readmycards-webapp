@@ -51,11 +51,11 @@
                 second += CheckDigit.calc(second);
                 second += rnData.sex;
                 let validity = rnData.card_validity_date_end.substr(8,2) + rnData.card_validity_date_end.substr(3,2) + rnData.card_validity_date_end.substr(0,2);
-                validity += CheckDigit.calc(validity);
-                second += validity;
+                second += validity + CheckDigit.calc(validity);
                 second += rnData.nationality.substr(0,3);
                 second += rnData.national_number;
-                second += '5'; // TODO figure out this check number!
+                let finalCheck = rnData.card_number.substr(0,10) + rnData.national_number.substr(0,6) + validity + rnData.national_number;
+                second += CheckDigit.calc(finalCheck);
                 second = pad(second);
                 mrs.push(second.toUpperCase());
 
