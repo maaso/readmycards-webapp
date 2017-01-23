@@ -98,6 +98,7 @@
                             // registerUnknownType();
                             controller.unknownCard = true;
                             controller.loading = false;
+                            RMC.monitorCardRemoval(controller.readerId, controller.card);
                         } else {
                             T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
                                 controller.cardData = res.data;
