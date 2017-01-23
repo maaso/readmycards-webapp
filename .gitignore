@@ -8,6 +8,7 @@
 dist
 bower_components
 node_modules
+.local
 
 # Config should be created manually
 /config/config.yml

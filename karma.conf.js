@@ -13,6 +13,9 @@ module.exports = function configureKarma(config) {
 
         // list of files / patterns to load in the browser
         files: [
+            'dist/scripts/libs.*.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            'dist/scripts/app.*.js',
             'client/**/*.spec.js' // load test spec
         ],
 

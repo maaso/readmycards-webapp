@@ -13,17 +13,16 @@ const api = supertest('http://localhost:' + config.port);
 describe('Public assets', function onDescribe() {
 
     it('can be accessed', function onIt(done) {
-        api.get('/keycloak.json')
+        api.get('/apublicfile.txt')
             .expect(200)
-            .expect('Content-Type', /application\/json/)
+            .expect('Content-Type', /text\/plain/)
             .end(function validate(err, res) {
 
                 if (err) {
                     return done(err);
                 }
 
-                expect(res.text).to.contain("realm-public-key");
-
+                expect(res.text).to.contain("hello");
 
                 done();
             });

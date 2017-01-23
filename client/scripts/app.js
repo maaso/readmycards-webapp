@@ -9,6 +9,7 @@
         /* 3rd party modules */
         "ui.bootstrap",
         "ui.router",
+        'ngKeypad',
 
         /* custom modules */
         'app.demo',

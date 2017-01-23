@@ -1,21 +1,27 @@
 module.exports = function(grunt) {
     "use strict";
-    // var RELOAD_PORT = 35729;
     var dirConfig = {
         src: "client",
+        local: ".local",
         dest: "dist",
-        index: "server/views",
+        index: "server/views"
     };
+
+    // Load  all grunt plugins
+    require("load-grunt-tasks")(grunt);
+
     // Project Configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"), // load the package.json
         // specify configuration for each plugin
         dir: dirConfig,
+        /**
+         * UGLIFY ------------------------------------
+         */
         uglify: {
             options: {
                 mangle: false
             },
-            // compress it dynamically, then concatenate with grunt concat.
             dist: {
                 expand: true,
                 cwd: "<%= dir.dest %>/scripts",
@@ -23,12 +29,52 @@ module.exports = function(grunt) {
                 src: ["**/*.js"]
             }
         },
+        /**
+         * BABEL -------------------------------------
+         * Transpile the client JavaScript (ES6) to browser-safe JavaScript (ES5)
+         */
+        babel: {
+            options: {
+                sourceMap: true
+            },
+            dist: {
+                files: {
+                    "<%= dir.dest %>/scripts/app.js": "<%= dir.dest %>/scripts/app.js"
+                }
+            },
+            dev: {
+                expand: true,
+                cwd: "<%= dir.src %>/scripts",
+                dest: "<%= dir.local %>/scripts",
+                src: ["**/*.js"]
+            }
+        },
+        /**
+         * COPY --------------------------------------
+         */
         copy: {
             dist: {
                 expand: true,
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.dest %>",
-                src: ["index.html", "fonts/**/*", "images/**/*", "views/**/*"]
+                src: ["index.html", "apublicfile.txt", "images/**/*", "fonts/**/*", "views/**/*"]
+            },
+            local: {
+                expand: true,
+                cwd: "<%= dir.src %>",
+                dest: "<%= dir.local %>",
+                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*" ]
+            },
+            fa : {
+                expand: true,
+                cwd: "bower_components/font-awesome/fonts",
+                dest: "<%= dir.dest %>/fonts",
+                src: ["**/*"]
+            },
+            faCss: {
+                files: {
+                    '<%= dir.dest %>/styles/font-awesome.min.css': 'bower_components/font-awesome/css/font-awesome.min.css'
+                }
             },
             index: {
                 src: '<%= dir.dest %>/index.html',
@@ -39,20 +85,25 @@ module.exports = function(grunt) {
                 dest: '<%= dir.index %>/index-dev.ejs'
             }
         },
-        // Clean the distribution folder.
+        /**
+         * CLEAN -------------------------------------
+         */
         clean: {
             dist: {
                 src: ["<%= dir.dest %>", ".tmp"]
+            },
+            local: {
+                src: ["<%= dir.local %>"]
             },
             tmp: {
                 src: ["<%= dir.dest %>/scripts/_tmp"]
             }
         },
-        // ================ //
-        // Angular Annotate //
-        // ================ //
-        // ng-annotate tries to make the code safe for minification automatically
-        // by using the Angular long form for dependency injection.
+        /**
+         * ANGULAR ANNOTATE --------------------------
+         * ng-annotate tries to make the code safe for minification automatically
+         * by using the Angular long form for dependency injection.
+         */
         ngAnnotate: {
             options: {
                 singleQuotes: true
@@ -66,6 +117,9 @@ module.exports = function(grunt) {
                 }]
             }
         }, // End Angular Annotate
+        /**
+         * LESS --------------------------------------
+         */
         less: {
             options: {
                 cleancss: true
@@ -107,15 +161,29 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        // ========================== //
-        // Wire Dependencies of Bower //
-        // ========================== //
-        wiredep: {
-            task: {
-                src: ['<%= dir.src %>/index.html']
+        /**
+         * POSTCSS Autoprefixer ----------------------
+         * https://github.com/postcss/autoprefixer
+         */
+        postcss: {
+            options: {
+                map: false,
+                processors: [
+                    require('autoprefixer')({
+                        browsers: ['last 3 versions']
+                    })
+                ]
+            },
+            dist: {
+                src: [ '<%= dir.dest %>/styles/main.min.css']
+            },
+            dev: {
+                src: [ '<%= dir.src %>/styles/main.css']
             }
-        }, // End Wiredep
-        // remove production files links from index.html
+        },
+        /**
+         * PROCESS HTML ------------------------------
+         */
         processhtml: {
             options: {},
             files: {
@@ -125,10 +193,9 @@ module.exports = function(grunt) {
                 src: ["index.html"]
             }
         },
-
-        // ===== //
-        // Watch //
-        // ===== //
+        /**
+         * WATCH -------------------------------------
+         */
         watch: {
             options: {
                 livereload: 35734
@@ -142,21 +209,35 @@ module.exports = function(grunt) {
                 },
                 files: [
                     '<%= dir.src %>/**/*.html',
-                    '<%= dir.src %>/styles/**/*.less',
                     '<%= dir.src %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
-                    '<%= dir.src %>/scripts/**/*.js'
-                ]
+                ],
+                tasks: ['copy:local']
+            },
+            scripts: {
+                options: {
+                    livereload: true
+                },
+                files: ['<%= dir.src %>/scripts/**/*.js'],
+                tasks: ['babel:dev', 'replace:local']
+            },
+            styles: {
+                options: {
+                    livereload: true
+                },
+                files: ['<%= dir.src %>/styles/**/*.less'],
+                tasks: ['copy:local']
             },
             index: {
+                options: {
+                    livereload: true
+                },
                 files: [ '<%= dir.src %>/index.html' ],
                 tasks: [ 'copy:indexDev' ]
             }
-
         }, // End Watch
-
-        // ====== //
-        // Usemin //
-        // ====== //
+        /**
+         * USEMIN ------------------------------------
+         */
         useminPrepare: {
             html: ['<%= dir.src %>/index.html'],
             options: {
@@ -165,14 +246,13 @@ module.exports = function(grunt) {
                     html: {
                         steps: {
                             js: ['concat'],
-                            css: ['cssmin']
+                            css: []
                         },
                         post: {}
                     }
                 }
             }
         },
-
         usemin: {
             html: ['<%= dir.dest %>/**/*.html'],
             css: ['<%= dir.dest %>/styles/**/*.css'],
@@ -189,9 +269,45 @@ module.exports = function(grunt) {
                 }
             }
         },// End Usmin
-        // ============= //
-        // File Revision //
-        // ============= //
+        /**
+         * CSSMIN ------------------------------------
+         * https://github.com/gruntjs/grunt-contrib-cssmin
+         */
+        cssmin: {
+            options: {
+                keepSpecialComments: '0'
+            }
+        },
+        /**
+         * REPLACE -----------------------------------
+         */
+        replace: {
+            options: {
+                patterns: [
+                    { match: 'version', replacement: '<%= pkg.version %>' },
+                    { match: 'name', replacement: '<%= pkg.name %>' }
+                ]
+            },
+            local: {
+                files: [{
+                        expand: true,
+                        cwd: '<%= dir.local %>/scripts',
+                        dest: '<%= dir.local %>/scripts',
+                        src: ['**/*.js']
+                    }]
+            },
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= dir.dest %>/scripts',
+                    dest: '<%= dir.dest %>/scripts',
+                    src: ['**/*.js']
+                }]
+            }
+        },
+        /**
+         * FILE REVISION -----------------------------
+         */
         filerev: {
             options: {
                 encoding: 'utf8',
@@ -206,68 +322,14 @@ module.exports = function(grunt) {
                     ]
                 }]
             }
-        }, // End FileRev
-        // ======== //
-        // Compress //
-        // ======== //
-        compress: {
-            dist: {
-                options: {
-                    mode: 'zip',
-                    archive: function() {
-                        var date = new Date();
-                        var dateString = date.getFullYear() + ("0"+(date.getMonth()+1)).slice(-2) + ("0" + date.getDate()).slice(-2)
-                            + "-" + ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2) + ("0" + date.getSeconds()).slice(-2);
-                        return 't1c-demo-webapp-' + dateString + '.zip'
-                    }
-                },
-                expand: true,
-                cwd: '<%= dir.dest %>',
-                src: ['**/*']
-            }
-        }, // End Compress
-        json_generator: {
-            t1tdev: {
-                dest: "<%= dir.dest %>/keycloak.json",
-                options: {
-                    "realm": "T1T-Connector",
-                    "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkhGQQV0fPQtH5dgzxnB0bZnv8QTndRJTClENNTnSqv/1XR/owXek8p+b6dlsGKgrEw02SehzA7lATsYf1/Vod9Uv5N2TjTLIem3E2gCfjdGjVa82By5JyfDRFiLXrn6c/tQ/NworuQC9CRZ2rRqu1LIQOwgLi57wsr8jSimRfNpO8fqesVLZhXJmOZOh2jowcZDpMgaXDGNKvN6GzVdejjhoUZmCkZAqgu9DOW+DphkdQdWznBdZtbyHB7RK0RC4i7D4YOG2INoNoWUaN15NpATzLz8DEzbGUjz3wal0ARn9s0gZjZlHYJfVml1CTeQL1FRhhD6UlfhzcclmgIBHFwIDAQAB",
-                    "auth-server-url": "https://devidp.t1t.be/auth",
-                    "ssl-required": "external",
-                    "resource": "GCL-Demo",
-                    "public-client": true
-                }
-            }
         }
     });
-    // Load  all grunt plugins
-    grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks("grunt-contrib-clean");
-    grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks("grunt-contrib-concat");
-    grunt.loadNpmTasks("grunt-contrib-less");
-    grunt.loadNpmTasks("grunt-processhtml");
-    grunt.loadNpmTasks("grunt-contrib-connect");
-    grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("grunt-ng-annotate");
-    grunt.loadNpmTasks('grunt-wiredep');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-filerev');
-    grunt.loadNpmTasks('grunt-usemin');
-    grunt.loadNpmTasks('grunt-contrib-compress');
-    grunt.loadNpmTasks('grunt-json-generator');
     // Default Task (that can be run by typing only "grunt" in cmd)
     grunt.registerTask("default", 'build');
     grunt.registerTask("cleanBuild", ["clean:dist"]);
-    // grunt.registerTask("build", ["clean:dist", "copy", "less:dist", "uglify", "concat", 'ngAnnotate',"clean:tmp", "processhtml"]);
-    // grunt.registerTask("build", ['clean:dist', "copy", "less:dist", "json_generator:t1tdev", 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'compress']);
-    grunt.registerTask("build", ['clean:dist', 'copy:dist', 'less:dist', 'json_generator:t1tdev', 'useminPrepare', 'concat', 'ngAnnotate', 'uglify', 'filerev', 'usemin', 'copy:index']);
-    grunt.registerTask("dev", ["less:dev"]);
+    grunt.registerTask("build", ['clean:dist', 'copy:dist', 'copy:fa', 'copy:faCss', 'less:dist', 'useminPrepare', 'postcss:dist', 'concat', 'ngAnnotate', 'babel:dist', 'replace:dist', 'uglify', 'filerev', 'usemin', 'copy:index']);
     grunt.registerTask("html", ["processhtml"]);
-    grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {
-        if (target === 'dist') {
-            return grunt.task.run(['build']);
-        }
-        grunt.task.run(['watch']);
+    grunt.registerTask('serve', 'Compile then watch for changes to files', function() {
+        grunt.task.run(['clean:local', 'copy:local', 'copy:indexDev', 'babel:dev', 'replace:local', 'watch']);
     });
 };

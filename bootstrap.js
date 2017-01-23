@@ -71,7 +71,7 @@ function initializeExpress(callback) {
 
     // Set public folder
     if (_.includes(DEV_ENVS, process.env.NODE_ENV.toLowerCase())) {
-        app.use('/' , express.static(__dirname + '/client'));
+        app.use('/' , express.static(__dirname + '/.local'));
         app.use('/bower_components', express.static(__dirname + '/bower_components'));
     } else app.use('/' , express.static(__dirname + '/dist'));
 
