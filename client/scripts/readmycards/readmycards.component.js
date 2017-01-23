@@ -228,7 +228,7 @@
                             validFrom: moment(controller.rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
                             validUntil: moment(controller.rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
                             printDate: moment().format('MMMM D, YYYY'),
-                            printedBy: 'ReadMyCards.eu v1.2.9'
+                            printedBy: '@@name v@@version'
                         };
                         let printScope = angular.extend($rootScope.$new(), data);
                         let element = $compile($('<div>' + template + '</div>'))(printScope);
