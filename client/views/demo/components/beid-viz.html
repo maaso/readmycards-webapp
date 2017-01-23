@@ -36,32 +36,34 @@
     <div class="certificates-toggle col-sm-12">
         <span class="text-small" ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.loadingCerts ? 'Loading...' : $ctrl.certData ? 'Hide Certificates': 'Show Certificates'}}</span>
     </div>
-    <div uib-collapse="$ctrl.doCollapse || !$ctrl.certData">
-        <div class="certificates col-sm-12">
-            <span class="size-h3 text-primary">Certificates</span>
-            <div class="col-sm-12" ng-if="$ctrl.certData.root_certificate">
-                <h4 class="text-info text-light">Root</h4>
-                <pre>{{ $ctrl.certData.root_certificate }}</pre>
-            </div>
+    <div>
+        <div uib-collapse="$ctrl.doCollapse || !$ctrl.certData">
+            <div class="certificates col-sm-12">
+                <span class="size-h3 text-primary">Certificates</span>
+                <div class="col-sm-12" ng-if="$ctrl.certData.root_certificate">
+                    <h4 class="text-info text-light">Root</h4>
+                    <pre>{{ $ctrl.certData.root_certificate }}</pre>
+                </div>
 
-            <div class="col-sm-12" ng-if="$ctrl.certData.citizen_certificate">
-                <h4 class="text-info text-light">Citizen</h4>
-                <pre>{{ $ctrl.certData.citizen_certificate }}</pre>
-            </div>
+                <div class="col-sm-12" ng-if="$ctrl.certData.citizen_certificate">
+                    <h4 class="text-info text-light">Citizen</h4>
+                    <pre>{{ $ctrl.certData.citizen_certificate }}</pre>
+                </div>
 
-            <div class="col-sm-12" ng-if="$ctrl.certData.authentication_certificate">
-                <h4 class="text-info text-light">Authentication</h4>
-                <pre>{{ $ctrl.certData.authentication_certificate }}</pre>
-            </div>
+                <div class="col-sm-12" ng-if="$ctrl.certData.authentication_certificate">
+                    <h4 class="text-info text-light">Authentication</h4>
+                    <pre>{{ $ctrl.certData.authentication_certificate }}</pre>
+                </div>
 
-            <div class="col-sm-12" ng-if="$ctrl.certData.non_repudiation_certificate">
-                <h4 class="text-info text-light">Non Repudiation</h4>
-                <pre>{{ $ctrl.certData.non_repudiation_certificate }}</pre>
-            </div>
+                <div class="col-sm-12" ng-if="$ctrl.certData.non_repudiation_certificate">
+                    <h4 class="text-info text-light">Non Repudiation</h4>
+                    <pre>{{ $ctrl.certData.non_repudiation_certificate }}</pre>
+                </div>
 
-            <div class="col-sm-12" ng-if="$ctrl.certData.rrn_certificate">
-                <h4 class="text-info text-light">RRN</h4>
-                <pre>{{ $ctrl.certData.rrn_certificate }}</pre>
+                <div class="col-sm-12" ng-if="$ctrl.certData.rrn_certificate">
+                    <h4 class="text-info text-light">RRN</h4>
+                    <pre>{{ $ctrl.certData.rrn_certificate }}</pre>
+                </div>
             </div>
         </div>
     </div>
