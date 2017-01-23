@@ -179,12 +179,8 @@
 
                 controller.toggleCerts = () => {
                     if (controller.certData) {
-                        controller.doCollapse = true;
-                        $timeout(() => {
-                            controller.certData = undefined;
-                        }, 500);
-                    }
-                    else {
+                        controller.certData = undefined;
+                    } else {
                         if (!controller.loadingCerts) {
                             controller.loadingCerts = true;
                             T1C.getAllCerts($stateParams.readerId).then(res => {
@@ -192,7 +188,6 @@
                                 controller.certData = res.data;
                             });
                         }
-
                     }
                 };
 
