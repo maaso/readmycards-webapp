@@ -7,6 +7,10 @@ ReadMyCards is a simple webapp that reads the contents of your smartcards using 
 
 ## Changelog
 
+### v1.2.0
+
+* Complete overhauld of Belgian eID visualization: "Virtual card" view; now checks certificate validity and can verify pin code if desired.
+
 ### v1.1.3
 
 * Update T1C-JS lib to version 1.0.2 to fix error where activation of a new installation would fail, blocking the application.
