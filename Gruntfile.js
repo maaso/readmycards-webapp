@@ -218,7 +218,7 @@ module.exports = function(grunt) {
                     livereload: true
                 },
                 files: ['<%= dir.src %>/scripts/**/*.js'],
-                tasks: ['babel:dev']
+                tasks: ['babel:dev', 'replace:local']
             },
             styles: {
                 options: {
@@ -279,6 +279,33 @@ module.exports = function(grunt) {
             }
         },
         /**
+         * REPLACE -----------------------------------
+         */
+        replace: {
+            options: {
+                patterns: [
+                    { match: 'version', replacement: '<%= pkg.version %>' },
+                    { match: 'name', replacement: '<%= pkg.name %>' }
+                ]
+            },
+            local: {
+                files: [{
+                        expand: true,
+                        cwd: '<%= dir.local %>/scripts',
+                        dest: '<%= dir.local %>/scripts',
+                        src: ['**/*.js']
+                    }]
+            },
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= dir.dest %>/scripts',
+                    dest: '<%= dir.dest %>/scripts',
+                    src: ['**/*.js']
+                }]
+            }
+        },
+        /**
          * FILE REVISION -----------------------------
          */
         filerev: {
@@ -300,9 +327,9 @@ module.exports = function(grunt) {
     // Default Task (that can be run by typing only "grunt" in cmd)
     grunt.registerTask("default", 'build');
     grunt.registerTask("cleanBuild", ["clean:dist"]);
-    grunt.registerTask("build", ['clean:dist', 'copy:dist', 'copy:fa', 'copy:faCss', 'less:dist', 'useminPrepare', 'postcss:dist', 'concat', 'ngAnnotate', 'babel:dist', 'uglify', 'filerev', 'usemin', 'copy:index']);
+    grunt.registerTask("build", ['clean:dist', 'copy:dist', 'copy:fa', 'copy:faCss', 'less:dist', 'useminPrepare', 'postcss:dist', 'concat', 'ngAnnotate', 'babel:dist', 'replace:dist', 'uglify', 'filerev', 'usemin', 'copy:index']);
     grunt.registerTask("html", ["processhtml"]);
     grunt.registerTask('serve', 'Compile then watch for changes to files', function() {
-        grunt.task.run(['clean:local', 'copy:local', 'copy:indexDev', 'babel:dev', 'watch']);
+        grunt.task.run(['clean:local', 'copy:local', 'copy:indexDev', 'babel:dev', 'replace:local', 'watch']);
     });
 };

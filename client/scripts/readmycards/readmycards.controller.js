@@ -3,6 +3,7 @@
 
     angular.module('app.readmycards')
         .controller('ModalCtrl', modalCtrl)
+        .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
         .controller('RootCtrl', rootCtrl)
         .controller('ReaderCtrl', readerCtrl);
 
@@ -18,6 +19,56 @@
         function cancel() {
             $uibModalInstance.dismiss("cancel");
         }
+    }
+
+    function modalPinCheckCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, T1C, _) {
+        $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        $scope.pincode = '';
+        $scope.pinpad = pinpad;
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+        $scope.onKeyPressed = onKeyPressed;
+
+        init();
+
+        function init() {
+            // If pinpad reader, send verification request directly to reader
+            if (pinpad) {
+                T1C.verifyBeIDPin(readerId).then(handleVerificationSuccess, handleVerificationError)
+            }
+            // else, wait until user enters pin
+        }
+
+        function handleVerificationSuccess(res) {
+            $uibModalInstance.close('verified');
+        }
+
+        function handleVerificationError(err) {
+            $uibModalInstance.dismiss(err.data);
+        }
+
+        function ok() {
+            $uibModalInstance.close('ok');
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        function onKeyPressed(data) {
+            if (data == '<') {
+                if (_.isEmpty($scope.pincode)) $uibModalInstance.dismiss('cancel');
+                else $scope.pincode = $scope.pincode.slice(0, $scope.pincode.length - 1);
+            } else if (data == '>') {
+                T1C.verifyBeIDPin(readerId, $scope.pincode).then(handleVerificationSuccess, handleVerificationError);
+            } else {
+                $scope.pincode += data;
+            }
+        }
+
+        $scope.$on(EVENTS.START_OVER, () => {
+            $scope.cancel();
+        })
     }
 
     function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _) {

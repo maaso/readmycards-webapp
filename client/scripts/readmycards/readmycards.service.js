@@ -3,7 +3,9 @@
 
     angular.module('app.readmycards')
         .service('T1C', ConnectorService)
+        .service('BeID', BeID)
         .service('CardService', CardService)
+        .service('CheckDigit', CheckDigit)
         .service('RMC', ReadMyCardsService)
         .service('API', API);
 
@@ -546,6 +548,48 @@
 
         function version() {
             return connector.core().version();
+        }
+    }
+
+    function BeID() {
+        this.formatCardNumber = formatCardNumber;
+        this.formatRRNR =formatRRNR;
+
+        function formatCardNumber(card) {
+            return card.substr(0,3) + '-' + card.substr(3,7) + '-' + card.substr(10,2);
+        }
+
+        function formatRRNR(rrnrString) {
+            return rrnrString.substr(0, 2) + '.' + rrnrString.substr(2, 2) + '.' + rrnrString.substr(4,2) + '-' + rrnrString.substr(6,3) + '.' + rrnrString.substr(9,2);
+        }
+    }
+
+    function CheckDigit(_) {
+        this.calc = calculateCheckDigit;
+
+        const dict = { '<': 0, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
+            'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, 'G': 16, 'H': 17, 'I': 18, 'J': 19,
+            'K': 20, 'L': 21, 'M': 22, 'N': 23, 'O': 24, 'P': 25, 'Q': 26, 'R': 27, 'S': 28, 'T': 29, 'U': 30, 'V': 31,
+            'W': 32, 'X': 33, 'Y': 34, 'Z': 35
+        };
+
+        function calculateCheckDigit(string) {
+            return _.sum(_.map(_.map(string, (letter) => {
+                return dict[letter.toUpperCase()];
+            }), (val, index) => {
+                let weighted = val;
+                switch (index % 3) {
+                    case 0:
+                        weighted = val * 7;
+                        break;
+                    case 1:
+                        weighted = val * 3;
+                        break;
+                    case 2:
+                        break;
+                }
+                return weighted;
+            })) % 10;
         }
     }
 

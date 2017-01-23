@@ -1,16 +1,133 @@
 <div class="beid-card">
     <div class="front">
+        <div class="specimen text-uppercase">Specimen</div>
         <div class="header">
-
+            <div class="lang nl">
+                <span class="text-uppercase belgium">belgië</span>
+                <span class="text-uppercase id-card">identiteitskaart</span>
+            </div>
+            <div class="lang fr">
+                <span class="text-uppercase belgium">belgique</span>
+                <span class="text-uppercase id-card">carte d'identité</span>
+            </div>
+            <div class="lang de">
+                <span class="text-uppercase belgium">belgien</span>
+                <span class="text-uppercase id-card">personalausweis</span>
+            </div>
+            <div class="lang en">
+                <span class="text-uppercase belgium">belgium</span>
+                <span class="text-uppercase id-card">identity card</span>
+            </div>
         </div>
 
+        <div class="content">
+            <div class="names section">
+                <div class="labels inline">
+                    <div class="name">Naam/<i>Name</i></div>
+                    <div class="given-names">Voornamen/<i>Given names</i></div>
+                </div>
 
-        <div class="pic">
-            <img ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.picData }}" width="70" height="100"/>
+                <div class="values inline">
+                    <div class="name">{{$ctrl.rnData.name}}</div>
+                    <div class="given-names">{{$ctrl.rnData.first_names}} {{$ctrl.rnData.third_name}}</div>
+                </div>
+            </div>
+
+            <div class="birth-sex section">
+                <div class="chip inline"></div>
+                <div class="birth-sex-block inline">
+                    <div class="birth-sex-wrapper">
+                        <div class="birth-date inline">
+                            <div class="labels">
+                                <div>Geboorteplaats en -datum/<i>Place and date of birth</i></div>
+                            </div>
+                            <div class="values">
+                                <div>{{$ctrl.rnData.birth_location}}&nbsp;&nbsp;{{$ctrl.rnData.birth_date}}</div>
+                            </div>
+                        </div>
+                        <div class="sex inline">
+                            <div class="labels">
+                                <div>Geslacht/<i>Sex</i></div>
+                            </div>
+                            <div class="values">
+                                <div class="sex-value">{{$ctrl.rnData.sex}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="other">
+                <div class="nat-validity-sig inline">
+                    <div>
+                        <div class="chip inline"></div>
+                        <div class="nationality inline section">
+                            <div class="labels inline">
+                                <div>Nationaliteit</div>
+                                <div><i>Nationality</i></div>
+                            </div>
+                            <div class="values inline">
+                                <div>&nbsp;</div>
+                                <div class="text-uppercase">{{$ctrl.rnData.nationality}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="chip inline"></div>
+                        <div class="card-no inline section">
+                            <div class="labels">
+                                <div>Kaartnr./<i>Card No</i></div>
+                            </div>
+                            <div class="values">
+                                <div>{{$ctrl.formattedCardNumber}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="validity inline section">
+                        <div class="labels">
+                            <div>Geldig van - tot/<i>Valid from - until</i></div>
+                        </div>
+                        <div class="values">
+                            <div>{{$ctrl.rnData.card_validity_date_begin}} - {{$ctrl.rnData.card_validity_date_end}}</div>
+                        </div>
+                    </div>
+                    <div class="signature"></div>
+                </div>
+                <div class="pic inline">
+                    <img class="pic-img" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.picData }}"/>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="back">
+        <div class="specimen text-uppercase">Specimen</div>
+        <div class="rrnr-barcode section">
+            <div class="rrnr inline">
+                <div class="labels">
+                    <div>Identificatienummer van het Rijksregister</div>
+                    <div><i>Identification number of the National Register</i></div>
+                </div>
+                <div class="values">
+                    <div>{{$ctrl.formattedRRNR}}</div>
+                </div>
+            </div>
+            <div class="barcode inline">
+                <div class="barcode-wrapper">{{$ctrl.rnData.national_number}}{{$ctrl.rnData.card_number.substr(3)}}</div>
+            </div>
+        </div>
 
+        <div class="issuer section">
+            <div class="issuer-place labels">
+                <div>Plaats van afgifte/<i>Place of issue</i></div>
+            </div>
+            <div class="values">{{$ctrl.rnData.card_delivery_municipality}}</div>
+        </div>
+
+        <div class="machine-readable-zone">
+            <div>{{$ctrl.machineReadable1}}</div>
+            <div>{{$ctrl.machineReadable2}}</div>
+            <div>{{$ctrl.machineReadable3}}</div>
+        </div>
     </div>
 </div>
