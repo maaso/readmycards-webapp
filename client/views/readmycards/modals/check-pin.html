@@ -1,0 +1,26 @@
+<div class="modal-body">
+
+    <div class="text-center waiting-for-pin" ng-if="pinpad">
+        <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
+        <p class="spinner-text text-thin">Waiting for response from reader...</p>
+        <h3 class="text-primary text-thin">Use your reader's pinpad to enter the PIN code.</h3>
+    </div>
+
+    <div ng-if="!pinpad">
+        <h3 class="text-center text-info mb20">Enter PIN code</h3>
+        <form class="form-horizontal" role="form" id="askForPinCodeForm" name="askForPinCodeForm">
+            <div class="form-group">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <input id="pinCode" name="pinCode" type="password" class="keypad-display" data-ng-model="pincode" data-ng-keyup="$event.keyCode == 13 && ok()" data-focus-on="eidPinInput" autocomplete="off"/>
+                    <ng-keypad on-key-pressed='onKeyPressed'>
+                        <ng-key ng-repeat='key in keys' ng-key-data='key'>{{key}}</ng-key>
+                        <ng-key class="keypad-cancel" ng-key-data='"<"'>C</ng-key>
+                        <ng-key ng-key-data='0'>0</ng-key>
+                        <ng-key class="keypad-ok" ng-key-data='">"'>OK</ng-key>
+                    </ng-keypad>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>

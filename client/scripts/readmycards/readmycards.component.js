@@ -9,11 +9,36 @@
         controller: function () {
             let controller = this;
             controller.$onChanges = () => {
-                if (controller.status === 'checking') controller.infoText = 'Validating card certificates... please wait.';
+                if (controller.status === 'checking') controller.infoText = 'Validating card certificates...';
                 if (controller.status === 'valid') controller.infoText = 'All certificates OK. Card is valid.';
-                if (controller.status === 'invalid') controller.infoText = 'Certificate validation failed. Card is invalid.';
+                if (controller.status === 'invalid') controller.infoText = 'Certificate check failed. Card invalid.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
             };
+        }
+    };
+
+    const beidPinCheckStatus = {
+        templateUrl: 'views/demo/components/pin-check-status.html',
+        bindings: {
+            status: '<'
+        },
+        require: {
+            parent: '^beidVisualizer'
+        },
+        controller: function (_) {
+            let controller = this;
+            controller.$onChanges = () => {
+                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
+                if (controller.status === 'valid') controller.infoText = 'PIN check OK.';
+                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
+                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
+                if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
+                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+            };
+
+            controller.checkPin = () => {
+                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
+            }
         }
     };
 
@@ -154,12 +179,13 @@
                 addressData: '<',
                 picData: '<',
             },
-            controller: function ($rootScope, $compile, $http, $stateParams, $timeout, BeID, T1C) {
+            controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeID, T1C) {
                 let controller = this;
 
                 controller.$onInit = () => {
-                    controller.status = 'checking';
-                    let filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
+                    controller.certStatus = 'checking';
+                    controller.pinStatus = 'idle';
+                    const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
                     T1C.getAllCerts($stateParams.readerId, filter).then(res => {
                         let validationReq = {
                             certificateChain: [
@@ -169,12 +195,46 @@
                             ]
                         };
                         T1C.validateCertificateChain(validationReq).then(res => {
-                            if (res.crlResponse.status && res.ocspResponse.status) controller.status = 'valid';
-                            else controller.status = 'invalid';
+                            if (res.crlResponse.status && res.ocspResponse.status) controller.certStatus = 'valid';
+                            else controller.certStatus = 'invalid';
                         }, () => {
-                            controller.status = 'error';
+                            controller.certStatus = 'error';
                         });
                     })
+                };
+
+                controller.checkPin = () => {
+                    let modal = $uibModal.open({
+                        templateUrl: "views/readmycards/modals/check-pin.html",
+                        resolve: {
+                            readerId: () => {
+                                return $stateParams.readerId
+                            },
+                            pinpad: () => {
+                                return T1C.getReader($stateParams.readerId).then(function (res) {
+                                    return res.data.pinpad;
+                                })
+                            }
+                        },
+                        backdrop: 'static',
+                        controller: 'ModalPinCheckCtrl'
+                    });
+
+                    modal.result.then(function () {
+                        controller.pinStatus = 'valid';
+                    }, function (err) {
+                        switch (err.code) {
+                            case 103:
+                                controller.pinStatus = '2remain';
+                                break;
+                            case 104:
+                                controller.pinStatus = '1remain';
+                                break;
+                            case 105:
+                                controller.pinStatus = 'blocked';
+                                break;
+                        }
+                    });
                 };
 
                 controller.toggleCerts = () => {
@@ -241,6 +301,7 @@
             }
         })
         .component('beidCertificateStatus', beidCertificateStatus)
+        .component('beidPinCheckStatus', beidPinCheckStatus)
         .component('beidCard', beidCard)
         .component('emvVisualizer', {
             templateUrl: 'views/demo/components/emv-viz.html',

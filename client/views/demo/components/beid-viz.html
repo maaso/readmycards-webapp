@@ -1,6 +1,9 @@
 <div id="beid-viz" class="clearfix top-info">
 
-    <beid-certificate-status status="$ctrl.status"></beid-certificate-status>
+    <div class="status-wrapper">
+        <beid-certificate-status status="$ctrl.certStatus"></beid-certificate-status>
+        <beid-pin-check-status status="$ctrl.pinStatus"></beid-pin-check-status>
+    </div>
 
     <beid-card rn-data="$ctrl.rnData" pic-data="$ctrl.picData"></beid-card>
 
