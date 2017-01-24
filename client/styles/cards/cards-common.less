@@ -1,0 +1,67 @@
+@font-face {
+  font-family: "Barcode";
+  src: url("../fonts/3of9.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "OCR-B";
+  src: url("../fonts/ocrb.ttf") format("truetype");
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+
+  &.two-sided {
+    justify-content: space-between;
+
+    .front {
+      margin-right: 5px;
+    }
+
+    .back {
+      margin-left: 5px;
+    }
+
+    @media (max-width: 1206px) {
+      justify-content: center;
+      .front, .back {
+        margin: 5px;
+      }
+    }
+  }
+
+  .front, .back {
+    width: 86 * 6px;
+    height: 54 * 6px;
+    border: 1px solid #999;
+    color: #333;
+    border-radius: 10px;
+    flex-shrink: 0;
+    margin: 5px 0;
+    position: relative;
+
+    .specimen {
+      position: absolute;
+      font-size: 90px;
+      font-weight: bold;
+      text-align: center;
+      top: 160px;
+      bottom: 0;
+      left: 40px;
+      right: 0;
+      height: 324px;
+      width: 516px;
+      margin: auto;
+      opacity: .075;
+      transform: rotate(-30deg);
+    }
+  }
+
+  .inline {
+    display: inline-block;
+  }
+}

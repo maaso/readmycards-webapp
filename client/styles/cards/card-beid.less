@@ -72,14 +72,9 @@
 }
 
 .beid-card {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-content: center;
   font-family: Arial, sans-serif;
-
   @chip-width: 132px;
+
 
   .labels {
     font-size: 0.75em;
@@ -94,40 +89,7 @@
     padding-top: 5px;
   }
 
-  .inline {
-    display: inline-block;
-  }
-
-  .front, .back {
-    width: 86 * 6px;
-    height: 54 * 6px;
-    border: 1px solid #999;
-    color: #333;
-    border-radius: 10px;
-    flex-shrink: 0;
-    margin: 5px 0;
-    position: relative;
-
-    .specimen {
-      position: absolute;
-      font-size: 90px;
-      font-weight: bold;
-      text-align: center;
-      top: 160px;
-      bottom: 0;
-      left: 40px;
-      right: 0;
-      height: 324px;
-      width: 516px;
-      margin: auto;
-      opacity: .075;
-      transform: rotate(-30deg);
-    }
-  }
-
   .front {
-    position: relative;
-    margin-right: 5px;
 
     .header {
       height: 15%;
@@ -210,7 +172,6 @@
 
   .back {
     padding: 10px 20px;
-    margin-left: 5px;
 
     .rrnr {
       .labels {
@@ -238,12 +199,5 @@
       font-size: 1.8em;
     }
 
-  }
-
-  @media (max-width: 1206px) {
-    justify-content: center;
-    .front, .back {
-      margin: 5px;
-    }
   }
 }
