@@ -5,6 +5,138 @@
 .mobib-card {
   font-family: Arial, sans-serif;
 
+  &.mobib-delijn {
+    .front {
+      //background-image: url('../images/mobib-delijn.jpg');
+      background-size: cover;
+    }
+
+    .delijn-content {
+      margin-left: 150px;
+      font-size: 16px;
+
+      .card-info {
+        margin-top: 60px;
+      }
+
+      .personal-info {
+        font-family: "Arial Narrow", sans-serif;
+        font-weight: bold;
+        margin-top: 75px;
+        line-height: 1.25;
+      }
+    }
+
+    .delijn-picture-wrapper {
+      position: absolute;
+      top: 30px;
+      right: 55px;
+      //border: 1px solid red;
+      padding-top: 15px;
+      padding-bottom: 5px;
+
+      .delijn-pic {
+        max-width: 120px;
+      }
+    }
+
+    .delijn-logo-wrapper {
+      position: absolute;
+      top: 10px;
+      left: 42px;
+
+      .delijn-logo {
+        max-height: 84px;
+      }
+    }
+
+    .mobib-logo-wrapper {
+      position: absolute;
+      bottom: 3px;
+      left: 46px;
+
+      .mobib-logo {
+        max-height: 31px;
+      }
+    }
+
+  }
+
+  &.mobib-mivb {
+    .front {
+      //background-image: url('../images/mobib-mivb.jpg');
+      background-size: cover;
+
+      .mivb-content {
+        position: relative;
+        height: 100%;
+        padding: 27px 27px 0 27px;
+
+        .mobib-logo-wrapper {
+          .mobib-logo {
+            max-height: 75px;
+          }
+        }
+
+        .mivb-inset {
+          margin-left: 115px;
+
+          .card-info {
+            margin-top: 28px;
+            line-height: 0.95;
+            font-size: 18px;
+          }
+
+          .names {
+            margin-top: 18px;
+            font-weight: bold;
+            font-size: 22px;
+            line-height: 1.1;
+          }
+        }
+
+        .serial-numbers {
+          font-weight: bold;
+          font-size: 15px;
+
+          .serial-number {
+            position: absolute;
+            bottom: 1px;
+          }
+
+          .short-serial {
+            position: absolute;
+            right: 25px;
+            bottom: 1px;
+          }
+        }
+
+      }
+
+      .mivb-picture-wrapper {
+        position: absolute;
+        top: 30px;
+        right: 32px;
+
+        .mivb-pic {
+          padding-top: 35px;
+          max-width: 128px;
+        }
+      }
+
+      .mivb-logo-wrapper {
+        position: absolute;
+        bottom: 28px;
+        right: 18px;
+
+        .mivb-logo {
+          max-width: 65px;
+        }
+      }
+    }
+
+  }
+
   &.mobib-nmbs {
     .front {
       padding: 10px 20px;
