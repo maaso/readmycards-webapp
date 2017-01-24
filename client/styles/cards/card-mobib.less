@@ -5,6 +5,82 @@
 .mobib-card {
   font-family: Arial, sans-serif;
 
+  &.mobib-nmbs {
+    .front {
+      padding: 10px 20px;
+      //background-image: url('../images/mobib-nmbs.png');
+      background-size: cover;
+
+      .nmbs-content {
+        margin-left: 25px;
+        margin-top: 5px;
+        font-size: 16px;
+
+        .labels {
+          color: #5a8ebc;
+          filter: grayscale(100%);
+          font-weight: bold;
+        }
+
+        .values {
+          font-family: "PT Sans", sans-serif;
+          font-weight: bold;
+        }
+
+        .names {
+          font-size: 18px;
+          font-weight: bold;
+          line-height: 1.4;
+        }
+
+        .dob-inset {
+          margin-top: 25px;
+
+          .chip {
+            width: 100px;
+          }
+        }
+
+        .card-number {
+          margin-top: 40px;
+          line-height: 1;
+        }
+
+        .card-validity {
+          margin-top: 10px;
+          line-height: 1;
+        }
+
+        .mobib-logo {
+          margin-top: 13px;
+          max-height: 35px;
+        }
+      }
+
+      .nmbs-picture-wrapper {
+        position: absolute;
+        right: 40px;
+        top: 20px;
+
+        .nmbs-pic {
+          padding-top: 25px;
+          background: #fff;
+          max-width: 120px;
+        }
+      }
+
+      .nmbs-logo-wrapper {
+        position: absolute;
+        right: 25px;
+        bottom: 20px;
+
+        .nmbs-logo {
+          max-height: 55px;
+        }
+      }
+    }
+  }
+
   &.mobib-tec {
 
     .front {
