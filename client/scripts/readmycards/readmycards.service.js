@@ -663,7 +663,7 @@
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
                 switch (card.description[0]) {
                     case 'Belgium Electronic ID card':
-                        return 'BeID';
+                        return 'MOBIB';
                     case 'MOBIB Card':
                         return 'MOBIB';
                     case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':

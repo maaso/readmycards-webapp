@@ -8,15 +8,16 @@
   &.mobib-delijn {
     .front {
       //background-image: url('../images/mobib-delijn.jpg');
-      background-size: cover;
+      //background-size: cover;
     }
 
     .delijn-content {
-      margin-left: 150px;
+      margin-left: 152px;
       font-size: 16px;
 
       .card-info {
         margin-top: 60px;
+        letter-spacing: 0.2px;
       }
 
       .personal-info {
@@ -31,7 +32,6 @@
       position: absolute;
       top: 30px;
       right: 55px;
-      //border: 1px solid red;
       padding-top: 15px;
       padding-bottom: 5px;
 
@@ -65,7 +65,7 @@
   &.mobib-mivb {
     .front {
       //background-image: url('../images/mobib-mivb.jpg');
-      background-size: cover;
+      //background-size: cover;
 
       .mivb-content {
         position: relative;
@@ -92,6 +92,11 @@
             font-weight: bold;
             font-size: 22px;
             line-height: 1.1;
+            letter-spacing: 0;
+
+            .dob {
+              letter-spacing: 0.5px;
+            }
           }
         }
 
@@ -141,7 +146,7 @@
     .front {
       padding: 10px 20px;
       //background-image: url('../images/mobib-nmbs.png');
-      background-size: cover;
+      //background-size: cover;
 
       .nmbs-content {
         margin-left: 25px;
@@ -152,11 +157,14 @@
           color: #5a8ebc;
           filter: grayscale(100%);
           font-weight: bold;
+          letter-spacing: 0;
+          font-size: 15px;
         }
 
         .values {
           font-family: "PT Sans", sans-serif;
           font-weight: bold;
+          letter-spacing: 0.2px;
         }
 
         .names {
@@ -175,16 +183,20 @@
 
         .card-number {
           margin-top: 40px;
-          line-height: 1;
+          line-height: 1.2;
+          .values {
+            font-size: 15px;
+            letter-spacing: 0;
+          }
         }
 
         .card-validity {
-          margin-top: 10px;
-          line-height: 1;
+          margin-top: 5px;
+          line-height: 1.25;
         }
 
         .mobib-logo {
-          margin-top: 13px;
+          margin-top: 10px;
           max-height: 35px;
         }
       }
