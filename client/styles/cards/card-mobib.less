@@ -5,10 +5,39 @@
 .mobib-card {
   font-family: Arial, sans-serif;
 
+  &.mobib-basic {
+    .front {
+      background-image: url('../images/mobib-basic-bg.jpg');
+      background-size: cover;
+
+      .specimen {
+        opacity: .2;
+      }
+
+      .serials {
+        font-weight: bold;
+        font-size: 18px;
+
+        .reg-number {
+          position: absolute;
+          left: 25px;
+          bottom: 5px;
+          letter-spacing: 0.1px;
+        }
+        .card-number {
+          position: absolute;
+          right: 25px;
+          bottom: 5px;
+          letter-spacing: 0.1px;
+        }
+      }
+    }
+  }
+
   &.mobib-delijn {
     .front {
-      //background-image: url('../images/mobib-delijn.jpg');
-      //background-size: cover;
+      background-image: url('../images/mobib-delijn-bg.png');
+      background-size: cover;
     }
 
     .delijn-content {
@@ -65,7 +94,14 @@
   &.mobib-mivb {
     .front {
       //background-image: url('../images/mobib-mivb.jpg');
-      //background-size: cover;
+      background-size: cover;
+
+      .chip-icon {
+        width: 62px;
+        height: 55px;
+        top: 120px;
+        left: 60px;
+      }
 
       .mivb-content {
         position: relative;
@@ -147,6 +183,14 @@
       padding: 10px 20px;
       //background-image: url('../images/mobib-nmbs.png');
       //background-size: cover;
+
+      .chip-icon {
+        top: 95px;
+        left: 45px;
+        width: 78px;
+        height: 70px;
+
+      }
 
       .nmbs-content {
         margin-left: 25px;
