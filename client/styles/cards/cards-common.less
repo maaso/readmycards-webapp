@@ -41,12 +41,46 @@
   src: url("../fonts/PTSans-Bold.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Quebec Serial";
+  src: url("../fonts/Quebec-Serial.ttf") format("truetype");
+}
+
+.card,
+.status-wrapper {
+  @media(max-width: 768px) {
+    zoom: 0.95;
+  }
+
+  @media(max-width: 650px) {
+    zoom: 0.90;
+  }
+
+  @media(max-width: 600px) {
+    zoom: 0.85;
+  }
+
+  @media(max-width: 550px) {
+    zoom: 0.80;
+  }
+
+  @media(max-width: 500px) {
+    zoom: 0.75;
+  }
+
+  @media(max-width: 450px) {
+    zoom: 0.70;
+  }
+}
+
 .card {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-content: center;
+
+
 
   &.two-sided {
     justify-content: space-between;
@@ -106,8 +140,35 @@
       z-index: 9999;
     }
   }
+}
 
-  .inline {
+.inline {
+  display: inline-block;
+}
+
+.status-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  @media (max-width: 1206px) {
+    justify-content: center;
+  }
+
+  .card-status {
+    font-size: 24px;
+    border-radius: 5px;
     display: inline-block;
+    width: 516px;
+    flex-grow: 1;
+
+    @media (max-width: 1206px) {
+      margin: 5px;
+    }
+
+    .info-text {
+      margin-left: 10px;
+    }
   }
 }

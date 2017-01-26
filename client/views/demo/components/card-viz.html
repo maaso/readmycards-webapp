@@ -49,14 +49,14 @@
         </div>
 
         <div class="viz-container">
-            <mobib-viz rn-data="$ctrl.cardData.rn" ng-show="$ctrl.cardType === 'MOBIB'"></mobib-viz>
+            <mobib-viz rn-data="$ctrl.cardData.rn" ng-if="$ctrl.cardType === 'MOBIB'"></mobib-viz>
 
             <beid-visualizer rn-data="$ctrl.cardData.rn"
                              address-data="$ctrl.cardData.address"
                              pic-data="$ctrl.cardData.picture"
                              cert-data="$ctrl.cardData"
-                             ng-show="$ctrl.cardType === 'BeID'"></beid-visualizer>
-            <emv-visualizer pan-data="$ctrl.cardData.pan" ng-show="$ctrl.cardType === 'EMV'"></emv-visualizer>
+                             ng-if="$ctrl.cardType === 'BeID'"></beid-visualizer>
+            <emv-visualizer pan-data="$ctrl.cardData.pan" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
         </div>
     </div>
 </div>

@@ -2,6 +2,154 @@
 
 }
 
+.mobib-contract-table {
+
+  tr {
+    &.active {
+      background: lighten(spin(@alert-success-bg, -10), 5%);
+    }
+
+    &.inactive {
+      background: lighten(spin(@alert-danger-bg, -10), 5.5%);
+    }
+  }
+  
+  .additional-info-row {
+
+    color: #555;
+
+    .additional-info {
+      padding: 0 40px;
+
+      .additional-info-wrapper {
+        margin-bottom: 10px;
+        padding: 0 10px;
+        background: #f9f9f9;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border: 1px solid #ddd;
+        border-top: none;
+
+
+        .info-block {
+          background: #f9f9f9;
+          padding: 20px 0 10px;
+          border-bottom: 1px dashed #ccc;
+          position: relative;
+
+          &:last-of-type {
+            border-bottom: none;
+          }
+
+          .info-block-icon {
+            position: absolute;
+            left: -10px;
+            width: 50px;
+            text-align: center;
+          }
+          .info-block-column {
+            width: 100%;
+            margin-top: 5px;
+          }
+        }
+      }
+
+    }
+  }
+
+  .fa, span {
+    &.danger {
+      color: @alert-danger-text;
+    }
+
+    &.success {
+      color: @alert-success-text;
+    }
+  }
+
+  .logos {
+    width: 260px;
+
+    @media(max-width: 992px) {
+      width: 148px;
+    }
+  }
+
+  .logo-wrapper {
+
+    //float: right;
+
+    &.success {
+      .contract-logo {
+        div {
+          border: 1px solid darken(@state-success-bg, 20%);
+        }
+      }
+    }
+
+    &.danger {
+      .contract-logo {
+        div {
+          border: 1px solid darken(@state-danger-bg, 20%);
+        }
+      }
+    }
+
+    .contract-logo {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      background-color: #fff;
+      display: inline-block;
+      position: relative;
+
+      .delijn,
+      .mivb,
+      .nmbs,
+      .tec {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 50px;
+        width: 50px;
+        padding: 2px;
+        border-radius: 50%;
+        border: 1px solid #999;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-origin: content-box;
+      }
+
+      .delijn {
+        padding: 8px;
+        background-image: url("../images/delijn.png");
+      }
+
+      .mivb {
+        padding: 5px;
+        background-image: url("../images/mivb-square.png");
+      }
+
+      .nmbs {
+        background-image: url("../images/nmbs.png");
+      }
+
+      .tec {
+        background-image: url("../images/tec.png");
+      }
+    }
+  }
+
+}
+
+.mobib-active-status {
+  margin-right: 5px;
+}
+
+.mobib-valid-status {
+  margin-left: 5px;
+}
+
 .mobib-card {
   font-family: Arial, sans-serif;
 
