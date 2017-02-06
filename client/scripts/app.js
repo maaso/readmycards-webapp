@@ -10,6 +10,7 @@
         "ui.bootstrap",
         "ui.router",
         'ngKeypad',
+        'angular-google-analytics',
 
         /* custom modules */
         'app.demo',
@@ -18,6 +19,11 @@
 
     ]);
 
+
+    module.config(function (AnalyticsProvider) {
+        // Automatically replaced with correct tracking ID during build
+        AnalyticsProvider.setAccount('@@ga-tracking-id');
+    }).run(['Analytics', function(Analytics) { }]);
 
     module.factory('errorInterceptor', function($q) {
         return {

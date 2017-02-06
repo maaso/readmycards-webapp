@@ -302,7 +302,14 @@ module.exports = function(grunt) {
                     cwd: '<%= dir.dest %>/scripts',
                     dest: '<%= dir.dest %>/scripts',
                     src: ['**/*.js']
-                }]
+                }],
+                options: {
+                    patterns: [
+                        { match: 'ga-tracking-id', replacement: 'UA-91473749-1' },
+                        { match: 'version', replacement: '<%= pkg.version %>' },
+                        { match: 'name', replacement: '<%= pkg.name %>' }
+                    ]
+                }
             }
         },
         /**
