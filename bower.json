@@ -1,6 +1,6 @@
 {
   "name": "readmycards",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "ReadMyCards WebApp",
   "dependencies": {
     "angular": "1.5.5",
