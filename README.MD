@@ -7,6 +7,10 @@ ReadMyCards is a simple webapp that reads the contents of your smartcards using 
 
 ## Changelog
 
+### v1.2.1
+
+* Add Google Analytics tracking
+
 ### v1.2.0
 
 * Complete overhauld of Belgian eID visualization: "Virtual card" view; now checks certificate validity and can verify pin code if desired.
