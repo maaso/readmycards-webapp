@@ -35,7 +35,14 @@ html {
   color: #333;
   max-width: 1200px;
   margin: 0 auto;
-  overflow: auto;
+
+  @media(max-width: 992px) {
+    padding: 10px 10px 50px 10px;
+  }
+
+  @media(max-width: 768px) {
+    padding: 0 0 50px;
+  }
 
   a {
     color: @t1t-green;
@@ -197,6 +204,11 @@ html {
       font-weight: 300;
       text-align: center;
 
+      @media(max-width: 768px) {
+        padding-top: 30px;
+        font-size: 60px;
+      }
+
 
       //&.hit-the-floor {
       //  color: @t1t-green;
@@ -270,10 +282,14 @@ html {
     }
 
     .card-viz {
-      border: 5px solid @t1t-green;
+      border: 2px solid @t1t-green;
       border-radius: 10px;
       text-align: left;
       background: #fff;
+
+      @media(max-width: 768px) {
+        border: none;
+      }
 
       .card-type {
         background: @t1t-green;

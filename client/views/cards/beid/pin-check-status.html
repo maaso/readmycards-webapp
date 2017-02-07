@@ -1,0 +1,12 @@
+<div class="card-status pin-check-status" uib-alert ng-click="$ctrl.checkPin()"
+     ng-class="{ 'alert-muted clickable': $ctrl.status === 'idle',
+      'alert-warning clickable': $ctrl.status === 'error' || $ctrl.status === '2remain' || $ctrl.status === '1remain',
+       'alert-success': $ctrl.status === 'valid',
+        'alert-danger': $ctrl.status === 'blocked' }">
+        <i class="fa fa-lg"
+           ng-class="{ 'fa-question-circle': $ctrl.status === 'idle',
+             'fa-exclamation-triangle': $ctrl.status === 'error' || $ctrl.status === '2remain' || $ctrl.status === '1remain',
+              'fa-check-circle': $ctrl.status === 'valid',
+               'fa-times-circle': $ctrl.status === 'blocked' }"></i>
+        <span class="info-text text-ultralight" ng-bind-html="$ctrl.infoText"></span>
+</div>

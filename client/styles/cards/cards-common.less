@@ -1,0 +1,174 @@
+@font-face {
+  font-family: "Arial";
+  src: url("../fonts/Arial.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Arial";
+  font-weight: bold;
+  src: url("../fonts/Arial Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Arial Narrow";
+  src: url("../fonts/Arial Narrow.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Arial Narrow";
+  font-weight: bold;
+  src: url("../fonts/Arial Narrow Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Barcode";
+  src: url("../fonts/3of9.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "OCR-B";
+  src: url("../fonts/ocrb.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "PT Sans";
+  src: url("../fonts/PTSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "PT Sans";
+  font-weight: bold;
+  src: url("../fonts/PTSans-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Quebec Serial";
+  src: url("../fonts/Quebec-Serial.ttf") format("truetype");
+}
+
+.card,
+.status-wrapper {
+  @media(max-width: 768px) {
+    zoom: 0.95;
+  }
+
+  @media(max-width: 650px) {
+    zoom: 0.90;
+  }
+
+  @media(max-width: 600px) {
+    zoom: 0.85;
+  }
+
+  @media(max-width: 550px) {
+    zoom: 0.80;
+  }
+
+  @media(max-width: 500px) {
+    zoom: 0.75;
+  }
+
+  @media(max-width: 450px) {
+    zoom: 0.70;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+
+
+
+  &.two-sided {
+    justify-content: space-between;
+
+    .front {
+      margin-right: 5px;
+    }
+
+    .back {
+      margin-left: 5px;
+    }
+
+    @media (max-width: 1206px) {
+      justify-content: center;
+      .front, .back {
+        margin: 5px;
+      }
+    }
+  }
+
+  .front, .back {
+    width: 86 * 6px;
+    height: 54 * 6px;
+    border: 1px solid #999;
+    color: #333;
+    border-radius: 10px;
+    flex-shrink: 0;
+    margin: 5px 0;
+    position: relative;
+
+    .chip-icon {
+      position: absolute;
+      top: 100px;
+      left: 50px;
+      width: 80px;
+      height: 72px;
+      background: url('../images/chip.png') center;
+      background-size: cover;
+      filter: grayscale(100%);
+    }
+
+    .specimen {
+      font-family: Arial, sans-serif;
+      position: absolute;
+      font-size: 90px;
+      font-weight: bold;
+      text-align: center;
+      top: 160px;
+      bottom: 0;
+      left: 40px;
+      right: 0;
+      height: 324px;
+      width: 516px;
+      margin: auto;
+      opacity: .075;
+      transform: rotate(-30deg);
+      z-index: 100;
+    }
+  }
+}
+
+.inline {
+  display: inline-block;
+}
+
+.status-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  @media (max-width: 1206px) {
+    justify-content: center;
+  }
+
+  .card-status {
+    font-size: 24px;
+    border-radius: 5px;
+    display: inline-block;
+    width: 516px;
+    flex-grow: 1;
+
+    @media (max-width: 1206px) {
+      margin: 5px;
+    }
+
+    .info-text {
+      margin-left: 10px;
+    }
+  }
+}

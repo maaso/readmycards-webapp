@@ -15,7 +15,8 @@
         /* custom modules */
         'app.demo',
         'app.plugin.lodash',
-        'app.readmycards'
+        'app.readmycards',
+        'app.cards'
 
     ]);
 

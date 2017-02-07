@@ -1,0 +1,510 @@
+#mobib-viz {
+
+}
+
+.mobib-contract-table {
+
+  tr {
+    &.active {
+      background: lighten(spin(@alert-success-bg, -10), 5%);
+    }
+
+    &.inactive {
+      background: lighten(spin(@alert-danger-bg, -10), 5.5%);
+    }
+  }
+  
+  .additional-info-row {
+
+    color: #555;
+
+    .additional-info {
+      padding: 0 40px;
+
+      .additional-info-wrapper {
+        margin-bottom: 10px;
+        padding: 0 10px;
+        background: #f9f9f9;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border: 1px solid #ddd;
+        border-top: none;
+
+
+        .info-block {
+          background: #f9f9f9;
+          padding: 20px 0 10px;
+          border-bottom: 1px dashed #ccc;
+          position: relative;
+
+          &:last-of-type {
+            border-bottom: none;
+          }
+
+          .info-block-icon {
+            position: absolute;
+            left: -10px;
+            width: 50px;
+            text-align: center;
+          }
+          .info-block-column {
+            width: 100%;
+            margin-top: 5px;
+          }
+        }
+      }
+
+    }
+  }
+
+  .fa, span {
+    &.danger {
+      color: @alert-danger-text;
+    }
+
+    &.success {
+      color: @alert-success-text;
+    }
+  }
+
+  .logos {
+    width: 260px;
+
+    @media(max-width: 992px) {
+      width: 148px;
+    }
+  }
+
+  .logo-wrapper {
+
+    //float: right;
+
+    &.success {
+      .contract-logo {
+        div {
+          border: 1px solid darken(@state-success-bg, 20%);
+        }
+      }
+    }
+
+    &.danger {
+      .contract-logo {
+        div {
+          border: 1px solid darken(@state-danger-bg, 20%);
+        }
+      }
+    }
+
+    .contract-logo {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      background-color: #fff;
+      display: inline-block;
+      position: relative;
+
+      .delijn,
+      .mivb,
+      .nmbs,
+      .tec {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 50px;
+        width: 50px;
+        padding: 2px;
+        border-radius: 50%;
+        border: 1px solid #999;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-origin: content-box;
+      }
+
+      .delijn {
+        padding: 8px;
+        background-image: url("../images/delijn.png");
+      }
+
+      .mivb {
+        padding: 5px;
+        background-image: url("../images/mivb-square.png");
+      }
+
+      .nmbs {
+        background-image: url("../images/nmbs.png");
+      }
+
+      .tec {
+        background-image: url("../images/tec.png");
+      }
+    }
+  }
+
+}
+
+.mobib-active-status {
+  margin-right: 5px;
+}
+
+.mobib-valid-status {
+  margin-left: 5px;
+}
+
+.mobib-card {
+  font-family: Arial, sans-serif;
+
+  &.mobib-basic {
+    .front {
+      background-image: url('../images/mobib-basic-bg.jpg');
+      background-size: cover;
+
+      .specimen {
+        opacity: .2;
+      }
+
+      .serials {
+        font-weight: bold;
+        font-size: 18px;
+
+        .reg-number {
+          position: absolute;
+          left: 25px;
+          bottom: 5px;
+          letter-spacing: 0.1px;
+        }
+        .card-number {
+          position: absolute;
+          right: 25px;
+          bottom: 5px;
+          letter-spacing: 0.1px;
+        }
+      }
+    }
+  }
+
+  &.mobib-delijn {
+    .front {
+      background-image: url('../images/mobib-delijn-bg.png');
+      background-size: cover;
+    }
+
+    .delijn-content {
+      margin-left: 152px;
+      font-size: 16px;
+
+      .card-info {
+        margin-top: 60px;
+        letter-spacing: 0.2px;
+      }
+
+      .personal-info {
+        font-family: "Arial Narrow", sans-serif;
+        font-weight: bold;
+        margin-top: 75px;
+        line-height: 1.25;
+      }
+    }
+
+    .delijn-picture-wrapper {
+      position: absolute;
+      top: 30px;
+      right: 55px;
+      padding-top: 15px;
+      padding-bottom: 5px;
+
+      .delijn-pic {
+        max-width: 120px;
+      }
+    }
+
+    .delijn-logo-wrapper {
+      position: absolute;
+      top: 10px;
+      left: 42px;
+
+      .delijn-logo {
+        max-height: 84px;
+      }
+    }
+
+    .mobib-logo-wrapper {
+      position: absolute;
+      bottom: 3px;
+      left: 46px;
+
+      .mobib-logo {
+        max-height: 31px;
+      }
+    }
+
+  }
+
+  &.mobib-mivb {
+    .front {
+      //background-image: url('../images/mobib-mivb.jpg');
+      background-size: cover;
+
+      .chip-icon {
+        width: 62px;
+        height: 55px;
+        top: 120px;
+        left: 60px;
+      }
+
+      .mivb-content {
+        position: relative;
+        height: 100%;
+        padding: 27px 27px 0 27px;
+
+        .mobib-logo-wrapper {
+          .mobib-logo {
+            max-height: 75px;
+          }
+        }
+
+        .mivb-inset {
+          margin-left: 115px;
+
+          .card-info {
+            margin-top: 28px;
+            line-height: 0.95;
+            font-size: 18px;
+          }
+
+          .names {
+            margin-top: 18px;
+            font-weight: bold;
+            font-size: 22px;
+            line-height: 1.1;
+            letter-spacing: 0;
+
+            .dob {
+              letter-spacing: 0.5px;
+            }
+          }
+        }
+
+        .serial-numbers {
+          font-weight: bold;
+          font-size: 15px;
+
+          .serial-number {
+            position: absolute;
+            bottom: 1px;
+          }
+
+          .short-serial {
+            position: absolute;
+            right: 25px;
+            bottom: 1px;
+          }
+        }
+
+      }
+
+      .mivb-picture-wrapper {
+        position: absolute;
+        top: 30px;
+        right: 32px;
+
+        .mivb-pic {
+          padding-top: 35px;
+          max-width: 128px;
+        }
+      }
+
+      .mivb-logo-wrapper {
+        position: absolute;
+        bottom: 28px;
+        right: 18px;
+
+        .mivb-logo {
+          max-width: 65px;
+        }
+      }
+    }
+
+  }
+
+  &.mobib-nmbs {
+    .front {
+      padding: 10px 20px;
+      //background-image: url('../images/mobib-nmbs.png');
+      //background-size: cover;
+
+      .chip-icon {
+        top: 95px;
+        left: 45px;
+        width: 78px;
+        height: 70px;
+
+      }
+
+      .nmbs-content {
+        margin-left: 25px;
+        margin-top: 5px;
+        font-size: 16px;
+
+        .labels {
+          color: #5a8ebc;
+          filter: grayscale(100%);
+          font-weight: bold;
+          letter-spacing: 0;
+          font-size: 15px;
+        }
+
+        .values {
+          font-family: "PT Sans", sans-serif;
+          font-weight: bold;
+          letter-spacing: 0.2px;
+        }
+
+        .names {
+          font-size: 18px;
+          font-weight: bold;
+          line-height: 1.4;
+        }
+
+        .dob-inset {
+          margin-top: 25px;
+
+          .chip {
+            width: 100px;
+          }
+        }
+
+        .card-number {
+          margin-top: 40px;
+          line-height: 1.2;
+          .values {
+            font-size: 15px;
+            letter-spacing: 0;
+          }
+        }
+
+        .card-validity {
+          margin-top: 5px;
+          line-height: 1.25;
+        }
+
+        .mobib-logo {
+          margin-top: 10px;
+          max-height: 35px;
+        }
+      }
+
+      .nmbs-picture-wrapper {
+        position: absolute;
+        right: 40px;
+        top: 20px;
+
+        .nmbs-pic {
+          padding-top: 25px;
+          background: #fff;
+          max-width: 120px;
+        }
+      }
+
+      .nmbs-logo-wrapper {
+        position: absolute;
+        right: 25px;
+        bottom: 20px;
+
+        .nmbs-logo {
+          max-height: 55px;
+        }
+      }
+    }
+  }
+
+  &.mobib-tec {
+
+    .front {
+      padding: 10px 20px;
+      //background-image: url('../images/mobib-tec.jpg');
+      //background-size: cover;
+
+
+      .tec-header {
+        height: 70px;
+        text-align: right;
+        .logos {
+
+          .tec-logo {
+            margin-top: 5px;
+            margin-right: 4px;
+            max-height: 60px;
+            border: 1px solid #bbb;
+            border-radius: 50%;
+          }
+
+          .nfc-logo {
+            padding-top: 4px;
+            max-height: 70px;
+          }
+        }
+      }
+
+      .content {
+        margin-top: 20px;
+        .chip-mobib {
+          height: 100%;
+          width: 120px;
+
+          .mobib-logo {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            max-height: 40px;
+          }
+        }
+
+        .tec-content {
+          margin-left: 10px;
+
+          .tec-picture {
+            border: 1px solid #bbb;
+            vertical-align: top;
+            .pic {
+              padding-top: 50px;
+              padding-bottom: 1px;
+              max-width: 125px;
+            }
+          }
+
+          .tec-info {
+            margin-top: 4px;
+            padding-left: 10px;
+            line-height: 1.3;
+            .personal-info {
+              margin-top: 30px;
+              .names {
+                font-size: 16.5px;
+                font-weight: bold;
+              }
+
+              .dob {
+                font-size: 16.5px;
+              }
+
+            }
+
+            .card-info {
+              margin-top: 18px;
+              line-height: 1.25;
+            }
+
+            .expiration {
+              margin-top: 50px;
+              font-size: small;
+            }
+          }
+        }
+
+      }
+
+
+    }
+  }
+
+}

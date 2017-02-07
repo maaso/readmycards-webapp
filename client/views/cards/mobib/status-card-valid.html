@@ -1,0 +1,4 @@
+<div uib-alert class="card-status mobib-valid-status alert alert-{{$ctrl.status}}">
+    <i class="fa fa-lg" ng-class="{ 'fa-exclamation-triangle': $ctrl.status === 'warning', 'fa-check-circle': $ctrl.status === 'success', 'fa-times-circle': $ctrl.status === 'danger' }"></i>
+    <span class="info-text text-ultralight" ng-bind-html="$ctrl.infoText"></span>
+</div>
