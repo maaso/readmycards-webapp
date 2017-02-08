@@ -100,31 +100,21 @@
                 doc.close();
             }
 
-            controller.printSummary = () => {
-                $http.get('views/demo/components/summary.html').success(function(template) {
-                    let data = {
-                        rnData: controller.rnData,
-                        address: controller.addressData,
-                        pic: controller.picData,
-                        dob: moment(controller.rnData.national_number.substr(0,6), 'YYMMDD').format('MMMM D, YYYY'),
-                        formattedCardNumber: BeID.formatCardNumber(controller.rnData.card_number),
-                        formattedRRNR: BeID.formatRRNR(controller.rnData.national_number),
-                        validFrom: moment(controller.rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                        validUntil: moment(controller.rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                        printDate: moment().format('MMMM D, YYYY'),
-                        printedBy: '@@name v@@version'
-                    };
-                    let printScope = angular.extend($rootScope.$new(), data);
-                    let element = $compile($('<div>' + template + '</div>'))(printScope);
-                    let waitForRenderAndPrint = function() {
-                        if(printScope.$$phase || $http.pendingRequests.length) {
-                            $timeout(waitForRenderAndPrint);
-                        } else {
-                            printHtml(element.html());
-                            printScope.$destroy(); // To avoid memory leaks from scope create by $rootScope.$new()
-                        }
-                    };
-                    waitForRenderAndPrint();
+            controller.generateSummary = () => {
+                let data = {
+                    rnData: controller.rnData,
+                    address: controller.addressData,
+                    pic: controller.picData,
+                    dob: moment(controller.rnData.national_number.substr(0,6), 'YYMMDD').format('MMMM D, YYYY'),
+                    formattedCardNumber: BeID.formatCardNumber(controller.rnData.card_number),
+                    formattedRRNR: BeID.formatRRNR(controller.rnData.national_number),
+                    validFrom: moment(controller.rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
+                    validUntil: moment(controller.rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
+                    printDate: moment().format('MMMM D, YYYY'),
+                    printedBy: '@@name v@@version'
+                };
+                $http.post('api/cards/be/summary', data).then(function (res) {
+                    console.log(res);
                 });
             }
         }};
