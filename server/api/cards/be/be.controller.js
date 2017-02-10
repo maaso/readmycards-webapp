@@ -2,12 +2,32 @@
 const service = require('./be.service.js');
 
 module.exports = {
-    generateSummary: generateSummary
+    download: download,
+    generateSummaryToSign: generateSummaryToSign,
+    getDataToSign: getDataToSign,
+    workflowSign: workflowSign
 };
 
+function download(req, res) {
+    console.log(req.body);
+    return service.download(req.body.documentName, req.jwt).pipe(res);
+}
 
-function generateSummary(req, res) {
-    service.generateSummary(req.body, req.jwt).then(function () {
-        return res.status(200).end();
-    });
+function generateSummaryToSign(req, res) {
+    service.generateSummaryToSign(req.body, req.jwt).then((result) => {
+        return res.status(200).json(result);
+    })
+}
+
+function getDataToSign(req, res) {
+    service.getDataToSign(req.body, req.jwt).then((result) => {
+        return res.status(200).json(result);
+    })
+}
+
+function workflowSign(req, res) {
+    service.workflowSign(req.body, req.jwt).then((result) => {
+        return res.status(200).json(result);
+    })
+
 }

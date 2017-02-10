@@ -80,28 +80,37 @@
                 }
             };
 
-            function printHtml(html) {
-                let hiddenFrame = $('<iframe style="display: none"></iframe>').appendTo('body')[0];
-                hiddenFrame.contentWindow.printAndRemove = function() {
-                    $timeout(() => {
-                        hiddenFrame.contentWindow.print();
-                        $(hiddenFrame).remove();
-                    },500)
-                };
-                let htmlDocument = "<!doctype html>"+
-                    "<html>"+
-                    '<head><title>Belgium Identity Card</title></head>' +
-                    '<body onload="printAndRemove();">' + // Print only after document is loaded
-                    html +
-                    '</body>'+
-                    "</html>";
-                let doc = hiddenFrame.contentWindow.document.open("text/html", "replace");
-                doc.write(htmlDocument);
-                doc.close();
-            }
+            controller.downloadSummary = () => {
+                console.log('download summary');
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/summary-download.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return T1C.getReader($stateParams.readerId).then(function (res) {
+                                return res.data.pinpad;
+                            })
+                        },
+                        data: () => {
+                            return prepareSummaryData();
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'BeIDSummaryDownloadCtrl',
+                    size: 'lg'
+                });
 
-            controller.generateSummary = () => {
-                let data = {
+                modal.result.then(function () {
+
+                }, function (err) {
+
+                });
+            };
+
+            function prepareSummaryData() {
+                return {
                     rnData: controller.rnData,
                     address: controller.addressData,
                     pic: controller.picData,
@@ -113,9 +122,6 @@
                     printDate: moment().format('MMMM D, YYYY'),
                     printedBy: '@@name v@@version'
                 };
-                $http.post('api/cards/be/summary', data).then(function (res) {
-                    console.log(res);
-                });
             }
         }};
 
