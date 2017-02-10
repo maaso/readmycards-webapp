@@ -25,6 +25,9 @@ default:
     uri: "<api manager uri>"
     path: "<signbox basepath>"
     apikey: "<api key>"
+    division_id: <divisionId to use>
+    workflow_id: <workflowId to use>
+    role: "<role name to use>"
 
 test:
   appName: "readmycards"
