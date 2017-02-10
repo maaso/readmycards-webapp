@@ -1,17 +1,18 @@
 (function () {
     'use strict';
 
-    const beidVisualizer = {
-        templateUrl: 'views/cards/beid/beid-viz.html',
+    const luxVisualizer = {
+        templateUrl: 'views/cards/lux/lux-viz.html',
         bindings: {
-            rnData: '<',
-            addressData: '<',
-            picData: '<',
+            rnData: '<'
         },
         controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeID, T1C) {
             let controller = this;
 
             controller.$onInit = () => {
+
+                console.log(controller.rnData);
+
                 controller.certStatus = 'checking';
                 controller.pinStatus = 'idle';
                 const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
@@ -80,48 +81,52 @@
                 }
             };
 
-            controller.downloadSummary = () => {
-                console.log('download summary');
-                let modal = $uibModal.open({
-                    templateUrl: "views/readmycards/modals/summary-download.html",
-                    resolve: {
-                        readerId: () => {
-                            return $stateParams.readerId
-                        },
-                        pinpad: () => {
-                            return T1C.getReader($stateParams.readerId).then(function (res) {
-                                return res.data.pinpad;
-                            })
-                        },
-                        data: () => {
-                            return prepareSummaryData();
-                        }
-                    },
-                    backdrop: 'static',
-                    controller: 'BeIDSummaryDownloadCtrl',
-                    size: 'lg'
-                });
-
-                modal.result.then(function () {
-
-                }, function (err) {
-
-                });
-            };
-
-            function prepareSummaryData() {
-                return {
-                    rnData: controller.rnData,
-                    address: controller.addressData,
-                    pic: controller.picData,
-                    dob: moment(controller.rnData.national_number.substr(0,6), 'YYMMDD').format('MMMM D, YYYY'),
-                    formattedCardNumber: BeID.formatCardNumber(controller.rnData.card_number),
-                    formattedRRNR: BeID.formatRRNR(controller.rnData.national_number),
-                    validFrom: moment(controller.rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                    validUntil: moment(controller.rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                    printDate: moment().format('MMMM D, YYYY'),
-                    printedBy: '@@name v@@version'
+            function printHtml(html) {
+                let hiddenFrame = $('<iframe style="display: none"></iframe>').appendTo('body')[0];
+                hiddenFrame.contentWindow.printAndRemove = function() {
+                    $timeout(() => {
+                        hiddenFrame.contentWindow.print();
+                        $(hiddenFrame).remove();
+                    },500)
                 };
+                let htmlDocument = "<!doctype html>"+
+                    "<html>"+
+                    '<head><title>Belgium Identity Card</title></head>' +
+                    '<body onload="printAndRemove();">' + // Print only after document is loaded
+                    html +
+                    '</body>'+
+                    "</html>";
+                let doc = hiddenFrame.contentWindow.document.open("text/html", "replace");
+                doc.write(htmlDocument);
+                doc.close();
+            }
+
+            controller.printSummary = () => {
+                $http.get('views/demo/components/summary.html').success(function(template) {
+                    let data = {
+                        rnData: controller.rnData,
+                        address: controller.addressData,
+                        pic: controller.picData,
+                        dob: moment(controller.rnData.national_number.substr(0,6), 'YYMMDD').format('MMMM D, YYYY'),
+                        formattedCardNumber: BeID.formatCardNumber(controller.rnData.card_number),
+                        formattedRRNR: BeID.formatRRNR(controller.rnData.national_number),
+                        validFrom: moment(controller.rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
+                        validUntil: moment(controller.rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
+                        printDate: moment().format('MMMM D, YYYY'),
+                        printedBy: '@@name v@@version'
+                    };
+                    let printScope = angular.extend($rootScope.$new(), data);
+                    let element = $compile($('<div>' + template + '</div>'))(printScope);
+                    let waitForRenderAndPrint = function() {
+                        if(printScope.$$phase || $http.pendingRequests.length) {
+                            $timeout(waitForRenderAndPrint);
+                        } else {
+                            printHtml(element.html());
+                            printScope.$destroy(); // To avoid memory leaks from scope create by $rootScope.$new()
+                        }
+                    };
+                    waitForRenderAndPrint();
+                });
             }
         }};
 
@@ -166,8 +171,8 @@
         }
     };
 
-    const beidCard = {
-        templateUrl: 'views/cards/beid/beid-card.html',
+    const luxCard = {
+        templateUrl: 'views/cards/lux/eid/lux-eid-card.html',
         bindings: {
             rnData: '<',
             picData: '<',
@@ -176,14 +181,18 @@
             let controller = this;
 
             controller.$onInit = () => {
-                controller.formattedCardNumber = BeID.formatCardNumber(controller.rnData.card_number);
-                controller.formattedRRNR = BeID.formatRRNR(controller.rnData.national_number);
+                // controller.formattedCardNumber = BeID.formatCardNumber(controller.rnData.card_number);
+                // controller.formattedRRNR = BeID.formatRRNR(controller.rnData.national_number);
 
-                let mrs = constructMachineReadableStrings(controller.rnData);
+                // let mrs = constructMachineReadableStrings(controller.rnData);
 
-                controller.machineReadable1 = mrs[0];
-                controller.machineReadable2 = mrs[1];
-                controller.machineReadable3 = mrs[2];
+                // controller.machineReadable1 = mrs[0];
+                // controller.machineReadable2 = mrs[1];
+                // controller.machineReadable3 = mrs[2];
+
+                controller.machineReadable1 = pad("IDLUXVMQ17WQEY4");
+                controller.machineReadable2 = pad("8308193F2406100LUX<<<<<<<<LU<2");
+                controller.machineReadable3 = pad("SPECIMEN<<JEANNE");
             };
 
             function constructMachineReadableStrings(rnData) {
@@ -221,9 +230,20 @@
         }
     };
 
-    angular.module('app.cards.beid')
-        .component('beidVisualizer', beidVisualizer)
-        .component('beidCertificateStatus', beidCertificateStatus)
-        .component('beidPinCheckStatus', beidPinCheckStatus)
-        .component('beidCard', beidCard);
+    const luxTrustCard = {
+        templateUrl: 'views/cards/lux/luxtrust/luxtrust-card.html',
+        bindings: {
+            rnData: '<'
+        },
+        controller: function () {
+
+        }
+    };
+
+    angular.module('app.cards.lux')
+        .component('luxVisualizer', luxVisualizer)
+        .component('luxCertificateStatus', beidCertificateStatus)
+        .component('luxPinCheckStatus', beidPinCheckStatus)
+        .component('luxCard', luxCard)
+        .component('luxTrustCard', luxTrustCard);
 })();

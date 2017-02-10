@@ -6,6 +6,12 @@ default:
     scheme: "http"
     domain: "localhost"
     port: 3000
+  auth:
+    uri: "https://accapim.t1t.be"
+    path: "/apiengineauth/v1"
+    apikey: "<api key>"
+  cloudconvert:
+    apikey: "<cloudconvert api key>"
   gcloud:
     project: "<gcloud project name>"
     keyfile: "<keyfile path>"
@@ -15,6 +21,10 @@ default:
     user: "<mailgun api user>"
     apikey: "<mailgun api key>"
     sender: "\"ReadMyCards.eu\" <noreply@saas.t1t.be>"
+  signbox:
+    uri: "<api manager uri>"
+    path: "<signbox basepath>"
+    apikey: "<api key>"
 
 test:
   appName: "readmycards"

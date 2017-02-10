@@ -7,10 +7,13 @@
 
     <beid-card rn-data="$ctrl.rnData" pic-data="$ctrl.picData"></beid-card>
 
+    <div class="print-button">
+        <span class="btn btn-lg btn-primary btn-summary-download" ng-click="$ctrl.downloadSummary()">Print the content of my card</span>
+    </div>
+
     <div class="personal-info col-sm-12">
         <span class="size-h3 text-primary">Additional Information</span>
 
-        <span class="btn btn-default clickable pull-right" ng-click="$ctrl.printSummary()">Print Summary</span>
 
         <div class="col-sm-12">
             <div class="col-sm-4">

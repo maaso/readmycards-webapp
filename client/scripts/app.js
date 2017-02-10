@@ -11,6 +11,7 @@
         "ui.router",
         'ngKeypad',
         'angular-google-analytics',
+        'ngFileSaver',
 
         /* custom modules */
         'app.demo',
