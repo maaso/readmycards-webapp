@@ -651,10 +651,9 @@
                     case 'Belgium Electronic ID card':
                         return 'BeID';
                     case 'MOBIB Card':
-                        // TODO return 'MOBIB' card type when mobib cards go live
-                        return 'Unknown';
+                        return 'MOBIB';
                     case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
-                        return 'LuxCard';
+                        return 'EMV';
                     default:
                         return 'Unknown';
                 }
