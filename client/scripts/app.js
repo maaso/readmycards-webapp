@@ -12,6 +12,7 @@
         'ngKeypad',
         'angular-google-analytics',
         'ngFileSaver',
+        'ngclipboard',
 
         /* custom modules */
         'app.demo',
