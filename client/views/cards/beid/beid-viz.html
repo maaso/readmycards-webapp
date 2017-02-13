@@ -52,7 +52,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.root_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.citizen_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.citizen_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.citizen_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.authentication_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.authentication_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.authentication_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -85,18 +85,18 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.non_repudiation_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.non_repudiation_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.non_repudiation_certificate }}"></button>
                         </span>
                     </div>
                 </div>
 
                 <div class="col-sm-12" ng-if="$ctrl.certData.rrn_certificate">
-                    <h4 class="text-info text-light">RRN <i class="fa fa-copy" ngclipboard data-clipboard-text="{{ $ctrl.certData.rrn_certificate }}"></i></h4>
+                    <h4 class="text-info text-light">RRN</h4>
 
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.rrn_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.rrn_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.rrn_certificate }}"></button>
                         </span>
                     </div>
                 </div>
