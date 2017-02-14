@@ -1,6 +1,3 @@
-/**
- * Singbox related endpoints
- */
 "use strict";
 const config = require(__base + 'modules/t1t-config');
 const authApi = require("../components/auth.service");
@@ -21,26 +18,20 @@ function validateJWT(req, res, next) {
 
     let checkJWT = q.defer();
 
-    if (jwt) {
-        // check if jwt still valid for > 5 mins
-        let parsedToken = jsonwebtoken.decode(jwt);
-        let expires = moment(parsedToken.exp * 1000);
-        let now = moment();
-
-        if (now > expires) {
+    if (jwt && jwt instanceof JWT) {
+        if (jwt.expired()) {
             authApi.getJWT(handleJWT);
         } else {
             // check if valid for more than 5 minutes
-            if (now > expires.subtract(120, 'minutes')) {
-                authApi.refreshJWT(jwt, handleJWT);
-            } else checkJWT.resolve();
+            if (jwt.validFor(10, 'minutes')) checkJWT.resolve();
+            else authApi.refreshJWT(jwt.token, handleJWT);
         }
     } else {
         authApi.getJWT(handleJWT);
     }
 
     checkJWT.promise.then(function () {
-        req.jwt = jwt;
+        req.jwt = jwt.token;
         next();
     }, function (error) {
         let response = {
@@ -52,9 +43,31 @@ function validateJWT(req, res, next) {
 
     function handleJWT(error, response, body) {
         if (error) checkJWT.reject(error);
-        if (body.jwt && !_.isEmpty(body.jwt)) jwt = body.jwt;
-        else jwt = body.token;
+        if (body.jwt && !_.isEmpty(body.jwt)) jwt = new JWT(body.jwt);
+        else jwt = new JWT(body.token);
         checkJWT.resolve();
+    }
+}
+
+class JWT {
+    constructor(token) {
+        this.originalToken = token;
+        this.parsedToken = jsonwebtoken.decode(token);
+        this.expires = moment(this.parsedToken.exp * 1000);
+    }
+
+    get token() {
+        return this.originalToken;
+    }
+
+    expired() {
+        let now = moment();
+        return (now > this.expires);
+    };
+
+    validFor(amount, type) {
+        let now = moment();
+        return (now < this.expires.subtract(amount, type));
     }
 }
 
