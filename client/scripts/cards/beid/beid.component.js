@@ -92,9 +92,6 @@
                             return T1C.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
-                        },
-                        data: () => {
-                            return prepareSummaryData();
                         }
                     },
                     backdrop: 'static',
@@ -108,21 +105,6 @@
 
                 });
             };
-
-            function prepareSummaryData() {
-                return {
-                    rnData: controller.rnData,
-                    address: controller.addressData,
-                    pic: controller.picData,
-                    dob: moment(controller.rnData.national_number.substr(0,6), 'YYMMDD').format('MMMM D, YYYY'),
-                    formattedCardNumber: BeID.formatCardNumber(controller.rnData.card_number),
-                    formattedRRNR: BeID.formatRRNR(controller.rnData.national_number),
-                    validFrom: moment(controller.rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                    validUntil: moment(controller.rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                    printDate: moment().format('MMMM D, YYYY'),
-                    printedBy: '@@name v@@version'
-                };
-            }
         }};
 
     const beidCertificateStatus = {

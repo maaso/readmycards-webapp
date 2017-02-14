@@ -7,6 +7,7 @@ const cloudconvert = new (require('cloudconvert'))(config.cloudconvert.apikey);
 const fs = require('fs');
 const q = require('q');
 const miss = require('mississippi2');
+const _ = require('lodash');
 
 
 function download(documentName, jwt) {
@@ -27,8 +28,8 @@ function generateSummaryToSign(data, jwt) {
         .on('error', function (err) {
             return summaryPromise.reject(err);
         })
-        .on('finished', function(data) {
-            miss.toPromise(request.get('http:' + data.output.url)).then(function (buffer) {
+        .on('finished', function(conversion) {
+            miss.toPromise(request.get('http:' + conversion.output.url)).then(function (buffer) {
                 request.post({
                     uri: config.signbox.uri + config.signbox.path + '/documents/upload',
                     headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt },
@@ -36,7 +37,8 @@ function generateSummaryToSign(data, jwt) {
                         file: {
                             value:  buffer,
                             options: {
-                                filename: "summary.pdf",
+                                filename: data.rnData.name + '_' + _.join(_.split(data.rnData.first_names, ' '), '_') + '_'
+                                + data.rnData.third_name + '_summary.pdf',
                                 contentType: "application/pdf"
                             }
                         }

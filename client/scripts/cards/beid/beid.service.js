@@ -4,10 +4,9 @@
     angular.module('app.cards.beid')
         .service('BeID', BeID);
 
-    function BeID($http, $q, T1C) {
+    function BeID($http, $q, T1C, _) {
         this.formatCardNumber = formatCardNumber;
         this.formatRRNR =formatRRNR;
-        this.generateSummary = generateSummary;
         this.generateSummaryToSign = generateSummaryToSign;
         this.signDocument = signDocumentWithPin;
         this.downloadDocument = downloadDocument;
@@ -22,18 +21,22 @@
             return rrnrString.substr(0, 2) + '.' + rrnrString.substr(2, 2) + '.' + rrnrString.substr(4,2) + '-' + rrnrString.substr(6,3) + '.' + rrnrString.substr(9,2);
         }
 
-        function generateSummary(data) {
-            return $http.post('api/cards/be/summary', data, { responseType: 'arraybuffer' });
-        }
+        function generateSummaryToSign(readerId) {
+            let promises = [
+                T1C.getRnData(readerId),
+                T1C.getAddress(readerId),
+                T1C.getPic(readerId)
+            ];
 
-        function generateSummaryToSign(data) {
-            return $http.post('api/cards/be/summarytosign', data).then(function (res) {
-                return res.data;
+            return $q.all(promises).then(function (results) {
+                let data = prepareSummaryData(results[0].data, results[1].data, results[2].data);
+                return $http.post('api/cards/be/summarytosign', data).then(function (res) {
+                    return res.data;
+                })
             })
         }
 
         function downloadDocument(documentName) {
-            console.log(documentName);
             return $http.post('api/cards/be/download', { documentName: documentName }, { responseType: 'arraybuffer' });
         }
 
@@ -158,6 +161,21 @@
             }).then(function (res) {
                 return res.data;
             });
+        }
+
+        function prepareSummaryData(rnData, addressData, picData) {
+            return {
+                rnData: rnData,
+                address: addressData,
+                pic: picData,
+                dob: moment('' + _.join(_.takeRight(rnData.birth_date, 4), '') + rnData.national_number.substr(2, 4), 'YYYYMMDD').format('MMMM D, YYYY'),
+                formattedCardNumber: formatCardNumber(rnData.card_number),
+                formattedRRNR: formatRRNR(rnData.national_number),
+                validFrom: moment(rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
+                validUntil: moment(rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
+                printDate: moment().format('MMMM D, YYYY'),
+                printedBy: '@@name v@@version'
+            };
         }
 
     }

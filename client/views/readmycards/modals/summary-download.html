@@ -31,7 +31,7 @@
         <li ng-if="currentStep === 2 && !pinpad && enterPin">
             <div class="pinpad">
                 <h3 class="text-center text-info mb20">Enter PIN code</h3>
-                <form class="form-horizontal" role="form" id="askForPinCodeForm" name="askForPinCodeForm">
+                <form class="form-horizontal" ng-submit="submitPin()" role="form" id="askForPinCodeForm" name="askForPinCodeForm">
                     <div class="form-group">
                         <div class="col-sm-12">
                             <input id="pinCode" name="pinCode" type="password" class="keypad-display" data-ng-model="pincode.value" data-ng-keyup="$event.keyCode == 13 && ok()" data-focus-on="eidPinInput" autocomplete="off"/>
