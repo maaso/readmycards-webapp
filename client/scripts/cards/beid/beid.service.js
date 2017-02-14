@@ -145,7 +145,6 @@
 
         // Needs proxy
         function workflowSign(inputObj) {
-            console.log('workflow sign');
             return $http.post('api/cards/be/sign', {
                 docId: inputObj.documentId,
                 signCertificate: nonRepudiationCertificate,

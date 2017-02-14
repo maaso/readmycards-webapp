@@ -81,7 +81,6 @@
             };
 
             controller.downloadSummary = () => {
-                console.log('download summary');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
