@@ -1,0 +1,303 @@
+@font-face {
+  font-family: "Barcode";
+  src: url("../fonts/3of9.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "OCR-B";
+  src: url("../fonts/ocrb.ttf") format("truetype");
+}
+
+#beid-viz {
+
+
+  .personal-info {
+    margin-top: 30px;
+
+    #address {
+    }
+  }
+
+  .certificates-toggle {
+    margin-top: 50px;
+    span {
+      color: @gray-light;
+
+      &:hover {
+        color: @gray-dark;
+      }
+    }
+  }
+
+  .certificates {
+    margin-top: 20px;
+
+    > div {
+      margin-bottom: 20px;
+    }
+
+    input {
+      user-select: text;
+
+      padding: 6px 6px 6px 2px;
+    }
+
+    .input-group {
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+  }
+}
+
+
+.cert-status {
+  margin-right: 5px;
+}
+
+.pin-check-status {
+  margin-left: 5px;
+}
+
+.beid-card {
+  font-family: Arial, sans-serif;
+  @chip-width: 132px;
+
+
+  .labels {
+    font-size: 0.75em;
+  }
+
+  .values {
+    font-size: 0.85em;
+    font-weight: bold;
+  }
+
+  .section {
+    padding-top: 5px;
+  }
+
+  .front {
+
+    .header {
+      height: 15%;
+      border-bottom: 1px solid #999;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0 10px;
+
+
+      .lang {
+        line-height: 1;
+        margin: auto 0;
+
+        span {
+          display: block;
+        }
+        .belgium {
+          font-weight: bold;
+          font-size: 1.25em;
+        }
+
+        .id-card {
+          font-size: 0.75em;
+        }
+      }
+
+    }
+
+    .content {
+      padding: 0 10px;
+
+      .names {
+        padding-top: 15px;
+        .values {
+          margin-left: 3px;
+        }
+      }
+
+      .chip {
+        width: @chip-width;
+      }
+
+
+      .birth-sex-block {
+        width: calc(~"99% - " @chip-width);
+
+        .birth-sex-wrapper {
+          display: flex;
+          justify-content: space-between;
+
+          .sex {
+            padding-right: 15px;
+
+            .values {
+              text-align: right;
+              padding-right: 5px;
+            }
+          }
+        }
+      }
+
+
+      .other {
+        display: flex;
+        justify-content: space-between;
+
+        .pic {
+          padding: 15px 15px 10px 20px;
+
+          .pic-img {
+            width: 105px;
+            height: 150px;
+          }
+        }
+      }
+
+    }
+  }
+
+  .back {
+    padding: 10px 20px;
+
+    .rrnr {
+      .labels {
+        line-height: 1.1;
+      }
+      .values {
+        padding-top: 2px;
+      }
+    }
+
+    .barcode {
+      font-family: 'Barcode', sans-serif;
+      transform : scale(1.25,3.3);
+
+      .barcode-wrapper {
+        margin-left: 35px;
+        margin-top: -12px;
+      }
+    }
+
+    .machine-readable-zone {
+      margin-top: 110px;
+      line-height: 1;
+      font-family: 'OCR-B', monospace;
+      font-size: 1.8em;
+    }
+
+  }
+}
+
+
+.summary-modal {
+
+  .header {
+    margin: 0 30px;
+
+    .title {
+      font-size: 40px;
+      color: @brand-primary;
+    }
+
+    .info-text {
+      color: #333;
+      font-weight: 300;
+    }
+
+    .start-text {
+      font-weight: normal;
+      color: @brand-primary;
+    }
+  }
+
+  .dummy-summary-wrapper {
+    position: absolute;
+    top: 200px;
+    right: 35px;
+
+    .specimen {
+      font-family: Arial, sans-serif;
+      position: absolute;
+      font-size: 80px;
+      font-weight: bold;
+      text-align: center;
+      top: 80px;
+      bottom: 0;
+      left: -20px;
+      right: 0;
+      height: 150px;
+      width: 340px;
+      margin: auto;
+      opacity: .2;
+      transform: rotate(-55deg);
+      text-transform: uppercase;
+    }
+
+    .dummy-summary {
+      max-width: 340px;
+    }
+  }
+
+
+  .step-list {
+    list-style-type: none;
+
+    .pinpad {
+      position: absolute;
+      right: 50px;
+      top: 190px;
+      max-width: 350px;
+      z-index: 100;
+      background: #fff;
+    }
+
+    .step {
+      margin: 50px 0;
+
+
+      > div {
+        display: inline-block;
+      }
+
+      &.completed {
+        .step-number {
+          background: @brand-success;
+        }
+      }
+
+      &.active {
+        .step-number {
+          background: @brand-primary;
+        }
+
+        .step-desc {
+          color: #333;
+        }
+      }
+
+      .step-number {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: #aaa;
+        color: #fff;
+
+        font-size: 60px;
+        //font-weight: 300;
+      }
+
+
+      .step-desc {
+        margin-left: 40px;
+        font-size: 30px;
+        vertical-align: text-bottom;
+        color: #999;
+      }
+
+    }
+  }
+}

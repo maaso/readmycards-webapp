@@ -1,0 +1,5 @@
+<div class="card-status mobib-active-status" uib-alert
+     ng-class="{ 'alert-success': $ctrl.status === 'active', 'alert-danger': $ctrl.status === 'inactive' }">
+    <i class="fa fa-lg" ng-class="{ 'fa-check-circle': $ctrl.status === 'active', 'fa-times-circle': $ctrl.status === 'inactive' }"></i>
+    <span class="info-text text-ultralight" ng-bind-html="$ctrl.infoText"></span>
+</div>
