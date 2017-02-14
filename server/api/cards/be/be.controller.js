@@ -9,7 +9,6 @@ module.exports = {
 };
 
 function download(req, res) {
-    console.log(req.body);
     return service.download(req.body.documentName, req.jwt).pipe(res);
 }
 

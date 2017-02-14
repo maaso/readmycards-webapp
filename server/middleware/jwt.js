@@ -4,6 +4,12 @@
 "use strict";
 const config = require(__base + 'modules/t1t-config');
 const authApi = require("../components/auth.service");
+const jsonwebtoken = require("jsonwebtoken");
+const moment = require("moment");
+const q = require('q');
+const _ = require('lodash');
+
+let jwt;
 
 /**
  * Initialize or refresh the JWT token for the current session
@@ -12,78 +18,46 @@ const authApi = require("../components/auth.service");
  * @param next Function
  */
 function validateJWT(req, res, next) {
-    authApi.getJWT(function(error, response, body) {
-        if (error) {
-            let response = {
-                errorCode: Number.parseInt(error.errno) || 404,
-                message: error.Error
-            };
-            return res.status(response.errorCode).json(response);
+
+    let checkJWT = q.defer();
+
+    if (jwt) {
+        // check if jwt still valid for > 5 mins
+        let parsedToken = jsonwebtoken.decode(jwt);
+        let expires = moment(parsedToken.exp * 1000);
+        let now = moment();
+
+        if (now > expires) {
+            authApi.getJWT(handleJWT);
+        } else {
+            // check if valid for more than 5 minutes
+            if (now > expires.subtract(120, 'minutes')) {
+                authApi.refreshJWT(jwt, handleJWT);
+            } else checkJWT.resolve();
         }
-        req.jwt = body.token;
+    } else {
+        authApi.getJWT(handleJWT);
+    }
+
+    checkJWT.promise.then(function () {
+        req.jwt = jwt;
         next();
+    }, function (error) {
+        let response = {
+            errorCode: Number.parseInt(error.errno) || 404,
+            message: error.Error
+        };
+        return res.status(response.errorCode).json(response);
     });
+
+    function handleJWT(error, response, body) {
+        if (error) checkJWT.reject(error);
+        if (body.jwt && !_.isEmpty(body.jwt)) jwt = body.jwt;
+        else jwt = body.token;
+        checkJWT.resolve();
+    }
 }
 
 module.exports = {
     validateJWT: validateJWT
 };
-
-// /**
-//  * Proxies dataToSign method with Signbox API
-//  *
-//  * @param req
-//  * @param res
-//  */
-// export function dataToSign(req, res) {
-//     var signbox = new Signbox({
-//         domain: config.SIGNBOX.API_URI + config.SIGNBOX.SIGNBOX_PATH,
-//         apikey: config.SIGNBOX.KEY,
-//         jwt: req.session.t1t.token
-//     });
-//
-//     signbox
-//         .dataToSign({
-//             divId: req.params.divId,
-//             orgId: req.params.orgId,
-//             body: req.body
-//         })
-//         .then(
-//             function(response, body) {
-//                 return res.status(200).json(response.body);
-//             },
-//             function(error, body) {
-//                 console.log(error.body);
-//                 return res.status(error.body.errorCode).json(error.body);
-//             }
-//         );
-// }
-//
-// /**
-//  * Proxies sign method with Signbox API
-//  *
-//  * @param req
-//  * @param res
-//  */
-// export function sign(req, res) {
-//     var signbox = new Signbox({
-//         domain: config.SIGNBOX.API_URI + config.SIGNBOX.SIGNBOX_PATH,
-//         apikey: config.SIGNBOX.KEY,
-//         jwt: req.session.t1t.token
-//     });
-//
-//     //TODO Hardcode role for testing
-//     req.body.additionalInformation.role = "developer";
-//
-//     signbox
-//         .sign({ divId: req.params.divId, orgId: req.params.orgId, body: req.body })
-//         .then(
-//             function(response, body) {
-//                 return res.status(200).json(response.body);
-//             },
-//             function(error, body) {
-//                 console.log(error.body);
-//                 return res.status(error.body.errorCode).json(error.body);
-//             }
-//         );
-// }

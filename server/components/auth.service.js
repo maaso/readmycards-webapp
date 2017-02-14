@@ -13,17 +13,12 @@ let token;
  * @param fn Callback function
  */
 function getJWT(fn) {
-    console.log('check jwt');
-
     let options = {
         method: "GET",
         url: config.auth.uri + config.auth.path + "/login/application/token",
-        headers: {apikey: config.auth.apikey, "content-type": "application/json"},
+        headers: { apikey: config.auth.apikey, "content-type": "application/json"},
         json: true
     };
-
-    // TODO check if current token still valid
-
     request(options, fn);
 }
 
@@ -32,27 +27,19 @@ function getJWT(fn) {
  * @param token Current valid token
  * @param fn Callback function
  */
-function jwtRefresh(token, fn) {
+function refreshJWT(token, fn) {
     let options = {
         method: "POST",
-        url: config.auth.uri + config.auth.path +
-        "/login/idp/token/refresh",
+        url: config.auth.uri + config.auth.path +  "/login/idp/token/refresh",
         headers: { apikey: config.auth.apikey, "content-type": "application/json" },
         body: { originalJWT: token },
         json: true
     };
-    let date = new Date();
-    let exp = new Date();
-    token = jwt.decode(token);
-    if (token) {
-        exp.setTime(token.exp * 1000);
-        if (exp.getTime() > date.getTime()) {
-            request(options, fn);
-        }
-    }
+    request(options, fn);
 }
 
 
 module.exports = {
-    getJWT: getJWT
+    getJWT: getJWT,
+    refreshJWT: refreshJWT
 };
