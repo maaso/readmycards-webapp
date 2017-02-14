@@ -1,10 +1,9 @@
 "use strict";
 const config = require(__base + 'modules/t1t-config');
 const authApi = require("../components/auth.service");
-const jsonwebtoken = require("jsonwebtoken");
-const moment = require("moment");
 const q = require('q');
 const _ = require('lodash');
+const JWT = require(__base + 'server/classes/jwt/jwt.class.js');
 
 let jwt;
 
@@ -46,28 +45,6 @@ function validateJWT(req, res, next) {
         if (body.jwt && !_.isEmpty(body.jwt)) jwt = new JWT(body.jwt);
         else jwt = new JWT(body.token);
         checkJWT.resolve();
-    }
-}
-
-class JWT {
-    constructor(token) {
-        this.originalToken = token;
-        this.parsedToken = jsonwebtoken.decode(token);
-        this.expires = moment(this.parsedToken.exp * 1000);
-    }
-
-    get token() {
-        return this.originalToken;
-    }
-
-    expired() {
-        let now = moment();
-        return (now > this.expires);
-    };
-
-    validFor(amount, type) {
-        let now = moment();
-        return (now < this.expires.subtract(amount, type));
     }
 }
 
