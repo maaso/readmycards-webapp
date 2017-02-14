@@ -7,6 +7,10 @@ ReadMyCards is a simple webapp that reads the contents of your smartcards using 
 
 ## Changelog
 
+### v1.2.2
+
+* Add RN raw data and RN signature to the extended info for Belgian eID card.
+
 ### v1.2.1
 
 * Add Google Analytics tracking
