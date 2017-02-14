@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html>
+<head><title>Belgium Identity Card</title></head>
 <body>
+
 <style>
 
     .summary {
@@ -18,8 +15,26 @@
     }
 
     .header {
-        display: flex;
-        justify-content: space-between;
+        position: relative;
+        min-height: 130px;
+    }
+
+    .header > .coat-of-arms {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .header > .title {
+        width: 100%;
+        margin-top: 25px;
+        text-align: center;
+    }
+
+    .header > .pic {
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 
     .title {
@@ -67,7 +82,7 @@
             <div>identity card</div>
         </div>
         <div class="inline pic">
-            <img class="picture" ng-attr-src="{{ 'data:image/jpeg;base64,' + pic }}"/>
+            <img class="picture" src="data:image/jpeg;base64,${data.pic}"/>
         </div>
     </div>
 
@@ -82,24 +97,30 @@
             <div>National number:</div>
         </div>
         <div class="inline values">
-            <div>{{rnData.name}}</div>
-            <div>{{rnData.first_names}} {{rnData.third_name}}</div>
-            <div>{{rnData.birth_location}}</div>
-            <div>{{dob}}</div>
-            <div>{{rnData.sex}}</div>
-            <div>{{rnData.nationality}}</div>
-            <div>{{formattedRRNR}}</div>
+            <div>${data.rnData.name}</div>
+            <div>${data.rnData.first_names} ${data.rnData.third_name}</div>
+            <div>${data.rnData.birth_location}</div>
+            <div>${data.dob}</div>
+            <div>${data.rnData.sex}</div>
+            <div>${data.rnData.nationality}</div>
+            <div>${data.formattedRRNR}</div>
         </div>
     </div>
 
     <div class="section specials">
         <div class="inline labels">
-            <div ng-class="{'dim': !rnData.title}">Title:</div>
-            <div ng-class="{'dim': !rnData.special}">Special status:</div>
+            <div class=(!data.rnData.title && "dim")>Title:</div>
+            <div class=(!data.rnData.special && "dim")>Special status:</div>
         </div>
         <div class="inline values">
-            <div ng-class="{'dim': !rnData.title}">{{rnData.title ? rnData.title : '-'}}</div>
-            <div ng-class="{'dim': !rnData.special}">{{rnData.special ? rnData.special : '-'}}</div>
+            <div class=(!data.rnData.title && "dim")>
+                <if (data.rnData.title && data.rnData.title.length)>${data.rnData.title}</if>
+                <else>-</else>
+            </div>
+            <div class=(!data.rnData.special && "dim")>
+                <if (data.rnData.special && data.rnData.special.length)>${data.rnData.special}</if>
+                <else>-</else>
+            </div>
         </div>
     </div>
 
@@ -110,9 +131,9 @@
             <div>Municipality:</div>
         </div>
         <div class="inline values">
-            <div>{{address.street_and_number}}</div>
-            <div>{{address.zipcode}}</div>
-            <div>{{address.municipality}}</div>
+            <div>${data.address.street_and_number}</div>
+            <div>${data.address.zipcode}</div>
+            <div>${data.address.municipality}</div>
         </div>
     </div>
 
@@ -125,11 +146,11 @@
             <div>Valid until:</div>
         </div>
         <div class="inline values">
-            <div>{{formattedCardNumber}}</div>
-            <div>{{rnData.card_delivery_municipality}}</div>
-            <div>{{rnData.chip_number}}</div>
-            <div>{{validFrom}}</div>
-            <div>{{validUntil}}</div>
+            <div>${data.formattedCardNumber}</div>
+            <div>${data.rnData.card_delivery_municipality}</div>
+            <div>${data.rnData.chip_number}</div>
+            <div>${data.validFrom}</div>
+            <div>${data.validUntil}</div>
         </div>
     </div>
 
@@ -139,9 +160,11 @@
             <div>Printed by:</div>
         </div>
         <div class="inline values">
-            <div>{{printDate}}</div>
-            <div>{{printedBy}}</div>
+            <div>${data.printDate}</div>
+            <div>${data.printedBy}</div>
         </div>
     </div></div>
+
+
 </body>
 </html>

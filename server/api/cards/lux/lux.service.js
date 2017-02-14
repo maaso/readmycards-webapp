@@ -1,6 +1,6 @@
 'use strict';
 require('marko/node-require').install();
-let template = require('./be.summary.marko');
+let template = require('./lux.summary.marko');
 const request = require('request');
 const config = require(__base + 'modules/t1t-config');
 const cloudconvert = new (require('cloudconvert'))(config.cloudconvert.apikey);
