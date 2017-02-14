@@ -12,7 +12,9 @@
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
         $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        $scope.pincode = '';
+        $scope.pincode = {
+            value: ''
+        };
         $scope.pinpad = pinpad;
 
         let generatedFile;
@@ -50,18 +52,18 @@
 
         function onKeyPressed(data) {
             if (data == '<') {
-                if (_.isEmpty($scope.pincode)) $uibModalInstance.dismiss('cancel');
-                else $scope.pincode = $scope.pincode.slice(0, $scope.pincode.length - 1);
+                if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');
+                else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
             } else if (data == '>') {
                 $scope.enterPin = false;
                 $scope.pinText = "Signing...";
-                BeID.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode).then(() => {
+                BeID.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
                     $scope.currentStep = 3;
                     $scope.pinText = 'Signed';
                     $scope.downloadText = 'Download Ready!'
                 });
             } else {
-                $scope.pincode += data;
+                $scope.pincode.value += data;
             }
         }
 
