@@ -7,6 +7,7 @@ const cloudconvert = new (require('cloudconvert'))(config.cloudconvert.apikey);
 const q = require('q');
 const miss = require('mississippi2');
 const _ = require('lodash');
+const signboxApi = require(__base + "server/components/signbox.service");
 
 
 function generateSummaryToSign(data, jwt) {
@@ -17,50 +18,27 @@ function generateSummaryToSign(data, jwt) {
             inputformat: 'html',
             outputformat: 'pdf',
         }))
-        .on('error', function (err) {
+        .on('error', err => {
             return summaryPromise.reject(err);
         })
-        .on('finished', function(conversion) {
-            miss.toPromise(request.get('http:' + conversion.output.url)).then(function (buffer) {
-                request.post({
-                    uri: config.signbox.uri + config.signbox.path + '/documents/upload',
-                    headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt },
-                    formData: {
-                        file: {
-                            value:  buffer,
-                            options: {
-                                filename: data.rnData.name + '_' + _.join(_.split(data.rnData.first_names, ' '), '_') + '_'
-                                + data.rnData.third_name + '_summary.pdf',
-                                contentType: "application/pdf"
-                            }
-                        }
-                    }
-                }, function (err, resp, body) {
-                    if (err) return summaryPromise.reject(err);
-                    else {
-                        let parsedBody = JSON.parse(body);
+        .on('finished', conversion => {
+            miss.toPromise(request.get('http:' + conversion.output.url)).then(buffer => {
 
-                        let options = {
-                            uri: config.signbox.uri + config.signbox.path + '/organizations/divisions/' + config.signbox.division_id + '/workflows/assign',
-                            headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt },
-                            json: true,
-                            body: {
-                                docId: parsedBody[0].uuid,
-                                workflowId: config.signbox.workflow_id
-                            }
-                        };
+                let fileName = data.rnData.name + '_' + _.join(_.split(data.rnData.first_names, ' '), '_') + '_'
+                    + data.rnData.third_name + '_summary.pdf';
 
-                        request.post(options, function (err, resp, body) {
-                            if (err) {
-                                return summaryPromise.reject(err);
-                            } else {
-                                return summaryPromise.resolve(body)
-                            }
-                        });
-                    }
+                signboxApi.uploadDocument(buffer, fileName, 'application/pdf', jwt).then(res => {
+                    let parsedBody = JSON.parse(res);
 
+                    signboxApi.assignDocumentToWorkflow(parsedBody[0].uuid, jwt).then(result => {
+                        return summaryPromise.resolve(result);
+                    }, err => {
+                        return summaryPromise.reject(err);
+                    });
+                }, err => {
+                    return summaryPromise.reject(err);
                 });
-            }, function (err) {
+            }, err => {
                 return summaryPromise.reject(err);
             });
         });

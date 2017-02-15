@@ -1,9 +1,6 @@
 "use strict";
 const config = require(__base + 'modules/t1t-config');
 const request = require('request');
-const jwt = require('jsonwebtoken');
-const moment = require('moment');
-
 
 let token;
 
