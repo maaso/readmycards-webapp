@@ -214,4 +214,33 @@
                 }
             }
         })
+        .component('rmcKeypad', {
+            templateUrl: 'views/readmycards/components/keypad.html',
+            bindings: {
+                pincode: '=',
+                cancelFunc: '&',
+                submitFunc: '&'
+            },
+            controller: function (_) {
+                let controller = this;
+                controller.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                controller.onKeyPressed = onKeyPressed;
+                controller.submitPin = submitPin;
+
+
+                function onKeyPressed(data) {
+                    if (data == '<') {
+                        if (_.isEmpty(controller.pincode.value)) controller.cancelFunc(); else controller.pincode.value = controller.pincode.value.slice(0, controller.pincode.value.length - 1);
+                    } else if (data == '>') {
+                        submitPin();
+                    } else {
+                        controller.pincode.value += data;
+                    }
+                }
+
+                function submitPin() {
+                    controller.submitFunc()(controller.pincode.value);
+                }
+            }
+        })
 })();
