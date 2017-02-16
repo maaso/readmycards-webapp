@@ -6,7 +6,7 @@
 
     function BeID($http, $q, T1C, _) {
         this.formatCardNumber = formatCardNumber;
-        this.formatRRNR =formatRRNR;
+        this.formatRRNR = formatRRNR;
         this.generateSummaryToSign = generateSummaryToSign;
         this.signDocument = signDocumentWithPin;
         this.downloadDocument = downloadDocument;

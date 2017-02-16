@@ -8,6 +8,7 @@
     function LuxId($q, Core) {
         this.address = address;
         this.allCerts = allCerts;
+        this.allData = allData;
         this.biometric = biometric;
         this.filteredInfo = filteredInfo;
         this.filteredCerts = filteredCerts;
@@ -47,6 +48,10 @@
 
         function allCerts(readerId, pin) {
             return filteredWrapper(readerId, pin, 'allCerts', []);
+        }
+
+        function allData(readerId, pin) {
+            return filteredWrapper(readerId, pin, 'allData', []);
         }
 
         function biometric(readerId, pin) {

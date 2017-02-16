@@ -27,7 +27,8 @@
         <div class="content">
 
             <div class="picture-wrapper inline">
-                <img class="lux-pic" src="images/default-pic.jpg"/>
+                <!--<img class="lux-pic" src="images/default-pic.jpg"/>-->
+                <img class="lux-pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.picData.image }}"/>
             </div>
 
             <div class="coat-of-arms-wrapper inline">
@@ -37,45 +38,45 @@
             <div class="personal-info inline">
                 <div class="name">
                     <div class="labels">Nom / Name</div>
-                    <div class="values">Specimen</div>
+                    <div class="values">{{ $ctrl.biometricData.lastName }}</div>
                 </div>
 
                 <div class="given-names">
                     <div class="labels">Prénoms / Given Names</div>
-                    <div class="values">Jeanne</div>
+                    <div class="values">{{ $ctrl.biometricData.firstName }}</div>
                 </div>
 
                 <div class="sex-nat">
                     <div class="sex inline">
                         <div class="labels">Sexe / Sex</div>
-                        <div class="values">F</div>
+                        <div class="values">{{ $ctrl.biometricData.gender }}</div>
                     </div>
 
                     <div class="nationality inline">
                         <div class="labels">Nationalité / Nationality</div>
-                        <div class="values">LUX</div>
+                        <div class="values">{{ $ctrl.biometricData.nationality }}</div>
                     </div>
                 </div>
 
                 <div class="dob">
                     <div class="labels">Date de naissance / Date of birth</div>
-                    <div class="values">19.08.1983</div>
+                    <div class="values">{{ $ctrl.formattedBirthDate }}</div>
                 </div>
 
                 <div class="card-number">
                     <div class="labels">Nº Carte d'identité / Identity Card NB</div>
-                    <div class="values">VMQ17WQEY</div>
+                    <div class="values">{{ $ctrl.biometricData.documentNumber }}</div>
                 </div>
 
                 <div class="validity">
                     <div class="labels">Valide jusqu'au / Valid until</div>
-                    <div class="values">10.06.2024</div>
+                    <div class="values">{{ $ctrl.formattedValidUntil }}</div>
                 </div>
 
-                <div class="can">
-                    <div class="labels">Can</div>
-                    <div class="values">123456</div>
-                </div>
+                <!--<div class="can">-->
+                    <!--<div class="labels">Can</div>-->
+                    <!--<div class="values">123456</div>-->
+                <!--</div>-->
             </div>
         </div>
     </div>
@@ -85,10 +86,10 @@
 
         <div class="issue-info">
             <div class="labels">Date et lieu de délivrance / Date and place of issue</div>
-            <div class="values">10.06.2014 CTIE</div>
+            <div class="values">{{ $ctrl.formattedValidFrom }} CTIE</div>
         </div>
 
-        <div class="can">123456</div>
+        <!--<div class="can">123456</div>-->
 
         <div class="machine-readable-zone">
             <div>{{$ctrl.machineReadable1}}</div>

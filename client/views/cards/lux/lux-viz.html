@@ -1,10 +1,34 @@
 <div id="lux-viz" class="clearfix top-info">
 
-    <div class="status-wrapper">
-        <!--<beid-certificate-status status="$ctrl.certStatus"></beid-certificate-status>-->
-        <!--<beid-pin-check-status status="$ctrl.pinStatus"></beid-pin-check-status>-->
+    <div class="pin-required text-center" ng-if="$ctrl.needPin">
+        <p class="info-text">Access to the Luxembourg eID card is secured with a PIN code.<br>Please provide your PIN to continue.</p>
+
+        <div class="text-center waiting-for-pin" ng-if="$ctrl.pinpad">
+            <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
+            <p class="spinner-text text-thin">Waiting for response from reader...</p>
+            <h3 class="text-primary text-thin">Use your reader's pinpad to enter the PIN code.</h3>
+        </div>
+
+        <div class="pinpad" ng-if="!$ctrl.pinpad">
+            <rmc-keypad pincode="$ctrl.pincode" submit-func="$ctrl.submitPin"></rmc-keypad>
+        </div>
     </div>
 
-    <lux-card rn-data="$ctrl.rnData" pic-data="$ctrl.picData"></lux-card>
+    <div class="text-center waiting-for-pin" ng-if="$ctrl.readingData">
+        <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
+        <p class="spinner-text text-thin">Reading data...</p>
+    </div>
+
+
+    <!--<div ng-if="!$ctrl.needPin && !$ctrl.readingData">-->
+    <div ng-if="!$ctrl.needPin && !$ctrl.readingData">
+        <div class="status-wrapper">
+            <lux-certificate-status status="$ctrl.certStatus"></lux-certificate-status>
+            <lux-pin-check-status status="$ctrl.pinStatus"></lux-pin-check-status>
+        </div>
+
+        <lux-card biometric-data="$ctrl.biometricData" pic-data="$ctrl.picData"></lux-card>
+    </div>
+
 
 </div>

@@ -78,7 +78,7 @@
     }
 
     function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _) {
-        var controller = this;
+        let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;

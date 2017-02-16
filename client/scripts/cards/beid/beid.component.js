@@ -29,7 +29,7 @@
                     }, () => {
                         controller.certStatus = 'error';
                     });
-                })
+                });
             };
 
             controller.checkPin = () => {
@@ -107,7 +107,7 @@
         }};
 
     const beidCertificateStatus = {
-        templateUrl: 'views/cards/beid/cert-status.html',
+        templateUrl: 'views/cards/cert-status.html',
         bindings: {
             status: '<'
         },
@@ -123,7 +123,7 @@
     };
 
     const beidPinCheckStatus = {
-        templateUrl: 'views/cards/beid/pin-check-status.html',
+        templateUrl: 'views/cards/pin-check-status.html',
         bindings: {
             status: '<'
         },
