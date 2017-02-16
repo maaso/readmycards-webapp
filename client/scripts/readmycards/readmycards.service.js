@@ -9,7 +9,7 @@
         .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, _) {
+    function ConnectorService($q, $timeout, CardService, LuxId, _) {
         var connector;
         initializeLib();
 
@@ -59,14 +59,14 @@
         this.getPAN = getPAN;
         this.filterEmvData = filterEmvData;
         this.verifyEmvPin = verifyEmvPin;
+        // --- LuxId ---
+        this.luxId = LuxId;
         // --- Utility ---
         this.isCardTypeBeId = isCardTypeBeId;
         this.isGCLAvailable = isGCLAvailable;
         this.readAllData = readAllData;
         this.initializeAfterInstall = initializeAfterInstall;
         this.version = version;
-
-
 
         /// ===============================
         /// ===== CORE FUNCTIONALITY ======
@@ -649,7 +649,9 @@
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
                 switch (card.description[0]) {
                     case 'Belgium Electronic ID card':
-                        return 'BeID';
+                        return 'LuxCard';
+                    case 'Luxembourg eID card':
+                        return 'LuxCard';
                     case 'MOBIB Card':
                         return 'MOBIB';
                     case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
