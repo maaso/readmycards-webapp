@@ -3,9 +3,6 @@
 
     const luxVisualizer = {
         templateUrl: 'views/cards/lux/lux-viz.html',
-        bindings: {
-            rnData: '<'
-        },
         controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, T1C, _) {
             let controller = this;
 
