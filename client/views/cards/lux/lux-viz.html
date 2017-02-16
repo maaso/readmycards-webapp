@@ -20,7 +20,6 @@
     </div>
 
 
-    <!--<div ng-if="!$ctrl.needPin && !$ctrl.readingData">-->
     <div ng-if="!$ctrl.needPin && !$ctrl.readingData">
         <div class="status-wrapper">
             <lux-certificate-status status="$ctrl.certStatus"></lux-certificate-status>
@@ -28,6 +27,50 @@
         </div>
 
         <lux-card biometric-data="$ctrl.biometricData" pic-data="$ctrl.picData"></lux-card>
+
+        <div class="certificates-toggle col-sm-12">
+            <span class="text-small" ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>
+        </div>
+        <div>
+            <div uib-collapse="!$ctrl.certData">
+                <div class="certificates col-sm-12">
+                    <span class="size-h3 text-primary">Certificates</span>
+                    <div class="col-sm-12" ng-if="$ctrl.rootCerts">
+                        <h4 class="text-info text-light">Root</h4>
+
+                        <div class="input-group" ng-repeat="cert in $ctrl.rootCerts">
+                            <input type="text" class="form-control" value="{{ cert }}">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ cert }}"></button>
+                        </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" ng-if="$ctrl.authCert">
+                        <h4 class="text-info text-light">Authentication</h4>
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="{{ $ctrl.authCert }}">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.authCert }}"></button>
+                        </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" ng-if="$ctrl.nonRepCert">
+                        <h4 class="text-info text-light">Non Repudiation</h4>
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="{{ $ctrl.nonRepCert }}">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.nonRepCert }}"></button>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
 
