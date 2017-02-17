@@ -2,7 +2,9 @@
 const config = require(__base + 'modules/t1t-config');
 const gcloud = require('google-cloud');
 const request = require('request');
+const rp = require('request-promise-native');
 const _ = require('lodash');
+const q = require('q');
 
 let datastore  = gcloud.datastore({
     projectId: config.gcloud.project,
@@ -10,10 +12,68 @@ let datastore  = gcloud.datastore({
 });
 
 module.exports = {
+    convertJP2toJPEG: convertJP2toJPEG,
     processDownload: processDownload,
     processUnknownCard: processUnknownCard
 };
 
+
+function convertJP2toJPEG(req, res) {
+    const file = req.file;
+
+
+    let options = {
+        url: "https://api2.online-convert.com/jobs",
+        headers: {
+            "x-oc-api-key": "4f1e5e127dad7b6dd6077ccdc9edf092",
+        },
+        json: true,
+        body: {
+            conversion: [ { category: 'image', target: 'png' } ]
+        }
+    };
+
+    request.post(options, function (err, resp, body) {
+        let uploadOptions = {
+            url: body.server + '/upload-file/' + body.id,
+            headers: {
+                'x-oc-token': body.token
+            },
+            formData: {
+                file: {
+                    value:  file.buffer,
+                    options: {
+                        filename: file.originalname,
+                        contentType: file.mimetype
+                    }
+                },
+            }
+        };
+        request.post(uploadOptions, function (err, response, body) {
+            let parsedBody = JSON.parse(body);
+            let statusOptions = {
+                url: 'https://api2.online-convert.com/jobs/' + parsedBody.id.job,
+                headers: {
+                    "x-oc-api-key": "4f1e5e127dad7b6dd6077ccdc9edf092",
+                }
+            };
+            checkCompletion(statusOptions).then(function (body) {
+                let getOptions = {
+                    url: body.output[0].uri
+                };
+                return rp.get(getOptions).pipe(res);
+            });
+        });
+    });
+
+    function checkCompletion(options) {
+        return rp.get(options).then(function (body) {
+            let parsedBody = JSON.parse(body);
+            if (parsedBody.status.code != 'completed') return checkCompletion(options);
+            else return parsedBody;
+        });
+    }
+}
 
 function processDownload(req, res) {
     /// Sanity checks

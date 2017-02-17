@@ -14,13 +14,13 @@
         </div>
     </div>
 
-    <div class="text-center waiting-for-pin" ng-if="$ctrl.readingData">
-        <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
-        <p class="spinner-text text-thin">Reading data...</p>
-    </div>
+    <!--<div class="text-center waiting-for-pin" ng-if="$ctrl.readingData">-->
+        <!--<p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>-->
+        <!--<p class="spinner-text text-thin">Reading data...</p>-->
+    <!--</div>-->
 
 
-    <div ng-if="!$ctrl.needPin && !$ctrl.readingData">
+    <div ng-if="!$ctrl.needPin">
         <div class="status-wrapper">
             <lux-certificate-status status="$ctrl.certStatus"></lux-certificate-status>
             <lux-pin-check-status status="$ctrl.pinStatus"></lux-pin-check-status>
