@@ -5,23 +5,23 @@
 
         <div class="nmbs-content">
             <div class="names">
-                <div class="last-name text-uppercase">Janssens</div>
-                <div class="first-name">Anne</div>
+                <div class="last-name text-uppercase">{{ $ctrl.lastName }}</div>
+                <div class="first-name text-capitalize">{{ $ctrl.firstName }}</div>
             </div>
             <div class="dob-inset">
                 <div class="chip inline"></div>
                 <div class="dob inline">
                     <div class="labels">{{$ctrl.dobLabel}}</div>
-                    <div class="values">12/04/1981</div>
+                    <div class="values">{{ $ctrl.dob }}</div>
                 </div>
             </div>
             <div class="card-number">
                 <div class="labels">{{$ctrl.cardNumberLabel}}</div>
-                <div class="values">30860200000000000078</div>
+                <div class="values">{{ $ctrl.cardData['card-issuing'].card_holder_id }}</div>
             </div>
             <div class="card-validity">
                 <div class="labels">{{$ctrl.validityLabel}}</div>
-                <div class="values">18/03/2013 - 17/03/2018</div>
+                <div class="values">{{ $ctrl.validFrom }} - {{ $ctrl.validUntil }}</div>
             </div>
             <div>
                 <img class="mobib-logo" src="images/mobib.png" />
@@ -29,7 +29,8 @@
         </div>
 
         <div class="nmbs-picture-wrapper">
-            <img class="nmbs-pic" src="images/default-pic.jpg"/>
+            <!--<img class="nmbs-pic" src="images/default-pic.jpg"/>-->
+            <img class="nmbs-pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
         </div>
         <div class="nmbs-logo-wrapper">
             <img class="nmbs-logo" ng-attr-src="{{$ctrl.logoUrl}}">

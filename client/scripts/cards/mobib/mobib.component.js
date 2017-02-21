@@ -1,10 +1,23 @@
 (function () {
     'use strict';
 
+    const cardDateFormat = 'YYYY-MM-DD';
+
     const mobibBasic = {
         templateUrl: 'views/cards/mobib/variants/mobib-basic.html',
-        binding: {
-            rnData: '>'
+        bindings: {
+            cardData: '<'
+        },
+        controller: function () {
+            let controller = this;
+            controller.$onInit = () => {
+                console.log(controller.cardData);
+
+                controller.formattedCardNumber = controller.cardData['card-issuing'].card_holder_id.substr(0,6) + ' / ' +
+                    controller.cardData['card-issuing'].card_holder_id.substr(6,10) + ' ' +
+                    controller.cardData['card-issuing'].card_holder_id.substr(16,2) + ' / ' +
+                    controller.cardData['card-issuing'].card_holder_id.substr(18,1);
+            }
         }
     };
 
@@ -21,9 +34,22 @@
     const mobibDeLijn = {
         templateUrl: 'views/cards/mobib/variants/delijn.html',
         bindings: {
-            rnData: '<'
+            cardData: '<'
         },
-        controller: function () {
+        controller: function (_) {
+            let controller = this;
+
+            controller.$onInit = () => {
+                const dateFormat = 'DD/MM/YYYY';
+                controller.dob = moment(controller.cardData['card-issuing'].card_holder_birth_date, cardDateFormat).format(dateFormat);
+
+                let names = _.split(controller.cardData['card-issuing'].card_holder_name, '|');
+                controller.firstName = _.trim(names[0]);
+                controller.lastName = _.trim(names[1]);
+
+                controller.formattedCardNumber1 = controller.cardData['card-issuing'].card_holder_id.substr(0,6);
+                controller.formattedCardNumber2 = controller.cardData['card-issuing'].card_holder_id.substr(6,13);
+            }
 
         }
     };
@@ -31,9 +57,24 @@
     const mobibMivb = {
         templateUrl: 'views/cards/mobib/variants/mivb.html',
         bindings: {
-            rnData: '<'
+            cardData: '<'
         },
-        controller: function () {
+        controller: function (_) {
+            let controller = this;
+
+            controller.$onInit = () => {
+                const dateFormat = 'DD/MM/YYYY';
+                controller.dob = moment(controller.cardData['card-issuing'].card_holder_birth_date, cardDateFormat).format(dateFormat);
+
+                let names = _.split(controller.cardData['card-issuing'].card_holder_name, '|');
+                controller.firstName = _.trim(names[0].toLowerCase());
+                controller.lastName = _.trim(names[1].toLowerCase());
+
+                controller.formattedCardNumber1 = controller.cardData['card-issuing'].card_holder_id.substr(0,6) + ' / ';
+                controller.formattedCardNumber2 =
+                    controller.cardData['card-issuing'].card_holder_id.substr(6,12) + ' / ' +
+                    controller.cardData['card-issuing'].card_holder_id.substr(18,1);
+            }
 
         }
     };
@@ -41,10 +82,10 @@
     const mobibNmbs = {
         templateUrl: 'views/cards/mobib/variants/nmbs.html',
         bindings: {
-            rnData: '<',
+            cardData: '<',
             lang: '<'
         },
-        controller: function () {
+        controller: function (_) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -61,6 +102,16 @@
                     controller.validityLabel = 'Validité :';
                     controller.logoUrl = 'images/sncb-mobility.jpg'
                 }
+
+                const dateFormat = 'DD/MM/YYYY';
+
+                controller.validFrom = moment(controller.cardData['card-issuing'].card_holder_start_date, cardDateFormat).format(dateFormat);
+                controller.validUntil = moment(controller.cardData['card-issuing'].card_holder_end_date, cardDateFormat).format(dateFormat);
+                controller.dob = moment(controller.cardData['card-issuing'].card_holder_birth_date, cardDateFormat).format(dateFormat);
+
+                let names = _.split(controller.cardData['card-issuing'].card_holder_name, '|');
+                controller.firstName = _.trim(names[0].toLowerCase());
+                controller.lastName = _.trim(names[1]);
             }
 
         }
@@ -112,9 +163,26 @@
     const mobibTec = {
         templateUrl: 'views/cards/mobib/variants/tec.html',
         bindings: {
-            rnData: '<'
+            cardData: '<'
         },
-        controller: function () {
+        controller: function (_) {
+            let controller = this;
+
+            controller.$onInit = () => {
+                const dateFormat = 'DD/MM/YYYY';
+                controller.dob = moment(controller.cardData['card-issuing'].card_holder_birth_date, cardDateFormat).format(dateFormat);
+                controller.cardExpiration = moment(controller.cardData['card-issuing'].card_expiration_date, cardDateFormat).format('MM/YYYY');
+
+                let names = _.split(controller.cardData['card-issuing'].card_holder_name, '|');
+                controller.firstName = _.trim(names[0]);
+                controller.lastName = _.trim(names[1]);
+
+                controller.formattedCardNumber1 = controller.cardData['card-issuing'].card_holder_id.substr(0,6);
+                controller.formattedCardNumber2 = controller.cardData['card-issuing'].card_holder_id.substr(6,4) + ' ' +
+                    controller.cardData['card-issuing'].card_holder_id.substr(10,4) + ' ' +
+                    controller.cardData['card-issuing'].card_holder_id.substr(14,4) + ' ' +
+                    controller.cardData['card-issuing'].card_holder_id.substr(18,1);
+            }
 
         }
     };
@@ -122,16 +190,29 @@
     const mobibViz = {
         templateUrl: 'views/cards/mobib/mobib-viz.html',
         bindings: {
-            rnData: '<'
+            cardData: '<'
         },
         controller: function () {
             let controller = this;
 
             controller.$onInit = () => {
-                // controller.mobibFrom = moment().add(1, 'days');
                 controller.mobibFrom = moment().subtract(10, 'days');
-                // controller.mobibTo = moment().subtract(5, 'days');
                 controller.mobibTo = moment().add(5, 'months');
+            };
+
+            controller.cardLang = () => {
+                switch (controller.cardData['card-issuing'].language) {
+                    case 0:
+                    case 1:
+                        return 'nl';
+                    case 2:
+                        return 'fr';
+                    case 3:
+                        return 'de';
+                    case 4:
+                        return 'en';
+                        break;
+                }
             }
         }
     };

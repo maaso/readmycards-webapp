@@ -4,17 +4,17 @@
         <div class="chip-icon"></div>
         <div class="delijn-content">
             <div class="card-info">
-                <div class="reg">629852</div>
-                <div class="card-number">1234567890123</div>
+                <div class="reg">{{ $ctrl.formattedCardNumber1 }}</div>
+                <div class="card-number">{{ $ctrl.formattedCardNumber2 }}</div>
             </div>
             <div class="personal-info">
-                <div class="last-name text-uppercase">Vandervreken</div>
-                <div class="first-name text-uppercase">Tania</div>
-                <div class="dob">23/5/1944</div>
+                <div class="last-name text-uppercase">{{ $ctrl.lastName }}</div>
+                <div class="first-name text-uppercase">{{ $ctrl.firstName }}</div>
+                <div class="dob">{{ $ctrl.dob }}</div>
             </div>
         </div>
         <div class="delijn-picture-wrapper">
-            <img class="delijn-pic" src="images/default-pic.jpg"/>
+            <img class="delijn-pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
         </div>
         <div class="delijn-logo-wrapper">
             <img class="delijn-logo" src="images/delijn.png" />

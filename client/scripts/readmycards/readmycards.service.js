@@ -9,8 +9,8 @@
         .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, LuxId, _) {
-        var connector;
+    function ConnectorService($q, $timeout, CardService, LuxId, Mobib, _) {
+        let connector;
         initializeLib();
 
         // === T1C Methods ===
@@ -61,6 +61,8 @@
         this.verifyEmvPin = verifyEmvPin;
         // --- LuxId ---
         this.luxId = LuxId;
+        // --- Mobib ---
+        this.mobib = Mobib;
         // --- Utility ---
         this.isCardTypeBeId = isCardTypeBeId;
         this.isGCLAvailable = isGCLAvailable;
@@ -649,7 +651,7 @@
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
                 switch (card.description[0]) {
                     case 'Belgium Electronic ID card':
-                        return 'BeID';
+                        return 'MOBIB';
                     case 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)':
                         return 'LuxID';
                     case 'MOBIB Card':
