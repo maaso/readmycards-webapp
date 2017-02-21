@@ -196,8 +196,11 @@
             let controller = this;
 
             controller.$onInit = () => {
-                controller.mobibFrom = moment().subtract(10, 'days');
-                controller.mobibTo = moment().add(5, 'months');
+                if (controller.cardData.active) controller.cardStatus = 'active';
+                else controller.cardStatus = 'inactive';
+
+                controller.mobibFrom = moment(controller.cardData['card-issuing'].card_holder_start_date, cardDateFormat);
+                controller.mobibTo = moment(controller.cardData['card-issuing'].card_expiration_date, cardDateFormat);
             };
 
             controller.cardLang = () => {
