@@ -106,7 +106,7 @@
                 const dateFormat = 'DD/MM/YYYY';
 
                 controller.validFrom = moment(controller.cardData['card-issuing'].card_holder_start_date, cardDateFormat).format(dateFormat);
-                controller.validUntil = moment(controller.cardData['card-issuing'].card_holder_end_date, cardDateFormat).format(dateFormat);
+                controller.validUntil = moment(controller.cardData['card-issuing'].card_expiration_date, cardDateFormat).format(dateFormat);
                 controller.dob = moment(controller.cardData['card-issuing'].card_holder_birth_date, cardDateFormat).format(dateFormat);
 
                 let names = _.split(controller.cardData['card-issuing'].card_holder_name, '|');
