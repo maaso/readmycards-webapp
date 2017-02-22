@@ -12,6 +12,9 @@ module.exports = function createRouter(app) {
     router.route('/api/unknown-card')
         .post(ctrlApi.processUnknownCard);
 
+    router.route('/api/jp2tojpeg')
+        .post(ctrlApi.convertJP2toJPEG);
+
     // Register our routes
     app.use(router);
 };

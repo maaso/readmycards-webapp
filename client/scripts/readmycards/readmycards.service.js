@@ -666,12 +666,20 @@
     }
 
     function API($http, $q, T1C, _) {
+        this.convertJPEG2000toJPEG = convertJPEG2000toJPEG;
         this.storeUnknownCardInfo = storeUnknownCardInfo;
         this.storeDownloadInfo = storeDownloadInfo;
 
 
+        function convertJPEG2000toJPEG(base64JPEG2000) {
+            let data = {
+                base64: base64JPEG2000
+            };
+            return $http.post('/api/jp2tojpeg', data);
+        }
+
         function storeUnknownCardInfo(card, description) {
-            var data = {
+            let data = {
                 type: 'UnknownCard',
                 atr: card.atr,
                 payload: createPayload(card, description)
@@ -679,7 +687,7 @@
             return $http.post('/api/unknown-card', data);
 
             function createPayload(card, description) {
-                var payload = [];
+                let payload = [];
                 _.forEach(card, function (value, key) {
                     if (key != 'atr') payload.push({ name: key, value: value });
                 });
@@ -689,7 +697,7 @@
         }
 
         function storeDownloadInfo(mail, dlUrl) {
-            var promises = [ $http.get('//ipinfo.io').then(function (data) {
+            let promises = [ $http.get('//ipinfo.io').then(function (data) {
                 return data;
             }, function () {
                 return {};
@@ -700,7 +708,7 @@
             })];
 
             $q.all(promises).then(function (results) {
-                var data = {
+                let data = {
                     email: mail,
                     dlUrl: dlUrl,
                     platformName: results[1].os.name,
@@ -713,7 +721,7 @@
             });
 
             function createPayload(ipInfo, browserInfo) {
-                var payload = [];
+                let payload = [];
                 _.forEach(ipInfo, function (value, key) {
                     payload.push({ name: key, value: value});
                 });

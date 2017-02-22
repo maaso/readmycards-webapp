@@ -2,7 +2,11 @@
 const config = require(__base + 'modules/t1t-config');
 const gcloud = require('google-cloud');
 const request = require('request');
+const rp = require('request-promise-native');
 const _ = require('lodash');
+const q = require('q');
+const service = require('./api.service');
+const response = require(__base + 'server/util/response.util');
 
 let datastore  = gcloud.datastore({
     projectId: config.gcloud.project,
@@ -10,10 +14,21 @@ let datastore  = gcloud.datastore({
 });
 
 module.exports = {
+    convertJP2toJPEG: convertJP2toJPEG,
     processDownload: processDownload,
     processUnknownCard: processUnknownCard
 };
 
+
+function convertJP2toJPEG(req, res) {
+    if (!req.body.base64) return response.error({ status: 400, message: 'base64 string is required'}, res);
+
+    service.jp2000ToJpeg(req.body.base64).then(result => {
+        return res.status(200).json({ base64Pic: result });
+    }, err => {
+        return response.error(err, res);
+    })
+}
 
 function processDownload(req, res) {
     /// Sanity checks
