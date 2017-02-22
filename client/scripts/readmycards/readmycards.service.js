@@ -9,8 +9,8 @@
         .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, LuxId, _) {
-        var connector;
+    function ConnectorService($q, $timeout, CardService, LuxId, Mobib, _) {
+        let connector;
         initializeLib();
 
         // === T1C Methods ===
@@ -61,6 +61,8 @@
         this.verifyEmvPin = verifyEmvPin;
         // --- LuxId ---
         this.luxId = LuxId;
+        // --- Mobib ---
+        this.mobib = Mobib;
         // --- Utility ---
         this.isCardTypeBeId = isCardTypeBeId;
         this.isGCLAvailable = isGCLAvailable;
@@ -654,6 +656,8 @@
                         return 'LuxID';
                     case 'MOBIB Card':
                         return 'MOBIB';
+                    case 'MOBIB Basic (Transport)':
+                        return 'MOBIB Basic';
                     case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
                         return 'EMV';
                     default:
