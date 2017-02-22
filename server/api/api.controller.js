@@ -5,6 +5,8 @@ const request = require('request');
 const rp = require('request-promise-native');
 const _ = require('lodash');
 const q = require('q');
+const service = require('./api.service');
+const response = require(__base + 'server/util/response.util');
 
 let datastore  = gcloud.datastore({
     projectId: config.gcloud.project,
@@ -19,60 +21,13 @@ module.exports = {
 
 
 function convertJP2toJPEG(req, res) {
-    const file = req.file;
+    if (!req.body.base64) return response.error({ status: 400, message: 'base64 string is required'}, res);
 
-
-    let options = {
-        url: "https://api2.online-convert.com/jobs",
-        headers: {
-            "x-oc-api-key": "4f1e5e127dad7b6dd6077ccdc9edf092",
-        },
-        json: true,
-        body: {
-            conversion: [ { category: 'image', target: 'png' } ]
-        }
-    };
-
-    request.post(options, function (err, resp, body) {
-        let uploadOptions = {
-            url: body.server + '/upload-file/' + body.id,
-            headers: {
-                'x-oc-token': body.token
-            },
-            formData: {
-                file: {
-                    value:  file.buffer,
-                    options: {
-                        filename: file.originalname,
-                        contentType: file.mimetype
-                    }
-                },
-            }
-        };
-        request.post(uploadOptions, function (err, response, body) {
-            let parsedBody = JSON.parse(body);
-            let statusOptions = {
-                url: 'https://api2.online-convert.com/jobs/' + parsedBody.id.job,
-                headers: {
-                    "x-oc-api-key": "4f1e5e127dad7b6dd6077ccdc9edf092",
-                }
-            };
-            checkCompletion(statusOptions).then(function (body) {
-                let getOptions = {
-                    url: body.output[0].uri
-                };
-                return rp.get(getOptions).pipe(res);
-            });
-        });
-    });
-
-    function checkCompletion(options) {
-        return rp.get(options).then(function (body) {
-            let parsedBody = JSON.parse(body);
-            if (parsedBody.status.code != 'completed') return checkCompletion(options);
-            else return parsedBody;
-        });
-    }
+    service.jp2000ToJpeg(req.body.base64).then(result => {
+        return res.status(200).json({ base64Pic: result });
+    }, err => {
+        return response.error(err, res);
+    })
 }
 
 function processDownload(req, res) {
