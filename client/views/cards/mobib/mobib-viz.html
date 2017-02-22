@@ -6,11 +6,11 @@
         <mobib-validity-status from="$ctrl.mobibFrom" to="$ctrl.mobibTo"></mobib-validity-status>
     </div>
 
-    <div ng-if="$ctrl.cardData['card-issuing'].card_type === 2">
+    <div ng-if="$ctrl.isBasic">
         <mobib-basic card-data="$ctrl.cardData"></mobib-basic>
     </div>
 
-    <div ng-if="$ctrl.cardData['card-issuing'].card_type === 1">
+    <div ng-if="!$ctrl.isBasic">
         <mobib-nmbs card-data="$ctrl.cardData" ng-if="$ctrl.cardData['card-issuing'].company_id === 1" lang="$ctrl.cardLang()"></mobib-nmbs>
         <mobib-mivb card-data="$ctrl.cardData" ng-if="$ctrl.cardData['card-issuing'].company_id === 2"></mobib-mivb>
         <mobib-de-lijn card-data="$ctrl.cardData" ng-if="$ctrl.cardData['card-issuing'].company_id === 3"></mobib-de-lijn>

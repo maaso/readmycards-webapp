@@ -655,8 +655,9 @@
                     case 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)':
                         return 'LuxID';
                     case 'MOBIB Card':
-                    case 'MOBIB Basic (Transport)':
                         return 'MOBIB';
+                    case 'MOBIB Basic (Transport)':
+                        return 'MOBIB Basic';
                     case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
                         return 'EMV';
                     default:

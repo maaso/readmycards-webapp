@@ -49,7 +49,7 @@
         </div>
 
         <div class="viz-container">
-            <mobib-viz card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'MOBIB'"></mobib-viz>
+            <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
 
             <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
 

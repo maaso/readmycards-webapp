@@ -28,7 +28,7 @@
                             controller.unknownCard = true;
                             controller.loading = false;
                             RMC.monitorCardRemoval(controller.readerId, controller.card);
-                        } else if (controller.cardType === 'MOBIB') {
+                        } else if (controller.cardType === 'MOBIB' || controller.cardType === 'MOBIB Basic') {
                             T1C.mobib.allData(controller.readerId).then(function (res) {
                                 controller.cardData = res.data;
                                 controller.loading = false;

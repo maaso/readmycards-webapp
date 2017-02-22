@@ -11,8 +11,6 @@
         controller: function () {
             let controller = this;
             controller.$onInit = () => {
-                console.log(controller.cardData);
-
                 controller.formattedCardNumber = controller.cardData['card-issuing'].card_holder_id.substr(0,6) + ' / ' +
                     controller.cardData['card-issuing'].card_holder_id.substr(6,10) + ' ' +
                     controller.cardData['card-issuing'].card_holder_id.substr(16,2) + ' / ' +
@@ -190,7 +188,8 @@
     const mobibViz = {
         templateUrl: 'views/cards/mobib/mobib-viz.html',
         bindings: {
-            cardData: '<'
+            cardData: '<',
+            isBasic: '<'
         },
         controller: function () {
             let controller = this;
