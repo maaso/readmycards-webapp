@@ -26,6 +26,10 @@
         this.setPubKey = setPubKey;
         // --- Config ---
         this.getApiKey = getApiKey;
+        // --- Utility ---
+        this.isGCLAvailable = isGCLAvailable;
+        this.initializeAfterInstall = initializeAfterInstall;
+        this.version = version;
 
         /// ===============================
         /// ===== CORE FUNCTIONALITY ======
@@ -152,11 +156,17 @@
             return $q.when(connector.config().apiKey);
         }
 
+        /// ==============================
+        /// ===== UTILITY FUNCTIONS ======
+        /// ==============================
 
-        // Helper function to reject or resolve the promise when appropriate
-        function callbackHelper(err, result, promise) {
-            if (err) promise.reject(err);
-            else promise.resolve(result);
+        function isGCLAvailable() {
+            let available = $q.defer();
+            connector.core().info(function (err) {
+                if (err) available.resolve(false);
+                else available.resolve(true);
+            });
+            return available.promise;
         }
 
         // Initialize the T1C connector with some custom config
@@ -168,6 +178,21 @@
             gclConfig.allowAutoUpdate = true;
             gclConfig.implicitDownload = false;
             connector = new GCLLib.GCLClient(gclConfig);
+        }
+
+        function initializeAfterInstall() {
+            return $q.when(initializeLib());
+        }
+
+        function version() {
+            return connector.core().version();
+        }
+
+
+        // Helper function to reject or resolve the promise when appropriate
+        function callbackHelper(err, result, promise) {
+            if (err) promise.reject(err);
+            else promise.resolve(result);
         }
     }
 })();

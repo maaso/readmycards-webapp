@@ -5,7 +5,7 @@
         .controller('BeIDSummaryDownloadCtrl', summaryDlCtrl);
 
 
-    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, BeID, FileSaver, Blob, EVENTS, _) {
+    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, BeUtils, FileSaver, Blob, EVENTS, _) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
@@ -36,7 +36,7 @@
         }
 
         function doDownload() {
-            BeID.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
+            BeUtils.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
                 handleDownload(signedPdf.data, generatedFile.origFilename);
                 ok();
             });
@@ -62,7 +62,7 @@
         function submitPin() {
             $scope.enterPin = false;
             $scope.pinText = "Signing...";
-            BeID.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+            BeUtils.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
                 $scope.currentStep = 3;
                 $scope.pinText = 'Signed';
                 $scope.downloadText = 'Download Ready!'
@@ -73,7 +73,7 @@
             $scope.currentStep = 1;
             $scope.generateText = 'Generating...';
 
-            BeID.generateSummaryToSign(readerId).then(function (res) {
+            BeUtils.generateSummaryToSign(readerId).then(function (res) {
                 generatedFile = res;
                 $scope.currentStep = 2;
                 $scope.generateText = 'Generated';
@@ -81,7 +81,7 @@
                 if (pinpad) {
                     // start signing process
                     $scope.pinText = 'Enter PIN on reader...';
-                    BeID.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                    BeUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
                         $scope.currentStep = 3;
                         $scope.pinText = 'Signed';
                         $scope.downloadText = 'Download Ready!'

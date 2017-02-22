@@ -37,7 +37,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                T1C.verifyBeIDPin(readerId).then(handleVerificationSuccess, handleVerificationError);
+                T1C.beid.verifyPin(readerId).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
@@ -69,7 +69,7 @@
         }
 
         function submitPin() {
-            T1C.verifyBeIDPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
+            T1C.beid.verifyPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {
@@ -93,7 +93,7 @@
         }
 
         function init() {
-            console.log('Using T1C-js ' + T1C.version());
+            console.log('Using T1C-js ' + T1C.core.version());
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
@@ -121,7 +121,7 @@
 
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
                 controller.gclAvailable = true;
-                T1C.initializeAfterInstall().then(function (res) {
+                T1C.core.initializeAfterInstall().then(function (res) {
                     pollForReaders();
                 });
             });
@@ -144,7 +144,7 @@
             });
 
             $scope.$on(EVENTS.START_OVER, function (event, currentReaderId) {
-                T1C.getReaders().then(function (result) {
+                T1C.core.getReaders().then(function (result) {
                     if (_.find(result.data, function (reader) {
                        return _.has(reader, 'card');
                     })) {
@@ -199,7 +199,7 @@
         function pollForReaders() {
             if (!controller.pollingReaders) controller.pollingReaders = true;
             controller.error = false;
-            T1C.getConnector().core().pollReaders(30, function (err, result) {
+            T1C.core.getConnector().core().pollReaders(30, function (err, result) {
                 // Success callback
                 // Found at least one reader, poll for cards
                 if (err) {
@@ -231,7 +231,7 @@
         function pollForCard() {
             if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            T1C.getConnector().core().pollCardInserted(3, function (err, result) {
+            T1C.core.getConnector().core().pollCardInserted(3, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
@@ -245,7 +245,7 @@
                     // else toastr.success('Reader found!');
                     // Found a card, attempt to read it
                     // Refresh reader list first
-                    T1C.getReaders().then(function (result) {
+                    T1C.core.getReaders().then(function (result) {
                         controller.readers = result.data;
                         readCard();
                     }, function () {
@@ -273,7 +273,7 @@
 
         function promptDownload() {
             // Prompt for dl
-            T1C.getDownloadLink().then(function (res) {
+            T1C.ds.getDownloadLink().then(function (res) {
                 controller.dlLink = res.url;
             })
         }

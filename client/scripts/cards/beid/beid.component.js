@@ -8,14 +8,14 @@
             addressData: '<',
             picData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeID, T1C) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.certStatus = 'checking';
                 controller.pinStatus = 'idle';
                 const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
-                T1C.getAllCerts($stateParams.readerId, filter).then(res => {
+                T1C.beid.getAllCerts($stateParams.readerId, filter).then(res => {
                     let validationReq = {
                         certificateChain: [
                             { order: 0, certificate: res.data.authentication_certificate },
@@ -23,7 +23,7 @@
                             { order: 2, certificate: res.data.root_certificate },
                         ]
                     };
-                    T1C.validateCertificateChain(validationReq).then(res => {
+                    T1C.ocv.validateCertificateChain(validationReq).then(res => {
                         if (res.crlResponse.status && res.ocspResponse.status) controller.certStatus = 'valid';
                         else controller.certStatus = 'invalid';
                     }, () => {
@@ -40,7 +40,7 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return T1C.getReader($stateParams.readerId).then(function (res) {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
                         }
@@ -72,7 +72,7 @@
                 } else {
                     if (!controller.loadingCerts) {
                         controller.loadingCerts = true;
-                        T1C.getAllCerts($stateParams.readerId).then(res => {
+                        T1C.beid.getAllCerts($stateParams.readerId).then(res => {
                             controller.loadingCerts = false;
                             controller.certData = res.data;
                         });
@@ -88,7 +88,7 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return T1C.getReader($stateParams.readerId).then(function (res) {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
                         }
@@ -153,12 +153,12 @@
             rnData: '<',
             picData: '<',
         },
-        controller: function (_, BeID, CheckDigit) {
+        controller: function (_, BeUtils, CheckDigit) {
             let controller = this;
 
             controller.$onInit = () => {
-                controller.formattedCardNumber = BeID.formatCardNumber(controller.rnData.card_number);
-                controller.formattedRRNR = BeID.formatRRNR(controller.rnData.national_number);
+                controller.formattedCardNumber = BeUtils.formatCardNumber(controller.rnData.card_number);
+                controller.formattedRRNR = BeUtils.formatRRNR(controller.rnData.national_number);
 
                 let mrs = constructMachineReadableStrings(controller.rnData);
 

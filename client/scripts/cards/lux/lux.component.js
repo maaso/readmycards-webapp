@@ -10,7 +10,7 @@
                 controller.needPin = true;
 
                 // check type of reader
-                T1C.getReader($stateParams.readerId).then(res => {
+                T1C.core.getReader($stateParams.readerId).then(res => {
                     controller.pinpad = res.data.pinpad;
                     if (!controller.pinpad) controller.pincode = { value: '' };
                     else {

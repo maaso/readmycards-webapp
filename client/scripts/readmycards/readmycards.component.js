@@ -3,7 +3,7 @@
 
     angular.module('app.readmycards')
         .component('cardVisualizer', {
-            templateUrl: 'views/demo/components/card-viz.html',
+            templateUrl: 'views/readmycards/components/card-viz.html',
             bindings: {
                 readerId: '<'
             },
@@ -18,7 +18,7 @@
                     controller.errorReadingCard = false;
                     controller.unknownCard = false;
                     // Detect Type and read data
-                    T1C.getReader(controller.readerId).then(function (readerInfo) {
+                    T1C.core.getReader(controller.readerId).then(function (readerInfo) {
                         controller.cardType = CardService.detectType(readerInfo.data.card);
                         controller.card = readerInfo.data.card;
 
@@ -28,12 +28,6 @@
                             controller.unknownCard = true;
                             controller.loading = false;
                             RMC.monitorCardRemoval(controller.readerId, controller.card);
-                        } else if (controller.cardType === 'MOBIB' || controller.cardType === 'MOBIB Basic') {
-                            T1C.mobib.allData(controller.readerId).then(function (res) {
-                                controller.cardData = res.data;
-                                controller.loading = false;
-                                RMC.monitorCardRemoval(controller.readerId, controller.card);
-                            });
                         } else {
                             T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
                                 controller.cardData = res.data;
@@ -109,7 +103,7 @@
 
                 function pollForGcl() {
                     $timeout(function () {
-                        T1C.getInfo().then(function (res) {
+                        T1C.core.getInfo().then(function (res) {
                             // Info retrieved, GCL is installed
                             $scope.$emit(EVENTS.GCL_INSTALLED);
                         }, function (err) {

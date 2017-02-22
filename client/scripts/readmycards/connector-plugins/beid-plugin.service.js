@@ -5,7 +5,7 @@
         .service('BeID', BeID);
 
 
-    function BeID($q, Core, CardService, _) {
+    function BeID($q, Core, _) {
 
         // --- BeID ---
         this.getAllData = getAllData;
@@ -21,7 +21,7 @@
         this.filterBeIdData = filterBeIdData;
         this.filterBeIdCerts = filterBeIdCerts;
         this.signData = signData;
-        this.verifyBeIDPin = verifyBeIDPin;
+        this.verifyPin = verifyBeIDPin;
         this.authenticate = authenticate;
 
         const connector = Core.getConnector();
@@ -33,7 +33,7 @@
 
         // Get all data
         function getAllData(readerId) {
-            var data = $q.defer();
+            let data = $q.defer();
             connector.beid(readerId).allData([], function (err, result) {
                 callbackHelper(err, result, data);
             });
@@ -53,7 +53,7 @@
 
         // Get all card holder related data, excluding address and photo
         function getRnData(readerId) {
-            var rnDataDeferred = $q.defer();
+            let rnDataDeferred = $q.defer();
             connector.beid(readerId).rnData(function (err, result) {
                 callbackHelper(err, result, rnDataDeferred);
             });
@@ -62,7 +62,7 @@
 
         // Get card holder's address
         function getAddress(readerId) {
-            var addressDeferred = $q.defer();
+            let addressDeferred = $q.defer();
             connector.beid(readerId).address(function (err, result) {
                 callbackHelper(err, result, addressDeferred);
             });
@@ -71,7 +71,7 @@
 
         // Get card holder's picture
         function getPic(readerId) {
-            var picDeferred = $q.defer();
+            let picDeferred = $q.defer();
             connector.beid(readerId).picture(function (err, result) {
                 callbackHelper(err, result, picDeferred);
             });
@@ -80,7 +80,7 @@
 
         // Get root certificate stored on smart card
         function getRootCert(readerId) {
-            var rootDeferred = $q.defer();
+            let rootDeferred = $q.defer();
             connector.beid(readerId).rootCertificate(function (err, result) {
                 callbackHelper(err, result, rootDeferred);
             });
@@ -89,7 +89,7 @@
 
         // Get authentication certificate stored on smart card
         function getAuthCert(readerId) {
-            var authDeferred = $q.defer();
+            let authDeferred = $q.defer();
             connector.beid(readerId).authenticationCertificate(function (err, result) {
                 callbackHelper(err, result, authDeferred);
             });
@@ -98,7 +98,7 @@
 
         // Get citizen certificate stored on smart card
         function getCitizenCert(readerId) {
-            var citizenDeferred = $q.defer();
+            let citizenDeferred = $q.defer();
             connector.beid(readerId).citizenCertificate(function (err, result) {
                 callbackHelper(err, result, citizenDeferred);
             });
@@ -107,7 +107,7 @@
 
         // Get non-repudiation certificat stored on smart card
         function getNonRepCert(readerId) {
-            var nonRepDeferred = $q.defer();
+            let nonRepDeferred = $q.defer();
             connector.beid(readerId).nonRepudiationCertificate(function (err, result) {
                 callbackHelper(err, result, nonRepDeferred);
             });
@@ -116,7 +116,7 @@
 
         // Get RRN certificate stored on smart card (= private key used to sign Rn and Address data)
         function getRrnCert(readerId) {
-            var rrnDeferred = $q.defer();
+            let rrnDeferred = $q.defer();
             connector.beid(readerId).rrnCertificate(function (err, result) {
                 callbackHelper(err, result, rrnDeferred);
             });
@@ -125,7 +125,7 @@
 
         // Get only a specific subset of data
         function filterBeIdData(readerId, filter) {
-            var filterDeferred = $q.defer();
+            let filterDeferred = $q.defer();
             connector.beid(readerId).allData(filter, function (err, result) {
                 callbackHelper(err, result, filterDeferred);
             });
@@ -134,7 +134,7 @@
 
         // Filter the certificates
         function filterBeIdCerts(readerId, filter) {
-            var filterDeferred = $q.defer();
+            let filterDeferred = $q.defer();
             connector.beid(readerId).allCerts(filter, function (err, result) {
                 callbackHelper(err, result, filterDeferred);
             });
@@ -143,8 +143,8 @@
 
         // Sign data with certificates stored on the smartcard
         function signData(readerId, pin, algo, dataToSign) {
-            var signDeferred = $q.defer();
-            var data = {
+            let signDeferred = $q.defer();
+            let data = {
                 algorithm_reference: algo,
                 data: dataToSign
             };
@@ -157,8 +157,8 @@
 
         // Verify PIN code
         function verifyBeIDPin(readerId, pin) {
-            var pinDeferred = $q.defer();
-            var data = {};
+            let pinDeferred = $q.defer();
+            let data = {};
             if (pin) data.pin = pin;
             connector.beid(readerId).verifyPin(data, function (err, result) {
                 callbackHelper(err, result, pinDeferred);
@@ -168,8 +168,8 @@
 
         // Authenticate card holder based on challenge
         function authenticate(readerId, pin, algo, challenge) {
-            var authDeferred = $q.defer();
-            var data = {
+            let authDeferred = $q.defer();
+            let data = {
                 algorithm_reference: algo,
                 challenge: challenge
             };
