@@ -53,6 +53,8 @@
 
             <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
 
+            <lux-trust-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxTrust'"></lux-trust-visualizer>
+
             <beid-visualizer rn-data="$ctrl.cardData.rn"
                              address-data="$ctrl.cardData.address"
                              pic-data="$ctrl.cardData.picture"

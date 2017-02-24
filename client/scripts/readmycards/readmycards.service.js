@@ -9,7 +9,7 @@
         .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, Mobib, OCV, _) {
+    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, LuxTrust, Mobib, OCV, _) {
 
         // === T1C Methods ===
         // --- Core ---
@@ -24,6 +24,8 @@
         this.emv = EMV;
         // --- LuxId ---
         this.luxId = LuxId;
+        // --- LuxTrust ---
+        this.luxtrust = LuxTrust;
         // --- Mobib ---
         this.mobib = Mobib;
         // --- Utility ---
@@ -42,6 +44,8 @@
                 case 'MOBIB':
                 case 'MOBIB Basic':
                     return Mobib.allData(readerId);
+                case 'LuxTrust':
+                    return LuxTrust.allData(readerId);
                 default:
                     return $q.when('Not Supported');
             }
@@ -177,7 +181,7 @@
             }
 
             function findDescription(descriptions, toFind) {
-                return _.find(descriptions, desc => {
+                return !!_.find(descriptions, desc => {
                     return desc.indexOf(toFind) > -1;
                 })
             }

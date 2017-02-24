@@ -2,7 +2,7 @@
     'use strict';
 
     const luxVisualizer = {
-        templateUrl: 'views/cards/lux/lux-viz.html',
+        templateUrl: 'views/cards/lux/eid/lux-viz.html',
         controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, LuxUtils, T1C, API) {
             let controller = this;
 
@@ -107,6 +107,66 @@
             }
         }};
 
+    const luxTrustVisualizer = {
+        templateUrl: 'views/cards/lux/luxtrust/luxtrust-viz.html',
+        bindings: {
+            cardData: '<'
+        },
+        controller: function ($stateParams, $timeout, $uibModal, T1C) {
+            let controller = this;
+
+            controller.$onInit = () => {
+                console.log(controller.cardData);
+                controller.pinStatus = 'idle';
+                controller.certStatus = 'checking';
+
+                $timeout(() => {
+                    controller.certStatus = 'valid';
+                }, 3500);
+            };
+
+            controller.checkPin = () => {
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/check-pin.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                                return res.data.pinpad;
+                            })
+                        },
+                        plugin: () => {
+                            return T1C.luxtrust;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'ModalPinCheckCtrl'
+                });
+
+                modal.result.then(function () {
+                    controller.pinStatus = 'valid';
+                }, function (err) {
+                    switch (err.code) {
+                        case 103:
+                            controller.pinStatus = '2remain';
+                            break;
+                        case 104:
+                            controller.pinStatus = '1remain';
+                            break;
+                        case 105:
+                            controller.pinStatus = 'blocked';
+                            break;
+                    }
+                });
+            };
+
+            controller.toggleCerts = () => {
+                controller.certData = !controller.certData;
+            };
+        }};
+
     const luxCertificateStatus = {
         templateUrl: 'views/cards/cert-status.html',
         bindings: {
@@ -133,6 +193,31 @@
             controller.$onChanges = () => {
                 if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
                 if (controller.status === 'valid') controller.infoText = 'Strong authentication OK.';
+                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
+                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
+                if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
+                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+            };
+
+            controller.checkPin = () => {
+                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
+            }
+        }
+    };
+
+    const luxTrustPinCheckStatus = {
+        templateUrl: 'views/cards/pin-check-status.html',
+        bindings: {
+            status: '<'
+        },
+        require: {
+            parent: '^luxTrustVisualizer'
+        },
+        controller: function (_) {
+            let controller = this;
+            controller.$onChanges = () => {
+                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
+                if (controller.status === 'valid') controller.infoText = 'PIN check OK.';
                 if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
@@ -214,8 +299,10 @@
 
     angular.module('app.cards.lux')
         .component('luxVisualizer', luxVisualizer)
+        .component('luxTrustVisualizer', luxTrustVisualizer)
         .component('luxCertificateStatus', luxCertificateStatus)
         .component('luxPinCheckStatus', luxPinCheckStatus)
+        .component('luxTrustPinCheckStatus', luxTrustPinCheckStatus)
         .component('luxCard', luxCard)
         .component('luxTrustCard', luxTrustCard);
 })();

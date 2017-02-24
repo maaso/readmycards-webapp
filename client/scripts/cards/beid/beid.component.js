@@ -43,6 +43,9 @@
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
+                        },
+                        plugin: () => {
+                            return T1C.beid;
                         }
                     },
                     backdrop: 'static',
