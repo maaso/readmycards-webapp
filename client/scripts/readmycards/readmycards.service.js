@@ -27,31 +27,11 @@
         // --- Mobib ---
         this.mobib = Mobib;
         // --- Utility ---
-        this.isCardTypeBeId = isCardTypeBeId;
         this.readAllData = readAllData;
 
         /// ==============================
         /// ===== UTILITY FUNCTIONS ======
         /// ==============================
-
-        // Check if the car
-        function isCardTypeBeId(readerId) {
-            let typeDeferred = $q.defer();
-            // TODO user direct reader access when available
-            Core.getReaders().then(function (result) {
-                let reader = _.find(result.data, function (reader) {
-                    return reader.id === readerId;
-                });
-
-                if (reader.card) {
-                    if (reader.card.description[0] === 'Belgium Electronic ID card') typeDeferred.resolve(true);
-                    else typeDeferred.resolve(false);
-                } else {
-                    typeDeferred.reject('No card present in reader');
-                }
-            });
-            return typeDeferred.promise;
-        }
 
         function readAllData(readerId, card) {
             switch (CardService.detectType(card)) {
@@ -186,22 +166,20 @@
 
         function detectType(card) {
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
-                switch (card.description[0]) {
-                    case 'Belgium Electronic ID card':
-                        return 'BeID';
-                    case 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)':
-                        return 'LuxID';
-                    case 'MOBIB Card':
-                        return 'MOBIB';
-                    case 'MOBIB Basic (Transport)':
-                        return 'MOBIB Basic';
-                    case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
-                        return 'EMV';
-                    default:
-                        return 'Unknown';
-                }
+                if (findDescription( card.description, 'Belgium Electronic ID card')) return 'BeID';
+                else if (findDescription(card.description, 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)')) return 'LuxID';
+                else if (findDescription(card.description, 'MOBIB Basic')) return 'MOBIB Basic';
+                else if (findDescription(card.description, 'MOBIB')) return 'MOBIB';
+                else if (findDescription(card.description, 'Mastercard')) return 'EMV';
+                else return 'Unknown';
             } else {
                 return 'Unknown';
+            }
+
+            function findDescription(descriptions, toFind) {
+                return _.find(descriptions, desc => {
+                    return desc.indexOf(toFind) > -1;
+                })
             }
         }
     }

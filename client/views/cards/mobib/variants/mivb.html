@@ -24,8 +24,8 @@
             </div>
         </div>
         <div class="mivb-picture-wrapper">
-            <!--<img class="mivb-pic" src="images/default-pic.jpg"/>-->
-            <img class="mivb-pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
+            <img class="mivb-pic" ng-if="!$ctrl.cardData.picture || $ctrl.cardData.picture.length === 0" src="images/default-pic.jpg"/>
+            <img class="mivb-pic" ng-if="$ctrl.cardData.picture && $ctrl.cardData.picture.length > 0" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
         </div>
         <div class="mivb-logo-wrapper">
             <img class="mivb-logo" src="images/mivb.png">
