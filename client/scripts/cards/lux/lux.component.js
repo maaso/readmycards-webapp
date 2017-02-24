@@ -110,7 +110,7 @@
         bindings: {
             cardData: '<'
         },
-        controller: function ($stateParams, $timeout, $uibModal, T1C) {
+        controller: function ($q, $stateParams, $timeout, $uibModal, T1C, _) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -118,9 +118,30 @@
                 controller.pinStatus = 'idle';
                 controller.certStatus = 'checking';
 
-                $timeout(() => {
-                    controller.certStatus = 'valid';
-                }, 3500);
+                let validationReq1 = {
+                    certificateChain: [
+                        { order: 0, certificate: controller.cardData.authentication_certificate },
+                        { order: 1, certificate: controller.cardData.root_certificates[1] },
+                        { order: 2, certificate: controller.cardData.root_certificates[0] },
+                    ]
+                };
+                let validationReq2 = {
+                    certificateChain: [
+                        { order: 0, certificate: controller.cardData.signing_certificate },
+                        { order: 1, certificate: controller.cardData.root_certificates[1] },
+                        { order: 2, certificate: controller.cardData.root_certificates[0] },
+                    ]
+                };
+                let promises = [ T1C.ocv.validateCertificateChain(validationReq1), T1C.ocv.validateCertificateChain(validationReq2)];
+
+                $q.all(promises).then(results => {
+                    console.log(results);
+                    let status = 'valid';
+                    _.forEach(results, res => {
+                        if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
+                    });
+                    controller.certStatus = status;
+                });
             };
 
             controller.checkPin = () => {
