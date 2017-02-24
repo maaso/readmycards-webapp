@@ -172,6 +172,8 @@
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
                 if (findDescription( card.description, 'Belgium Electronic ID card')) return 'BeID';
                 else if (findDescription(card.description, 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)')) return 'LuxID';
+                else if (findDescription(card.description, 'LuxTrust')) return 'LuxTrust';
+                else if (findDescription(card.description, 'OTP')) return 'LuxOTP';
                 else if (findDescription(card.description, 'MOBIB Basic')) return 'MOBIB Basic';
                 else if (findDescription(card.description, 'MOBIB')) return 'MOBIB';
                 else if (findDescription(card.description, 'Mastercard')) return 'EMV';

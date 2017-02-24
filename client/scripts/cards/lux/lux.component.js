@@ -192,6 +192,60 @@
             };
         }};
 
+    const luxOtpVisualizer = {
+        templateUrl: 'views/cards/lux/otp/luxotp-viz.html',
+        bindings: {
+            cardData: '<'
+        },
+        controller: function ($q, $stateParams, $timeout, $uibModal, T1C, _) {
+            let controller = this;
+
+            controller.$onInit = () => {
+
+            };
+
+            controller.checkPin = () => {
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/check-pin.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                                return res.data.pinpad;
+                            })
+                        },
+                        plugin: () => {
+                            return T1C.luxotp;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'ModalPinCheckCtrl'
+                });
+
+                modal.result.then(function () {
+                    controller.pinStatus = 'valid';
+                }, function (err) {
+                    switch (err.code) {
+                        case 103:
+                            controller.pinStatus = '2remain';
+                            break;
+                        case 104:
+                            controller.pinStatus = '1remain';
+                            break;
+                        case 105:
+                            controller.pinStatus = 'blocked';
+                            break;
+                    }
+                });
+            };
+
+            controller.toggleCerts = () => {
+                controller.certData = !controller.certData;
+            };
+        }};
+
     const luxCertificateStatus = {
         templateUrl: 'views/cards/cert-status.html',
         bindings: {
@@ -323,12 +377,18 @@
         }
     };
 
+    const luxOtpCard = {
+        templateUrl: 'views/cards/lux/otp/luxotp-card.html',
+    };
+
     angular.module('app.cards.lux')
         .component('luxVisualizer', luxVisualizer)
+        .component('luxOtpVisualizer', luxOtpVisualizer)
         .component('luxTrustVisualizer', luxTrustVisualizer)
         .component('luxCertificateStatus', luxCertificateStatus)
         .component('luxPinCheckStatus', luxPinCheckStatus)
         .component('luxTrustPinCheckStatus', luxTrustPinCheckStatus)
         .component('luxCard', luxCard)
+        .component('luxOtpCard', luxOtpCard)
         .component('luxTrustCard', luxTrustCard);
 })();
