@@ -314,6 +314,7 @@
         bindings: {
             biometricData: '<',
             picData: '<',
+            signatureData: '<'
         },
         controller: function (_, LuxUtils, CheckDigit) {
             let controller = this;
