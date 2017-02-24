@@ -28,7 +28,7 @@
             </div>
             <div class="step-desc">{{pinText}}</div>
         </li>
-        <li ng-if="currentStep === 2 && !pinpad && enterPin">
+        <li ng-if="!pinpad && enterPin">
             <div class="pinpad">
                 <rmc-keypad pincode="pincode" submit-func="submitPin" cancel-func="cancel"></rmc-keypad>
             </div>
