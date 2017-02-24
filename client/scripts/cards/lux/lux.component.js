@@ -3,7 +3,7 @@
 
     const luxVisualizer = {
         templateUrl: 'views/cards/lux/eid/lux-viz.html',
-        controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, LuxUtils, T1C, API) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, LuxUtils, T1C, API, _) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -62,6 +62,7 @@
             function getAllData(pin) {
                 controller.readingData = true;
                 T1C.luxId.allData($stateParams.readerId, pin).then(res => {
+                    console.log(res);
                     controller.readingData = false;
                     controller.pinStatus = 'valid';
                     controller.certStatus = 'checking';
@@ -77,32 +78,29 @@
                     controller.nonRepCert = res.data.non_repudiation_certificate;
                     controller.rootCerts = res.data.root_certificates;
 
-                    // TODO implement certificate check once we figure out how to deal with the dual root certs
-                    // let validationReq1 = {
-                    //     certificateChain: [
-                    //         { order: 0, certificate: res.data.authentication_certificate },
-                    //         { order: 1, certificate: res.data.root_certificate },
-                    //     ]
-                    // };
-                    // let validationReq2 = {
-                    //     certificateChain: [
-                    //         { order: 0, certificate: res.data.non_repudiation_certificate },
-                    //         { order: 1, certificate: res.data.root_certificate },
-                    //     ]
-                    // };
-                    // let promises = [ T1C.validateCertificateChain(validationReq1), T1C.validateCertificateChain(validationReq2)];
-                    //
-                    // $q.all(promises).then(results => {
-                    //     let status = 'valid';
-                    //     _.forEach(results, res => {
-                    //         if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
-                    //     });
-                    //     controller.certStatus = status;
-                    // });
+                    let validationReq1 = {
+                        certificateChain: [
+                            { order: 0, certificate: res.data.authentication_certificate },
+                            { order: 1, certificate: res.data.root_certificates[1] },
+                            { order: 2, certificate: res.data.root_certificates[0] },
+                        ]
+                    };
+                    let validationReq2 = {
+                        certificateChain: [
+                            { order: 0, certificate: res.data.non_repudiation_certificate },
+                            { order: 1, certificate: res.data.root_certificate[1] },
+                            { order: 2, certificate: res.data.root_certificate[0] },
+                        ]
+                    };
+                    let promises = [ T1C.validateCertificateChain(validationReq1), T1C.validateCertificateChain(validationReq2)];
 
-                    $timeout(() => {
-                        controller.certStatus = 'valid';
-                    }, 3500);
+                    $q.all(promises).then(results => {
+                        let status = 'valid';
+                        _.forEach(results, res => {
+                            if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
+                        });
+                        controller.certStatus = status;
+                    });
                 });
             }
         }};
