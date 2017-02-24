@@ -16,6 +16,8 @@
         this.rootCert = rootCert;
         this.authCert = authCert;
         this.nonRepudiationCert = nonRepudiationCert;
+        this.signData = signData;
+
 
         const connector = Core.getConnector();
 
@@ -80,6 +82,20 @@
 
         function nonRepudiationCert(readerId, pin) {
             return wrapper(readerId, pin, 'nonRepudiationCertificate');
+        }
+
+        // Sign data with certificates stored on the smartcard
+        function signData(readerId, pin, algo, dataToSign) {
+            let signDeferred = $q.defer();
+            let data = {
+                algorithm_reference: algo,
+                data: dataToSign
+            };
+            if (pin) data.pin = pin;
+            connector.luxeid(readerId, pin).signData(data, function (err, result) {
+                callbackHelper(err, result, signDeferred);
+            });
+            return signDeferred.promise;
         }
     }
 })();
