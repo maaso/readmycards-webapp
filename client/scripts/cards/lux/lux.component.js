@@ -72,6 +72,12 @@
                         controller.pic = res.data.base64Pic;
                     });
 
+                    if (!_.isEmpty(res.data.signature_image)) {
+                        API.convertJPEG2000toJPEG(res.data.signature_image).then(sig => {
+                            controller.signature = sig.data.base64Pic;
+                        });
+                    }
+
                     controller.authCert = res.data.authentication_certificate;
                     controller.nonRepCert = res.data.non_repudiation_certificate;
                     controller.rootCerts = res.data.root_certificates;
