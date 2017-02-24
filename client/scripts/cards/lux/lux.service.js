@@ -28,7 +28,7 @@
             return moment(date, 'YYMMDD').format('DD.MM.YYYY');
         }
 
-        function generateSummaryToSign(readerId) {
+        function generateSummaryToSign(readerId, pin) {
             let promises = [
                 T1C.luxId.biometric(readerId, pin),
                 T1C.luxId.pic(readerId, pin)

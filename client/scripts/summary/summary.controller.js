@@ -5,7 +5,7 @@
         .controller('SummaryDownloadCtrl', summaryDlCtrl);
 
 
-    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, util, SummaryUtils, FileSaver, Blob, EVENTS, _) {
+    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, needPinToGenerate, util, SummaryUtils, FileSaver, Blob, EVENTS, _) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
@@ -60,36 +60,62 @@
 
         function submitPin() {
             $scope.enterPin = false;
-            $scope.pinText = "Signing...";
-            util.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
-                $scope.currentStep = 3;
-                $scope.pinText = 'Signed';
-                $scope.downloadText = 'Download Ready!'
-            });
+            if (needPinToGenerate) {
+                // still need to generate the summary
+                $scope.generateText = 'Generating...';
+                util.generateSummaryToSign(readerId, $scope.pincode.value).then(res => {
+                    generatedFile = res;
+                    $scope.currentStep = 2;
+                    $scope.generateText = 'Generated';
+                    $scope.pinText = 'Signing...';
+                    util.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+                        $scope.currentStep = 3;
+                        $scope.pinText = 'Signed';
+                        $scope.downloadText = 'Download Ready!';
+                    })
+                })
+            } else {
+                // summary has been generated, do sign
+                $scope.pinText = "Signing...";
+                util.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+                    $scope.currentStep = 3;
+                    $scope.pinText = 'Signed';
+                    $scope.downloadText = 'Download Ready!';
+                });
+            }
+
         }
 
         function startProcess() {
             $scope.currentStep = 1;
-            $scope.generateText = 'Generating...';
 
-            util.generateSummaryToSign(readerId).then(function (res) {
-                generatedFile = res;
-                $scope.currentStep = 2;
-                $scope.generateText = 'Generated';
+            if (needPinToGenerate) {
+                $scope.enterPin = true;
+            } else {
+                $scope.generateText = 'Generating...';
+                util.generateSummaryToSign(readerId).then(function (res) {
+                    generatedFile = res;
+                    $scope.currentStep = 2;
+                    $scope.generateText = 'Generated';
 
-                if (pinpad) {
-                    // start signing process
-                    $scope.pinText = 'Enter PIN on reader...';
-                    SummaryUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
-                        $scope.currentStep = 3;
-                        $scope.pinText = 'Signed';
-                        $scope.downloadText = 'Download Ready!'
-                    });
-                } else {
-                    // prompt user to enter pin
-                    $scope.enterPin = true;
-                }
-            })
+                    if (pinpad) {
+                        // start signing process
+                        $scope.pinText = 'Enter PIN on reader...';
+                        SummaryUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                            $scope.currentStep = 3;
+                            $scope.pinText = 'Signed';
+                            $scope.downloadText = 'Download Ready!'
+                        });
+                    } else {
+                        // prompt user to enter pin
+                        $scope.enterPin = true;
+                    }
+                });
+            }
+        }
+
+        function generate() {
+
         }
 
         $scope.$on(EVENTS.START_OVER, () => {

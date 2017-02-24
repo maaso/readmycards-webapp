@@ -39,6 +39,9 @@
                         pinpad: () => {
                             return controller.pinpad;
                         },
+                        needPinToGenerate: () => {
+                            return true;
+                        },
                         util: () => {
                             return LuxUtils;
                         }

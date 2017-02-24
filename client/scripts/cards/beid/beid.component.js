@@ -95,6 +95,9 @@
                                 return res.data.pinpad;
                             })
                         },
+                        needPinToGenerate: () => {
+                            return false;
+                        },
                         util: () => {
                             return BeUtils;
                         }
