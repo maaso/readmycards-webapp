@@ -27,31 +27,11 @@
         // --- Mobib ---
         this.mobib = Mobib;
         // --- Utility ---
-        this.isCardTypeBeId = isCardTypeBeId;
         this.readAllData = readAllData;
 
         /// ==============================
         /// ===== UTILITY FUNCTIONS ======
         /// ==============================
-
-        // Check if the car
-        function isCardTypeBeId(readerId) {
-            let typeDeferred = $q.defer();
-            // TODO user direct reader access when available
-            Core.getReaders().then(function (result) {
-                let reader = _.find(result.data, function (reader) {
-                    return reader.id === readerId;
-                });
-
-                if (reader.card) {
-                    if (reader.card.description[0] === 'Belgium Electronic ID card') typeDeferred.resolve(true);
-                    else typeDeferred.resolve(false);
-                } else {
-                    typeDeferred.reject('No card present in reader');
-                }
-            });
-            return typeDeferred.promise;
-        }
 
         function readAllData(readerId, card) {
             switch (CardService.detectType(card)) {
