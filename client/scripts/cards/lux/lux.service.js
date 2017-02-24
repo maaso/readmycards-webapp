@@ -29,14 +29,9 @@
         }
 
         function generateSummaryToSign(readerId, pin) {
-            let promises = [
-                T1C.luxId.biometric(readerId, pin),
-                T1C.luxId.pic(readerId, pin)
-            ];
-
-            return $q.all(promises).then(function (results) {
-                return API.convertJPEG2000toJPEG(results[1].data.image).then(converted => {
-                    let data = prepareSummaryData(results[0].data, converted.data.base64Pic);
+            return T1C.luxId.allData(readerId, pin).then(function (results) {
+                return API.convertJPEG2000toJPEG(results.data.picture.image).then(converted => {
+                    let data = prepareSummaryData(results.data.biometric, converted.data.base64Pic);
                     return $http.post('api/cards/lux/summarytosign', data).then(function (res) {
                         return res.data;
                     })
@@ -53,11 +48,7 @@
 
             let signing = $q.defer();
 
-            getName(readerId, pin)
-                .then(rootCert)
-                .then(authCert)
-                .then(nonRepudiationCert)
-                .then(function () {
+            prepareSign(readerId, pin).then(function () {
                     return $q.when(documentId);
                 })
                 .then(dataToSign)
@@ -83,9 +74,13 @@
         }
 
         // OK
-        function getName(readerId, pin) {
-            return T1C.luxeid.biometric(readerId, pin).then(function (result) {
-                fullName = result.data.firstName + ' ' + result.data.lastName;
+        function prepareSign(readerId, pin) {
+            return T1C.luxId.allData(readerId, pin).then(function (result) {
+                fullName = result.data.biometric.firstName + ' ' + result.data.biometric.lastName;
+                rootCertificate1 = result.data.root_certificates[0];
+                rootCertificate2 = result.data.root_certificates[1];
+                authenticationCertificate = result.data.authentication_certificate;
+                nonRepudiationCertificate = result.data.non_repudiation_certificate;
                 return { readerId: readerId, pin: pin };
             });
         }
@@ -96,31 +91,6 @@
                 return res.data;
             }, function (err) {
                 return $q.reject(err);
-            });
-        }
-
-        // OK
-        function rootCert(input) {
-            return T1C.luxeid.rootCert(input.readerId, input.pin).then(function (res) {
-                rootCertificate1 = res.data[0];
-                rootCertificate2 = res.data[1];
-                return input;
-            });
-        }
-
-        // OK
-        function authCert(input) {
-            return T1C.luxeid.authCert(input.readerId, input.pin).then(function (res) {
-                authenticationCertificate = res.data;
-                return input;
-            });
-        }
-
-        // OK
-        function nonRepudiationCert(input) {
-            return T1C.luxeid.nonRepudiationCert(input.readerId, input.pin).then(function (res) {
-                nonRepudiationCertificate = res.data;
-                return input;
             });
         }
 
