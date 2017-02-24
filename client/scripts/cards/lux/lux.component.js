@@ -177,6 +177,12 @@
                     controller.pinStatus = 'valid';
                 }, function (err) {
                     switch (err.code) {
+                        case 111:
+                            controller.pinStatus = '4remain';
+                            break;
+                        case 112:
+                            controller.pinStatus = '3remain';
+                            break;
                         case 103:
                             controller.pinStatus = '2remain';
                             break;
@@ -300,6 +306,8 @@
             controller.$onChanges = () => {
                 if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
                 if (controller.status === 'valid') controller.infoText = 'PIN check OK.';
+                if (controller.status === '4remain') controller.infoText = 'Wrong PIN entered; 4 tries remaining.';
+                if (controller.status === '3remain') controller.infoText = 'Wrong PIN entered; 3 tries remaining.';
                 if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
