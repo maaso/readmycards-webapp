@@ -8,7 +8,7 @@
             addressData: '<',
             picData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeUtils, T1C) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -91,10 +91,13 @@
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
+                        },
+                        util: () => {
+                            return BeUtils;
                         }
                     },
                     backdrop: 'static',
-                    controller: 'BeIDSummaryDownloadCtrl',
+                    controller: 'SummaryDownloadCtrl',
                     size: 'lg'
                 });
 

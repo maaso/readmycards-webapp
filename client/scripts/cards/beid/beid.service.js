@@ -9,7 +9,6 @@
         this.formatRRNR = formatRRNR;
         this.generateSummaryToSign = generateSummaryToSign;
         this.signDocument = signDocumentWithPin;
-        this.downloadDocument = downloadDocument;
 
         let rootCertificate, citizenCertificate, nonRepudiationCertificate, fullName;
 
@@ -34,10 +33,6 @@
                     return res.data;
                 })
             })
-        }
-
-        function downloadDocument(documentName) {
-            return $http.post('api/cards/be/download', { documentName: documentName }, { responseType: 'arraybuffer' });
         }
 
         function signDocumentWithPin(documentId, readerId, hasPinpad, pin) {

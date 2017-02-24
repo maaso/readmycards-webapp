@@ -1,5 +1,5 @@
 <html>
-<head><title>Belgium Identity Card</title></head>
+<head><title>Luxembourg Identity Card</title></head>
 <body>
 
 <style>
@@ -90,65 +90,46 @@
         <div class="inline labels">
             <div>Name:</div>
             <div>Given names:</div>
-            <div>Place of birth:</div>
             <div>Date of birth:</div>
             <div>Sex:</div>
             <div>Nationality:</div>
-            <div>National number:</div>
         </div>
         <div class="inline values">
-            <div>${data.rnData.name}</div>
-            <div>${data.rnData.first_names} ${data.rnData.third_name}</div>
-            <div>${data.rnData.birth_location}</div>
-            <div>${data.dob}</div>
-            <div>${data.rnData.sex}</div>
-            <div>${data.rnData.nationality}</div>
-            <div>${data.formattedRRNR}</div>
+            <div>${data.biometric.lastName}</div>
+            <div>${data.biometric.firstName}</div>
+            <div>${data.formattedBirthDate}</div>
+            <div>${data.biometric.gender}</div>
+            <div>${data.biometric.nationality}</div>
         </div>
     </div>
 
-    <div class="section specials">
-        <div class="inline labels">
-            <div class=(!data.rnData.title && "dim")>Title:</div>
-            <div class=(!data.rnData.special && "dim")>Special status:</div>
-        </div>
-        <div class="inline values">
-            <div class=(!data.rnData.title && "dim")>
-                <if (data.rnData.title && data.rnData.title.length)>${data.rnData.title}</if>
-                <else>-</else>
-            </div>
-            <div class=(!data.rnData.special && "dim")>
-                <if (data.rnData.special && data.rnData.special.length)>${data.rnData.special}</if>
-                <else>-</else>
-            </div>
-        </div>
-    </div>
-
-    <div class="section address">
-        <div class="inline labels">
-            <div>Street:</div>
-            <div>Postal code:</div>
-            <div>Municipality:</div>
-        </div>
-        <div class="inline values">
-            <div>${data.address.street_and_number}</div>
-            <div>${data.address.zipcode}</div>
-            <div>${data.address.municipality}</div>
-        </div>
-    </div>
+    <!--<div class="section address">-->
+        <!--<div class="inline labels">-->
+            <!--<div>Street:</div>-->
+            <!--<div>Postal code:</div>-->
+            <!--<div>Municipality:</div>-->
+        <!--</div>-->
+        <!--<div class="inline values">-->
+            <!--<div>${data.address.street_and_number}</div>-->
+            <!--<div>${data.address.zipcode}</div>-->
+            <!--<div>${data.address.municipality}</div>-->
+        <!--</div>-->
+    <!--</div>-->
 
     <div class="section card-info">
         <div class="inline labels">
-            <div>Card number:</div>
-            <div>Place of issue:</div>
-            <div>Chip number:</div>
+            <div>Document Type:</div>
+            <div>Document Number:</div>
+            <!--<div>Place of issue:</div>-->
+            <div>Issuing State:</div>
             <div>Valid from:</div>
             <div>Valid until:</div>
         </div>
         <div class="inline values">
-            <div>${data.formattedCardNumber}</div>
-            <div>${data.rnData.card_delivery_municipality}</div>
-            <div>${data.rnData.chip_number}</div>
+            <div>${data.biometric.documentType}</div>
+            <div>${data.biometric.documentNumber}</div>
+            <!--<div>${data.rnData.card_delivery_municipality}</div>-->
+            <div>${data.biometric.issuingState}</div>
             <div>${data.validFrom}</div>
             <div>${data.validUntil}</div>
         </div>
