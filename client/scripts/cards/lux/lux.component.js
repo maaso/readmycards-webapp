@@ -198,6 +198,35 @@
                 });
             };
 
+            controller.sign = () => {
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/xml-download.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return controller.pinpad;
+                        },
+                        needPinToGenerate: () => {
+                            return false;
+                        },
+                        util: () => {
+                            return LuxUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'XMLDownloadCtrl',
+                    size: 'lg'
+                });
+
+                modal.result.then(function () {
+
+                }, function (err) {
+
+                });
+            };
+
             controller.toggleCerts = () => {
                 controller.certData = !controller.certData;
             };
@@ -212,7 +241,8 @@
             let controller = this;
 
             controller.$onInit = () => {
-
+                controller.pinStatus = 'idle';
+                controller.certStatus = 'checking';
             };
 
             controller.checkPin = () => {
@@ -239,6 +269,12 @@
                     controller.pinStatus = 'valid';
                 }, function (err) {
                     switch (err.code) {
+                        case 111:
+                            controller.pinStatus = '4remain';
+                            break;
+                        case 112:
+                            controller.pinStatus = '3remain';
+                            break;
                         case 103:
                             controller.pinStatus = '2remain';
                             break;
@@ -274,6 +310,30 @@
     };
 
     const luxPinCheckStatus = {
+        templateUrl: 'views/cards/pin-check-status.html',
+        bindings: {
+            status: '<'
+        },
+        controller: function (_) {
+            let controller = this;
+            controller.$onChanges = () => {
+                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
+                if (controller.status === 'valid') controller.infoText = 'Strong authentication OK.';
+                if (controller.status === '4remain') controller.infoText = 'Wrong PIN entered; 4 tries remaining.';
+                if (controller.status === '3remain') controller.infoText = 'Wrong PIN entered; 3 tries remaining.';
+                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
+                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
+                if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
+                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+            };
+
+            controller.checkPin = () => {
+                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
+            }
+        }
+    };
+
+    const luxOtpPinCheckStatus = {
         templateUrl: 'views/cards/pin-check-status.html',
         bindings: {
             status: '<'
@@ -404,6 +464,7 @@
         .component('luxCertificateStatus', luxCertificateStatus)
         .component('luxPinCheckStatus', luxPinCheckStatus)
         .component('luxTrustPinCheckStatus', luxTrustPinCheckStatus)
+        .component('luxOtpPinCheckStatus', luxOtpPinCheckStatus)
         .component('luxCard', luxCard)
         .component('luxOtpCard', luxOtpCard)
         .component('luxTrustCard', luxTrustCard);

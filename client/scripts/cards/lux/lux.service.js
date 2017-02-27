@@ -7,6 +7,7 @@
     function LuxUtils($http, $q, T1C, API) {
         this.formatBirthDate = formatBirthDate;
         this.formatValidity = formatValidity;
+        this.generateXMLToSign = generateXMLToSign;
         this.generateSummaryToSign = generateSummaryToSign;
         this.signDocument = signDocumentWithPin;
 
@@ -26,6 +27,12 @@
 
         function formatValidity(date) {
             return moment(date, 'YYMMDD').format('DD.MM.YYYY');
+        }
+
+        function generateXMLToSign(readerId) {
+            return $http.post('api/cards/lux/xmltosign').then(res => {
+                return res.data;
+            })
         }
 
         function generateSummaryToSign(readerId, pin) {

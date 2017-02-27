@@ -1,0 +1,59 @@
+<div class="modal-body summary-modal">
+
+    <div class="header">
+        <p class="title text-center">Sign Example XML</p>
+
+        <!--<p class="info-text text-justify">We are going to provide you a secure PDF version of the content of your eID card.-->
+            <!--This document will be digitally signed by you to be compliant with EU regulation and can be considered-->
+            <!--as an original copy that you can distribute. No copy will be stored on our side and you will be the only owner.-->
+        <!--</p>-->
+    </div>
+
+
+
+    <ul class="step-list">
+        <li class="step" ng-class="{ 'active': currentStep === 1, 'completed': currentStep > 1 }">
+            <div class="step-number-wrapper">
+                <div class="step-number">
+                    <span ng-class="{ 'fa fa-pulse fa-spinner': currentStep === 1, 'fa fa-check': currentStep > 1 }">{{ currentStep < 1 ? '1' : ''}}</span>
+                </div>
+            </div>
+            <div class="step-desc">{{generateText}}</div>
+        </li>
+        <li class="step" ng-class="{ 'active': currentStep === 2, 'completed': currentStep > 2 }">
+            <div class="step-number-wrapper">
+                <div class="step-number">
+                    <span ng-class="{ 'fa fa-pulse fa-spinner': currentStep === 2, 'fa fa-check': currentStep > 2 }">{{ currentStep < 2 ? '2' : ''}}</span>
+                </div>
+            </div>
+            <div class="step-desc">{{pinText}}</div>
+        </li>
+        <li ng-if="!pinpad && enterPin">
+            <div class="pinpad">
+                <rmc-keypad pincode="pincode" submit-func="submitPin" cancel-func="cancel"></rmc-keypad>
+            </div>
+        </li>
+        <li class="step" ng-class="{ 'active': currentStep === 3, 'completed': currentStep > 3 }">
+            <div class="step-number-wrapper">
+                <div class="step-number">
+                    <span>3</span>
+                </div>
+            </div>
+            <div class="step-desc">
+                <span>{{downloadText}}</span>
+            </div>
+        </li>
+    </ul>
+
+    <!--<div class="dummy-summary-wrapper">-->
+        <!--<div class="specimen">Specimen</div>-->
+        <!--<img class="dummy-summary" src="images/summary-demo.jpg">-->
+    <!--</div>-->
+
+
+    <div class="text-center">
+        <span ng-if="currentStep === 0" class="btn btn-lg btn-line-primary btn-w200" ng-click="startProcess()">Start Signing</span>
+        <span ng-if="currentStep === 3" class="btn btn-lg btn-line-primary btn-w200" ng-click="doDownload()">Download</span>
+    </div>
+
+</div>

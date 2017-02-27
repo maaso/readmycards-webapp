@@ -1,49 +1,49 @@
 var GCLLib =
-	/******/ (function(modules) { // webpackBootstrap
-	/******/ 	// The module cache
-	/******/ 	var installedModules = {};
-	/******/
-	/******/ 	// The require function
-	/******/ 	function __webpack_require__(moduleId) {
-		/******/
-		/******/ 		// Check if module is in cache
-		/******/ 		if(installedModules[moduleId])
-		/******/ 			return installedModules[moduleId].exports;
-		/******/
-		/******/ 		// Create a new module (and put it into the cache)
-		/******/ 		var module = installedModules[moduleId] = {
-			/******/ 			exports: {},
-			/******/ 			id: moduleId,
-			/******/ 			loaded: false
-			/******/ 		};
-		/******/
-		/******/ 		// Execute the module function
-		/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-		/******/
-		/******/ 		// Flag the module as loaded
-		/******/ 		module.loaded = true;
-		/******/
-		/******/ 		// Return the exports of the module
-		/******/ 		return module.exports;
-		/******/ 	}
-	/******/
-	/******/
-	/******/ 	// expose the modules object (__webpack_modules__)
-	/******/ 	__webpack_require__.m = modules;
-	/******/
-	/******/ 	// expose the module cache
-	/******/ 	__webpack_require__.c = installedModules;
-	/******/
-	/******/ 	// __webpack_public_path__
-	/******/ 	__webpack_require__.p = "";
-	/******/
-	/******/ 	// Load entry module and return exports
-	/******/ 	return __webpack_require__(0);
-	/******/ })
+    /******/ (function(modules) { // webpackBootstrap
+    /******/ 	// The module cache
+    /******/ 	var installedModules = {};
+    /******/
+    /******/ 	// The require function
+    /******/ 	function __webpack_require__(moduleId) {
+        /******/
+        /******/ 		// Check if module is in cache
+        /******/ 		if(installedModules[moduleId])
+        /******/ 			return installedModules[moduleId].exports;
+        /******/
+        /******/ 		// Create a new module (and put it into the cache)
+        /******/ 		var module = installedModules[moduleId] = {
+            /******/ 			exports: {},
+            /******/ 			id: moduleId,
+            /******/ 			loaded: false
+            /******/ 		};
+        /******/
+        /******/ 		// Execute the module function
+        /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+        /******/
+        /******/ 		// Flag the module as loaded
+        /******/ 		module.loaded = true;
+        /******/
+        /******/ 		// Return the exports of the module
+        /******/ 		return module.exports;
+        /******/ 	}
+    /******/
+    /******/
+    /******/ 	// expose the modules object (__webpack_modules__)
+    /******/ 	__webpack_require__.m = modules;
+    /******/
+    /******/ 	// expose the module cache
+    /******/ 	__webpack_require__.c = installedModules;
+    /******/
+    /******/ 	// __webpack_public_path__
+    /******/ 	__webpack_require__.p = "";
+    /******/
+    /******/ 	// Load entry module and return exports
+    /******/ 	return __webpack_require__(0);
+    /******/ })
 /************************************************************************/
 /******/ ([
-	/* 0 */
-	/***/ function(module, exports, __webpack_require__) {
+    /* 0 */
+    /***/ function(module, exports, __webpack_require__) {
 
         "use strict";
         var GCLConfig_1 = __webpack_require__(1);
@@ -189,9 +189,9 @@ var GCLLib =
         exports.GCLClient = GCLClient;
 
 
-		/***/ },
-	/* 1 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 1 */
+    /***/ function(module, exports) {
 
         "use strict";
         var defaultGclUrl = "https://localhost:10433/v1";
@@ -334,9 +334,9 @@ var GCLLib =
         }
 
 
-		/***/ },
-	/* 2 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 2 */
+    /***/ function(module, exports, __webpack_require__) {
 
         "use strict";
         var EMV_1 = __webpack_require__(3);
@@ -362,9 +362,9 @@ var GCLLib =
         exports.CardFactory = CardFactory;
 
 
-		/***/ },
-	/* 3 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 3 */
+    /***/ function(module, exports) {
 
         "use strict";
         var SEPARATOR = "/";
@@ -403,9 +403,9 @@ var GCLLib =
         exports.EMV = EMV;
 
 
-		/***/ },
-	/* 4 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 4 */
+    /***/ function(module, exports) {
 
         "use strict";
         var SEPARATOR = "/";
@@ -495,9 +495,9 @@ var GCLLib =
         exports.EidBe = EidBe;
 
 
-		/***/ },
-	/* 5 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 5 */
+    /***/ function(module, exports) {
 
         "use strict";
         function createFilterQueryParam(filters, pin) {
@@ -575,7 +575,11 @@ var GCLLib =
                         _req.pin = body.pin;
                     }
                 }
-                this.connection.post(this.resolvedReaderURI() + LUX_SIGN_DATA, _req, callback, createPinQueryParam(this.pin));
+                var params;
+                if (body.pin) {
+                    params = createPinQueryParam(body.pin);
+                }
+                this.connection.post(this.resolvedReaderURI() + LUX_SIGN_DATA, _req, callback, params);
             };
             EidLux.prototype.authenticate = function (body, callback) {
                 var _req = {};
@@ -596,9 +600,9 @@ var GCLLib =
         exports.EidLux = EidLux;
 
 
-		/***/ },
-	/* 6 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 6 */
+    /***/ function(module, exports) {
 
         "use strict";
         var SEPARATOR = "/";
@@ -645,9 +649,9 @@ var GCLLib =
         exports.Mobib = Mobib;
 
 
-		/***/ },
-	/* 7 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 7 */
+    /***/ function(module, exports) {
 
         "use strict";
         function createFilterQueryParam(filters) {
@@ -662,6 +666,7 @@ var GCLLib =
         var LUX_VERIFY_PIN = "/verify-pin";
         var LUX_SIGN_DATA = "/sign";
         var LUX_AUTHENTICATE = "/authenticate";
+        var LUX_OTP_CHALLENGE = '/ocra/challenge';
         var LuxTrust = (function () {
             function LuxTrust(url, connection, reader_id) {
                 this.url = url;
@@ -720,14 +725,23 @@ var GCLLib =
                 }
                 this.connection.post(this.resolvedReaderURI() + LUX_AUTHENTICATE, _req, callback);
             };
+            LuxTrust.prototype.challenge = function (body, callback) {
+                var _req = {};
+                if (body) {
+                    if (body.pin) {
+                        _req.pin = body.pin;
+                    }
+                }
+                this.connection.post(this.resolvedReaderURI() + LUX_OTP_CHALLENGE, _req, callback);
+            };
             return LuxTrust;
         }());
         exports.LuxTrust = LuxTrust;
 
 
-		/***/ },
-	/* 8 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 8 */
+    /***/ function(module, exports, __webpack_require__) {
 
         "use strict";
         var platform = __webpack_require__(9);
@@ -872,16 +886,16 @@ var GCLLib =
         exports.CoreService = CoreService;
 
 
-		/***/ },
-	/* 9 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 9 */
+    /***/ function(module, exports, __webpack_require__) {
 
         var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*!
-		 * Platform.js <https://mths.be/platform>
-		 * Copyright 2014-2016 Benjamin Tan <https://demoneaux.github.io/>
-		 * Copyright 2011-2013 John-David Dalton <http://allyoucanleet.com/>
-		 * Available under MIT license <https://mths.be/mit>
-		 */
+         * Platform.js <https://mths.be/platform>
+         * Copyright 2014-2016 Benjamin Tan <https://demoneaux.github.io/>
+         * Copyright 2011-2013 John-David Dalton <http://allyoucanleet.com/>
+         * Available under MIT license <https://mths.be/mit>
+         */
             ;(function() {
                 'use strict';
 
@@ -931,7 +945,7 @@ var GCLLib =
                 /** Used to resolve the internal `[[Class]]` of values. */
                 var toString = objectProto.toString;
 
-				/*--------------------------------------------------------------------------*/
+                /*--------------------------------------------------------------------------*/
 
                 /**
                  * Capitalizes a string value.
@@ -1118,7 +1132,7 @@ var GCLLib =
                     return String(string).replace(/^ +| +$/g, '');
                 }
 
-				/*--------------------------------------------------------------------------*/
+                /*--------------------------------------------------------------------------*/
 
                 /**
                  * Creates a new platform object.
@@ -1192,7 +1206,7 @@ var GCLLib =
                         ? operaClass
                         : (opera = null);
 
-					/*------------------------------------------------------------------------*/
+                    /*------------------------------------------------------------------------*/
 
                     /** Temporary variable used over the script's lifetime. */
                     var data;
@@ -1215,7 +1229,7 @@ var GCLLib =
                     /** A flag to indicate if the OS ends with "/ Version" */
                     var isSpecialCasedOS;
 
-					/* Detectable layout engines (order is important). */
+                    /* Detectable layout engines (order is important). */
                     var layout = getLayout([
                         { 'label': 'EdgeHTML', 'pattern': 'Edge' },
                         'Trident',
@@ -1228,7 +1242,7 @@ var GCLLib =
                         'Gecko'
                     ]);
 
-					/* Detectable browser names (order is important). */
+                    /* Detectable browser names (order is important). */
                     var name = getName([
                         'Adobe AIR',
                         'Arora',
@@ -1275,7 +1289,7 @@ var GCLLib =
                         'Safari'
                     ]);
 
-					/* Detectable products (order is important). */
+                    /* Detectable products (order is important). */
                     var product = getProduct([
                         { 'label': 'BlackBerry', 'pattern': 'BB10' },
                         'BlackBerry',
@@ -1305,7 +1319,7 @@ var GCLLib =
                         'Xoom'
                     ]);
 
-					/* Detectable manufacturers. */
+                    /* Detectable manufacturers. */
                     var manufacturer = getManufacturer({
                         'Apple': { 'iPad': 1, 'iPhone': 1, 'iPod': 1 },
                         'Archos': {},
@@ -1325,7 +1339,7 @@ var GCLLib =
                         'Sony': { 'PlayStation 4': 1, 'PlayStation 3': 1, 'PlayStation Vita': 1 }
                     });
 
-					/* Detectable operating systems (order is important). */
+                    /* Detectable operating systems (order is important). */
                     var os = getOS([
                         'Windows Phone',
                         'Android',
@@ -1357,7 +1371,7 @@ var GCLLib =
                         'Windows '
                     ]);
 
-					/*------------------------------------------------------------------------*/
+                    /*------------------------------------------------------------------------*/
 
                     /**
                      * Picks the layout engine from an array of guesses.
@@ -1480,7 +1494,7 @@ var GCLLib =
                         return this.description || '';
                     }
 
-					/*------------------------------------------------------------------------*/
+                    /*------------------------------------------------------------------------*/
 
                     // Convert layout to an array so we can add extra details.
                     layout && (layout = [layout]);
@@ -1863,7 +1877,7 @@ var GCLLib =
 
                     ua || (ua = null);
 
-					/*------------------------------------------------------------------------*/
+                    /*------------------------------------------------------------------------*/
 
                     /**
                      * The platform object.
@@ -2001,7 +2015,7 @@ var GCLLib =
                     return platform;
                 }
 
-				/*--------------------------------------------------------------------------*/
+                /*--------------------------------------------------------------------------*/
 
                 // Export platform.
                 var platform = parse();
@@ -2031,11 +2045,11 @@ var GCLLib =
                 }
             }.call(this));
 
-			/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)(module), (function() { return this; }())))
+            /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)(module), (function() { return this; }())))
 
-		/***/ },
-	/* 10 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 10 */
+    /***/ function(module, exports) {
 
         module.exports = function(module) {
             if(!module.webpackPolyfill) {
@@ -2049,9 +2063,9 @@ var GCLLib =
         }
 
 
-		/***/ },
-	/* 11 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 11 */
+    /***/ function(module, exports, __webpack_require__) {
 
         "use strict";
         var axios_1 = __webpack_require__(12);
@@ -2079,7 +2093,7 @@ var GCLLib =
                 return handleRequest(url, 'GET', callback, undefined, queryParams, undefined, this.cfg.jwt);
             };
             LocalConnection.prototype.post = function (url, body, callback, queryParams) {
-                return handleRequest(url, 'POST', callback, body, undefined, undefined, this.cfg.jwt);
+                return handleRequest(url, 'POST', callback, body, queryParams, undefined, this.cfg.jwt);
             };
             LocalConnection.prototype.put = function (url, body, callback) {
                 return handleRequest(url, 'PUT', callback, body, undefined, undefined, this.cfg.jwt);
@@ -2132,15 +2146,15 @@ var GCLLib =
         }
 
 
-		/***/ },
-	/* 12 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 12 */
+    /***/ function(module, exports, __webpack_require__) {
 
         module.exports = __webpack_require__(13);
 
-		/***/ },
-	/* 13 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 13 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -2196,15 +2210,15 @@ var GCLLib =
         module.exports.default = axios;
 
 
-		/***/ },
-	/* 14 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 14 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
         var bind = __webpack_require__(15);
 
-		/*global toString:true*/
+        /*global toString:true*/
 
         // utils is a library of generic helper functions non-specific to axios
 
@@ -2407,7 +2421,7 @@ var GCLLib =
 
             // Force an array if not already something iterable
             if (typeof obj !== 'object' && !isArray(obj)) {
-				/*eslint no-param-reassign:0*/
+                /*eslint no-param-reassign:0*/
                 obj = [obj];
             }
 
@@ -2501,9 +2515,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 15 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 15 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -2518,9 +2532,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 16 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 16 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -2550,7 +2564,7 @@ var GCLLib =
          * @param {Object} config The config specific for this request (merged with this.defaults)
          */
         Axios.prototype.request = function request(config) {
-			/*eslint no-param-reassign:0*/
+            /*eslint no-param-reassign:0*/
             // Allow for axios('example/url'[, config]) a la fetch API
             if (typeof config === 'string') {
                 config = utils.merge({
@@ -2586,7 +2600,7 @@ var GCLLib =
 
         // Provide aliases for supported request methods
         utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-			/*eslint func-names:0*/
+            /*eslint func-names:0*/
             Axios.prototype[method] = function(url, config) {
                 return this.request(utils.merge(config || {}, {
                     method: method,
@@ -2596,7 +2610,7 @@ var GCLLib =
         });
 
         utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-			/*eslint func-names:0*/
+            /*eslint func-names:0*/
             Axios.prototype[method] = function(url, data, config) {
                 return this.request(utils.merge(config || {}, {
                     method: method,
@@ -2609,11 +2623,11 @@ var GCLLib =
         module.exports = Axios;
 
 
-		/***/ },
-	/* 17 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 17 */
+    /***/ function(module, exports, __webpack_require__) {
 
-		/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+        /* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
             var utils = __webpack_require__(14);
             var normalizeHeaderName = __webpack_require__(19);
@@ -2669,7 +2683,7 @@ var GCLLib =
                 }],
 
                 transformResponse: [function transformResponse(data) {
-					/*eslint no-param-reassign:0*/
+                    /*eslint no-param-reassign:0*/
                     if (typeof data === 'string') {
                         data = data.replace(PROTECTION_PREFIX, '');
                         try {
@@ -2707,11 +2721,11 @@ var GCLLib =
 
             module.exports = defaults;
 
-			/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
+            /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
-		/***/ },
-	/* 18 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 18 */
+    /***/ function(module, exports) {
 
         // shim for using process in browser
         var process = module.exports = {};
@@ -2895,9 +2909,9 @@ var GCLLib =
         process.umask = function() { return 0; };
 
 
-		/***/ },
-	/* 19 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 19 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -2913,11 +2927,11 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 20 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 20 */
+    /***/ function(module, exports, __webpack_require__) {
 
-		/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+        /* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
             var utils = __webpack_require__(14);
             var settle = __webpack_require__(21);
@@ -3095,11 +3109,11 @@ var GCLLib =
                 });
             };
 
-			/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
+            /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
-		/***/ },
-	/* 21 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 21 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3128,9 +3142,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 22 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 22 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3151,9 +3165,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 23 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 23 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -3176,9 +3190,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 24 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 24 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3203,7 +3217,7 @@ var GCLLib =
          * @returns {string} The formatted url
          */
         module.exports = function buildURL(url, params, paramsSerializer) {
-			/*eslint no-param-reassign:0*/
+            /*eslint no-param-reassign:0*/
             if (!params) {
                 return url;
             }
@@ -3250,9 +3264,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 25 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 25 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3293,9 +3307,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 26 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 26 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3367,9 +3381,9 @@ var GCLLib =
         );
 
 
-		/***/ },
-	/* 27 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 27 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -3409,9 +3423,9 @@ var GCLLib =
         module.exports = btoa;
 
 
-		/***/ },
-	/* 28 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 28 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3468,9 +3482,9 @@ var GCLLib =
         );
 
 
-		/***/ },
-	/* 29 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 29 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3526,9 +3540,9 @@ var GCLLib =
         module.exports = InterceptorManager;
 
 
-		/***/ },
-	/* 30 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 30 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3611,9 +3625,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 31 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 31 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3628,7 +3642,7 @@ var GCLLib =
          * @returns {*} The resulting transformed data
          */
         module.exports = function transformData(data, headers, fns) {
-			/*eslint no-param-reassign:0*/
+            /*eslint no-param-reassign:0*/
             utils.forEach(fns, function transform(fn) {
                 data = fn(data, headers);
             });
@@ -3637,9 +3651,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 32 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 32 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -3648,9 +3662,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 33 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 33 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -3668,9 +3682,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 34 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 34 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -3686,9 +3700,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 35 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 35 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -3711,9 +3725,9 @@ var GCLLib =
         module.exports = Cancel;
 
 
-		/***/ },
-	/* 36 */
-	/***/ function(module, exports, __webpack_require__) {
+        /***/ },
+    /* 36 */
+    /***/ function(module, exports, __webpack_require__) {
 
         'use strict';
 
@@ -3774,9 +3788,9 @@ var GCLLib =
         module.exports = CancelToken;
 
 
-		/***/ },
-	/* 37 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 37 */
+    /***/ function(module, exports) {
 
         'use strict';
 
@@ -3807,9 +3821,9 @@ var GCLLib =
         };
 
 
-		/***/ },
-	/* 38 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 38 */
+    /***/ function(module, exports) {
 
         "use strict";
         var SEPARATOR = "/";
@@ -3915,9 +3929,9 @@ var GCLLib =
         exports.DSClient = DSClient;
 
 
-		/***/ },
-	/* 39 */
-	/***/ function(module, exports) {
+        /***/ },
+    /* 39 */
+    /***/ function(module, exports) {
 
         "use strict";
         var CHALLENGE = "/challenge";
@@ -3972,6 +3986,6 @@ var GCLLib =
         exports.OCVClient = OCVClient;
 
 
-		/***/ }
-	/******/ ]);
+        /***/ }
+    /******/ ]);
 //# sourceMappingURL=GCLLib.js.map

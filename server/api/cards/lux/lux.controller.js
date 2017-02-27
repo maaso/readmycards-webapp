@@ -7,6 +7,7 @@ module.exports = {
     download: download,
     generateSummaryToSign: generateSummaryToSign,
     getDataToSign: getDataToSign,
+    uploadXMLToSign: uploadXMLToSign,
     workflowSign: workflowSign
 };
 
@@ -24,6 +25,14 @@ function generateSummaryToSign(req, res) {
 
 function getDataToSign(req, res) {
     commonService.getDataToSign(req.body, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    })
+}
+
+function uploadXMLToSign(req, res) {
+    luxService.uploadXML(req.jwt).then(result => {
         return res.status(200).json(result);
     }, error => {
         return response.error(error, res);
