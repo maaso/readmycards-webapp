@@ -71,15 +71,18 @@
                     controller.biometricData = res.data.biometric;
                     controller.picData = res.data.picture;
 
-                    API.convertJPEG2000toJPEG(controller.picData.image).then(function (res) {
-                        controller.pic = res.data.base64Pic;
-                    });
+                    let conversions = [];
+
+                    conversions.push(API.convertJPEG2000toJPEG(controller.picData.image));
 
                     if (!_.isEmpty(res.data.signature_image)) {
-                        API.convertJPEG2000toJPEG(res.data.signature_image).then(sig => {
-                            controller.signature = sig.data.base64Pic;
-                        });
+                        conversions.push(API.convertJPEG2000toJPEG(res.data.signature_image));
                     }
+
+                    $q.all(conversions).then(converted => {
+                        controller.pic = converted[0].data.base64Pic;
+                        if (!_.isEmpty(converted[1])) controller.signature = converted[1].data.base64Pic;
+                    });
 
                     controller.authCert = res.data.authentication_certificate;
                     controller.nonRepCert = res.data.non_repudiation_certificate;
