@@ -44,7 +44,7 @@ function generateSummaryToSign(data, jwt) {
 function uploadXML(jwt) {
     let xmlUpload = q.defer();
 
-    miss.toPromise(fs.createReadStream('test.xml')).then(buffer => {
+    miss.toPromise(fs.createReadStream('example.xml')).then(buffer => {
         uploadAndAssign(buffer, 'example.xml', 'text/xml', jwt).then(result => {
             return xmlUpload.resolve(result);
         }, err => {
