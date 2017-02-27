@@ -107,9 +107,9 @@
                 docId: documentId,
                 signCertificate: nonRepudiationCertificate,
                 certificates: [
-                    rootCertificate1,
+                    nonRepudiationCertificate,
                     rootCertificate2,
-                    nonRepudiationCertificate
+                    rootCertificate1
                 ],
                 additionalInformation: {
                     name: fullName
@@ -133,9 +133,9 @@
                 docId: inputObj.documentId,
                 signCertificate: nonRepudiationCertificate,
                 certificates: [
-                    rootCertificate1,
+                    nonRepudiationCertificate,
                     rootCertificate2,
-                    nonRepudiationCertificate
+                    rootCertificate1
                 ],
                 signedData: inputObj.signedData,
                 additionalInformation: {
