@@ -73,6 +73,31 @@
                     </div>
                 </div>
 
+                <div class="certificates col-sm-12">
+                    <span class="size-h3 text-primary">Biometric Data</span>
+                    <div class="col-sm-12" ng-if="$ctrl.biometric.raw_data">
+                        <h4 class="text-info text-light">Raw Data</h4>
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="{{ $ctrl.biometric.raw_data }}">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.biometric.raw_data }}"></button>
+                        </span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" ng-if="$ctrl.biometric.signature">
+                        <h4 class="text-info text-light">Signature</h4>
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="{{ $ctrl.biometric.signature }}">
+                            <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.biometric.signature }}"></button>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
