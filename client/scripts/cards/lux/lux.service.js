@@ -87,7 +87,7 @@
 
         // OK
         function signWithGcl(readerId, pin, hash, algorithm) {
-            return T1C.luxeid.signData(readerId, pin, algorithm, hash).then(function (res) {
+            return T1C.luxId.signData(readerId, pin, algorithm, hash).then(function (res) {
                 return res.data;
             }, function (err) {
                 return $q.reject(err);
