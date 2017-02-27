@@ -240,11 +240,6 @@
         controller: function ($q, $stateParams, $timeout, $uibModal, T1C, _) {
             let controller = this;
 
-            controller.$onInit = () => {
-                controller.pinStatus = 'idle';
-                controller.certStatus = 'checking';
-            };
-
             controller.challenge = () => {
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/check-pin.html",
@@ -263,23 +258,26 @@
                 });
 
                 modal.result.then(function (res) {
+                    controller.pinStatus = undefined;
                     controller.otpResult = res.data;
+                    let toString = _.padStart(res.data.challenge.toString(), 8, '0');
+                    controller.formattedChallenge = toString.substr(0,4) + ' ' +toString.substr(4,4);
                 }, function (err) {
                     switch (err.code) {
                         case 111:
-                            controller.pinStatus = '4remain';
+                            controller.pinStatus = 'Wrong PIN entered; 4 tries remaining.';
                             break;
                         case 112:
-                            controller.pinStatus = '3remain';
+                            controller.pinStatus = 'Wrong PIN entered; 3 tries remaining.';
                             break;
                         case 103:
-                            controller.pinStatus = '2remain';
+                            controller.pinStatus = 'Wrong PIN entered; 2 tries remaining.';
                             break;
                         case 104:
-                            controller.pinStatus = '1remain';
+                            controller.pinStatus = 'Wrong PIN entered; 1 try remaining!';
                             break;
                         case 105:
-                            controller.pinStatus = 'blocked';
+                            controller.pinStatus = '5 invalid PINs entered. Card blocked';
                             break;
                     }
                 });
