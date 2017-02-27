@@ -245,7 +245,7 @@
                 controller.certStatus = 'checking';
             };
 
-            controller.checkPin = () => {
+            controller.challenge = () => {
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
@@ -256,17 +256,14 @@
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
-                        },
-                        plugin: () => {
-                            return T1C.luxotp;
                         }
                     },
                     backdrop: 'static',
-                    controller: 'ModalPinCheckCtrl'
+                    controller: 'ModalChallengeCtrl'
                 });
 
-                modal.result.then(function () {
-                    controller.pinStatus = 'valid';
+                modal.result.then(function (res) {
+                    controller.otpResult = res.data;
                 }, function (err) {
                     switch (err.code) {
                         case 111:

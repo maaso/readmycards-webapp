@@ -8,6 +8,7 @@
     function LuxTrust($q, Core) {
         this.allCerts = allCerts;
         this.allData = allData;
+        this.challenge = challenge;
         this.filteredCerts = filteredCerts;
         this.filteredInfo = filteredInfo;
         this.rootCert = rootCert;
@@ -77,6 +78,17 @@
                 callbackHelper(err, result, pinDeferred);
             });
             return pinDeferred.promise;
+        }
+
+        // OTP challenge
+        function challenge(readerId, pin) {
+            let challengeDeferred = $q.defer();
+            let data = {};
+            if (pin) data.pin = pin;
+            connector.luxtrust(readerId).challenge(data, (err, result) => {
+                callbackHelper(err, result, challengeDeferred);
+            });
+            return challengeDeferred.promise;
         }
 
         // Sign data with certificates stored on the smartcard
