@@ -48,7 +48,15 @@ function getDataToSign(data, jwt) {
     };
     options.body.additionalInformation.role = config.signbox.role;
 
-    return rp.post(options);
+    console.log(options);
+    return rp.post(options).then(res => {
+        console.log(res);
+        return res;
+    }, err => {
+        console.log('error');
+        console.log(err.message);
+        return err;
+    });
 }
 
 /**

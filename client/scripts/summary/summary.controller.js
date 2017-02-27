@@ -114,10 +114,6 @@
             }
         }
 
-        function generate() {
-
-        }
-
         $scope.$on(EVENTS.START_OVER, () => {
             cancel();
         });

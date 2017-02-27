@@ -8,7 +8,7 @@
         this.formatBirthDate = formatBirthDate;
         this.formatValidity = formatValidity;
         this.generateSummaryToSign = generateSummaryToSign;
-        this.signDocumentWithPin = signDocumentWithPin;
+        this.signDocument = signDocumentWithPin;
 
         let rootCertificate1, rootCertificate2, authenticationCertificate, nonRepudiationCertificate, fullName;
 
@@ -100,7 +100,7 @@
                 docId: documentId,
                 signCertificate: nonRepudiationCertificate,
                 certificates: [
-                    authenticationCertificate,
+                    nonRepudiationCertificate,
                     rootCertificate2,
                     rootCertificate1
                 ],
@@ -126,7 +126,7 @@
                 docId: inputObj.documentId,
                 signCertificate: nonRepudiationCertificate,
                 certificates: [
-                    authenticationCertificate,
+                    nonRepudiationCertificate,
                     rootCertificate2,
                     rootCertificate1
                 ],
@@ -141,7 +141,7 @@
 
         function prepareSummaryData(biometric, picBase64) {
             return {
-                rnData: biometric,
+                biometric: biometric,
                 pic: picBase64,
                 formattedBirthDate: formatBirthDate(biometric.birthDate),
                 validFrom: formatValidity(biometric.validityStartDate),
