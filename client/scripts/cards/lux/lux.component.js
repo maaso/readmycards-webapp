@@ -122,7 +122,7 @@
         bindings: {
             cardData: '<'
         },
-        controller: function ($q, $stateParams, $timeout, $uibModal, T1C, _) {
+        controller: function ($q, $stateParams, $timeout, $uibModal, T1C, LuxTrustUtils, _) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -212,7 +212,7 @@
                             return false;
                         },
                         util: () => {
-                            return LuxUtils;
+                            return LuxTrustUtils;
                         }
                     },
                     backdrop: 'static',

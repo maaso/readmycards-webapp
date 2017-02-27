@@ -141,7 +141,7 @@
 
         function init() {
             $scope.generateText = "Generate Document";
-            $scope.pinText = "Sign Document";
+            $scope.pinText = "Sign";
             $scope.downloadText = "Download";
             $scope.currentStep = 0;
         }
@@ -162,7 +162,7 @@
         }
 
         function handleDownload(data, fileName) {
-            let blob = new Blob([data], { type: 'application/pdf' });
+            let blob = new Blob([data], { type: 'text/xml' });
             FileSaver.saveAs(blob, fileName);
         }
 

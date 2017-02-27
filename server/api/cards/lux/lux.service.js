@@ -57,10 +57,9 @@ function uploadXML(jwt) {
     return xmlUpload.promise;
 }
 
-function uploadAndAssign(fileBuffer, fileName, fileType, jwt) {
-    return signboxApi.uploadDocument(fileBuffer, fileName, fileType, jwt).then(res => {
+function uploadAndAssign(fileBuffer, fileName, fileType, jwt, skipConversion) {
+    return signboxApi.uploadDocument(fileBuffer, fileName, fileType, jwt, skipConversion).then(res => {
         let parsedBody = JSON.parse(res);
-
         return signboxApi.assignDocumentToWorkflow(parsedBody[0].uuid, jwt)
     });
 }

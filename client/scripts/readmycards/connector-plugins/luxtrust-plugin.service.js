@@ -77,5 +77,19 @@
             });
             return pinDeferred.promise;
         }
+
+        // Sign data with certificates stored on the smartcard
+        function signData(readerId, pin, algo, dataToSign) {
+            let signDeferred = $q.defer();
+            let data = {
+                algorithm_reference: algo,
+                data: dataToSign
+            };
+            if (pin) data.pin = pin;
+            connector.luxtrust(readerId).signData(data, function (err, result) {
+                callbackHelper(err, result, signDeferred);
+            });
+            return signDeferred.promise;
+        }
     }
 })();
