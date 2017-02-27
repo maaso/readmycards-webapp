@@ -13,6 +13,7 @@
         this.rootCert = rootCert;
         this.authCert = authCert;
         this.signingCert = signingCert;
+        this.signData = signData;
         this.verifyPin = verifyPin;
 
         const connector = Core.getConnector();
