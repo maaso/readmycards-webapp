@@ -126,7 +126,6 @@
             let controller = this;
 
             controller.$onInit = () => {
-                console.log(controller.cardData);
                 controller.pinStatus = 'idle';
                 controller.certStatus = 'checking';
 
@@ -284,9 +283,11 @@
             controller.$onChanges = () => {
                 if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
                 if (controller.status === 'valid') controller.infoText = 'Strong authentication OK.';
+                if (controller.status === '4remain') controller.infoText = 'Wrong PIN entered; 4 tries remaining.';
+                if (controller.status === '3remain') controller.infoText = 'Wrong PIN entered; 3 tries remaining.';
                 if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
-                if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
+                if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
             };
 
@@ -313,7 +314,7 @@
                 if (controller.status === '3remain') controller.infoText = 'Wrong PIN entered; 3 tries remaining.';
                 if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
-                if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
+                if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
             };
 
