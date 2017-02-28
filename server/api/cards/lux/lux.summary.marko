@@ -69,6 +69,14 @@
     .dim {
         color: #f3f3f3;
     }
+
+    .signature-block {
+        padding-top: 100px;
+    }
+
+     .signature-block .signature {
+         margin-top: 20px;
+    }
 </style>
 
 
@@ -144,7 +152,17 @@
             <div>${data.printDate}</div>
             <div>${data.printedBy}</div>
         </div>
-    </div></div>
+    </div>
+
+    <div class="section signature-block">
+        <div class="labels">
+            <div>Holder's signature</div>
+        </div>
+        <div class="signature">
+            <img class="picture" src="data:image/jpeg;base64,${data.signature}"/>
+        </div>
+    </div>
+</div>
 
 
 </body>

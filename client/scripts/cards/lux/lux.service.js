@@ -5,7 +5,7 @@
         .service('LuxUtils', LuxUtils)
         .service('LuxTrustUtils', LuxTrustUtils);
 
-    function LuxUtils($http, $q, T1C, API) {
+    function LuxUtils($http, $q, T1C, API, _) {
         this.formatBirthDate = formatBirthDate;
         this.formatValidity = formatValidity;
         this.generateXMLToSign = generateXMLToSign;
@@ -38,9 +38,15 @@
 
         function generateSummaryToSign(readerId, pin) {
             return T1C.luxId.allData(readerId, pin).then(function (results) {
-                return API.convertJPEG2000toJPEG(results.data.picture.image).then(converted => {
-                    let data = prepareSummaryData(results.data.biometric, converted.data.base64Pic);
-                    return $http.post('api/cards/lux/summarytosign', data).then(function (res) {
+
+                let conversions = [];
+
+                conversions.push(API.convertJPEG2000toJPEG(results.data.picture.image));
+                conversions.push(API.convertJPEG2000toJPEG(results.data.signature_image));
+
+                return $q.all(conversions).then(converted => {
+                    let data = prepareSummaryData(results.data.biometric, converted[0].data.base64Pic, converted[1].data.base64Pic);
+                    return $http.post('api/cards/lux/summarytosign', data).then(res => {
                         return res.data;
                     })
                 });
@@ -147,10 +153,11 @@
             });
         }
 
-        function prepareSummaryData(biometric, picBase64) {
+        function prepareSummaryData(biometric, picBase64, sigBase64) {
             return {
                 biometric: biometric,
                 pic: picBase64,
+                signature: sigBase64,
                 formattedBirthDate: formatBirthDate(biometric.birthDate),
                 validFrom: formatValidity(biometric.validityStartDate),
                 validUntil: formatValidity(biometric.validityEndDate),
@@ -161,6 +168,7 @@
 
 
     }
+
     function LuxTrustUtils($http, $q, T1C) {
         this.generateXMLToSign = generateXMLToSign;
         this.signDocument = signDocumentWithPin;
