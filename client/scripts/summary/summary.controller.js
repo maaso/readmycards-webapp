@@ -155,8 +155,8 @@
         }
 
         function doDownload() {
-            SummaryUtils.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
-                handleDownload(signedPdf.data, generatedFile.origFilename);
+            SummaryUtils.downloadRaw(generatedFile.viewLink).then(function (xml) {
+                handleDownload(xml.data, generatedFile.origFilename);
                 ok();
             });
         }

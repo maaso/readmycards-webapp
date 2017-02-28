@@ -6,9 +6,15 @@
 
     function SummaryUtils($http) {
         this.downloadDocument = downloadDocument;
+        this.downloadRaw = downloadRaw;
 
         function downloadDocument(documentName) {
             return $http.post('api/cards/be/download', { documentName: documentName }, { responseType: 'arraybuffer' });
+        }
+
+        function downloadRaw(viewLink) {
+            return $http.post('api/cards/lux/download', { url: viewLink });
+
         }
     }
 

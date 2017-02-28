@@ -2,6 +2,7 @@
 const commonService = require('../cards.common.service.js');
 const luxService = require('./lux.service.js');
 const response = require(__base + 'server/util/response.util.js');
+const request = require('request');
 
 module.exports = {
     download: download,
@@ -12,7 +13,8 @@ module.exports = {
 };
 
 function download(req, res) {
-    return commonService.download(req.body.documentName, req.jwt).pipe(res);
+    return request.get(req.body.url).pipe(res);
+    // return commonService.download(req.body.documentName, req.jwt).pipe(res);
 }
 
 function generateSummaryToSign(req, res) {
