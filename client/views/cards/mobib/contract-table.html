@@ -9,30 +9,30 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="inactive clickable" ng-init="firstRowOpen = false" ng-click="firstRowOpen = !firstRowOpen">
+        <tr ng-repeat-start="contract in $ctrl.contracts" class="clickable" ng-class="{ 'active': contract.active, 'inactive': !contract.active }" ng-click="contract.open = !contract.open">
             <!--<td class="text-center"><i class="fa fa-check-circle fa-2x success"></i></td>-->
             <!--<td class="text-center"><i class="fa fa-times-circle fa-2x danger"></i></td>-->
-            <td class="text-center"><span class="danger text-bold" style="font-size: 2em;">0</span></td>
+            <td class="text-center"><span ng-class="{ 'success': contract.active, 'danger': !contract.active }" class="text-bold" style="font-size: 2em;">0</span></td>
             <td>JUMP 10 Ritten</td>
-            <td>27.06.2017</td>
+            <td>{{contract.validityEnd}}</td>
             <td>
-                <div class="logo-wrapper danger">
-                    <div class="contract-logo">
+                <div class="logo-wrapper" ng-class="{ 'success': contract.active, 'danger': !contract.active }">
+                    <div class="contract-logo" ng-if="contract.validDeLijn">
                         <div class="delijn"></div>
                     </div>
-                    <div class="contract-logo">
+                    <div class="contract-logo" ng-if="contract.validMIVB">
                         <div class="mivb"></div>
                     </div>
-                    <div class="contract-logo">
+                    <div class="contract-logo" ng-if="contract.validNMBS">
                         <div class="nmbs"></div>
                     </div>
-                    <div class="contract-logo">
+                    <div class="contract-logo" ng-if="contract.validTEC">
                         <div class="tec"></div>
                     </div>
                 </div>
             </td>
         </tr>
-        <tr class="additional-info-row" ng-show="firstRowOpen">
+        <tr ng-repeat-end class="additional-info-row" ng-show="contract.open">
             <td class="additional-info" colspan="4">
                 <div class="additional-info-wrapper">
                     <div class="info-block time">
@@ -47,8 +47,8 @@
                         <div>
                             <div class="info-block-icon inline"></div>
                             <div class="info-block-column inline">
-                                <div class="col-xs-4 text-center">27.06.2016</div>
-                                <div class="col-xs-4 text-center">26.06.2017</div>
+                                <div class="col-xs-4 text-center">{{contract.validityStart}}</div>
+                                <div class="col-xs-4 text-center">{{contract.validityEnd}}</div>
                                 <div class="col-xs-4 text-center">21.01.2017</div>
                             </div>
                         </div>

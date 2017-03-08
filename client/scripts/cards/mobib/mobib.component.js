@@ -24,8 +24,39 @@
         bindings: {
             contracts: '<'
         },
-        controller: function () {
+        controller: function (_) {
             let controller = this;
+            // validityDuration '0' is per 15 minutes, remember to multiply the value with 15!
+            const validityDurations = { '0': 'minutes', '1': 'hours', '2': 'days', '3': 'months' };
+            const dateFormat = 'DD.MM.YYYY';
+
+            controller.$onInit = () => {
+                console.log(controller.contracts);
+
+                _.forEach(controller.contracts, contract => {
+                    let providers = dec2bin(contract.provider);
+                    contract.validNMBS = (!_.isEmpty(providers[0]) && providers[0] === '1');
+                    contract.validMIVB = (!_.isEmpty(providers[1]) && providers[1] === '1');
+                    contract.validDeLijn = (!_.isEmpty(providers[2]) && providers[2] === '1');
+                    contract.validTEC = (!_.isEmpty(providers[3]) && providers[3] === '1');
+
+                    // calculated by taking validitystart and adding the validityduration
+                    let startDate = moment(contract.validity_start_date, 'YYYY-MM-DD');
+                    let endDate = moment(contract.validity_start_date, 'YYYY-MM-DD');
+                    if (contract.validity_duration) endDate.add(contract.validity_duration.value, validityDurations[contract.validity_duration.unit]);
+
+                    contract.active = moment() < endDate;
+
+                    contract.validityStart = startDate.format(dateFormat);
+                    contract.validityEnd = endDate.format(dateFormat);
+                });
+            };
+
+
+
+            function dec2bin(n) {
+                return _.reverse(n.toString(2).split(''));
+            }
         }
     };
 
