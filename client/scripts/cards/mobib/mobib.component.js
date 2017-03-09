@@ -26,50 +26,10 @@
         },
         controller: function (MobibUtils, _) {
             let controller = this;
-            // validityDuration '0' is per 15 minutes, remember to multiply the value with 15!
-            const validityDurations = { '0': 'minutes', '1': 'hours', '2': 'days', '3': 'months' };
-            const dateFormat = 'DD.MM.YYYY';
 
             controller.$onInit = () => {
-                console.log(controller.contracts);
 
-                _.forEach(controller.contracts, contract => {
-                    if (_.has(contract, 'operator_map')) {
-                        let validOperators = dec2bin(contract.operator_map);
-                        contract.validNMBS = (!_.isEmpty(validOperators[0]) && validOperators[0] === '1');
-                        contract.validMIVB = (!_.isEmpty(validOperators[1]) && validOperators[1] === '1');
-                        contract.validDeLijn = (!_.isEmpty(validOperators[2]) && validOperators[2] === '1');
-                        contract.validTEC = (!_.isEmpty(validOperators[3]) && validOperators[3] === '1');
-                    } else {
-                        contract.validNMBS = contract.provider === 1;
-                        contract.validMIVB = contract.provider === 2;
-                        contract.validMIVB = contract.provider === 2;
-                        contract.validDeLijn = contract.provider === 3;
-                        contract.validTEC = contract.provider === 4;
-                    }
-
-                    contract.name = MobibUtils.getContractName(contract.type_id);
-
-                    // calculated by taking validitystart and adding the validityduration
-                    let startDate = moment(contract.validity_start_date, 'YYYY-MM-DD');
-                    let endDate = moment(contract.validity_start_date, 'YYYY-MM-DD');
-                    if (contract.validity_duration) {
-                        if (contract.validity_duration.unit === 0) endDate.add(contract.validity_duration.value * 15, validityDurations[contract.validity_duration.unit]);
-                        else endDate.add(contract.validity_duration.value, validityDurations[contract.validity_duration.unit]);
-                    }
-
-                    contract.active = moment() < endDate;
-
-                    contract.validityStart = startDate.format(dateFormat);
-                    contract.validityEnd = endDate.format(dateFormat);
-                });
             };
-
-
-
-            function dec2bin(n) {
-                return _.reverse(n.toString(2).split(''));
-            }
         }
     };
 
@@ -235,15 +195,102 @@
             cardData: '<',
             isBasic: '<'
         },
-        controller: function () {
+        controller: function (MobibUtils, _) {
             let controller = this;
+            // validityDuration '0' is per 15 minutes, remember to multiply the value with 15!
+            const validityDurations = { '0': 'minutes', '1': 'hours', '2': 'days', '3': 'months' };
+            const dateFormat = 'DD.MM.YYYY';
 
             controller.$onInit = () => {
+                console.log(controller.cardData);
                 if (controller.cardData.active) controller.cardStatus = 'active';
                 else controller.cardStatus = 'inactive';
 
                 controller.mobibFrom = moment(controller.cardData['card-issuing'].card_holder_start_date, cardDateFormat);
                 controller.mobibTo = moment(controller.cardData['card-issuing'].card_expiration_date, cardDateFormat);
+
+                _.forEach(controller.cardData.contracts, contract => {
+                    if (_.has(contract, 'operator_map')) {
+                        let validOperators = dec2bin(contract.operator_map);
+                        contract.validNMBS = (!_.isEmpty(validOperators[0]) && validOperators[0] === '1');
+                        contract.validMIVB = (!_.isEmpty(validOperators[1]) && validOperators[1] === '1');
+                        contract.validDeLijn = (!_.isEmpty(validOperators[2]) && validOperators[2] === '1');
+                        contract.validTEC = (!_.isEmpty(validOperators[3]) && validOperators[3] === '1');
+                    } else {
+                        contract.validNMBS = contract.provider === 1;
+                        contract.validMIVB = contract.provider === 2;
+                        contract.validMIVB = contract.provider === 2;
+                        contract.validDeLijn = contract.provider === 3;
+                        contract.validTEC = contract.provider === 4;
+                    }
+
+                    // Determine contract name
+                    contract.name = MobibUtils.getContractName(contract.type_id);
+
+                    // calculated by taking validitystart and adding the validity duration
+                    let startDate = moment(contract.validity_start_date, cardDateFormat);
+                    if (contract.validity_duration && contract.validity_duration.value > 0) {
+                        let endDate = moment(contract.validity_start_date, cardDateFormat);
+                        if (contract.validity_duration.unit === 0) endDate.add(contract.validity_duration.value * 15, validityDurations[contract.validity_duration.unit]);
+                        else endDate.add(contract.validity_duration.value, validityDurations[contract.validity_duration.unit]);
+                        contract.validityEnd = endDate.format(dateFormat);
+                    }
+
+                    contract.validityStart = startDate.format(dateFormat);
+
+                    if (_.has(contract, 'tariff.counter.type') && contract.tariff.counter.type != 0) {
+                        // Determine further processing based on counter type
+                        switch (contract.tariff.counter.type) {
+                            case 0:
+                                break;
+                            case 1:
+                                // journeys remaining + last validation
+                                contract.countJourneys = true;
+                                contract.journeys = contract.tariff.counter.journeys;
+                                contract.lastValidation = moment(contact.tariff.counter.date, cardDateFormat).format(dateFormat);
+                                break;
+                            case 2:
+                                // journeys remaining
+                                contract.countJourneys = true;
+                                contract.journeys = contract.tariff.counter.journeys;
+                                break;
+                            case 3:
+                                // journeys remaining (reversed)
+                                contract.countJourneys = true;
+                                contract.journeys = contract.tariff.counter.journeys;
+                                break;
+                            case 4:
+                                // start time
+                                // todo figure out how to handle
+                                contract.validityStart = moment(contact.tariff.counter.time, cardDateFormat).format(dateFormat);
+                                break;
+                            case 5:
+                                // days remaining + last validation date
+                                contract.lastValidation = moment(contact.tariff.counter.date, cardDateFormat).format(dateFormat);
+                                contract.validityEnd = angular.copy(startDate).add(contract.tariff.counter.days, 'days').format(dateFormat);
+                                break;
+                            case 6:
+                                // start time + remaining journeys
+                                contract.countJourneys = true;
+                                contract.validityStart = moment(contact.tariff.counter.time, cardDateFormat).format(dateFormat);
+                                break;
+                            case 7:
+                                // start time + remaining days
+                                contract.validityStart = moment(contact.tariff.counter.time, cardDateFormat).format(dateFormat);
+                                contract.validityEnd = moment(contact.tariff.counter.time, cardDateFormat).add(contract.tariff.counter.days, 'days').format(dateFormat);
+                                break;
+                        }
+                    }
+
+                    // contract.active = moment() < endDate;
+                    if (contract.countJourneys) {
+                        contract.active = contract.journeys > 0;
+                    }
+                });
+
+                function dec2bin(n) {
+                    return _.reverse(n.toString(2).split(''));
+                }
             };
 
             controller.cardLang = () => {

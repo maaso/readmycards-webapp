@@ -160,6 +160,15 @@
             '367': 'B-Excursion groupe SNCB+STIB',
             '364': 'B-Excursion Indiv.SNCB +STIB 1j'
         };
+        const counterTypes = {
+            '1': { fields: ['date', 'journeys']},
+            '2': { fields: ['journeys']},
+            '3': { fields: ['journeys']}, // reverse order!
+            '4': { fields: ['time']},
+            '5': { fields: ['days', 'date']}, // date = date of last validation, days = remaining days
+            '6': { fields: ['time', 'journeys']},
+            '7': { fields: ['time', 'days']},
+        };
 
 
         function getContractName(typeId) {

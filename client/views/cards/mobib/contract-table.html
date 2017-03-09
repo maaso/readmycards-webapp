@@ -10,9 +10,8 @@
         </thead>
         <tbody>
         <tr ng-repeat-start="contract in $ctrl.contracts" class="clickable" ng-class="{ 'active': contract.active, 'inactive': !contract.active }" ng-click="contract.open = !contract.open">
-            <!--<td class="text-center"><i class="fa fa-check-circle fa-2x success"></i></td>-->
-            <!--<td class="text-center"><i class="fa fa-times-circle fa-2x danger"></i></td>-->
-            <td class="text-center"><span ng-class="{ 'success': contract.active, 'danger': !contract.active }" class="text-bold" style="font-size: 2em;">0</span></td>
+            <td class="text-center" ng-if="!contract.countJourneys"><i ng-class="{ 'fa-check-cirecle success': contract.active, 'fa-times-circle danger': !contract.active }" class="fa fa-2x"></i></td>
+            <td class="text-center" ng-if="contract.countJourneys"><span ng-class="{ 'success': contract.active, 'danger': !contract.active }" class="text-bold" style="font-size: 2em;">{{contract.journeys}}</span></td>
             <td>{{contract.name}}</td>
             <td>{{contract.validityEnd}}</td>
             <td>
@@ -40,24 +39,23 @@
                             <div class="fa fa-clock-o fa-2x info-block-icon inline"></div>
                             <div class="info-block-column inline">
                                 <div class="col-xs-4 text-center text-thin">From</div>
-                                <div class="col-xs-4 text-center text-thin">To</div>
-                                <div class="col-xs-4 text-center text-thin">Last validation</div>
+                                <div class="col-xs-4 text-center text-thin" ng-if="contract.validityEnd">To</div>
+                                <div class="col-xs-4 text-center text-thin" ng-if="contract.lastValidation">Last validation</div>
                             </div>
                         </div>
                         <div>
                             <div class="info-block-icon inline"></div>
                             <div class="info-block-column inline">
                                 <div class="col-xs-4 text-center">{{contract.validityStart}}</div>
-                                <div class="col-xs-4 text-center">{{contract.validityEnd}}</div>
-                                <div class="col-xs-4 text-center">21.01.2017</div>
+                                <div class="col-xs-4 text-center" ng-if="contract.validityEnd">{{contract.validityEnd}}</div>
+                                <div class="col-xs-4 text-center" ng-if="contract.lastValidation">{{contract.lastValidation}}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="info-block geo">
+                    <div class="info-block geo" ng-if="contract.origin && contract.destination">
                         <div>
                             <div class="fa fa-location-arrow fa-2x info-block-icon inline"></div>
                             <div class="info-block-column inline">
-                                <div class="col-xs-4 text-center text-thin">Counter</div>
                                 <div class="col-xs-4 text-center text-thin">Origin</div>
                                 <div class="col-xs-4 text-center text-thin">Destination</div>
                             </div>
@@ -65,27 +63,17 @@
                         <div>
                             <div class="info-block-icon inline"></div>
                             <div class="info-block-column inline">
-                                <div class="col-xs-4 text-center">4</div>
-                                <div class="col-xs-4 text-center">Brussels</div>
-                                <div class="col-xs-4 text-center">Ghent</div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="info-block-icon inline"></div>
-                            <div class="info-block-column inline">
-                                <div class="col-xs-4 text-center">2</div>
-                                <div class="col-xs-4 text-center">Brussels</div>
-                                <div class="col-xs-4 text-center">Liège</div>
+                                <div class="col-xs-4 text-center">{{contract.origin}}</div>
+                                <div class="col-xs-4 text-center">{{contract.destination}}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="info-block passenger">
+                    <div class="info-block passenger" ng-if="false">
                         <div>
                             <div class="fa fa-user-o fa-2x info-block-icon inline"></div>
                             <div class="info-block-column inline">
                                 <div class="col-xs-4 text-center text-thin">Passenger</div>
                                 <div class="col-xs-4 text-center text-thin">Passenger</div>
-                                <!--<div class="col-sm-4 text-center text-thin">Passenger</div>-->
                             </div>
                         </div>
                         <div>
@@ -93,103 +81,12 @@
                             <div class="info-block-column inline">
                                 <div class="col-xs-4 text-center">Vandervreken, Tania</div>
                                 <div class="col-xs-4 text-center">Vandervreken, Louis</div>
-                                <!--<div class="col-sm-4 text-center">21.01.2017</div>-->
                             </div>
                         </div>
                     </div>
                 </div>
             </td>
         </tr>
-        <!--<tr class="active clickable" ng-init="secondRowOpen = false" ng-click="secondRowOpen = !secondRowOpen">-->
-            <!--<td class="text-center"><i class="fa fa-check-circle fa-2x success"></i></td>-->
-            <!--<td class="text-center"><i class="fa fa-times-circle fa-2x danger"></i></td>-->
-
-        <!--<td>Season Tickets</td>-->
-            <!--<td>26.06.2017</td>-->
-            <!--<td>-->
-                <!--<div class="logo-wrapper success">-->
-                    <!--<div class="contract-logo">-->
-                        <!--<div class="delijn"></div>-->
-                    <!--</div>-->
-                    <!--<div class="contract-logo">-->
-                        <!--<div class="mivb"></div>-->
-                    <!--</div>-->
-                    <!--<div class="contract-logo">-->
-                        <!--<div class="nmbs"></div>-->
-                    <!--</div>-->
-                    <!--<div class="contract-logo">-->
-                        <!--<div class="tec"></div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</td>-->
-        <!--</tr>-->
-        <!--<tr class="additional-info-row" ng-show="secondRowOpen">-->
-            <!--<td class="additional-info" colspan="4">-->
-                <!--<div class="additional-info-wrapper">-->
-                    <!--<div class="info-block time">-->
-                        <!--<div>-->
-                            <!--<div class="fa fa-clock-o fa-2x info-block-icon inline"></div>-->
-                            <!--<div class="info-block-column inline">-->
-                                <!--<div class="col-xs-4 text-center text-thin">From</div>-->
-                                <!--<div class="col-xs-4 text-center text-thin">Until</div>-->
-                                <!--<div class="col-xs-4 text-center text-thin">Last validation</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div>-->
-                            <!--<div class="info-block-icon inline"></div>-->
-                            <!--<div class="info-block-column inline">-->
-                                <!--<div class="col-xs-4 text-center">27.06.2016</div>-->
-                                <!--<div class="col-xs-4 text-center">26.06.2017</div>-->
-                                <!--<div class="col-xs-4 text-center">21.01.2017</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="info-block geo">-->
-                        <!--<div>-->
-                            <!--<div class="fa fa-location-arrow fa-2x info-block-icon inline"></div>-->
-                            <!--<div class="info-block-column inline">-->
-                                <!--<div class="col-xs-4 text-center text-thin">Counter</div>-->
-                                <!--<div class="col-xs-4 text-center text-thin">Origin</div>-->
-                                <!--<div class="col-xs-4 text-center text-thin">Destination</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div>-->
-                            <!--<div class="info-block-icon inline"></div>-->
-                            <!--<div class="info-block-column inline">-->
-                                <!--<div class="col-xs-4 text-center">4</div>-->
-                                <!--<div class="col-xs-4 text-center">Alken</div>-->
-                                <!--<div class="col-xs-4 text-center">Liège-Guillemins</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div>-->
-                            <!--<div class="info-block-icon inline"></div>-->
-                            <!--<div class="info-block-column inline">-->
-                                <!--<div class="col-xs-4 text-center">2</div>-->
-                                <!--<div class="col-xs-4 text-center">Antwerpen-Oost</div>-->
-                                <!--<div class="col-xs-4 text-center">Hasselt</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="info-block passenger">-->
-                        <!--<div class="fa fa-user-o fa-2x info-block-icon inline"></div>-->
-                        <!--<div>-->
-                            <!--<div class="info-block-column inline">-->
-                                <!--<div class="col-xs-6 text-center text-thin">Passenger</div>-->
-                                <!--<div class="col-xs-6 text-center text-thin">Passenger</div>-->
-                                <!--&lt;!&ndash;<div class="col-xs-4 text-center text-thin">Passenger</div>&ndash;&gt;-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div>-->
-                            <!--<div class="info-block-column inline">-->
-                                <!--<div class="col-xs-6 text-center">Caes, Stéphanie</div>-->
-                                <!--<div class="col-xs-6 text-center">Vanderveken, Louis</div>-->
-                                <!--&lt;!&ndash;<div class="col-xs-4 text-center">Desmarlières, Jean-François</div>&ndash;&gt;-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</td>-->
-        <!--</tr>-->
         </tbody>
     </table>
 </div>
