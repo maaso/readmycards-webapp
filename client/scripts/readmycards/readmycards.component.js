@@ -101,6 +101,12 @@
                 this.firefoxModal = firefoxModal;
                 this.registerDownload = registerDownload;
 
+                controller.$onInit = () => {
+                    controller.sendUpdates = {
+                        value: false
+                    }
+                };
+
                 function pollForGcl() {
                     $timeout(function () {
                         T1C.core.getInfo().then(function (res) {
@@ -122,7 +128,7 @@
                 function registerDownload(mail) {
                     controller.waitingForInstall = true;
                     if (!controller.isFirefox) pollForGcl();
-                    API.storeDownloadInfo(mail, controller.dlUrl);
+                    API.storeDownloadInfo(mail, controller.sendUpdates.value, controller.dlUrl);
                 }
             }
         })

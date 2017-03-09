@@ -1,28 +1,47 @@
 <div class="rmc-step">
-    <span class="rmc-title hit-the-floor">ReadMyCards</span>
-    <p class="rmc-promo-text text-ultralight">This website will read the contents of <strong>your smartcards</strong>, using any reader.<br>
-        The service is completely <strong>free</strong> for personal use, and we <strong>never</strong> save any of the data.</p>
+    <div class="rmc-title-block">
+        <span class="rmc-title hit-the-floor">ReadMyCards</span>
+        <div class="rmc-subtitle"><span class="rmc-subtitle-text">by Trust1Connector</span>
+    </div>
+    </div>
+    <p class="rmc-promo-text text-ultralight">Read the content of your smartcard, using any type of reader, <strong>completely free</strong>.<br>
+        This service is available for personal use, and we <strong>never</strong> save any data from your card.</p>
     <div class="rmc-download-prompt" ng-if="!$ctrl.waitingForInstall">
-        <div class="prompt-title">Download the Connector</div>
+        <div class="prompt-title">Download the Trust1Connector</div>
         <div class="prompt-text text-ultralight">
-            To use this website, you will need to install a small piece of software: the Trust1Connector (T1C).
-            This will enable us to communicate with your card reader, no matter which browser you use.
+            To use this website, you need to install the Trust1Connector. This is a small piece of software that enables the
+            communication with your card reader, no matter which browser or reader you use.
         </div>
         <div class="block">
-            <span class="download-text">Enter your email address and we'll send you a download link!</span>
+            <span class="download-text">Enter your email address and we will send you a download link!</span>
             <div class="email-form text-center">
-                <form data-ng-submit="$ctrl.registerDownload(userMail)" class="">
+                <form data-ng-submit="$ctrl.registerDownload(userMail)" name="emailForm" class="">
                     <input type="email"
-                           placeholder="Your email address"
+                           placeholder="Insert your email address"
                            class="form-control"
                            data-ng-model="userMail"
+                           required
                            autofocus>
-                    <span type="submit" id="submit" class="btn btn-submit" data-ng-click="$ctrl.registerDownload(userMail)">Submit</span>
+                    <span type="submit" id="submit" class="btn btn-submit" ng-disabled="emailForm.$invalid" data-ng-click="$ctrl.registerDownload(userMail)">Request Link</span>
+
+                    <div class="update-toggle">
+                        <div class="checkbox">
+                            <input type="checkbox" value="None" id="checkbox" name="check" ng-model="$ctrl.sendUpdates.value" />
+                            <label for="checkbox"></label>
+                        </div>
+                        <div class="checkbox-text">
+                            <span class="text-ultralight">Click here if you want to receive news/updates on the Trust1Connector or Trust1Team products and
+                            services. You can unsubscribe at any time!</span>
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>
         <div class="footer-text">
-            <span>Your email address is required for verification purposes only and will never be shared with any third parties.</span>
+            <span>Your email address is required for validation purposes only and is not saved
+                unless you give us express permission by selecting the checkbox above.
+                It will never be shared with any third parties.</span>
         </div>
     </div>
     <div class="rmc-download-prompt" ng-if="$ctrl.waitingForInstall">
