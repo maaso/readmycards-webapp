@@ -77,12 +77,14 @@
         });
     }
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
         controller.dismissPanels = dismissPanels;
+
+        let pollIterations = 0;
 
         init();
 
@@ -231,7 +233,7 @@
         function pollForCard() {
             if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            T1C.core.getConnector().core().pollCardInserted(30, function (err, result) {
+            T1C.core.getConnector().core().pollCardInserted(3, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
@@ -240,6 +242,8 @@
                 }
                 else {
                     controller.pollingCard = false;
+                    controller.pollTimeout = false;
+                    pollIterations = 0;
                     $scope.$apply();
                     // if ($scope.readers.length > 1) toastr.success('Readers found!');
                     // else toastr.success('Reader found!');
@@ -249,7 +253,7 @@
                         controller.readers = result.data;
                         readCard();
                     }, function () {
-                        controller.error = true;
+                        pollForCard();
                     });
                 }
             }, function () {
@@ -260,9 +264,9 @@
                 // "Waiting for card" callback
             }, function () {
                 // timeout
-                // controller.pollingCard = false;
-                controller.pollTimeout = true;
-                // $scope.$apply();
+                pollIterations++;
+                // if enough time has passed, show the card not recognized message
+                if (pollIterations >= 5) controller.pollTimeout = true;
                 RMC.checkReaderRemoval().then(function (removed) {
                     if (removed) controller.pollingCard = false;
                     else pollForCard();
