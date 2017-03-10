@@ -1,14 +1,13 @@
 <div class="modal-body">
 
-    <!--<div class="text-center waiting-for-pin" ng-if="pinpad">-->
-    <div class="text-center waiting-for-pin">
+    <div class="text-center waiting-for-pin" ng-if="pinpad">
         <h3 class="text-primary text-thin">Enter the PIN code on your reader's pinpad</h3>
         <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
         <p class="spinner-text text-thin">Awaiting response from reader...</p>
     </div>
 
-    <!--<div ng-if="!pinpad">-->
-        <!--<rmc-keypad pincode="pincode" submit-func="submitPin" cancel-func="cancel"></rmc-keypad>-->
-    <!--</div>-->
+    <div ng-if="!pinpad">
+        <rmc-keypad pincode="pincode" submit-func="submitPin" cancel-func="cancel"></rmc-keypad>
+    </div>
 
 </div>
