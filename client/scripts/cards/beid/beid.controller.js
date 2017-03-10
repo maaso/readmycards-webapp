@@ -22,8 +22,8 @@
 
         function init() {
             $scope.generateText = "Generate PDF";
-            $scope.pinText = "PIN Code";
-            $scope.downloadText = "Download";
+            $scope.pinText = "Enter PIN Code";
+            $scope.downloadText = "Download PDF";
             $scope.currentStep = 0;
         }
 
