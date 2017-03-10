@@ -8,7 +8,7 @@
     <beid-card rn-data="$ctrl.rnData" pic-data="$ctrl.picData"></beid-card>
 
     <div class="print-button">
-        <span class="btn btn-lg btn-primary btn-summary-download" ng-click="$ctrl.downloadSummary()">Print the content of my card</span>
+        <print-summary print-function="$ctrl.downloadSummary"></print-summary>
     </div>
 
     <div class="personal-info col-sm-12">
@@ -40,7 +40,7 @@
     </div>
 
     <div class="certificates-toggle col-sm-12">
-        <span class="text-small" ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.loadingCerts ? 'Loading...' : $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>
+        <span ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.loadingCerts ? 'Loading...' : $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>
     </div>
     <div>
         <div uib-collapse="$ctrl.doCollapse || !$ctrl.certData">
@@ -103,7 +103,7 @@
             </div>
 
             <div class="certificates col-sm-12">
-                <span class="size-h3 text-primary">RN</span>
+                <span class="size-h3 text-primary">National Register</span>
                 <div class="col-sm-12" ng-if="$ctrl.rnData.raw_data">
                     <h4 class="text-info text-light">Raw Data</h4>
 
