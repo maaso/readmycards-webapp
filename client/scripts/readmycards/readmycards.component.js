@@ -214,6 +214,9 @@
             templateUrl: 'views/readmycards/components/footer.html',
             controller: function ($scope, EVENTS) {
                 this.toggleFAQ = toggleFAQ;
+                this.$onInit = () => {
+                    this.currentYear = moment().format('YYYY');
+                };
 
                 function toggleFAQ() {
                     $scope.$emit(EVENTS.OPEN_FAQ);
