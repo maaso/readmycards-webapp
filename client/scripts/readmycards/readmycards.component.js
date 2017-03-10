@@ -148,10 +148,16 @@
         .component('cardPolling', {
             templateUrl: 'views/readmycards/components/card-polling.html',
             bindings: {
-                error: '<'
+                error: '<',
+                pollTimeout: '<'
             },
-            controller: function ($scope, EVENTS) {
+            controller: function ($scope, $rootScope, EVENTS) {
+                this.openSidebar = openSidebar;
                 this.tryAgain = tryAgain;
+
+                function openSidebar() {
+                    $rootScope.$broadcast(EVENTS.OPEN_SIDEBAR);
+                }
 
                 function tryAgain() {
                     $scope.$emit(EVENTS.RETRY_CARD);

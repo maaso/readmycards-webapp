@@ -231,7 +231,7 @@
         function pollForCard() {
             if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            T1C.core.getConnector().core().pollCardInserted(3, function (err, result) {
+            T1C.core.getConnector().core().pollCardInserted(30, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
@@ -261,8 +261,7 @@
             }, function () {
                 // timeout
                 // controller.pollingCard = false;
-                // controller.pollTimeout = true;
-                // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
+                controller.pollTimeout = true;
                 // $scope.$apply();
                 RMC.checkReaderRemoval().then(function (removed) {
                     if (removed) controller.pollingCard = false;

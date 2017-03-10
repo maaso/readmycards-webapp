@@ -1,11 +1,12 @@
 <div class="rmc-step">
     <span class="rmc-title hit-the-floor">Insert Card</span>
-    <!--<p class="rmc-subtitle">Welcome to ReadMyCards.eu!</p>-->
     <p class="rmc-promo-text text-ultralight">Insert the <strong>smartcard</strong> you want to read into the smartcard reader.</p>
     <div class="polling-block" ng-hide="$ctrl.error">
         <div class="spinner-container">
             <span class="spinner fa fa-spinner fa-pulse"></span>
             <p class="spinner-text text-light">Waiting for smartcard...</p>
+            <p class="not-recognized-text text-light">Card not recognized? Check if it is supported <a class="clickable" ng-click="$ctrl.openSidebar()">here</a>.</p>
+            <p class="not-recognized-text text-light" ng-if="$ctrl.pollTimeout">Card not recognized? Check if it is supported <a class="clickable" ng-click="$ctrl.openSidebar()">here</a>.</p>
         </div>
     </div>
     <div class="error-block" ng-show="$ctrl.error">
