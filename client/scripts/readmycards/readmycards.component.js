@@ -34,7 +34,7 @@
                                 controller.loading = false;
                                 RMC.monitorCardRemoval(controller.readerId, controller.card)
                             }, function (error) {
-                                if (error.status === 412 && error.data.code === 900) {
+                                if (error.status === 412 && (error.data.code === 900 || error.data.code === 0)) {
                                     // this usually means the card was removed during reading, check if it is still present
                                     RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
                                         if (removed) $scope.$emit(EVENTS.START_OVER);
@@ -53,6 +53,8 @@
                             $timeout(function () {
                                 controller.$onInit();
                             }, 100);
+                        } else {
+                            $scope.$emit(EVENTS.START_OVER);
                         }
                     });
 

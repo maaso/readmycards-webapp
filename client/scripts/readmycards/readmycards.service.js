@@ -83,8 +83,6 @@
             return $q.all(promises).then(() => {
                 dataObject.success = true;
                 return dataObject;
-            }, (err) => {
-                return err;
             });
         }
     }
