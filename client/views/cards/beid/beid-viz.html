@@ -1,7 +1,7 @@
 <div id="beid-viz" class="clearfix top-info">
 
     <div class="status-wrapper">
-        <beid-certificate-status status="$ctrl.certStatus"></beid-certificate-status>
+        <beid-certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></beid-certificate-status>
         <beid-pin-check-status status="$ctrl.pinStatus"></beid-pin-check-status>
     </div>
 
@@ -52,7 +52,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.root_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: root_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.citizen_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.citizen_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: citizen_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.citizen_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.authentication_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.authentication_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: authentication_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.authentication_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.non_repudiation_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.non_repudiation_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: non_repudiation_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.non_repudiation_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.certData.rrn_certificate }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.rrn_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: rrn_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.rrn_certificate }}"></button>
                         </span>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.rnData.raw_data }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.rnData.raw_data }}"></button>
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: raw_data']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.rnData.raw_data }}"></button>
                         </span>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" value="{{ $ctrl.rnData.signature }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.rnData.signature }}"></button>
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: signature']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.rnData.signature }}"></button>
                         </span>
                     </div>
                 </div>

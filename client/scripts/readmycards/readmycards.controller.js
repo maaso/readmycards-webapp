@@ -122,6 +122,7 @@
             }
 
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
+                Analytics.trackEvent('T1C', 'install', 'Trust1Connector installed');
                 controller.gclAvailable = true;
                 T1C.core.initializeAfterInstall().then(function (res) {
                     pollForReaders();
@@ -211,6 +212,7 @@
                 else {
                     controller.readers = result.data;
                     controller.pollingReaders = false;
+                    Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
                     $scope.$apply();
                     // if (controller.readers.length > 1) toastr.success('Readers found!');
                     // else toastr.success('Reader found!');
@@ -243,6 +245,7 @@
                 else {
                     controller.pollingCard = false;
                     controller.pollTimeout = false;
+                    Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
                     pollIterations = 0;
                     $scope.$apply();
                     // if ($scope.readers.length > 1) toastr.success('Readers found!');

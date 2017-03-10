@@ -22,7 +22,7 @@
                            data-ng-model="userMail"
                            required
                            autofocus>
-                    <span type="submit" id="submit" class="btn btn-submit" ng-disabled="emailForm.$invalid" data-ng-click="$ctrl.registerDownload(userMail)">Request Link</span>
+                    <span type="submit" id="submit" ga-track-event="['button', 'click', 'Email Submit']" class="btn btn-submit" ng-disabled="emailForm.$invalid" data-ng-click="$ctrl.registerDownload(userMail)">Request Link</span>
 
                     <div class="update-toggle">
                         <div class="checkbox">

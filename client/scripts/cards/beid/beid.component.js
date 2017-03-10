@@ -8,7 +8,7 @@
             addressData: '<',
             picData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -23,16 +23,25 @@
                             { order: 2, certificate: res.data.root_certificate },
                         ]
                     };
+                    Analytics.trackEvent('beid', 'cert-check', 'Start certificate check');
                     T1C.ocv.validateCertificateChain(validationReq).then(res => {
-                        if (res.crlResponse.status && res.ocspResponse.status) controller.certStatus = 'valid';
-                        else controller.certStatus = 'invalid';
+                        if (res.crlResponse.status && res.ocspResponse.status) {
+                            Analytics.trackEvent('beid', 'cert-valid', 'Certificates are valid');
+                            controller.certStatus = 'valid';
+                        }
+                        else {
+                            Analytics.trackEvent('beid', 'cert-invalid', 'Certificates are not valid');
+                            controller.certStatus = 'invalid';
+                        }
                     }, () => {
+                        Analytics.trackEvent('beid', 'cert-error', 'Error occurred while checking certificate validity');
                         controller.certStatus = 'error';
                     });
                 });
             };
 
             controller.checkPin = () => {
+                Analytics.trackEvent('button', 'click', 'PIN check clicked');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
@@ -50,8 +59,10 @@
                 });
 
                 modal.result.then(function () {
+                    Analytics.trackEvent('beid', 'pin-correct', 'Correct PIN entered');
                     controller.pinStatus = 'valid';
                 }, function (err) {
+                    Analytics.trackEvent('beid', 'pin-incorrect', 'Incorrect PIN entered');
                     switch (err.code) {
                         case 103:
                             controller.pinStatus = '2remain';
@@ -60,6 +71,7 @@
                             controller.pinStatus = '1remain';
                             break;
                         case 105:
+                            Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
                             controller.pinStatus = 'blocked';
                             break;
                     }
@@ -67,6 +79,7 @@
             };
 
             controller.toggleCerts = () => {
+                Analytics.trackEvent('button', 'click', 'Extended info clicked');
                 if (controller.certData) {
                     controller.certData = undefined;
                 } else {
@@ -81,6 +94,7 @@
             };
 
             controller.downloadSummary = () => {
+                Analytics.trackEvent('button', 'click', 'Print button clicked');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
@@ -104,6 +118,10 @@
 
                 });
             };
+
+            controller.trackCertificatesClick = () => {
+                Analytics.trackEvent('button', 'click', 'Click on certificates feature');
+            }
         }};
 
     const beidCertificateStatus = {

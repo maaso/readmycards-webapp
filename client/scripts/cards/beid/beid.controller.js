@@ -36,6 +36,7 @@
         }
 
         function doDownload() {
+            Analytics.trackEvent('print', 'download', 'Document downloaded');
             BeUtils.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
                 handleDownload(signedPdf.data, generatedFile.origFilename);
                 ok();
@@ -62,6 +63,7 @@
         function submitPin() {
             $scope.enterPin = false;
             $scope.pinText = "Signing...";
+            Analytics.trackEvent('print', 'pin', 'PIN entered');
             BeUtils.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
                 $scope.currentStep = 3;
                 $scope.pinText = 'Signed';
@@ -70,6 +72,7 @@
         }
 
         function startProcess() {
+            Analytics.trackEvent('print', 'start', 'Printing process started');
             $scope.currentStep = 1;
             $scope.generateText = 'Generating...';
 
@@ -82,6 +85,7 @@
                     // start signing process
                     $scope.pinText = 'Enter PIN on reader...';
                     BeUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                        Analytics.trackEvent('print', 'pin', 'PIN entered');
                         $scope.currentStep = 3;
                         $scope.pinText = 'Signed';
                         $scope.downloadText = 'Download Ready!'
