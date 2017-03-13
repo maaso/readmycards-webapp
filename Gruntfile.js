@@ -305,6 +305,20 @@ module.exports = function(grunt) {
                 }],
                 options: {
                     patterns: [
+                        { match: 'version', replacement: '<%= pkg.version %>' },
+                        { match: 'name', replacement: '<%= pkg.name %>' }
+                    ]
+                }
+            },
+            'dist-ga': {
+                files: [{
+                    expand: true,
+                    cwd: '<%= dir.dest %>/scripts',
+                    dest: '<%= dir.dest %>/scripts',
+                    src: ['**/*.js']
+                }],
+                options: {
+                    patterns: [
                         { match: 'ga-tracking-id', replacement: 'UA-91473749-1' },
                         { match: 'version', replacement: '<%= pkg.version %>' },
                         { match: 'name', replacement: '<%= pkg.name %>' }
@@ -335,6 +349,7 @@ module.exports = function(grunt) {
     grunt.registerTask("default", 'build');
     grunt.registerTask("cleanBuild", ["clean:dist"]);
     grunt.registerTask("build", ['clean:dist', 'copy:dist', 'copy:fa', 'copy:faCss', 'less:dist', 'useminPrepare', 'postcss:dist', 'concat', 'ngAnnotate', 'babel:dist', 'replace:dist', 'uglify', 'filerev', 'usemin', 'copy:index']);
+    grunt.registerTask("build-ga", ['clean:dist', 'copy:dist', 'copy:fa', 'copy:faCss', 'less:dist', 'useminPrepare', 'postcss:dist', 'concat', 'ngAnnotate', 'babel:dist', 'replace:dist-ga', 'uglify', 'filerev', 'usemin', 'copy:index']);
     grunt.registerTask("html", ["processhtml"]);
     grunt.registerTask('serve', 'Compile then watch for changes to files', function() {
         grunt.task.run(['clean:local', 'copy:local', 'copy:indexDev', 'babel:dev', 'replace:local', 'watch']);
