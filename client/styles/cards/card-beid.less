@@ -20,11 +20,13 @@
 
   .certificates-toggle {
     margin-top: 50px;
+    font-size: 1.2em;
+    font-weight: 300;
     span {
       color: @gray-light;
 
       &:hover {
-        color: @gray-dark;
+        color: @t1t-green-dark;
       }
     }
   }
@@ -214,9 +216,14 @@
     }
   }
 
+  .summary-start {
+    padding-top: 15px;
+    min-height: 60px;
+  }
+
   .dummy-summary-wrapper {
     position: absolute;
-    top: 200px;
+    top: 245px;
     right: 35px;
 
     .specimen {
@@ -248,15 +255,19 @@
 
     .pinpad {
       position: absolute;
-      right: 50px;
-      top: 190px;
-      max-width: 350px;
+      right: 0;
+      top: 225px;
+      max-width: 500px;
       z-index: 100;
       background: #fff;
     }
 
     .step {
       margin: 50px 0;
+
+      &:first-of-type {
+        margin: 20px 0 50px 0;
+      }
 
 
       > div {
@@ -296,10 +307,12 @@
 
 
       .step-desc {
+        position: relative;
         margin-left: 40px;
         font-size: 30px;
         vertical-align: text-bottom;
         color: #999;
+        z-index: 110;
       }
 
     }

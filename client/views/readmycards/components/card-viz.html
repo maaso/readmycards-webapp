@@ -49,9 +49,9 @@
         </div>
 
         <div class="viz-container">
-            <mobib-viz rn-data="$ctrl.cardData.rn" ng-if="$ctrl.cardType === 'MOBIB'"></mobib-viz>
+            <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
 
-            <lux-visualizer rn-data="$ctrl.cardData.rn" ng-if="$ctrl.cardType === 'LuxCard'"></lux-visualizer>
+            <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
 
             <beid-visualizer rn-data="$ctrl.cardData.rn"
                              address-data="$ctrl.cardData.address"

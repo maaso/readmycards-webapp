@@ -5,14 +5,15 @@
         .controller('BeIDSummaryDownloadCtrl', summaryDlCtrl);
 
 
-    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, data, BeID, FileSaver, Blob, EVENTS, _) {
-        $scope.ok = ok;
-        $scope.cancel = cancel;
+    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, BeUtils, FileSaver, Blob, EVENTS, Analytics, _) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
+        $scope.submitPin = submitPin;
         $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        $scope.pincode = '';
+        $scope.pincode = {
+            value: ''
+        };
         $scope.pinpad = pinpad;
 
         let generatedFile;
@@ -21,8 +22,8 @@
 
         function init() {
             $scope.generateText = "Generate PDF";
-            $scope.pinText = "PIN Code";
-            $scope.downloadText = "Download";
+            $scope.pinText = "Enter PIN Code";
+            $scope.downloadText = "Download PDF";
             $scope.currentStep = 0;
         }
 
@@ -35,9 +36,9 @@
         }
 
         function doDownload() {
-            BeID.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
-                handleDownload(signedPdf.data, data.rnData.name + '_' + _.join(_.split(data.rnData.first_names, ' '), '_') + '_'
-                    + data.rnData.third_name + '_summary.pdf');
+            Analytics.trackEvent('print', 'download', 'Document downloaded');
+            BeUtils.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
+                handleDownload(signedPdf.data, generatedFile.origFilename);
                 ok();
             });
         }
@@ -50,27 +51,32 @@
 
         function onKeyPressed(data) {
             if (data == '<') {
-                if (_.isEmpty($scope.pincode)) $uibModalInstance.dismiss('cancel');
-                else $scope.pincode = $scope.pincode.slice(0, $scope.pincode.length - 1);
+                if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');
+                else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
             } else if (data == '>') {
-                $scope.enterPin = false;
-                $scope.pinText = "Signing...";
-                BeID.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode).then(() => {
-                    $scope.currentStep = 3;
-                    $scope.pinText = 'Signed';
-                    $scope.downloadText = 'Download Ready!'
-                });
+                submitPin();
             } else {
-                $scope.pincode += data;
+                $scope.pincode.value += data;
             }
         }
 
+        function submitPin() {
+            $scope.enterPin = false;
+            $scope.pinText = "Signing...";
+            Analytics.trackEvent('print', 'pin', 'PIN entered');
+            BeUtils.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+                $scope.currentStep = 3;
+                $scope.pinText = 'Signed';
+                $scope.downloadText = 'Download Ready!'
+            });
+        }
+
         function startProcess() {
+            Analytics.trackEvent('print', 'start', 'Printing process started');
             $scope.currentStep = 1;
             $scope.generateText = 'Generating...';
 
-            // TODO read data from card!
-            BeID.generateSummaryToSign(data).then(function (res) {
+            BeUtils.generateSummaryToSign(readerId).then(function (res) {
                 generatedFile = res;
                 $scope.currentStep = 2;
                 $scope.generateText = 'Generated';
@@ -78,7 +84,8 @@
                 if (pinpad) {
                     // start signing process
                     $scope.pinText = 'Enter PIN on reader...';
-                    BeID.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                    BeUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                        Analytics.trackEvent('print', 'pin', 'PIN entered');
                         $scope.currentStep = 3;
                         $scope.pinText = 'Signed';
                         $scope.downloadText = 'Download Ready!'
@@ -91,7 +98,7 @@
         }
 
         $scope.$on(EVENTS.START_OVER, () => {
-            $scope.cancel();
+            cancel();
         });
     }
 

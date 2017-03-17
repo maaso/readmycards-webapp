@@ -9,22 +9,23 @@
             </div>
             <div class="mivb-inset">
                 <div class="card-info">
-                    <div class="reg">123456 /</div>
-                    <div class="card-number">123456789012 / 1</div>
+                    <div class="reg">{{ $ctrl.formattedCardNumber1 }}</div>
+                    <div class="card-number">{{ $ctrl.formattedCardNumber2 }}</div>
                 </div>
                 <div class="names">
-                    <div class="dob">17/04/1980</div>
-                    <div class="first-name">Stéphanie</div>
-                    <div class="last-name">Caes</div>
+                    <div class="dob">{{ $ctrl.dob }}</div>
+                    <div class="first-name text-capitalize">{{ $ctrl.firstName }}</div>
+                    <div class="last-name text-capitalize">{{ $ctrl.lastName }}</div>
                 </div>
             </div>
             <div class="serial-numbers">
-                <div class="serial-number inline">01 2345 6789 1011 1213</div>
-                <div class="short-serial inline">1 123 456 789</div>
+                <!--<div class="serial-number inline">01 2345 6789 1011 1213</div>-->
+                <!--<div class="short-serial inline">1 123 456 789</div>-->
             </div>
         </div>
         <div class="mivb-picture-wrapper">
-            <img class="mivb-pic" src="images/default-pic.jpg"/>
+            <!--<img class="mivb-pic" src="images/default-pic.jpg"/>-->
+            <img class="mivb-pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
         </div>
         <div class="mivb-logo-wrapper">
             <img class="mivb-logo" src="images/mivb.png">

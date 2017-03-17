@@ -1,15 +1,17 @@
 <div class="modal-body summary-modal">
 
     <div class="header">
-        <p class="title text-center">Print Card Contents</p>
+        <p class="title text-center">Print Legal Copy of Card</p>
 
-        <p class="info-text text-justify">We are going to provide you a secure PDF version of the content of your eID card.
-            This document will be digitally signed by you to be compliant with EU regulation and can be considered
-            as an original copy that you can distribute. No copy will be stored on our side and you will be the only owner.
+        <p class="info-text text-justify">We are going to provide you a secure PDF version of the content of your eID card. This document will be digitally
+            signed by you to be compliant with EU regulation and be considered as an original copy that you can distribute.
+            No information will be stored on our side and you will be the only possessor of the generated copy.
         </p>
     </div>
 
-
+    <div class="summary-start text-center">
+        <span ng-if="currentStep === 0" class="btn btn-lg btn-primary btn-w200" ng-click="startProcess()">Start Printing</span>
+    </div>
 
     <ul class="step-list">
         <li class="step" ng-class="{ 'active': currentStep === 1, 'completed': currentStep > 1 }">
@@ -30,20 +32,7 @@
         </li>
         <li ng-if="currentStep === 2 && !pinpad && enterPin">
             <div class="pinpad">
-                <h3 class="text-center text-info mb20">Enter PIN code</h3>
-                <form class="form-horizontal" role="form" id="askForPinCodeForm" name="askForPinCodeForm">
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <input id="pinCode" name="pinCode" type="password" class="keypad-display" data-ng-model="pincode" data-ng-keyup="$event.keyCode == 13 && ok()" data-focus-on="eidPinInput" autocomplete="off"/>
-                            <ng-keypad on-key-pressed='onKeyPressed'>
-                                <ng-key ng-repeat='key in keys' ng-key-data='key'>{{key}}</ng-key>
-                                <ng-key class="keypad-cancel" ng-key-data='"<"'>C</ng-key>
-                                <ng-key ng-key-data='0'>0</ng-key>
-                                <ng-key class="keypad-ok" ng-key-data='">"'>OK</ng-key>
-                            </ng-keypad>
-                        </div>
-                    </div>
-                </form>
+                <rmc-keypad pincode="pincode" submit-func="submitPin" cancel-func="cancel"></rmc-keypad>
             </div>
         </li>
         <li class="step" ng-class="{ 'active': currentStep === 3, 'completed': currentStep > 3 }">
@@ -64,9 +53,8 @@
     </div>
 
 
-    <div class="text-center">
-        <span ng-if="currentStep === 0" class="btn btn-lg btn-line-primary btn-w200" ng-click="startProcess()">Start Printing</span>
-        <span ng-if="currentStep === 3" class="btn btn-lg btn-line-primary btn-w200" ng-click="doDownload()">Download</span>
+    <div class="summary-download text-center">
+        <span ng-if="currentStep === 3" class="btn btn-lg btn-primary btn-w200" ng-click="doDownload()">Download</span>
     </div>
 
 </div>

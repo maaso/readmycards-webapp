@@ -1,17 +1,22 @@
 <div id="mobib-viz" class="clearfix top-info">
 
 
-    <!--<div class="status-wrapper">-->
-        <!--<mobib-active-status status="'active'"></mobib-active-status>-->
-        <!--<mobib-validity-status from="$ctrl.mobibFrom" to="$ctrl.mobibTo"></mobib-validity-status>-->
-    <!--</div>-->
+    <div class="status-wrapper">
+        <mobib-active-status status="$ctrl.cardStatus"></mobib-active-status>
+        <mobib-validity-status from="$ctrl.mobibFrom" to="$ctrl.mobibTo"></mobib-validity-status>
+    </div>
 
-    <!--<mobib-basic rn-data="$ctrl.rnData"></mobib-basic>-->
-    <!--<mobib-de-lijn rn-data="$ctrl.rnData"></mobib-de-lijn>-->
-    <!--<mobib-mivb rn-data="$ctrl.rnData"></mobib-mivb>-->
-    <!--<mobib-nmbs rn-data="$ctrl.rnData" lang="'nl'"></mobib-nmbs>-->
-    <!--<mobib-nmbs rn-data="$ctrl.rnData" lang="'fr'"></mobib-nmbs>-->
-    <!--<mobib-tec rn-data="$ctrl.rnData"></mobib-tec>-->
+    <div ng-if="$ctrl.isBasic">
+        <mobib-basic card-data="$ctrl.cardData"></mobib-basic>
+    </div>
+
+    <div ng-if="!$ctrl.isBasic">
+        <mobib-nmbs card-data="$ctrl.cardData" ng-if="$ctrl.cardData['card-issuing'].company_id === 1" lang="$ctrl.cardLang()"></mobib-nmbs>
+        <mobib-mivb card-data="$ctrl.cardData" ng-if="$ctrl.cardData['card-issuing'].company_id === 2"></mobib-mivb>
+        <mobib-de-lijn card-data="$ctrl.cardData" ng-if="$ctrl.cardData['card-issuing'].company_id === 3"></mobib-de-lijn>
+        <mobib-tec card-data="$ctrl.cardData" ng-if="$ctrl.cardData['card-issuing'].company_id === 4"></mobib-tec>
+    </div>
+
 
     <!--<mobib-contract-table></mobib-contract-table>-->
 

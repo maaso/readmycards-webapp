@@ -14,11 +14,11 @@
                         resolve: {
                             T1C: 'T1C',
                             gclAvailable: function (T1C) {
-                                return T1C.isGCLAvailable();
+                                return T1C.core.isGCLAvailable();
                             },
                             readers: function ($q, gclAvailable, T1C) {
                                 if (gclAvailable) {
-                                    return T1C.getReaders().then(function (response) {
+                                    return T1C.core.getReaders().then(function (response) {
                                         return response;
                                     }, function () {
                                         // Should an error occur, we don't want it to block the app

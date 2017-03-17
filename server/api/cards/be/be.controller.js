@@ -1,5 +1,7 @@
 'use strict';
-const service = require('./be.service.js');
+const commonService = require('../cards.common.service.js');
+const beService = require('./be.service.js');
+const response = require(__base + 'server/util/response.util.js');
 
 module.exports = {
     download: download,
@@ -9,25 +11,30 @@ module.exports = {
 };
 
 function download(req, res) {
-    console.log(req.body);
-    return service.download(req.body.documentName, req.jwt).pipe(res);
+    return commonService.download(req.body.documentName, req.jwt).pipe(res);
 }
 
 function generateSummaryToSign(req, res) {
-    service.generateSummaryToSign(req.body, req.jwt).then((result) => {
+    beService.generateSummaryToSign(req.body, req.jwt).then(result => {
         return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
     })
 }
 
 function getDataToSign(req, res) {
-    service.getDataToSign(req.body, req.jwt).then((result) => {
+    commonService.getDataToSign(req.body, req.jwt).then(result => {
         return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
     })
 }
 
 function workflowSign(req, res) {
-    service.workflowSign(req.body, req.jwt).then((result) => {
+    commonService.workflowSign(req.body, req.jwt).then(result => {
         return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
     })
 
 }

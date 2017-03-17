@@ -1,40 +1,40 @@
 'use strict';
-const config = require(__base + 'modules/t1t-config');
-const request = require('request');
-const _ = require('lodash');
-const cloudconvert = new (require('cloudconvert'))(config.cloudconvert.apikey);
-var fs = require('fs');
-
+const commonService = require('../cards.common.service.js');
+const luxService = require('./lux.service.js');
+const response = require(__base + 'server/util/response.util.js');
 
 module.exports = {
-    generateSummary: generateSummary
+    download: download,
+    generateSummaryToSign: generateSummaryToSign,
+    getDataToSign: getDataToSign,
+    workflowSign: workflowSign
 };
 
+function download(req, res) {
+    return commonService.download(req.body.documentName, req.jwt).pipe(res);
+}
 
-function generateSummary(req, res) {
+function generateSummaryToSign(req, res) {
+    luxService.generateSummaryToSign(req.body, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    })
+}
 
-    console.log(req.body);
+function getDataToSign(req, res) {
+    commonService.getDataToSign(req.body, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    })
+}
 
-    fs.createReadStream('client/views/demo/components/summary.html').pipe(cloudconvert.convert({
-        inputformat: 'html',
-        outputformat: 'pdf',
-    })).pipe(fs.createWriteStream('outpdf.pdf')).on('finish', function () {
-        console.log('Done!');
-        return res.status(200).end();
-    });
+function workflowSign(req, res) {
+    commonService.workflowSign(req.body, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    })
 
-
-    // fs.createReadStream('in.png')
-    //     .pipe(cloudconvert.convert({
-    //         inputformat: 'png',
-    //         outputformat: 'jpg',
-    //         converteroptions: {
-    //             quality : 75,
-    //         }
-    //     }))
-    //     .pipe(fs.createWriteStream('out.jpg'))
-    //     .on('finish', function() {
-    //         console.log('Done!');
-    //         return res.status(200);
-    //     });
 }

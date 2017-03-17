@@ -8,14 +8,14 @@
             addressData: '<',
             picData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeID, T1C) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.certStatus = 'checking';
                 controller.pinStatus = 'idle';
                 const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
-                T1C.getAllCerts($stateParams.readerId, filter).then(res => {
+                T1C.beid.getAllCerts($stateParams.readerId, filter).then(res => {
                     let validationReq = {
                         certificateChain: [
                             { order: 0, certificate: res.data.authentication_certificate },
@@ -23,16 +23,25 @@
                             { order: 2, certificate: res.data.root_certificate },
                         ]
                     };
-                    T1C.validateCertificateChain(validationReq).then(res => {
-                        if (res.crlResponse.status && res.ocspResponse.status) controller.certStatus = 'valid';
-                        else controller.certStatus = 'invalid';
+                    Analytics.trackEvent('beid', 'cert-check', 'Start certificate check');
+                    T1C.ocv.validateCertificateChain(validationReq).then(res => {
+                        if (res.crlResponse.status && res.ocspResponse.status) {
+                            Analytics.trackEvent('beid', 'cert-valid', 'Certificates are valid');
+                            controller.certStatus = 'valid';
+                        }
+                        else {
+                            Analytics.trackEvent('beid', 'cert-invalid', 'Certificates are not valid');
+                            controller.certStatus = 'invalid';
+                        }
                     }, () => {
+                        Analytics.trackEvent('beid', 'cert-error', 'Error occurred while checking certificate validity');
                         controller.certStatus = 'error';
                     });
-                })
+                });
             };
 
             controller.checkPin = () => {
+                Analytics.trackEvent('button', 'click', 'PIN check clicked');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
@@ -40,7 +49,7 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return T1C.getReader($stateParams.readerId).then(function (res) {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
                         }
@@ -50,8 +59,10 @@
                 });
 
                 modal.result.then(function () {
+                    Analytics.trackEvent('beid', 'pin-correct', 'Correct PIN entered');
                     controller.pinStatus = 'valid';
                 }, function (err) {
+                    Analytics.trackEvent('beid', 'pin-incorrect', 'Incorrect PIN entered');
                     switch (err.code) {
                         case 103:
                             controller.pinStatus = '2remain';
@@ -60,6 +71,7 @@
                             controller.pinStatus = '1remain';
                             break;
                         case 105:
+                            Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
                             controller.pinStatus = 'blocked';
                             break;
                     }
@@ -67,12 +79,13 @@
             };
 
             controller.toggleCerts = () => {
+                Analytics.trackEvent('button', 'click', 'Extended info clicked');
                 if (controller.certData) {
                     controller.certData = undefined;
                 } else {
                     if (!controller.loadingCerts) {
                         controller.loadingCerts = true;
-                        T1C.getAllCerts($stateParams.readerId).then(res => {
+                        T1C.beid.getAllCerts($stateParams.readerId).then(res => {
                             controller.loadingCerts = false;
                             controller.certData = res.data;
                         });
@@ -81,7 +94,7 @@
             };
 
             controller.downloadSummary = () => {
-                console.log('download summary');
+                Analytics.trackEvent('button', 'click', 'Print button clicked');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
@@ -89,12 +102,9 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return T1C.getReader($stateParams.readerId).then(function (res) {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
-                        },
-                        data: () => {
-                            return prepareSummaryData();
                         }
                     },
                     backdrop: 'static',
@@ -109,24 +119,13 @@
                 });
             };
 
-            function prepareSummaryData() {
-                return {
-                    rnData: controller.rnData,
-                    address: controller.addressData,
-                    pic: controller.picData,
-                    dob: moment(controller.rnData.national_number.substr(0,6), 'YYMMDD').format('MMMM D, YYYY'),
-                    formattedCardNumber: BeID.formatCardNumber(controller.rnData.card_number),
-                    formattedRRNR: BeID.formatRRNR(controller.rnData.national_number),
-                    validFrom: moment(controller.rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                    validUntil: moment(controller.rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                    printDate: moment().format('MMMM D, YYYY'),
-                    printedBy: '@@name v@@version'
-                };
+            controller.trackCertificatesClick = () => {
+                Analytics.trackEvent('button', 'click', 'Click on certificates feature');
             }
         }};
 
     const beidCertificateStatus = {
-        templateUrl: 'views/cards/beid/cert-status.html',
+        templateUrl: 'views/cards/cert-status.html',
         bindings: {
             status: '<'
         },
@@ -142,7 +141,7 @@
     };
 
     const beidPinCheckStatus = {
-        templateUrl: 'views/cards/beid/pin-check-status.html',
+        templateUrl: 'views/cards/pin-check-status.html',
         bindings: {
             status: '<'
         },
@@ -172,12 +171,12 @@
             rnData: '<',
             picData: '<',
         },
-        controller: function (_, BeID, CheckDigit) {
+        controller: function (_, BeUtils, CheckDigit) {
             let controller = this;
 
             controller.$onInit = () => {
-                controller.formattedCardNumber = BeID.formatCardNumber(controller.rnData.card_number);
-                controller.formattedRRNR = BeID.formatRRNR(controller.rnData.national_number);
+                controller.formattedCardNumber = BeUtils.formatCardNumber(controller.rnData.card_number);
+                controller.formattedRRNR = BeUtils.formatRRNR(controller.rnData.national_number);
 
                 let mrs = constructMachineReadableStrings(controller.rnData);
 
