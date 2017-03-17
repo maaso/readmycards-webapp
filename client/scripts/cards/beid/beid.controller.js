@@ -5,7 +5,7 @@
         .controller('BeIDSummaryDownloadCtrl', summaryDlCtrl);
 
 
-    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, BeUtils, FileSaver, Blob, EVENTS, _) {
+    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, BeUtils, FileSaver, Blob, EVENTS, Analytics, _) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
