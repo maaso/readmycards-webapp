@@ -5,6 +5,16 @@ ReadMyCards is a simple webapp that reads the contents of your smartcards using 
 
 [Website Trust1Team][Trust1Team-url]
 
+## External Dependencies
+
+ReadMyCards makes use of the following external APIs:
+
+#####CloudConvert
+* to convert JPEG2000 images to JPEG
+* to generate PDFs from HTML templates
+#####ipinfo.io
+* to retrieve geolocation and browser info of users
+
 ## Changelog
 
 ### v1.2.2
