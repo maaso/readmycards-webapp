@@ -122,4 +122,4 @@ Irrespective of your choice of license, the T1T logo as depicted below may not b
 
 [Trust1Team-url]: http://trust1team.com
 [t1t-logo]: http://imgur.com/lukAaxx.png
-[rmc-confluence-deployment-guide]: https://trust1t.atlassian.net/wiki/display/RMC/Deployment
+[rmc-confluence-deployment-guide]: https://trust1t.atlassian.net/wiki/display/NPAPI/Deployment+-+ReadMyCards.eu
