@@ -21,9 +21,9 @@ module.exports = {
 
 
 function convertJP2toJPEG(req, res) {
-    if (!req.body.base64.image) return response.error({ status: 400, message: 'base64 string is required'}, res);
+    if (!req.body.base64) return response.error({ status: 400, message: 'base64 string is required'}, res);
 
-    service.jp2000ToJpeg(req.body.base64.image).then(result => {
+    service.jp2000ToJpeg(req.body.base64).then(result => {
         return res.status(200).json({ base64Pic: result });
     }, err => {
         return response.error(err, res);
