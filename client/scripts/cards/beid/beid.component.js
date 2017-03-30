@@ -171,52 +171,19 @@
             rnData: '<',
             picData: '<',
         },
-        controller: function (_, BeUtils, CheckDigit) {
+        controller: function (_, BeUtils) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.formattedCardNumber = BeUtils.formatCardNumber(controller.rnData.card_number);
                 controller.formattedRRNR = BeUtils.formatRRNR(controller.rnData.national_number);
 
-                let mrs = constructMachineReadableStrings(controller.rnData);
+                let mrs = BeUtils.constructMachineReadableStrings(controller.rnData);
 
                 controller.machineReadable1 = mrs[0];
                 controller.machineReadable2 = mrs[1];
                 controller.machineReadable3 = mrs[2];
             };
-
-            function constructMachineReadableStrings(rnData) {
-                let mrs = [];
-                // First line
-                let prefix = 'ID';
-                let first = 'BEL' + rnData.card_number.substr(0, 9) + '<' + rnData.card_number.substr(9);
-                first += CheckDigit.calc(first);
-                first = pad(prefix + first);
-                mrs.push(first.toUpperCase());
-
-                // Second line
-                let second = rnData.national_number.substr(0, 6);
-                second += CheckDigit.calc(second);
-                second += rnData.sex;
-                let validity = rnData.card_validity_date_end.substr(8,2) + rnData.card_validity_date_end.substr(3,2) + rnData.card_validity_date_end.substr(0,2);
-                second += validity + CheckDigit.calc(validity);
-                second += rnData.nationality.substr(0,3);
-                second += rnData.national_number;
-                let finalCheck = rnData.card_number.substr(0,10) + rnData.national_number.substr(0,6) + validity + rnData.national_number;
-                second += CheckDigit.calc(finalCheck);
-                second = pad(second);
-                mrs.push(second.toUpperCase());
-
-                // Third line
-                let third = _.join(_.split(rnData.name,' '),'<') + '<<' + _.join(_.split(rnData.first_names,' '),'<') + '<' + _.join(_.split(rnData.third_name,' '),'<');
-                third = pad(third);
-                mrs.push(third.toUpperCase());
-                return mrs;
-            }
-
-            function pad(string) {
-                return _.padEnd(_.truncate(string, { length: 30, omission: '' }), 30, '<');
-            }
         }
     };
 
