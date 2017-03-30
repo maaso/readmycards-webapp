@@ -21,21 +21,21 @@
         </div>
 
         <div class="content">
-            <div class="names section">
+            <div class="names-title section">
                 <div class="labels inline">
                     <div class="name">Naam/<i>Name</i></div>
                     <div class="given-names">Voornamen/<i>Given names</i></div>
                 </div>
-
-                <div class="values inline">
-                    <div class="name">{{$ctrl.rnData.name}}</div>
-                    <div class="given-names">{{$ctrl.rnData.first_names}} {{$ctrl.rnData.third_name}}</div>
-                </div>
             </div>
-
             <div class="birth-sex section">
                 <div class="chip inline"></div>
                 <div class="birth-sex-block inline">
+                    <div class="names">
+                        <div class="values inline">
+                            <div class="name">{{$ctrl.rnData.name}}</div>
+                            <div class="given-names">{{$ctrl.rnData.first_names}} {{$ctrl.rnData.third_name}}</div>
+                        </div>
+                    </div>
                     <div class="birth-sex-wrapper">
                         <div class="birth-date inline">
                             <div class="labels">
@@ -102,32 +102,34 @@
 
     <div class="back">
         <div class="specimen text-uppercase">Specimen</div>
-        <div class="rrnr-barcode section">
-            <div class="rrnr inline">
-                <div class="labels">
-                    <div>Identificatienummer van het Rijksregister</div>
-                    <div><i>Identification number of the National Register</i></div>
+        <div class="back-wrapper">
+            <div class="rrnr-barcode section">
+                <div class="rrnr inline">
+                    <div class="labels">
+                        <div>Identificatienummer van het Rijksregister</div>
+                        <div><i>Identification number of the National Register</i></div>
+                    </div>
+                    <div class="values">
+                        <div>{{$ctrl.formattedRRNR}}</div>
+                    </div>
                 </div>
-                <div class="values">
-                    <div>{{$ctrl.formattedRRNR}}</div>
+                <div class="barcode inline">
+                    <div class="barcode-wrapper">{{$ctrl.rnData.national_number}}{{$ctrl.rnData.card_number.substr(3)}}</div>
                 </div>
             </div>
-            <div class="barcode inline">
-                <div class="barcode-wrapper">{{$ctrl.rnData.national_number}}{{$ctrl.rnData.card_number.substr(3)}}</div>
-            </div>
-        </div>
 
-        <div class="issuer section">
-            <div class="issuer-place labels">
-                <div>Plaats van afgifte/<i>Place of issue</i></div>
+            <div class="issuer section">
+                <div class="issuer-place labels">
+                    <div>Plaats van afgifte/<i>Place of issue</i></div>
+                </div>
+                <div class="values">{{$ctrl.rnData.card_delivery_municipality}}</div>
             </div>
-            <div class="values">{{$ctrl.rnData.card_delivery_municipality}}</div>
-        </div>
 
-        <div class="machine-readable-zone">
-            <div>{{$ctrl.machineReadable1}}</div>
-            <div>{{$ctrl.machineReadable2}}</div>
-            <div>{{$ctrl.machineReadable3}}</div>
+            <div class="machine-readable-zone">
+                <div>{{$ctrl.machineReadable1}}</div>
+                <div>{{$ctrl.machineReadable2}}</div>
+                <div>{{$ctrl.machineReadable3}}</div>
+            </div>
         </div>
     </div>
 </div>

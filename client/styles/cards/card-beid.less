@@ -127,11 +127,14 @@
     .content {
       padding: 0 10px;
 
+      .names-title {
+        position: absolute;
+        top: 64px;
+        line-height: 1.7;
+      }
+
       .names {
         padding-top: 15px;
-        .values {
-          margin-left: 3px;
-        }
       }
 
       .chip {
@@ -172,32 +175,34 @@
   }
 
   .back {
-    padding: 10px 20px;
+    .back-wrapper {
+      padding: 10px 20px;
 
-    .rrnr {
-      .labels {
-        line-height: 1.1;
+      .rrnr {
+        .labels {
+          line-height: 1.1;
+        }
+        .values {
+          padding-top: 2px;
+        }
       }
-      .values {
-        padding-top: 2px;
+
+      .barcode {
+        font-family: 'Barcode', sans-serif;
+        transform : scale(1.25,3.3);
+
+        .barcode-wrapper {
+          margin-left: 35px;
+          margin-top: -12px;
+        }
       }
-    }
 
-    .barcode {
-      font-family: 'Barcode', sans-serif;
-      transform : scale(1.25,3.3);
-
-      .barcode-wrapper {
-        margin-left: 35px;
-        margin-top: -12px;
+      .machine-readable-zone {
+        margin-top: 110px;
+        line-height: 1;
+        font-family: 'OCR-B', monospace;
+        font-size: 1.8em;
       }
-    }
-
-    .machine-readable-zone {
-      margin-top: 110px;
-      line-height: 1;
-      font-family: 'OCR-B', monospace;
-      font-size: 1.8em;
     }
 
   }
