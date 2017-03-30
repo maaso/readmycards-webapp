@@ -86,11 +86,24 @@
     .header {
       height: 15%;
       border-bottom: 1px solid #999;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       padding: 0 10px;
 
+      .nl, .fr, .de, .en {
+        position: absolute;
+        top: 10px;
+      }
+
+      .fr {
+        left: 145px;
+      }
+
+      .de {
+        right: 125px;
+      }
+
+      .en {
+        right: 10px;
+      }
 
       .lang {
         line-height: 1;
@@ -128,29 +141,25 @@
 
       .birth-sex-block {
         width: calc(~"99% - " @chip-width);
+      }
 
-        .birth-sex-wrapper {
-          display: flex;
-          justify-content: space-between;
+      .sex {
+        position: absolute;
+        top: 105px;
+        right: 25px;
 
-          .sex {
-            padding-right: 15px;
-
-            .values {
-              text-align: right;
-              padding-right: 5px;
-            }
+          .values {
+            text-align: right;
+            padding-right: 5px;
           }
-        }
       }
 
 
       .other {
-        display: flex;
-        justify-content: space-between;
-
         .pic {
-          padding: 15px 15px 10px 20px;
+          position: absolute;
+          right: 25px;
+          bottom: 15px;
 
           .pic-img {
             width: 105px;
