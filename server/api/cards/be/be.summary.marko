@@ -522,7 +522,11 @@
     <div class="summary-section-title">Signature:</div>
     <div class="summary-section-content signature">
         <div class="summary-values">
-            <div>Digitally signed by ${data.rnData.first_names} ${data.rnData.third_name} ${data.rnData.name}</div>
+            <div>
+                Digitally signed by <if (data.rnData.third_name && data.rnData.third_name.length)>${data.rnData.first_names} ${data.rnData.third_name} ${data.rnData.name}</if>
+                <else>${data.rnData.first_names} ${data.rnData.name}</else>
+            </div>
+
         </div>
     </div>
 </div>
