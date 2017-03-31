@@ -83,7 +83,9 @@
     "bower": "./node_modules/bower/bin/bower cache clean --allow-root && ./node_modules/bower/bin/bower install --allow-root",
     "postinstall": "npm run bower",
     "grunt": "./node_modules/grunt-cli/bin/grunt build",
+    "grunt-ga": "./node_modules/grunt-cli/bin/grunt build-ga",
     "deploy": "npm install && npm run bower && npm run grunt",
+    "deploy-with-ga": "npm install && npm run bower && npm run grunt-ga",
     "localTest": "NODE_ENV=test ./node_modules/.bin/_mocha 'server/**/*.spec.js' && ./node_modules/karma-cli/bin/karma start --single-run",
     "test": "NODE_ENV=test ./node_modules/.bin/_mocha 'server/**/*.spec.js' --reporter mocha-teamcity-reporter && ./node_modules/karma-cli/bin/karma start --reporters teamcity --single-run --colors false"
   }

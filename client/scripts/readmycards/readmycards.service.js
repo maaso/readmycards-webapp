@@ -67,8 +67,6 @@
             return $q.all(promises).then(() => {
                 dataObject.success = true;
                 return dataObject;
-            }, (err) => {
-                return err;
             });
         }
     }
@@ -221,7 +219,7 @@
             }
         }
 
-        function storeDownloadInfo(mail, dlUrl) {
+        function storeDownloadInfo(mail, mailOptIn, dlUrl) {
             let promises = [ $http.get('//ipinfo.io').then(function (data) {
                 return data;
             }, function () {
@@ -235,6 +233,7 @@
             $q.all(promises).then(function (results) {
                 let data = {
                     email: mail,
+                    emailOptIn: mailOptIn,
                     dlUrl: dlUrl,
                     platformName: results[1].os.name,
                     type: 'GCLdownload',

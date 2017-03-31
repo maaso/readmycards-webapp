@@ -8,6 +8,7 @@
             <!--<li><a class="">MoBIB</a></li>-->
             <li><a class="">EMV (Credit/Debit Cards)</a></li>
         </ul>
+        <div class="not-supported">Don't find your card in the list?<br>Send us an email with the card you want supported!</div>
     </nav>
 
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
@@ -16,7 +17,7 @@
 
         <reader-polling error="root.error" ng-if="root.pollingReaders"></reader-polling>
 
-        <card-polling error="root.error" ng-if="root.pollingCard"></card-polling>
+        <card-polling error="root.error" poll-timeout="root.pollTimeout" ng-if="root.pollingCard"></card-polling>
 
         <reader-select ng-if="root.readerWithCard"></reader-select>
     </div>

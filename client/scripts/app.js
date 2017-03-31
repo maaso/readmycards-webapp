@@ -25,7 +25,10 @@
 
     module.config(function (AnalyticsProvider) {
         // Automatically replaced with correct tracking ID during build
-        AnalyticsProvider.setAccount('@@ga-tracking-id');
+        AnalyticsProvider.setAccount({
+            tracker: '@@ga-tracking-id',
+            trackEvent: true
+        });
     }).run(['Analytics', function(Analytics) { }]);
 
     module.factory('errorInterceptor', function($q) {

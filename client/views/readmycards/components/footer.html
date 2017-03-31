@@ -1,12 +1,17 @@
 <div class="rmc-footer">
-    <div class="faq clickable" uib-tooltip="FAQ" ng-click="$ctrl.toggleFAQ()">
-        <span class="fa fa-question-circle fa-2x"></span>
-    </div>
+    <a class="t1c-logo" href="http://www.trust1connector.com" target="_blank">
+        <img alt="Trust1Connector" src="images/t1c-stamp.svg">
+    </a>
+
     <div class="footer-text">
         <div class="text-small">This service is provided free of charge, and is intended for private use only. No personal info is saved when using this service.</div>
 
         <div class="text-copyright">
-            <span class="fa fa-copyright"></span>&nbsp;2016 - <a href="http://www.trust1team.com">Trust1Team</a> - All rights reserved.
+            Copyright <span class="fa fa-copyright"></span>&nbsp;{{ $ctrl.currentYear }} - <a href="http://www.trust1team.com">Trust1Team</a> - All rights reserved.
         </div>
+    </div>
+
+    <div class="faq clickable" uib-tooltip="FAQ" ng-click="$ctrl.toggleFAQ()">
+        <span class="fa fa-question-circle fa-2x"></span>
     </div>
 </div>

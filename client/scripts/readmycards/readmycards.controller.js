@@ -133,12 +133,14 @@
         });
     }
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
         controller.dismissPanels = dismissPanels;
+
+        let pollIterations = 0;
 
         init();
 
@@ -176,6 +178,7 @@
             }
 
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
+                Analytics.trackEvent('T1C', 'install', 'Trust1Connector installed');
                 controller.gclAvailable = true;
                 T1C.core.initializeAfterInstall().then(function (res) {
                     pollForReaders();
@@ -265,6 +268,7 @@
                 else {
                     controller.readers = result.data;
                     controller.pollingReaders = false;
+                    Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
                     $scope.$apply();
                     // if (controller.readers.length > 1) toastr.success('Readers found!');
                     // else toastr.success('Reader found!');
@@ -296,6 +300,9 @@
                 }
                 else {
                     controller.pollingCard = false;
+                    controller.pollTimeout = false;
+                    Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
+                    pollIterations = 0;
                     $scope.$apply();
                     // if ($scope.readers.length > 1) toastr.success('Readers found!');
                     // else toastr.success('Reader found!');
@@ -305,7 +312,7 @@
                         controller.readers = result.data;
                         readCard();
                     }, function () {
-                        controller.error = true;
+                        pollForCard();
                     });
                 }
             }, function () {
@@ -316,10 +323,9 @@
                 // "Waiting for card" callback
             }, function () {
                 // timeout
-                // controller.pollingCard = false;
-                // controller.pollTimeout = true;
-                // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
-                // $scope.$apply();
+                pollIterations++;
+                // if enough time has passed, show the card not recognized message
+                if (pollIterations >= 5) controller.pollTimeout = true;
                 RMC.checkReaderRemoval().then(function (removed) {
                     if (removed) controller.pollingCard = false;
                     else pollForCard();

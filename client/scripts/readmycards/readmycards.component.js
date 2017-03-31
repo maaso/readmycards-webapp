@@ -34,7 +34,7 @@
                                 controller.loading = false;
                                 RMC.monitorCardRemoval(controller.readerId, controller.card)
                             }, function (error) {
-                                if (error.status === 412 && error.data.code === 900) {
+                                if (error.status === 412 && (error.data.code === 900 || error.data.code === 0)) {
                                     // this usually means the card was removed during reading, check if it is still present
                                     RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
                                         if (removed) $scope.$emit(EVENTS.START_OVER);
@@ -53,6 +53,8 @@
                             $timeout(function () {
                                 controller.$onInit();
                             }, 100);
+                        } else {
+                            $scope.$emit(EVENTS.START_OVER);
                         }
                     });
 
@@ -101,6 +103,12 @@
                 this.firefoxModal = firefoxModal;
                 this.registerDownload = registerDownload;
 
+                controller.$onInit = () => {
+                    controller.sendUpdates = {
+                        value: false
+                    }
+                };
+
                 function pollForGcl() {
                     $timeout(function () {
                         T1C.core.getInfo().then(function (res) {
@@ -122,7 +130,7 @@
                 function registerDownload(mail) {
                     controller.waitingForInstall = true;
                     if (!controller.isFirefox) pollForGcl();
-                    API.storeDownloadInfo(mail, controller.dlUrl);
+                    API.storeDownloadInfo(mail, controller.sendUpdates.value, controller.dlUrl);
                 }
             }
         })
@@ -142,10 +150,16 @@
         .component('cardPolling', {
             templateUrl: 'views/readmycards/components/card-polling.html',
             bindings: {
-                error: '<'
+                error: '<',
+                pollTimeout: '<'
             },
-            controller: function ($scope, EVENTS) {
+            controller: function ($scope, $rootScope, EVENTS) {
+                this.openSidebar = openSidebar;
                 this.tryAgain = tryAgain;
+
+                function openSidebar() {
+                    $rootScope.$broadcast(EVENTS.OPEN_SIDEBAR);
+                }
 
                 function tryAgain() {
                     $scope.$emit(EVENTS.RETRY_CARD);
@@ -208,6 +222,9 @@
             templateUrl: 'views/readmycards/components/footer.html',
             controller: function ($scope, EVENTS) {
                 this.toggleFAQ = toggleFAQ;
+                this.$onInit = () => {
+                    this.currentYear = moment().format('YYYY');
+                };
 
                 function toggleFAQ() {
                     $scope.$emit(EVENTS.OPEN_FAQ);

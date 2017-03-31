@@ -1,13 +1,3 @@
-@font-face {
-  font-family: "Barcode";
-  src: url("../fonts/3of9.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "OCR-B";
-  src: url("../fonts/ocrb.ttf") format("truetype");
-}
-
 #beid-viz {
 
 
@@ -20,11 +10,13 @@
 
   .certificates-toggle {
     margin-top: 50px;
+    font-size: 1.2em;
+    font-weight: 300;
     span {
       color: @gray-light;
 
       &:hover {
-        color: @gray-dark;
+        color: @t1t-green-dark;
       }
     }
   }
@@ -84,11 +76,24 @@
     .header {
       height: 15%;
       border-bottom: 1px solid #999;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       padding: 0 10px;
 
+      .nl, .fr, .de, .en {
+        position: absolute;
+        top: 10px;
+      }
+
+      .fr {
+        left: 145px;
+      }
+
+      .de {
+        right: 125px;
+      }
+
+      .en {
+        right: 10px;
+      }
 
       .lang {
         line-height: 1;
@@ -112,11 +117,14 @@
     .content {
       padding: 0 10px;
 
+      .names-title {
+        position: absolute;
+        top: 64px;
+        line-height: 1.7;
+      }
+
       .names {
         padding-top: 15px;
-        .values {
-          margin-left: 3px;
-        }
       }
 
       .chip {
@@ -126,29 +134,25 @@
 
       .birth-sex-block {
         width: calc(~"99% - " @chip-width);
+      }
 
-        .birth-sex-wrapper {
-          display: flex;
-          justify-content: space-between;
+      .sex {
+        position: absolute;
+        top: 105px;
+        right: 25px;
 
-          .sex {
-            padding-right: 15px;
-
-            .values {
-              text-align: right;
-              padding-right: 5px;
-            }
+          .values {
+            text-align: right;
+            padding-right: 5px;
           }
-        }
       }
 
 
       .other {
-        display: flex;
-        justify-content: space-between;
-
         .pic {
-          padding: 15px 15px 10px 20px;
+          position: absolute;
+          right: 25px;
+          bottom: 15px;
 
           .pic-img {
             width: 105px;
@@ -161,32 +165,34 @@
   }
 
   .back {
-    padding: 10px 20px;
+    .back-wrapper {
+      padding: 10px 20px;
 
-    .rrnr {
-      .labels {
-        line-height: 1.1;
+      .rrnr {
+        .labels {
+          line-height: 1.1;
+        }
+        .values {
+          padding-top: 2px;
+        }
       }
-      .values {
-        padding-top: 2px;
+
+      .barcode {
+        font-family: 'Barcode', sans-serif;
+        transform : scale(1.25,3.3);
+
+        .barcode-wrapper {
+          margin-left: 35px;
+          margin-top: -12px;
+        }
       }
-    }
 
-    .barcode {
-      font-family: 'Barcode', sans-serif;
-      transform : scale(1.25,3.3);
-
-      .barcode-wrapper {
-        margin-left: 35px;
-        margin-top: -12px;
+      .machine-readable-zone {
+        margin-top: 110px;
+        line-height: 1;
+        font-family: 'OCR-B', monospace;
+        font-size: 1.8em;
       }
-    }
-
-    .machine-readable-zone {
-      margin-top: 110px;
-      line-height: 1;
-      font-family: 'OCR-B', monospace;
-      font-size: 1.8em;
     }
 
   }
@@ -214,9 +220,14 @@
     }
   }
 
+  .summary-start {
+    padding-top: 15px;
+    min-height: 60px;
+  }
+
   .dummy-summary-wrapper {
     position: absolute;
-    top: 200px;
+    top: 245px;
     right: 35px;
 
     .specimen {
@@ -249,7 +260,7 @@
     .pinpad {
       position: absolute;
       right: 0;
-      top: 190px;
+      top: 225px;
       max-width: 500px;
       z-index: 100;
       background: #fff;
@@ -257,6 +268,10 @@
 
     .step {
       margin: 50px 0;
+
+      &:first-of-type {
+        margin: 20px 0 50px 0;
+      }
 
 
       > div {
@@ -296,10 +311,12 @@
 
 
       .step-desc {
+        position: relative;
         margin-left: 40px;
         font-size: 30px;
         vertical-align: text-bottom;
         color: #999;
+        z-index: 110;
       }
 
     }
