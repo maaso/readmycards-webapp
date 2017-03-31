@@ -5,7 +5,8 @@
         .service('LuxUtils', LuxUtils)
         .service('LuxTrustUtils', LuxTrustUtils);
 
-    function LuxUtils($http, $q, T1C, API, _) {
+    function LuxUtils($http, $q, T1C, API, CheckDigit, _) {
+        this.constructMachineReadableStrings = constructMachineReadableStrings;
         this.formatBirthDate = formatBirthDate;
         this.formatValidity = formatValidity;
         this.generateXMLToSign = generateXMLToSign;
@@ -13,6 +14,37 @@
         this.signDocument = signDocumentWithPin;
 
         let rootCertificate1, rootCertificate2, authenticationCertificate, nonRepudiationCertificate, fullName;
+
+        function constructMachineReadableStrings(biometricData) {
+            let mrs = [];
+            // First line
+            let prefix = biometricData.documentType;
+            let first = biometricData.issuingState + biometricData.documentNumber;
+            first += CheckDigit.calc(first);
+            first = pad(prefix + first);
+            mrs.push(first.toUpperCase());
+
+            // Second line
+            // TODO fix second line!
+            let second = biometricData.birthDate;
+            second += CheckDigit.calc(second);
+            second += biometricData.gender;
+            second += biometricData.validityEndDate + CheckDigit.calc(biometricData.validityEndDate);
+            second += biometricData.nationality;
+            second = pad(second);
+            mrs.push(second.toUpperCase());
+
+            // Third line
+            let third = _.join(_.split(biometricData.lastName, ' '), '<') + '<<';
+            third += _.join(_.split(biometricData.firstName,' '),'<');
+            third = pad(third);
+            mrs.push(third.toUpperCase());
+            return mrs;
+        }
+
+        function pad(string) {
+            return _.padEnd(_.truncate(string, { length: 30, omission: '' }), 30, '<');
+        }
 
         function formatBirthDate(dob) {
             // assume 1900
@@ -154,6 +186,7 @@
         }
 
         function prepareSummaryData(biometric, picBase64, sigBase64) {
+            let mrs = constructMachineReadableStrings(biometric);
             return {
                 biometric: biometric,
                 pic: picBase64,
@@ -161,6 +194,9 @@
                 formattedBirthDate: formatBirthDate(biometric.birthDate),
                 validFrom: formatValidity(biometric.validityStartDate),
                 validUntil: formatValidity(biometric.validityEndDate),
+                machineReadable1: mrs[0],
+                machineReadable2: mrs[1],
+                machineReadable3: mrs[2],
                 printDate: moment().format('MMMM D, YYYY'),
                 printedBy: '@@name v@@version'
             };

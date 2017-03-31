@@ -395,46 +395,12 @@
                 controller.formattedValidFrom = LuxUtils.formatValidity(controller.biometricData.validityStartDate);
                 controller.formattedValidUntil = LuxUtils.formatValidity(controller.biometricData.validityEndDate);
 
-                let mrs = constructMachineReadableStrings(controller.rnData);
+                let mrs = LuxUtils.constructMachineReadableStrings(controller.biometricData);
 
                 controller.machineReadable1 = mrs[0];
                 controller.machineReadable2 = mrs[1];
                 controller.machineReadable3 = mrs[2];
             };
-
-            function constructMachineReadableStrings(rnData) {
-                let mrs = [];
-                // First line
-                let prefix = controller.biometricData.documentType;
-                let first = controller.biometricData.issuingState + controller.biometricData.documentNumber;
-                first += CheckDigit.calc(first);
-                first = pad(prefix + first);
-                mrs.push(first.toUpperCase());
-
-                // Second line
-                // TODO fix second line!
-                let second = controller.biometricData.birthDate;
-                second += CheckDigit.calc(second);
-                second += controller.biometricData.gender;
-                second += controller.biometricData.validityEndDate + CheckDigit.calc(controller.biometricData.validityEndDate);
-                second += controller.biometricData.nationality;
-                // second += rnData.national_number;
-                // let finalCheck = rnData.card_number.substr(0,10) + rnData.national_number.substr(0,6) + validity + rnData.national_number;
-                // second += CheckDigit.calc(finalCheck);
-                second = pad(second);
-                mrs.push(second.toUpperCase());
-
-                // Third line
-                let third = _.join(_.split(controller.biometricData.lastName, ' '), '<') + '<<';
-                third += _.join(_.split(controller.biometricData.firstName,' '),'<');
-                third = pad(third);
-                mrs.push(third.toUpperCase());
-                return mrs;
-            }
-
-            function pad(string) {
-                return _.padEnd(_.truncate(string, { length: 30, omission: '' }), 30, '<');
-            }
         }
     };
 
