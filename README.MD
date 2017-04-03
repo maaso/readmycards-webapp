@@ -17,6 +17,10 @@ ReadMyCards makes use of the following external APIs:
 
 ## Changelog
 
+### v1.2.3
+
+* Add visual representation of the Belgian eID card to generated PDF summary
+
 ### v1.2.2
 
 * Add RN raw data and RN signature to the extended info for Belgian eID card.
