@@ -17,6 +17,10 @@ ReadMyCards makes use of the following external APIs:
 
 ## Changelog
 
+### v1.2.3
+
+* Add visual representation of the Belgian eID card to generated PDF summary
+
 ### v1.2.2
 
 * Add RN raw data and RN signature to the extended info for Belgian eID card.
@@ -122,4 +126,4 @@ Irrespective of your choice of license, the T1T logo as depicted below may not b
 
 [Trust1Team-url]: http://trust1team.com
 [t1t-logo]: http://imgur.com/lukAaxx.png
-[rmc-confluence-deployment-guide]: https://trust1t.atlassian.net/wiki/display/RMC/Deployment
+[rmc-confluence-deployment-guide]: https://trust1t.atlassian.net/wiki/display/NPAPI/Deployment+-+ReadMyCards.eu
