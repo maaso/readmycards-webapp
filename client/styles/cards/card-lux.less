@@ -81,13 +81,6 @@
     }
   }
 
-  .personal-info {
-    margin-top: 30px;
-
-    #address {
-    }
-  }
-
   .certificates-toggle {
     margin-top: 50px;
     span {
@@ -142,14 +135,29 @@
     //background-size: cover;
 
     .header {
-      height: 13%;
+      height: 42px;
+      min-height: 42px;
       margin-left: 83px;
       margin-right: 20px;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       padding: 0 10px;
 
+      .fr,.de,.en,.lz {
+        position: absolute;
+        top: 3px;
+      }
+
+      .en {
+        left: 200px;
+      }
+
+      .de {
+        right: 130px;
+      }
+
+      .lz {
+        right: 30px;
+        top: 14px;
+      }
 
       .lang {
         line-height: 1.2;
@@ -256,6 +264,7 @@
 
       .personal-info {
         margin-left: 175px;
+        margin-top: 30px;
 
         .given-names {
           margin-top: 25px;
@@ -387,8 +396,6 @@
   }
 
 }
-
-
 
 .luxotp-card {
 
