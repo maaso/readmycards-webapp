@@ -75,8 +75,8 @@
 
                     conversions.push(API.convertJPEG2000toJPEG(controller.picData.image));
 
-                    if (!_.isEmpty(res.data.signature_image)) {
-                        conversions.push(API.convertJPEG2000toJPEG(res.data.signature_image));
+                    if (!_.isEmpty(res.data.signature_image) && !_.isEmpty(res.data.signature_image.image)) {
+                        conversions.push(API.convertJPEG2000toJPEG(res.data.signature_image.image));
                     }
 
                     $q.all(conversions).then(converted => {

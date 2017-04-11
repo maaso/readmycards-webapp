@@ -74,7 +74,7 @@
                 let conversions = [];
 
                 conversions.push(API.convertJPEG2000toJPEG(results.data.picture.image));
-                conversions.push(API.convertJPEG2000toJPEG(results.data.signature_image));
+                conversions.push(API.convertJPEG2000toJPEG(results.data.signature_image.image));
 
                 return $q.all(conversions).then(converted => {
                     let data = prepareSummaryData(results.data.biometric, converted[0].data.base64Pic, converted[1].data.base64Pic);
