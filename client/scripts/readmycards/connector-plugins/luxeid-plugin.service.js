@@ -44,7 +44,6 @@
         }
 
         function address(readerId, pin) {
-            console.log('get address');
             return wrapper(readerId, pin, 'address');
         }
 

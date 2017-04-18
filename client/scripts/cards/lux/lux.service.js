@@ -70,17 +70,25 @@
 
         function generateSummaryToSign(readerId, pin) {
             return T1C.luxId.allData(readerId, pin).then(function (results) {
-
                 let conversions = [];
-
                 conversions.push(API.convertJPEG2000toJPEG(results.data.picture.image));
-                conversions.push(API.convertJPEG2000toJPEG(results.data.signature_image.image));
+
+                if (!_.isEmpty(results.data.signature_image) && !_.isEmpty(results.data.signature_image.image)) {
+                    conversions.push(API.convertJPEG2000toJPEG(results.data.signature_image.image));
+                }
 
                 return $q.all(conversions).then(converted => {
-                    let data = prepareSummaryData(results.data.biometric, converted[0].data.base64Pic, converted[1].data.base64Pic);
+                    let data;
+                    if (converted.length === 2) {
+                        data = prepareSummaryData(results.data.biometric, converted[0].data.base64Pic, converted[1].data.base64Pic);
+                    } else {
+                        data = prepareSummaryData(results.data.biometric, converted[0].data.base64Pic, null);
+                    }
                     return $http.post('api/cards/lux/summarytosign', data).then(res => {
                         return res.data;
                     })
+                }, error => {
+                    // TODO handle conversion failure
                 });
             })
         }
