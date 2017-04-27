@@ -59,6 +59,8 @@
                              cert-data="$ctrl.cardData"
                              ng-if="$ctrl.cardType === 'BeID'"></beid-visualizer>
             <emv-visualizer pan-data="$ctrl.cardData.pan" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
+
+            <piv-visualizer ng-if="$ctrl.cardType === 'PIV'" card-data="$ctrl.cardData"></piv-visualizer>
         </div>
     </div>
 </div>
