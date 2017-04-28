@@ -1,0 +1,31 @@
+<div class="card piv-card">
+    <div class="front">
+        <div class="specimen text-uppercase">Specimen</div>
+
+        <div class="content">
+            <div class="name">{{$ctrl.cardData.name}}</div>
+            <div class="affiliation">{{$ctrl.cardData.employee_affiliation}}</div>
+            <div class="expiration">
+                <div class="labels">Expires</div>
+                <div class="values">{{$ctrl.cardData.expiration_date}}</div>
+            </div>
+            <div class="serial">
+                <div class="labels">Serial Number</div>
+                <div class="values">{{$ctrl.cardData.agency_card_serial_number}}</div>
+            </div>
+            <div class="issuer">
+                <div class="labels">Issuer</div>
+                <div class="values">{{$ctrl.cardData.issuer_identification}}</div>
+            </div>
+            <div class="org-affiliation">
+                <div class="values line-1">{{$ctrl.cardData.organization_affiliation_line_1}}</div>
+                <div class="values line-2">{{$ctrl.cardData.organization_affiliation_line_2}}</div>
+            </div>
+
+            <div class="piv-picture-wrapper">
+                <img class="piv-pic placeholder" src="images/default-pic.jpg"/>
+                <!--<img class="piv-pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>-->
+            </div>
+        </div>
+    </div>
+</div>

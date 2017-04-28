@@ -9,7 +9,7 @@
         .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, Mobib, OCV, _) {
+    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, Mobib, OCV, PIV, _) {
 
         // === T1C Methods ===
         // --- Core ---
@@ -26,6 +26,8 @@
         this.luxId = LuxId;
         // --- Mobib ---
         this.mobib = Mobib;
+        // --- PIV ---
+        this.piv = PIV;
         // --- Utility ---
         this.isCardTypeBeId = isCardTypeBeId;
         this.readAllData = readAllData;
@@ -62,6 +64,8 @@
                 case 'MOBIB':
                 case 'MOBIB Basic':
                     return Mobib.allData(readerId);
+                case 'PIV':
+                    return PIV.printedInformation(readerId);
                 default:
                     return $q.when('Not Supported');
             }
