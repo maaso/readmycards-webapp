@@ -14,7 +14,8 @@
             </div>
         </div>
         <div class="delijn-picture-wrapper">
-            <img class="delijn-pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
+            <img class="delijn-pic" ng-if="!$ctrl.cardData.picture || $ctrl.cardData.picture.length === 0" src="images/default-pic.jpg"/>
+            <img class="delijn-pic" ng-if="$ctrl.cardData.picture && $ctrl.cardData.picture.length > 0"ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
         </div>
         <div class="delijn-logo-wrapper">
             <img class="delijn-logo" src="images/delijn.png" />

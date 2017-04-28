@@ -1,0 +1,59 @@
+<div id="lux-viz" class="clearfix top-info">
+
+    <div class="status-wrapper">
+        <lux-certificate-status status="$ctrl.certStatus"></lux-certificate-status>
+        <lux-trust-pin-check-status status="$ctrl.pinStatus"></lux-trust-pin-check-status>
+    </div>
+
+    <lux-trust-card></lux-trust-card>
+
+    <div class="print-button">
+        <span class="btn btn-lg btn-primary btn-summary-download" ng-click="$ctrl.sign()">Sign XML</span>
+    </div>
+
+    <div class="certificates-toggle col-sm-12">
+        <span class="text-small" ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>
+    </div>
+    <div>
+        <div uib-collapse="!$ctrl.certData">
+            <div class="certificates col-sm-12">
+                <span class="size-h3 text-primary">Certificates</span>
+                <div class="col-sm-12" ng-if="$ctrl.cardData.root_certificates">
+                    <h4 class="text-info text-light">Root</h4>
+
+                    <div class="input-group" ng-repeat="cert in $ctrl.cardData.root_certificates">
+                        <input type="text" class="form-control" value="{{ cert }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ cert }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.cardData.authentication_certificate">
+                    <h4 class="text-info text-light">Authentication</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ $ctrl.cardData.authentication_certificate }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.authentication_certificate }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.cardData.signing_certificate">
+                    <h4 class="text-info text-light">Signing</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ $ctrl.cardData.signing_certificate }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.signing_certificate }}"></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>

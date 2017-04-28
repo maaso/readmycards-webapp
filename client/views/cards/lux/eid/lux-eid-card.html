@@ -30,7 +30,14 @@
                 <div class="loading-indicator" ng-if="!$ctrl.picData">
                     <i class="fa fa-spinner fa-pulse"></i>
                 </div>
-                <img class="lux-pic" ng-if="$ctrl.picData" ng-attr-src="{{ 'data:image/jp2;base64,' + $ctrl.picData }}"/>
+                <img class="lux-pic" ng-if="$ctrl.picData" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.picData }}"/>
+            </div>
+
+            <div class="signature-wrapper">
+                <!--<div class="loading-indicator" ng-if="!$ctrl.signatureData">-->
+                    <!--<i class="fa fa-spinner fa-pulse"></i>-->
+                <!--</div>-->
+                <img class="lux-sig" ng-if="$ctrl.signatureData" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.signatureData }}"/>
             </div>
 
             <div class="coat-of-arms-wrapper inline">
@@ -79,6 +86,10 @@
                     <!--<div class="labels">Can</div>-->
                     <!--<div class="values">123456</div>-->
                 <!--</div>-->
+            </div>
+
+            <div class="signature-label">
+                <div class="labels">Signature du titulaire / Holder's Signature</div>
             </div>
         </div>
     </div>

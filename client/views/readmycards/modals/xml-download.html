@@ -1,17 +1,15 @@
 <div class="modal-body summary-modal">
 
     <div class="header">
-        <p class="title text-center">Print Legal Copy of Card</p>
+        <p class="title text-center">Sign Example XML</p>
 
-        <p class="info-text text-justify">We are going to provide you a secure PDF version of the content of your eID card. This document will be digitally
-            signed by you to be compliant with EU regulation and be considered as an original copy that you can distribute.
-            No information will be stored on our side and you will be the only possessor of the generated copy.
+        <p class="info-text text-justify">This will digitally sign an example XML file with the certificates on your card.
+            At the end of the process, you will be able to download the signed XML file.
+            <br><br>
         </p>
     </div>
 
-    <div class="summary-start text-center">
-        <span ng-if="currentStep === 0" class="btn btn-lg btn-primary btn-w200" ng-click="startProcess()">Start Printing</span>
-    </div>
+
 
     <ul class="step-list">
         <li class="step" ng-class="{ 'active': currentStep === 1, 'completed': currentStep > 1 }">
@@ -47,14 +45,15 @@
         </li>
     </ul>
 
-    <div class="dummy-summary-wrapper">
-        <div class="specimen">Specimen</div>
-        <img class="dummy-summary" src="images/summary-demo.jpg">
-    </div>
+    <!--<div class="dummy-summary-wrapper">-->
+        <!--<div class="specimen">Specimen</div>-->
+        <!--<img class="dummy-summary" src="images/summary-demo.jpg">-->
+    <!--</div>-->
 
 
-    <div class="summary-download text-center">
-        <span ng-if="currentStep === 3" class="btn btn-lg btn-primary btn-w200" ng-click="doDownload()">Download</span>
+    <div class="text-center">
+        <span ng-if="currentStep === 0" class="btn btn-lg btn-line-primary btn-w200" ng-click="startProcess()">Start Signing</span>
+        <span ng-if="currentStep === 3" class="btn btn-lg btn-line-primary btn-w200" ng-click="doDownload()">Download</span>
     </div>
 
 </div>
