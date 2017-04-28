@@ -3,23 +3,23 @@
         <div class="specimen text-uppercase">Specimen</div>
 
         <div class="content">
-            <div class="name"><span data-fittext data-fittext-max="inherit">{{$ctrl.cardData.name}}</span></div>
-            <div class="affiliation"><span>{{$ctrl.cardData.employee_affiliation}}</span></div>
+            <div class="name"><span data-fittext data-fittext-max="inherit">{{$ctrl.cardData.printed_information.name}}</span></div>
+            <div class="affiliation"><span>{{$ctrl.cardData.printed_information.employee_affiliation}}</span></div>
             <div class="expiration">
                 <div class="labels">Expires</div>
-                <div class="values">{{$ctrl.cardData.expiration_date}}</div>
+                <div class="values">{{$ctrl.cardData.printed_information.expiration_date}}</div>
             </div>
-            <div class="serial" ng-if="$ctrl.cardData.agency_card_serial_number && $ctrl.cardData.agency_card_serial_number.length > 1">
+            <div class="serial" ng-if="$ctrl.cardData.printed_information.agency_card_serial_number && $ctrl.cardData.printed_information.agency_card_serial_number.length > 1">
                 <div class="labels">Serial Number</div>
-                <div class="values">{{$ctrl.cardData.agency_card_serial_number}}</div>
+                <div class="values">{{$ctrl.cardData.printed_information.agency_card_serial_number}}</div>
             </div>
-            <div class="issuer" ng-if="$ctrl.cardData.issuer_identification && $ctrl.cardData.issuer_identification.length > 1">
+            <div class="issuer" ng-if="$ctrl.cardData.printed_information.issuer_identification && $ctrl.cardData.printed_information.issuer_identification.length > 1">
                 <div class="labels">Issuer</div>
-                <div class="values">{{$ctrl.cardData.issuer_identification}}</div>
+                <div class="values">{{$ctrl.cardData.printed_information.issuer_identification}}</div>
             </div>
-            <div class="org-affiliation" ng-if="$ctrl.cardData.organization_affiliation_line_1 && $ctrl.cardData.organization_affiliation_line_1.length > 1">
-                <div class="values line-1">{{$ctrl.cardData.organization_affiliation_line_1}}</div>
-                <div class="values line-2">{{$ctrl.cardData.organization_affiliation_line_2}}</div>
+            <div class="org-affiliation" ng-if="$ctrl.cardData.printed_information.organization_affiliation_line_1 && $ctrl.cardData.printed_information.organization_affiliation_line_1.length > 1">
+                <div class="values line-1">{{$ctrl.cardData.printed_information.organization_affiliation_line_1}}</div>
+                <div class="values line-2">{{$ctrl.cardData.printed_information.organization_affiliation_line_2}}</div>
             </div>
 
             <div class="piv-picture-wrapper">

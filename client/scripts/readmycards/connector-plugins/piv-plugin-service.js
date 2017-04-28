@@ -49,6 +49,7 @@
 
             return $q.when(angular.fromJson({
                 "data": {
+                    "printed_information": {
                         "name": "Thibaut Delhaye",
                         "employee_affiliation": "Chief Executive Officer",
                         "expiration_date": "2020DEC01",
@@ -56,12 +57,16 @@
                         "issuer_identification": "T1T",
                         "organization_affiliation_line_1": "Trust1Team BVBA",
                         "organization_affiliation_line_2": "Ghent Belgium"
+                    }
                 },
                 "success": true
             }));
 
+
+
             // return $q.when(angular.fromJson({
             //     "data": {
+            //         "printed_information": {
             //             "name": "John Doe",
             //             "employee_affiliation": "Chief Operating Officer",
             //             "expiration_date": "2017DEC01",
@@ -69,6 +74,7 @@
             //             "issuer_identification": "Issuer",
             //             "organization_affiliation_line_1": "Trust1Team BVBA",
             //             "organization_affiliation_line_2": "Ghent Belgium"
+            //         }
             //     },
             //     "success": true
             // }));
