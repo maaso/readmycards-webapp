@@ -172,7 +172,7 @@
 
         function detectType(card) {
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
-                if (findDescription( card.description, 'Belgium Electronic ID card')) { return 'PIV'; }
+                if (findDescription( card.description, 'Belgium Electronic ID card')) { return 'BeID'; }
                 else if (findDescription(card.description, 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)')) { return 'LuxID'; }
                 else if (findDescription(card.description, 'LuxTrust card')) { return 'LuxTrust'; }
                 else if (findDescription(card.description, 'Juridic Person\'s Token (PKI)')) { return 'LuxOTP'; }
