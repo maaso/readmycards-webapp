@@ -13,6 +13,7 @@
         'angular-google-analytics',
         'ngFileSaver',
         'ngclipboard',
+        'ngFitText',
 
         /* custom modules */
         'app.plugin.lodash',

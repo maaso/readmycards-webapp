@@ -6,7 +6,6 @@
 
     function PIVUtils($http, $q, T1C, _) {
 
-        
     }
 
 })();
