@@ -46,7 +46,7 @@
         
         function printedInformation(readerId) {
             // return wrapper(readerId, printedInformation.name);
-            
+
             return $q.when(angular.fromJson({
                 "data": {
                         "name": "Thibaut Delhaye",
