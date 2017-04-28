@@ -26,7 +26,9 @@
                                 return res.data.pinpad;
                             })
                         },
-
+                        plugin: () => {
+                            return T1C.piv;
+                        }
                     },
                     backdrop: 'static',
                     controller: 'PivPinCheckCtrl'

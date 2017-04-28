@@ -5,59 +5,59 @@
         .controller('PivPinCheckCtrl', pivPinCheckCtrl);
 
 
-    function pivPinCheckCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, T1C, _) {
-        $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        $scope.pincode = {
-            value: ''
-        };
-        $scope.pinpad = pinpad;
-        $scope.ok = ok;
-        $scope.cancel = cancel;
-        $scope.onKeyPressed = onKeyPressed;
-        $scope.submitPin = submitPin;
+    function pivPinCheckCtrl($scope, readerId, pinpad, plugin, $uibModalInstance, EVENTS, T1C, _) {
+            $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            $scope.pincode = {
+                value: ''
+            };
+            $scope.pinpad = pinpad;
+            $scope.ok = ok;
+            $scope.cancel = cancel;
+            $scope.onKeyPressed = onKeyPressed;
+            $scope.submitPin = submitPin;
 
-        init();
+            init();
 
-        function init() {
-            // If pinpad reader, send verification request directly to reader
-            if (pinpad) {
-                T1C.beid.verifyPin(readerId).then(handleVerificationSuccess, handleVerificationError);
+            function init() {
+                // If pinpad reader, send verification request directly to reader
+                if (pinpad) {
+                    plugin.verifyPin(readerId).then(handleVerificationSuccess, handleVerificationError);
+                }
+                // else, wait until user enters pin
             }
-            // else, wait until user enters pin
-        }
 
-        function handleVerificationSuccess() {
-            $uibModalInstance.close('verified');
-        }
-
-        function handleVerificationError(err) {
-            $uibModalInstance.dismiss(err.data);
-        }
-
-        function ok() {
-            $uibModalInstance.close('ok');
-        }
-
-        function cancel() {
-            $uibModalInstance.dismiss('cancel');
-        }
-
-        function onKeyPressed(data) {
-            if (data === '<') {
-                if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
-            } else if (data === '>') {
-                submitPin();
-            } else {
-                $scope.pincode.value += data;
+            function handleVerificationSuccess(res) {
+                $uibModalInstance.close('verified');
             }
-        }
 
-        function submitPin() {
-            T1C.beid.verifyPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
-        }
+            function handleVerificationError(err) {
+                $uibModalInstance.dismiss(err.data);
+            }
 
-        $scope.$on(EVENTS.START_OVER, function () {
-            $scope.cancel();
-        });
-    }
+            function ok() {
+                $uibModalInstance.close('ok');
+            }
+
+            function cancel() {
+                $uibModalInstance.dismiss('cancel');
+            }
+
+            function onKeyPressed(data) {
+                if (data === '<') {
+                    if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
+                } else if (data === '>') {
+                    submitPin();
+                } else {
+                    $scope.pincode.value += data;
+                }
+            }
+
+            function submitPin() {
+                plugin.verifyPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
+            }
+
+            $scope.$on(EVENTS.START_OVER, function () {
+                $scope.cancel();
+            });
+        }
 })();
