@@ -199,6 +199,8 @@
                         return 'MOBIB Basic';
                     case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
                         return 'EMV';
+                    case 'Gemalto IDPrime PIV Card2.0 (eID)':
+                        return 'PIV';
                     default:
                         return 'Unknown';
                 }

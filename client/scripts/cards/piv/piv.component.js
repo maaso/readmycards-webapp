@@ -25,10 +25,11 @@
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
-                        }
+                        },
+
                     },
                     backdrop: 'static',
-                    controller: 'ModalPinCheckCtrl'
+                    controller: 'PivPinCheckCtrl'
                 });
 
                 modal.result.then(function () {
