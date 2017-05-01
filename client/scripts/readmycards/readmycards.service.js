@@ -179,7 +179,7 @@
                 else if (findDescription(card.description, 'MOBIB Basic')) { return 'MOBIB Basic'; }
                 else if (findDescription(card.description, 'MOBIB')) { return 'MOBIB'; }
                 else if (findDescription(card.description, 'Mastercard')) { return 'EMV'; }
-                else if (findDescription(card.description, 'Gemalto IDPrime PIV Card2.0 (eID)')) { return 'PIV'; }
+                else if (findDescription(card.description, 'PIV')) { return 'PIV'; }
                 else { return 'Unknown'; }
             } else {
                 return 'Unknown';
