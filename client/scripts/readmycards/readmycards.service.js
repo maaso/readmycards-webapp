@@ -178,6 +178,7 @@
                 else if (findDescription(card.description, 'MOBIB')) { return 'MOBIB'; }
                 else if (findDescription(card.description, 'Mastercard')) { return 'EMV'; }
                 else if (findDescription(card.description, 'PIV')) { return 'PIV'; }
+                else if (findDescription(card.description, 'CIV')) { return 'PIV'; }
                 else { return 'Unknown'; }
             } else {
                 return 'Unknown';
