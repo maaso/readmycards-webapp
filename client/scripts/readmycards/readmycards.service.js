@@ -48,8 +48,6 @@
                     return Mobib.allData(readerId);
                 case 'LuxTrust':
                     return LuxTrust.allData(readerId);
-                case 'PIV':
-                    return PIV.printedInformation(readerId);
                 default:
                     return $q.when('Not Supported');
             }

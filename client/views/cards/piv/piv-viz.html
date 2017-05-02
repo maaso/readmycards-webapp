@@ -1,133 +1,32 @@
 <div id="piv-viz" class="clearfix top-info">
 
-    <div class="status-wrapper">
-        <!--<beid-certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></beid-certificate-status>-->
-        <piv-pin-check-status status="$ctrl.pinStatus"></piv-pin-check-status>
+    <div class="pin-required text-center" ng-if="$ctrl.needPin">
+        <p class="info-text">Access to the PIV card is secured with a PIN code.<br>Please provide your PIN to continue.</p>
+
+        <div class="text-center waiting-for-pin" ng-if="$ctrl.pinpad">
+            <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
+            <p class="spinner-text text-thin">Waiting for response from reader...</p>
+            <h3 class="text-primary text-thin">Use your reader's pinpad to enter the PIN code.</h3>
+        </div>
+
+        <div class="pinpad" ng-if="!$ctrl.pinpad">
+            <rmc-keypad pincode="$ctrl.pincode" submit-func="$ctrl.submitPin"></rmc-keypad>
+        </div>
     </div>
 
-    <piv-card card-data="$ctrl.cardData"></piv-card>
-
-    <!--<div class="print-button">-->
-        <!--<print-summary print-function="$ctrl.downloadSummary"></print-summary>-->
-    <!--</div>-->
-
-    <!--<div class="personal-info col-sm-12">-->
-        <!--<span class="size-h3 text-primary">Additional Information</span>-->
+    <div class="text-center waiting-for-pin" ng-if="$ctrl.readingData">
+        <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
+        <p class="spinner-text text-thin">Reading data...</p>
+    </div>
 
 
-        <!--<div class="col-sm-12">-->
-            <!--<div class="col-sm-4">-->
-                <!--<div id="address" ng-show="$ctrl.addressData">-->
-                    <!--<h4 class="text-info text-light">Address</h4>-->
+    <div ng-if="!$ctrl.needPin && !$ctrl.readingData">
+        <div class="status-wrapper">
+            <!--<beid-certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></beid-certificate-status>-->
+            <piv-pin-check-status status="$ctrl.pinStatus"></piv-pin-check-status>
+        </div>
 
-                    <!--<p><strong>Street:&nbsp;</strong>{{$ctrl.addressData.street_and_number}}<br/>-->
-                        <!--<strong>City:&nbsp;</strong>{{$ctrl.addressData.zipcode}}-->
-                        <!--{{$ctrl.addressData.municipality}}</p>-->
-                <!--</div>-->
-            <!--</div>-->
-
-
-            <!--<div class="col-sm-8">-->
-                <!--<div ng-show="$ctrl.rnData">-->
-                    <!--<h4 class="text-info text-light">General information</h4>-->
-                    <!--<strong>Chip number:&nbsp;</strong>{{$ctrl.rnData.chip_number}}<br/>-->
-                <!--</div>-->
-            <!--</div>-->
-
-
-        <!--</div>-->
-
-    <!--</div>-->
-
-    <!--<div class="certificates-toggle col-sm-12">-->
-        <!--<span ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.loadingCerts ? 'Loading...' : $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>-->
-    <!--</div>-->
-    <!--<div>-->
-        <!--<div uib-collapse="$ctrl.doCollapse || !$ctrl.certData">-->
-            <!--<div class="certificates col-sm-12">-->
-                <!--<span class="size-h3 text-primary">Certificates</span>-->
-                <!--<div class="col-sm-12" ng-if="$ctrl.certData.root_certificate">-->
-                    <!--<h4 class="text-info text-light">Root</h4>-->
-
-                    <!--<div class="input-group">-->
-                        <!--<input type="text" class="form-control" value="{{ $ctrl.certData.root_certificate }}">-->
-                        <!--<span class="input-group-btn">-->
-                            <!--<button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: root_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_certificate }}"></button>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-12" ng-if="$ctrl.certData.citizen_certificate">-->
-                    <!--<h4 class="text-info text-light">Citizen</h4>-->
-
-                    <!--<div class="input-group">-->
-                        <!--<input type="text" class="form-control" value="{{ $ctrl.certData.citizen_certificate }}">-->
-                        <!--<span class="input-group-btn">-->
-                            <!--<button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: citizen_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.citizen_certificate }}"></button>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-12" ng-if="$ctrl.certData.authentication_certificate">-->
-                    <!--<h4 class="text-info text-light">Authentication</h4>-->
-
-                    <!--<div class="input-group">-->
-                        <!--<input type="text" class="form-control" value="{{ $ctrl.certData.authentication_certificate }}">-->
-                        <!--<span class="input-group-btn">-->
-                            <!--<button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: authentication_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.authentication_certificate }}"></button>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-12" ng-if="$ctrl.certData.non_repudiation_certificate">-->
-                    <!--<h4 class="text-info text-light">Non Repudiation</h4>-->
-
-                    <!--<div class="input-group">-->
-                        <!--<input type="text" class="form-control" value="{{ $ctrl.certData.non_repudiation_certificate }}">-->
-                        <!--<span class="input-group-btn">-->
-                            <!--<button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: non_repudiation_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.non_repudiation_certificate }}"></button>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-12" ng-if="$ctrl.certData.rrn_certificate">-->
-                    <!--<h4 class="text-info text-light">RRN</h4>-->
-
-                    <!--<div class="input-group">-->
-                        <!--<input type="text" class="form-control" value="{{ $ctrl.certData.rrn_certificate }}">-->
-                        <!--<span class="input-group-btn">-->
-                            <!--<button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: rrn_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.rrn_certificate }}"></button>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <!--<div class="certificates col-sm-12">-->
-                <!--<span class="size-h3 text-primary">National Register</span>-->
-                <!--<div class="col-sm-12" ng-if="$ctrl.rnData.raw_data">-->
-                    <!--<h4 class="text-info text-light">Raw Data</h4>-->
-
-                    <!--<div class="input-group">-->
-                        <!--<input type="text" class="form-control" value="{{ $ctrl.rnData.raw_data }}">-->
-                        <!--<span class="input-group-btn">-->
-                            <!--<button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: raw_data']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.rnData.raw_data }}"></button>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-12" ng-if="$ctrl.rnData.signature">-->
-                    <!--<h4 class="text-info text-light">Signature</h4>-->
-
-                    <!--<div class="input-group">-->
-                        <!--<input type="text" class="form-control" value="{{ $ctrl.rnData.signature }}">-->
-                        <!--<span class="input-group-btn">-->
-                            <!--<button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: signature']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.rnData.signature }}"></button>-->
-                        <!--</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-
-        <!--</div>-->
-    <!--</div>-->
+        <piv-card card-data="$ctrl.cardData"></piv-card>
+    </div>
 
 </div>

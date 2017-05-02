@@ -6,59 +6,41 @@
         bindings: {
             cardData: '<'
         },
-        controller: function ($uibModal, $stateParams, T1C, Analytics) {
+        controller: function ($uibModal, $stateParams, T1C) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.pinStatus = 'idle';
-            };
+                controller.needPin = true;
 
-            controller.checkPin = () => {
-                Analytics.trackEvent('button', 'click', 'PIN check clicked');
-                let modal = $uibModal.open({
-                    templateUrl: "views/readmycards/modals/check-pin.html",
-                    resolve: {
-                        readerId: () => {
-                            return $stateParams.readerId
-                        },
-                        pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
-                                return res.data.pinpad;
-                            })
-                        },
-                        plugin: () => {
-                            return T1C.piv;
-                        }
-                    },
-                    backdrop: 'static',
-                    controller: 'PivPinCheckCtrl'
-                });
-
-                modal.result.then(function () {
-                    Analytics.trackEvent('beid', 'pin-correct', 'Correct PIN entered');
-                    controller.pinStatus = 'valid';
-                }, function (err) {
-                    Analytics.trackEvent('beid', 'pin-incorrect', 'Incorrect PIN entered');
-                    switch (err.code) {
-                        case 111:
-                            controller.pinStatus = '4remain';
-                            break;
-                        case 112:
-                            controller.pinStatus = '3remain';
-                            break;
-                        case 103:
-                            controller.pinStatus = '2remain';
-                            break;
-                        case 104:
-                            controller.pinStatus = '1remain';
-                            break;
-                        case 105:
-                            Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
-                            controller.pinStatus = 'blocked';
-                            break;
+                // check type of reader
+                T1C.core.getReader($stateParams.readerId).then(res => {
+                    controller.pinpad = res.data.pinpad;
+                    if (!controller.pinpad) {
+                        controller.pincode = { value: '' };
+                    }
+                    else {
+                        // launch data request
+                        getAllData(null);
                     }
                 });
             };
+
+            controller.submitPin = () => {
+                controller.needPin = false;
+                getAllData(controller.pincode.value);
+            };
+
+            function getAllData(pin) {
+                controller.readingData = true;
+                T1C.piv.printedInformation($stateParams.readerId, pin).then(res => {
+                    console.log(res);
+                    controller.cardData = res.data;
+                    controller.pinStatus = 'valid';
+                    controller.readingData = false;
+                });
+            }
+
         }
     };
 

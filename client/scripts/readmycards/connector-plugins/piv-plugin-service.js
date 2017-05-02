@@ -5,7 +5,7 @@
         .service('PIV', PIV);
 
 
-    function PIV($q, Core, _) {
+    function PIV($q, $timeout, Core, _) {
 
         // === T1C Methods ===
         // --- PIV ---
@@ -44,44 +44,33 @@
             return wrapper(readerId, allKeyRefs.name);
         }
         
-        function printedInformation(readerId) {
-            // return wrapper(readerId, printedInformation.name);
+        function printedInformation(readerId, pin) {
+            let data = {};
+            if (pin) data.pin = pin;
+            return dataWrapper(readerId, printedInformation.name, data);
 
-            return $q.when(angular.fromJson({
-                "data": {
-                    "printed_information": {
-                        "name": "Thibaut Delhaye",
-                        "employee_affiliation": "Chief Executive Officer",
-                        "expiration_date": "2020DEC01",
-                        "agency_card_serial_number": "123456",
-                        "issuer_identification": "T1T",
-                        "organization_affiliation_line_1": "Trust1Team BVBA",
-                        "organization_affiliation_line_2": "Ghent Belgium"
-                    }
-                },
-                "success": true
-            }));
-
-
-
-            // return $q.when(angular.fromJson({
-            //     "data": {
-            //         "printed_information": {
-            //             "name": "John Doe",
-            //             "employee_affiliation": "Chief Operating Officer",
-            //             "expiration_date": "2017DEC01",
-            //             "agency_card_serial_number": "123456",
-            //             "issuer_identification": "Issuer",
-            //             "organization_affiliation_line_1": "Trust1Team BVBA",
-            //             "organization_affiliation_line_2": "Ghent Belgium"
-            //         }
-            //     },
-            //     "success": true
-            // }));
+            // return $q.when($timeout(function () {}, 2000)).then(function () {
+            //     return $q.when(angular.fromJson({
+            //         "data": {
+            //             "printed_information": {
+            //                 "name": "Thibaut Delhaye",
+            //                 "employee_affiliation": "Chief Executive Officer",
+            //                 "expiration_date": "2020DEC01",
+            //                 "agency_card_serial_number": "123456",
+            //                 "issuer_identification": "T1T",
+            //                 "organization_affiliation_line_1": "Trust1Team BVBA",
+            //                 "organization_affiliation_line_2": "Ghent Belgium"
+            //             }
+            //         },
+            //         "success": true
+            //     }));
+            // });
         }
         
-        function facialImage(readerId) {
-            return wrapper(readerId, facialImage.name);
+        function facialImage(readerId, pin) {
+            let data = {};
+            if (pin) data.pin = pin;
+            return wrapper(readerId, facialImage.name, data);
         }
         
         function authenticationCertificate(readerId) {
@@ -103,10 +92,10 @@
         }
 
         function verifyPin(readerId, pin) {
-            return $q.when({ success: true });
-            // let data = { };
-            // if (pin) data.pin = pin;
-            // return dataWrapper(readerId, verifyPin.name, data);
+            // return $q.when({ success: true });
+            let data = { };
+            if (pin) data.pin = pin;
+            return dataWrapper(readerId, verifyPin.name, data);
         }
 
         function allAlgoRefsForAuthentication(readerId) {

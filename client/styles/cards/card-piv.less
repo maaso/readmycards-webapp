@@ -1,5 +1,25 @@
 #piv-viz {
 
+  .pin-required {
+    margin-top: 20px;
+
+    .info-text {
+      color: #666;
+      font-size: 1.4em;
+      font-weight: 300;
+    }
+
+    .pinpad {
+      display: flex;
+      justify-content: center;
+      background: #fff;
+
+      rmc-keypad {
+        max-width: 500px;
+      }
+    }
+  }
+
   .piv-card {
     font-family: "Alte Haas Grotesk", sans-serif;
     @chip-width: 132px;

@@ -1000,9 +1000,9 @@ var GCLLib =
         var PIV_ALL_CERTIFICATES = "/certificates";
         var PIV_CERT_AUTHENTICATION = PIV_ALL_CERTIFICATES + "/authentication";
         var PIV_CERT_SIGNING = PIV_ALL_CERTIFICATES + "/signing";
-        var LUX_VERIFY_PIN = "/verify-pin";
-        var LUX_SIGN_DATA = "/sign";
-        var LUX_AUTHENTICATE = "/authenticate";
+        var PIV_VERIFY_PIN = "/verify-pin";
+        var PIV_SIGN_DATA = "/sign";
+        var PIV_AUTHENTICATE = "/authenticate";
         var PIV = (function () {
             function PIV(url, connection, reader_id) {
                 this.url = url;
@@ -1028,11 +1028,19 @@ var GCLLib =
             PIV.prototype.allAlgoRefsForSigning = function (callback) {
                 this.connection.get(this.resolvedReaderURI() + PIV_ALL_SIGN_ALGOS, callback);
             };
-            PIV.prototype.printedInformation = function (callback) {
-                this.connection.get(this.resolvedReaderURI() + PIV_PRINTED_INFORMATION, callback);
+            PIV.prototype.printedInformation = function (body, callback) {
+                var _req = {};
+                if (body.pin) {
+                    _req.pin = body.pin;
+                }
+                this.connection.post(this.resolvedReaderURI() + PIV_PRINTED_INFORMATION, _req, callback);
             };
-            PIV.prototype.facialImage = function (callback) {
-                this.connection.get(this.resolvedReaderURI() + PIV_FACIAL_IMAGE, callback);
+            PIV.prototype.facialImage = function (body, callback) {
+                var _req = {};
+                if (body.pin) {
+                    _req.pin = body.pin;
+                }
+                this.connection.post(this.resolvedReaderURI() + PIV_FACIAL_IMAGE, _req, callback);
             };
             PIV.prototype.allData = function (filters, callback) {
                 if (filters && filters.length > 0) {
@@ -1057,7 +1065,7 @@ var GCLLib =
                 if (body.pin) {
                     _req.pin = body.pin;
                 }
-                this.connection.post(this.resolvedReaderURI() + LUX_VERIFY_PIN, _req, callback);
+                this.connection.post(this.resolvedReaderURI() + PIV_VERIFY_PIN, _req, callback);
             };
             PIV.prototype.signData = function (body, callback) {
                 var _req = {};
@@ -1068,7 +1076,7 @@ var GCLLib =
                         _req.pin = body.pin;
                     }
                 }
-                this.connection.post(this.resolvedReaderURI() + LUX_SIGN_DATA, _req, callback);
+                this.connection.post(this.resolvedReaderURI() + PIV_SIGN_DATA, _req, callback);
             };
             PIV.prototype.authenticate = function (body, callback) {
                 var _req = {};
@@ -1079,7 +1087,7 @@ var GCLLib =
                         _req.pin = body.pin;
                     }
                 }
-                this.connection.post(this.resolvedReaderURI() + LUX_AUTHENTICATE, _req, callback);
+                this.connection.post(this.resolvedReaderURI() + PIV_AUTHENTICATE, _req, callback);
             };
             return PIV;
         }());
