@@ -245,9 +245,7 @@
                 else {
                     controller.pollingCard = false;
                     controller.pollTimeout = false;
-                    _.forEach(result.data, function(reader) {
-                        Analytics.trackEvent('card', 'insert', 'Card inserted: ' + reader.card.atr);
-                    });
+                    Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
                     pollIterations = 0;
                     $scope.$apply();
                     // if ($scope.readers.length > 1) toastr.success('Readers found!');
