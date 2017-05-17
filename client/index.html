@@ -61,7 +61,8 @@ identité, fedict middleware alternative, ing card reader, belfius card reader, 
 <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
 <script src="../bower_components/keycloak/dist/keycloak.js"></script>
 <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-<script src="../bower_components/trust1connector/dist/GCLLib.js"></script>
+<!--<script src="../bower_components/trust1connector/dist/GCLLib.js"></script>-->
+<script src="scripts/plugins/GCLLib.js"></script>
 <script src="../bower_components/lodash/lodash.js"></script>
 <script src="../bower_components/moment/moment.js"></script>
 <script src="../bower_components/ngKeypad/dist/ng-keypad.min.js"></script>
@@ -71,6 +72,7 @@ identité, fedict middleware alternative, ing card reader, belfius card reader, 
 <script src="../bower_components/ngclipboard/dist/ngclipboard.js"></script>
 <script src="../bower_components/base-64/base64.js"></script>
 <script src="../bower_components/utf8/utf8.js"></script>
+<script src="../bower_components/ngFitText/dist/ng-FitText.min.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -95,15 +97,16 @@ identité, fedict middleware alternative, ing card reader, belfius card reader, 
 <script src="scripts/readmycards/connector-plugins/beid-plugin.service.js"></script>
 <script src="scripts/readmycards/connector-plugins/emv-plugin.service.js"></script>
 <script src="scripts/readmycards/connector-plugins/luxeid-plugin.service.js"></script>
+<script src="scripts/readmycards/connector-plugins/luxtrust-plugin.service.js"></script>
 <script src="scripts/readmycards/connector-plugins/mobib-plugin.service.js"></script>
 <script src="scripts/readmycards/connector-plugins/ocv-plugin.service.js"></script>
+<script src="scripts/readmycards/connector-plugins/piv-plugin-service.js"></script>
 
 <script src="scripts/cards/cards.module.js"></script>
 <script src="scripts/cards/cards.component.js"></script>
 
 <script src="scripts/cards/beid/beid.module.js"></script>
 <script src="scripts/cards/beid/beid.component.js"></script>
-<script src="scripts/cards/beid/beid.controller.js"></script>
 <script src="scripts/cards/beid/beid.service.js"></script>
 
 <script src="scripts/cards/emv/emv.module.js"></script>
@@ -116,6 +119,14 @@ identité, fedict middleware alternative, ing card reader, belfius card reader, 
 <script src="scripts/cards/mobib/mobib.module.js"></script>
 <script src="scripts/cards/mobib/mobib.component.js"></script>
 
+<script src="scripts/cards/piv/piv.module.js"></script>
+<script src="scripts/cards/piv/piv.component.js"></script>
+<script src="scripts/cards/piv/piv.controller.js"></script>
+<script src="scripts/cards/piv/piv.service.js"></script>
+
+<script src="scripts/summary/summary.module.js"></script>
+<script src="scripts/summary/summary.controller.js"></script>
+<script src="scripts/summary/summary.service.js"></script>
 <!-- endbuild -->
 
 </body>

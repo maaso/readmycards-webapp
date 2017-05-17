@@ -8,6 +8,7 @@ const q = require('q');
 const miss = require('mississippi2');
 const _ = require('lodash');
 const signboxApi = require(__base + "server/components/signbox.service");
+const fs = require('fs');
 
 
 function generateSummaryToSign(data, jwt) {
@@ -24,20 +25,14 @@ function generateSummaryToSign(data, jwt) {
         .on('finished', conversion => {
             miss.toPromise(request.get('http:' + conversion.output.url)).then(buffer => {
 
-                let fileName = data.rnData.name + '_' + _.join(_.split(data.rnData.first_names, ' '), '_') + '_'
-                    + data.rnData.third_name + '_summary.pdf';
+                let fileName = _.join(_.split(data.biometric.lastName, ' '), '_') + '_' + _.join(_.split(data.biometric.firstName, ' '), '_')
+                    + '_summary.pdf';
 
-                signboxApi.uploadDocument(buffer, fileName, 'application/pdf', jwt).then(res => {
-                    let parsedBody = JSON.parse(res);
-
-                    signboxApi.assignDocumentToWorkflow(parsedBody[0].uuid, jwt).then(result => {
-                        return summaryPromise.resolve(result);
-                    }, err => {
-                        return summaryPromise.reject(err);
-                    });
+                uploadAndAssign(buffer, fileName, 'application/pdf', jwt).then(res => {
+                    return summaryPromise.resolve(res);
                 }, err => {
                     return summaryPromise.reject(err);
-                });
+                })
             }, err => {
                 return summaryPromise.reject(err);
             });
@@ -46,7 +41,31 @@ function generateSummaryToSign(data, jwt) {
     return summaryPromise.promise;
 }
 
+function uploadXML(jwt) {
+    let xmlUpload = q.defer();
+
+    miss.toPromise(fs.createReadStream('example.xml')).then(buffer => {
+        uploadAndAssign(buffer, 'example.xml', 'text/xml', jwt).then(result => {
+            return xmlUpload.resolve(result);
+        }, err => {
+            return xmlUpload.reject(err);
+        })
+    }, err => {
+        return xmlUpload.reject(err);
+    });
+
+    return xmlUpload.promise;
+}
+
+function uploadAndAssign(fileBuffer, fileName, fileType, jwt, skipConversion) {
+    return signboxApi.uploadDocument(fileBuffer, fileName, fileType, jwt, skipConversion).then(res => {
+        let parsedBody = JSON.parse(res);
+        return signboxApi.assignDocumentToWorkflow(parsedBody[0].uuid, jwt)
+    });
+}
+
 
 module.exports = {
-    generateSummaryToSign: generateSummaryToSign
+    generateSummaryToSign: generateSummaryToSign,
+    uploadXML: uploadXML
 };

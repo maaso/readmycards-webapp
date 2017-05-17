@@ -9,7 +9,7 @@
         .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, Mobib, OCV, _) {
+    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, LuxTrust, Mobib, OCV, PIV, _) {
 
         // === T1C Methods ===
         // --- Core ---
@@ -24,34 +24,18 @@
         this.emv = EMV;
         // --- LuxId ---
         this.luxId = LuxId;
+        // --- LuxTrust ---
+        this.luxtrust = LuxTrust;
         // --- Mobib ---
         this.mobib = Mobib;
+        // --- PIV ---
+        this.piv = PIV;
         // --- Utility ---
-        this.isCardTypeBeId = isCardTypeBeId;
         this.readAllData = readAllData;
 
         /// ==============================
         /// ===== UTILITY FUNCTIONS ======
         /// ==============================
-
-        // Check if the car
-        function isCardTypeBeId(readerId) {
-            let typeDeferred = $q.defer();
-            // TODO user direct reader access when available
-            Core.getReaders().then(function (result) {
-                let reader = _.find(result.data, function (reader) {
-                    return reader.id === readerId;
-                });
-
-                if (reader.card) {
-                    if (reader.card.description[0] === 'Belgium Electronic ID card') typeDeferred.resolve(true);
-                    else typeDeferred.resolve(false);
-                } else {
-                    typeDeferred.reject('No card present in reader');
-                }
-            });
-            return typeDeferred.promise;
-        }
 
         function readAllData(readerId, card) {
             switch (CardService.detectType(card)) {
@@ -62,6 +46,8 @@
                 case 'MOBIB':
                 case 'MOBIB Basic':
                     return Mobib.allData(readerId);
+                case 'LuxTrust':
+                    return LuxTrust.allData(readerId);
                 default:
                     return $q.when('Not Supported');
             }
@@ -184,22 +170,24 @@
 
         function detectType(card) {
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
-                switch (card.description[0]) {
-                    case 'Belgium Electronic ID card':
-                        return 'BeID';
-                    case 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)':
-                        return 'LuxID';
-                    case 'MOBIB Card':
-                        return 'MOBIB';
-                    case 'MOBIB Basic (Transport)':
-                        return 'MOBIB Basic';
-                    case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
-                        return 'EMV';
-                    default:
-                        return 'Unknown';
-                }
+                if (findDescription( card.description, 'Belgium Electronic ID card')) { return 'BeID'; }
+                else if (findDescription(card.description, 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)')) { return 'LuxID'; }
+                else if (findDescription(card.description, 'LuxTrust card')) { return 'LuxTrust'; }
+                else if (findDescription(card.description, 'Juridic Person\'s Token (PKI)')) { return 'LuxOTP'; }
+                else if (findDescription(card.description, 'MOBIB Basic')) { return 'MOBIB Basic'; }
+                else if (findDescription(card.description, 'MOBIB')) { return 'MOBIB'; }
+                else if (findDescription(card.description, 'Mastercard')) { return 'EMV'; }
+                else if (findDescription(card.description, 'PIV')) { return 'PIV'; }
+                else if (findDescription(card.description, 'CIV')) { return 'PIV'; }
+                else { return 'Unknown'; }
             } else {
                 return 'Unknown';
+            }
+
+            function findDescription(descriptions, toFind) {
+                return !!_.find(descriptions, desc => {
+                    return desc.indexOf(toFind) > -1;
+                })
             }
         }
     }
@@ -228,7 +216,7 @@
             function createPayload(card, description) {
                 let payload = [];
                 _.forEach(card, function (value, key) {
-                    if (key != 'atr') payload.push({ name: key, value: value });
+                    if (key !== 'atr') payload.push({ name: key, value: value });
                 });
                 if (description) payload.push({ name: 'user description', value: description });
                 return payload;
