@@ -9,34 +9,36 @@
         controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C, Analytics) {
             let controller = this;
             //
-            // controller.$onInit = () => {
-            //     controller.certStatus = 'checking';
-            //     controller.pinStatus = 'idle';
-            //     const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
-            //     T1C.beid.getAllCerts($stateParams.readerId, filter).then(res => {
-            //         let validationReq = {
-            //             certificateChain: [
-            //                 { order: 0, certificate: res.data.authentication_certificate },
-            //                 { order: 1, certificate: res.data.citizen_certificate },
-            //                 { order: 2, certificate: res.data.root_certificate },
-            //             ]
-            //         };
-            //         Analytics.trackEvent('beid', 'cert-check', 'Start certificate check');
-            //         T1C.ocv.validateCertificateChain(validationReq).then(res => {
-            //             if (res.crlResponse.status && res.ocspResponse.status) {
-            //                 Analytics.trackEvent('beid', 'cert-valid', 'Certificates are valid');
-            //                 controller.certStatus = 'valid';
-            //             }
-            //             else {
-            //                 Analytics.trackEvent('beid', 'cert-invalid', 'Certificates are not valid');
-            //                 controller.certStatus = 'invalid';
-            //             }
-            //         }, () => {
-            //             Analytics.trackEvent('beid', 'cert-error', 'Error occurred while checking certificate validity');
-            //             controller.certStatus = 'error';
-            //         });
-            //     });
-            // };
+            controller.$onInit = () => {
+                controller.certStatus = 'checking';
+                controller.pinStatus = 'idle';
+                controller.doCollapse = true;
+
+                // const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
+                // T1C.beid.getAllCerts($stateParams.readerId, filter).then(res => {
+                //     let validationReq = {
+                //         certificateChain: [
+                //             { order: 0, certificate: res.data.authentication_certificate },
+                //             { order: 1, certificate: res.data.citizen_certificate },
+                //             { order: 2, certificate: res.data.root_certificate },
+                //         ]
+                //     };
+                //     Analytics.trackEvent('beid', 'cert-check', 'Start certificate check');
+                //     T1C.ocv.validateCertificateChain(validationReq).then(res => {
+                //         if (res.crlResponse.status && res.ocspResponse.status) {
+                //             Analytics.trackEvent('beid', 'cert-valid', 'Certificates are valid');
+                //             controller.certStatus = 'valid';
+                //         }
+                //         else {
+                //             Analytics.trackEvent('beid', 'cert-invalid', 'Certificates are not valid');
+                //             controller.certStatus = 'invalid';
+                //         }
+                //     }, () => {
+                //         Analytics.trackEvent('beid', 'cert-error', 'Error occurred while checking certificate validity');
+                //         controller.certStatus = 'error';
+                //     });
+                // });
+            };
             //
             // controller.checkPin = () => {
             //     Analytics.trackEvent('button', 'click', 'PIN check clicked');
@@ -76,20 +78,10 @@
             //     });
             // };
             //
-            // controller.toggleCerts = () => {
-            //     Analytics.trackEvent('button', 'click', 'Extended info clicked');
-            //     if (controller.certData) {
-            //         controller.certData = undefined;
-            //     } else {
-            //         if (!controller.loadingCerts) {
-            //             controller.loadingCerts = true;
-            //             T1C.beid.getAllCerts($stateParams.readerId).then(res => {
-            //                 controller.loadingCerts = false;
-            //                 controller.certData = res.data;
-            //             });
-            //         }
-            //     }
-            // };
+            controller.toggleCerts = () => {
+                Analytics.trackEvent('button', 'click', 'Extended info clicked');
+                controller.doCollapse = !controller.doCollapse;
+            };
             //
             // controller.downloadSummary = () => {
             //     Analytics.trackEvent('button', 'click', 'Print button clicked');
