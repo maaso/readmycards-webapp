@@ -6,7 +6,7 @@
         bindings: {
             cardData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeUtils, T1C, Analytics) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -56,7 +56,7 @@
                                 verifyPin: function verifyPin(readerId, pin) {
                                     let data = {};
                                     if (pin) data.pin = pin;
-                                    return T1C.getConnector().oberthur(readerId).verifyPin(data);
+                                    return Core.getConnector().oberthur(readerId).verifyPin(data);
                                 }
                             };
                         }
