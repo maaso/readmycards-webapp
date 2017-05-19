@@ -1,0 +1,32 @@
+<div id="piv-viz" class="clearfix top-info">
+
+    <div class="pin-required text-center" ng-if="$ctrl.needPin">
+        <p class="info-text">Access to the PIV card is secured with a PIN code.<br>Please provide your PIN to continue.</p>
+
+        <div class="text-center waiting-for-pin" ng-if="$ctrl.pinpad">
+            <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
+            <p class="spinner-text text-thin">Waiting for response from reader...</p>
+            <h3 class="text-primary text-thin">Use your reader's pinpad to enter the PIN code.</h3>
+        </div>
+
+        <div class="pinpad" ng-if="!$ctrl.pinpad">
+            <rmc-keypad pincode="$ctrl.pincode" submit-func="$ctrl.submitPin"></rmc-keypad>
+        </div>
+    </div>
+
+    <div class="text-center waiting-for-pin" ng-if="$ctrl.readingData">
+        <p class="spinner"><i class="fa fa-4x fa-spinner fa-pulse"></i></p>
+        <p class="spinner-text text-thin">Reading data...</p>
+    </div>
+
+
+    <div ng-if="!$ctrl.needPin && !$ctrl.readingData">
+        <div class="status-wrapper">
+            <!--<beid-certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></beid-certificate-status>-->
+            <piv-pin-check-status status="$ctrl.pinStatus"></piv-pin-check-status>
+        </div>
+
+        <piv-card card-data="$ctrl.cardData"></piv-card>
+    </div>
+
+</div>

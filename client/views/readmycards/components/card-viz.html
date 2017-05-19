@@ -52,6 +52,8 @@
             <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
 
             <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
+            <lux-trust-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxTrust'"></lux-trust-visualizer>
+            <lux-otp-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxOTP'"></lux-otp-visualizer>
 
             <beid-visualizer rn-data="$ctrl.cardData.rn"
                              address-data="$ctrl.cardData.address"
@@ -59,6 +61,8 @@
                              cert-data="$ctrl.cardData"
                              ng-if="$ctrl.cardType === 'BeID'"></beid-visualizer>
             <emv-visualizer pan-data="$ctrl.cardData.pan" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
+
+            <piv-visualizer ng-if="$ctrl.cardType === 'PIV'" card-data="$ctrl.cardData"></piv-visualizer>
         </div>
     </div>
 </div>
