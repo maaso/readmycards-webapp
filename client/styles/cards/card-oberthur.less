@@ -1,0 +1,88 @@
+#oberthur-viz {
+
+
+  .personal-info {
+    margin-top: 30px;
+
+    #address {
+    }
+  }
+
+  .certificates-toggle {
+    margin-top: 50px;
+    font-size: 1.2em;
+    font-weight: 300;
+    span {
+      color: @gray-light;
+
+      &:hover {
+        color: @t1t-green-dark;
+      }
+    }
+  }
+
+  .certificates {
+    margin-top: 40px;
+
+    &:first-of-type {
+      margin-top: 20px;
+    }
+
+    > div {
+      margin-bottom: 20px;
+    }
+
+    input {
+      user-select: text;
+
+      padding: 6px 6px 6px 2px;
+    }
+
+    .input-group {
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+  }
+}
+
+
+.cert-status {
+  margin-right: 5px;
+}
+
+.pin-check-status {
+  margin-left: 5px;
+}
+
+.oberthur-card {
+  font-family: Arial, sans-serif;
+  @chip-width: 132px;
+
+
+  .labels {
+    font-size: 0.75em;
+  }
+
+  .values {
+    font-size: 0.85em;
+    font-weight: bold;
+  }
+
+  .section {
+    padding-top: 5px;
+  }
+
+  .front {
+    position: relative;
+
+    .oberthur-logo-wrapper {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+
+      .oberthur-logo {
+        min-width: 300px;
+      }
+    }
+  }
+
+}
