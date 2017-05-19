@@ -6,7 +6,7 @@
         bindings: {
             cardData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, Analytics) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, Core, OberthurUtils, T1C, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -47,9 +47,7 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
-                                return res.data.pinpad;
-                            })
+                            return false;
                         },
                         plugin: () => {
                             return {
@@ -88,6 +86,36 @@
             controller.toggleCerts = () => {
                 Analytics.trackEvent('button', 'click', 'Extended info clicked');
                 controller.doCollapse = !controller.doCollapse;
+            };
+
+            controller.sign = () => {
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/xml-download.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            // Oberthur cards can have very long pins, incompatible with pin card readers
+                            return false;
+                        },
+                        needPinToGenerate: () => {
+                            return false;
+                        },
+                        util: () => {
+                            return OberthurUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'XMLDownloadCtrl',
+                    size: 'lg'
+                });
+
+                modal.result.then(function () {
+
+                }, function (err) {
+
+                });
             };
 
             // controller.downloadSummary = () => {

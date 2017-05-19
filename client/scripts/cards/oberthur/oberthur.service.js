@@ -4,101 +4,75 @@
     angular.module('app.cards.oberthur')
         .service('OberthurUtils', OberthurUtils);
 
-    function OberthurUtils($http, $q, CheckDigit, T1C, _) {
+    function OberthurUtils($http, $q, Core) {
+        this.generateXMLToSign = generateXMLToSign;
         this.signDocument = signDocumentWithPin;
 
-        let rootCertificate, citizenCertificate, nonRepudiationCertificate, fullName;
+        let rootCertificate, authenticationCertificate, signingCertificate;
+
+        function generateXMLToSign() {
+            // TODO update urls
+            return $http.post('api/cards/lux/xmltosign').then(res => {
+                return res.data;
+            })
+        }
 
         function signDocumentWithPin(documentId, readerId, hasPinpad, pin) {
-            citizenCertificate = '';
-            fullName = '';
-            nonRepudiationCertificate = '';
+            signingCertificate = '';
+            authenticationCertificate = '';
             rootCertificate = '';
 
             let signing = $q.defer();
 
-            readRnData(readerId)
-                .then(rootCert)
-                .then(citizenCert)
-                .then(nonRepudiationCert)
-                .then(function () {
-                    return $q.when(documentId);
-                })
-                .then(dataToSign)
-                .then(function (dataToSign) {
-                    if (hasPinpad) return $q.when({ readerId: readerId, pin: undefined, dataToSign: dataToSign });
-                    else return $q.when({ readerId: readerId, pin: pin, dataToSign: dataToSign });
-                })
-                .then(signWithEid)
-                .then(function (signedData) {
-                    return $q.when({ documentId: documentId, signedData: signedData });
-                })
-                .then(workflowSign)
-                .then(function () {
-                    citizenCertificate = '';
-                    fullName = '';
-                    nonRepudiationCertificate = '';
-                    rootCertificate = '';
-                    signing.resolve();
-                });
+            prepareSign(readerId, pin).then(function () {
+                return $q.when(documentId);
+            })
+                                      .then(dataToSign)
+                                      .then(function (dataToSign) {
+                                          if (hasPinpad) return $q.when({ readerId: readerId, pin: undefined, dataToSign: dataToSign });
+                                          else return $q.when({ readerId: readerId, pin: pin, dataToSign: dataToSign });
+                                      })
+                                      .then(signWithEid)
+                                      .then(function (signedData) {
+                                          return $q.when({ documentId: documentId, signedData: signedData.data });
+                                      })
+                                      .then(workflowSign)
+                                      .then(function () {
+                                          signingCertificate = '';
+                                          authenticationCertificate = '';
+                                          rootCertificate = '';
+                                          signing.resolve();
+                                      });
 
             return signing.promise;
         }
 
         // OK
-        function readRnData(readerId) {
-            return T1C.beid.getRnData(readerId).then(function (result) {
-                fullName = result.data.first_names.split(" ", 1) + ' ' + result.data.name;
-                return readerId;
+        function prepareSign(readerId, pin) {
+            return Core.getConnector().oberthur(readerId).allData([]).then(function (result) {
+                rootCertificate = result.data.root_certificate;
+                authenticationCertificate = result.data.authentication_certificate;
+                signingCertificate = result.data.signing_certificate;
+                return { readerId: readerId, pin: pin };
             });
         }
 
         // OK
         function signWithGcl(readerId, pin, hash, algorithm) {
-            return T1C.beid.signData(readerId, pin, algorithm, hash).then(function (res) {
-                return res.data;
-            }, function (err) {
-                return $q.reject(err);
-            });
-        }
-
-        // OK
-        function rootCert(readerId) {
-            return T1C.beid.getRootCert(readerId).then(function (res) {
-                rootCertificate = res.data;
-                return readerId;
-            });
-        }
-
-        // OK
-        function citizenCert(readerId) {
-            return T1C.beid.getCitizenCert(readerId).then(function (res) {
-                citizenCertificate = res.data;
-                return readerId;
-            });
-        }
-
-        // OK
-        function nonRepudiationCert(readerId) {
-            return T1C.beid.getNonRepCert(readerId).then(function (res) {
-                nonRepudiationCertificate = res.data;
-                return readerId;
-            });
+            return Core.getConnector().oberthur(readerId).signData({ pin: pin, algorithm_reference: algorithm, data: hash});
         }
 
         // Needs proxy
         function dataToSign(documentId) {
-            return $http.post('api/cards/be/datatosign', {
+            // TODO update urls!
+            return $http.post('api/cards/lux/datatosign', {
                 docId: documentId,
-                signCertificate: nonRepudiationCertificate,
+                signCertificate: signingCertificate,
                 certificates: [
-                    nonRepudiationCertificate,
-                    citizenCertificate,
+                    authenticationCertificate,
                     rootCertificate
                 ],
-                additionalInformation: {
-                    name: fullName
-                }
+                additionalInformation: {}
             }).then(function (res) {
                 return res.data;
             })
@@ -114,73 +88,18 @@
 
         // Needs proxy
         function workflowSign(inputObj) {
-            return $http.post('api/cards/be/sign', {
+            return $http.post('api/cards/lux/sign', {
                 docId: inputObj.documentId,
-                signCertificate: nonRepudiationCertificate,
+                signCertificate: signingCertificate,
                 certificates: [
-                    nonRepudiationCertificate,
-                    citizenCertificate,
+                    authenticationCertificate,
                     rootCertificate
                 ],
                 signedData: inputObj.signedData,
-                additionalInformation: {
-                    name: fullName
-                }
+                additionalInformation: {}
             }).then(function (res) {
                 return res.data;
             });
-        }
-
-        function prepareSummaryData(rnData, addressData, picData) {
-            let mrs = constructMachineReadableStrings(rnData);
-            return {
-                rnData: rnData,
-                address: addressData,
-                pic: picData,
-                dob: moment('' + _.join(_.takeRight(rnData.birth_date, 4), '') + rnData.national_number.substr(2, 4), 'YYYYMMDD').format('MMMM D, YYYY'),
-                formattedCardNumber: formatCardNumber(rnData.card_number),
-                formattedRRNR: formatRRNR(rnData.national_number),
-                machineReadable1: mrs[0],
-                machineReadable2: mrs[1],
-                machineReadable3: mrs[2],
-                validFrom: moment(rnData.card_validity_date_begin, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                validUntil: moment(rnData.card_validity_date_end, 'DD.MM.YYYY').format('MMMM D, YYYY'),
-                printDate: moment().format('MMMM D, YYYY'),
-                printedBy: '@@name v@@version'
-            };
-        }
-
-        function constructMachineReadableStrings(rnData) {
-            let mrs = [];
-            // First line
-            let prefix = 'ID';
-            let first = 'BEL' + rnData.card_number.substr(0, 9) + '<' + rnData.card_number.substr(9);
-            first += CheckDigit.calc(first);
-            first = pad(prefix + first);
-            mrs.push(first.toUpperCase());
-
-            // Second line
-            let second = rnData.national_number.substr(0, 6);
-            second += CheckDigit.calc(second);
-            second += rnData.sex;
-            let validity = rnData.card_validity_date_end.substr(8,2) + rnData.card_validity_date_end.substr(3,2) + rnData.card_validity_date_end.substr(0,2);
-            second += validity + CheckDigit.calc(validity);
-            second += rnData.nationality.substr(0,3);
-            second += rnData.national_number;
-            let finalCheck = rnData.card_number.substr(0,10) + rnData.national_number.substr(0,6) + validity + rnData.national_number;
-            second += CheckDigit.calc(finalCheck);
-            second = pad(second);
-            mrs.push(second.toUpperCase());
-
-            // Third line
-            let third = _.join(_.split(rnData.name,' '),'<') + '<<' + _.join(_.split(rnData.first_names,' '),'<') + '<' + _.join(_.split(rnData.third_name,' '),'<');
-            third = pad(third);
-            mrs.push(third.toUpperCase());
-            return mrs;
-        }
-
-        function pad(string) {
-            return _.padEnd(_.truncate(string, { length: 30, omission: '' }), 30, '<');
         }
     }
 
