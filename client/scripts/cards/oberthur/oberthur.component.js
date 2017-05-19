@@ -52,11 +52,8 @@
                             })
                         },
                         plugin: () => {
-                            return function() {
-                                this. verifyPin = verifyPin;
-
-                                // Verify PIN code
-                                function verifyPin(readerId, pin) {
+                            return {
+                                verifyPin: function verifyPin(readerId, pin) {
                                     let data = {};
                                     if (pin) data.pin = pin;
                                     return T1C.getConnector().oberthur(readerId).verifyPin(data);
