@@ -9,7 +9,7 @@
         .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, LuxTrust, Mobib, OCV, PIV, _) {
+    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, LuxTrust, Mobib, OCV, PIV,DNIe, _) {
 
         // === T1C Methods ===
         // --- Core ---
@@ -30,6 +30,8 @@
         this.mobib = Mobib;
         // --- PIV ---
         this.piv = PIV;
+        // --- DNIe ---
+        this.dnie = DNIe;
         // --- Utility ---
         this.readAllData = readAllData;
 
@@ -48,6 +50,9 @@
                     return Mobib.allData(readerId);
                 case 'LuxTrust':
                     return LuxTrust.allData(readerId);
+                case 'DNIe':
+                    console.log("DNIE!");
+                    return DNIe.allData(readerId);
                 default:
                     return $q.when('Not Supported');
             }
@@ -171,7 +176,7 @@
         function detectType(card) {
             if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
                 if (findDescription( card.description, 'Belgium Electronic ID card')) { return 'BeID'; }
-                else if (findDescription(card.description, 'DNIe')) { return 'DNIe'; }
+                else if (findDescription(card.description, 'DNI electronico')) {return 'DNIe'; }
                 else if (findDescription(card.description, 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)')) { return 'LuxID'; }
                 else if (findDescription(card.description, 'LuxTrust card')) { return 'LuxTrust'; }
                 else if (findDescription(card.description, 'Juridic Person\'s Token (PKI)')) { return 'LuxOTP'; }

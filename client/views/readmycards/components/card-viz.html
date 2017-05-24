@@ -51,7 +51,7 @@
         <div class="viz-container">
             <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
 
-            <dni-visualizer ng-if="$ctrl.cardType === 'DNIe'" card-data="$ctrl.cardData"></dni-visualizer>
+            <dnie-visualizer ng-if="$ctrl.cardType === 'DNIe'" card-data="$ctrl.cardData"></dnie-visualizer>
 
             <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
             <lux-trust-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxTrust'"></lux-trust-visualizer>

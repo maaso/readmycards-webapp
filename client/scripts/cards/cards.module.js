@@ -3,7 +3,7 @@
 
     angular.module('app.cards',
         [ 'app.cards.beid',
-          'app.cards.dni',
+          'app.cards.dnie',
           'app.cards.emv',
           'app.cards.lux',
           'app.cards.mobib',

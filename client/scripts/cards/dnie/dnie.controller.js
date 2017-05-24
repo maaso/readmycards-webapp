@@ -1,11 +1,11 @@
 (function () {
     'use strict';
 
-    angular.module('app.cards.dni')
-        .controller('DBISummaryDownloadCtrl', summaryDlCtrl);
+    angular.module('app.cards.dnie')
+        .controller('DNieSummaryDownloadCtrl', summaryDlCtrl);
 
 
-    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, BeUtils, FileSaver, Blob, EVENTS, Analytics, _) {
+    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, DNIeUtils, FileSaver, Blob, EVENTS, Analytics, _) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
@@ -37,7 +37,7 @@
 
         function doDownload() {
             Analytics.trackEvent('print', 'download', 'Document downloaded');
-            BeUtils.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
+            DNIeUtils.downloadDocument(generatedFile.origFilename).then(function (signedPdf) {
                 handleDownload(signedPdf.data, generatedFile.origFilename);
                 ok();
             });
@@ -64,7 +64,7 @@
             $scope.enterPin = false;
             $scope.pinText = "Signing...";
             Analytics.trackEvent('print', 'pin', 'PIN entered');
-            BeUtils.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+            DNIeUtils.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
                 $scope.currentStep = 3;
                 $scope.pinText = 'Signed';
                 $scope.downloadText = 'Download Ready!'
@@ -76,7 +76,7 @@
             $scope.currentStep = 1;
             $scope.generateText = 'Generating...';
 
-            BeUtils.generateSummaryToSign(readerId).then(function (res) {
+            DNIeUtils.generateSummaryToSign(readerId).then(function (res) {
                 generatedFile = res;
                 $scope.currentStep = 2;
                 $scope.generateText = 'Generated';
@@ -84,7 +84,7 @@
                 if (pinpad) {
                     // start signing process
                     $scope.pinText = 'Enter PIN on reader...';
-                    BeUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                    DNIeUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
                         Analytics.trackEvent('print', 'pin', 'PIN entered');
                         $scope.currentStep = 3;
                         $scope.pinText = 'Signed';

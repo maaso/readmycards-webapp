@@ -348,6 +348,7 @@
             controller.readerWithCard = _.find(controller.readers, function (o) {
                 return _.has(o, 'card');
             });
+            console.log(controller.readerWithCard.id);
             $state.go('root.reader', { readerId: controller.readerWithCard.id});
         }
     }
