@@ -14,30 +14,33 @@
                 controller.pinStatus = 'idle';
                 controller.doCollapse = true;
 
-                const filter = ['authentication-certificate', 'citizen-certificate', 'intermediate-certificate'];
-                // T1C.dnie.allCerts($stateParams.readerId, filter).then(res => {
-                //     let validationReq = {
-                //         certificateChain: [
-                //             { order: 0, certificate: res.data.authentication_certificate },
-                //             { order: 1, certificate: res.data.citizen_certificate },
-                //             { order: 2, certificate: res.data.intermediate_certificate },
-                //         ]
-                //     };
-                //     Analytics.trackEvent('dnie', 'cert-check', 'Start certificate check');
-                //     T1C.ocv.validateCertificateChain(validationReq).then(res => {
-                //         if (res.crlResponse.status && res.ocspResponse.status) {
-                //             Analytics.trackEvent('dnie', 'cert-valid', 'Certificates are valid');
-                //             controller.certStatus = 'valid';
-                //         }
-                //         else {
-                //             Analytics.trackEvent('dnie', 'cert-invalid', 'Certificates are not valid');
-                //             controller.certStatus = 'invalid';
-                //         }
-                //     }, () => {
-                //         Analytics.trackEvent('dnie', 'cert-error', 'Error occurred while checking certificate validity');
-                //         controller.certStatus = 'error';
-                //     });
-                // });
+                const filter = ['authentication-certificate', 'signing-certificate', 'intermediate-certificate'];
+                console.log(filter);
+                T1C.dnie.allCerts($stateParams.readerId, filter).then(res => {
+                    console.log(res.data);
+                    let validationReq = {
+                        certificateChain: [
+                            { "order": 0, certificate: res.data.authentication_certificate },
+                            { "order": 1, certificate: res.data.signing_certificate },
+                            { "order": 2, certificate: res.data.intermediate_certificate },
+                        ]
+                    };
+                    Analytics.trackEvent('dnie', 'cert-check', 'Start certificate check');
+                    T1C.ocv.validateCertificateChain(validationReq).then(res => {
+                        console.log(res);
+                        if (res.crlResponse.status || res.ocspResponse.status) {
+                            Analytics.trackEvent('dnie', 'cert-valid', 'Certificates are valid');
+                            controller.certStatus = 'valid';
+                        }
+                        else {
+                            Analytics.trackEvent('dnie', 'cert-invalid', 'Certificates are not valid');
+                            controller.certStatus = 'invalid';
+                        }
+                    }, () => {
+                        Analytics.trackEvent('dnie', 'cert-error', 'Error occurred while checking certificate validity');
+                        controller.certStatus = 'error';
+                    });
+                });
             };
 
             controller.checkPin = () => {
@@ -77,6 +80,8 @@
                             Analytics.trackEvent('dnie', 'pin-blocked', 'Card blocked; too many incorrect attempts');
                             controller.pinStatus = 'blocked';
                             break;
+                        default:
+                            controller.pinStatus = 'error';
                     }
                 });
             };

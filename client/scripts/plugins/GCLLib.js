@@ -18076,7 +18076,7 @@ var GCLLib =
 	        return _super !== null && _super.apply(this, arguments) || this;
 	    }
 	    Oberthur.prototype.allDataFilters = function () {
-	        return ["applet-info", "root_certificate", "authentication-certificate",
+	        return ["root_certificate", "authentication-certificate",
 	            "encryption_certificate", "issuer_certificate", "signing_certificate"];
 	    };
 	    Oberthur.prototype.allCertFilters = function () {
@@ -18448,7 +18448,7 @@ var GCLLib =
 	    CoreService.prototype.infoBrowserSync = function () { return CoreService.platformInfo(); };
 	    CoreService.prototype.getUrl = function () { return this.url; };
 	    CoreService.prototype.version = function () {
-	        return "v1.0.2";
+	        return "v1.0.3";
 	    };
 	    return CoreService;
 	}());
