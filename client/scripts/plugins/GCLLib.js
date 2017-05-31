@@ -17743,7 +17743,7 @@ var GCLLib =
 	    }
 	    UrlUtil.create = function (base, suffix, agentPort) {
 	        if (agentPort) {
-	            return base + agent_1.AgentClient.urlPrefix(agentPort) + suffix;
+	            return base + agent_1.AgentClient.urlPrefix(agentPort) + "/" + suffix;
 	        }
 	        else {
 	            return base + suffix;
@@ -17778,6 +17778,9 @@ var GCLLib =
 	    };
 	    AgentClient.prototype.get = function (hostName, callback) {
 	        return this.connection.get(this.url + AgentClient.AGENT_PATH, AgentClient.createHostnameFilter(hostName), callback);
+	    };
+	    AgentClient.prototype.getConsent = function (agentPort, title, text, callback) {
+	        return this.connection.post(this.url + AgentClient.AGENT_PATH + "/" + agentPort + "/consent", { title: title, text: text }, undefined, callback);
 	    };
 	    return AgentClient;
 	}());
