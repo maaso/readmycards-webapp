@@ -17744,7 +17744,7 @@ var GCLLib =
 	    }
 	    UrlUtil.create = function (base, suffix, agentPort) {
 	        console.log(agentPort);
-	        if (agentPort) {
+	        if (_.isNumber(agentPort)) {
 	            return _.join(_.split(base, "/v1/"), "/v1" + agent_1.AgentClient.urlPrefix(agentPort)) + suffix;
 	        }
 	        else {
