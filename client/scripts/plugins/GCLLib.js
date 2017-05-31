@@ -17738,12 +17738,13 @@ var GCLLib =
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var agent_1 = __webpack_require__(8);
+	var _ = __webpack_require__(1);
 	var UrlUtil = (function () {
 	    function UrlUtil() {
 	    }
 	    UrlUtil.create = function (base, suffix, agentPort) {
 	        if (agentPort) {
-	            return base + agent_1.AgentClient.urlPrefix(agentPort) + suffix;
+	            return _.join(_.split(base, "/plugins/"), agent_1.AgentClient.urlPrefix(agentPort) + "/plugins/") + suffix;
 	        }
 	        else {
 	            return base + suffix;
