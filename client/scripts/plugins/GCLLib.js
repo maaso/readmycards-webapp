@@ -17743,7 +17743,7 @@ var GCLLib =
 	    }
 	    UrlUtil.create = function (base, suffix, agentPort) {
 	        if (agentPort) {
-	            return base + agent_1.AgentClient.urlPrefix(agentPort) + "/" + suffix;
+	            return base + agent_1.AgentClient.urlPrefix(agentPort) + suffix;
 	        }
 	        else {
 	            return base + suffix;
@@ -17766,7 +17766,7 @@ var GCLLib =
 	        this.connection = connection;
 	    }
 	    AgentClient.urlPrefix = function (port) {
-	        return AgentClient.AGENT_PATH + port.toString();
+	        return AgentClient.AGENT_PATH + "/" + port.toString();
 	    };
 	    AgentClient.createHostnameFilter = function (hostName) {
 	        if (hostName) {
