@@ -77,7 +77,7 @@
         });
     }
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics, Citrix) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
@@ -229,7 +229,7 @@
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
                 // $scope.$apply();
                 pollForReaders();
-            });
+            }, Citrix.port());
         }
 
         function pollForCard() {
@@ -274,7 +274,7 @@
                     if (removed) controller.pollingCard = false;
                     else pollForCard();
                 });
-            });
+            }, Citrix.port());
         }
 
         function promptDownload() {
