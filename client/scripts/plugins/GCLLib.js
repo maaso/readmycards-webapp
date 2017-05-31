@@ -17744,10 +17744,18 @@ var GCLLib =
 	    }
 	    UrlUtil.create = function (base, suffix, agentPort) {
 	        console.log(agentPort);
-	        if (_.isNumber(agentPort)) {
-	            return _.join(_.split(base, "/v1/"), "/v1" + agent_1.AgentClient.urlPrefix(agentPort)) + suffix;
+	        if (agentPort) {
+	            console.log("agentport present");
+	            var components = _.split(base, "/v1/");
+	            console.log(components);
+	            var agentString = agent_1.AgentClient.urlPrefix(agentPort);
+	            console.log(agentString);
+	            var url = _.join(components, "/v1" + agentString) + suffix;
+	            console.log(url);
+	            return url;
 	        }
 	        else {
+	            console.log("no agentport");
 	            return base + suffix;
 	        }
 	    };

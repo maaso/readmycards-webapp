@@ -31,7 +31,7 @@
     }).run(['Analytics', function(Analytics) { }]);
 
     module.run(function($location, Citrix) {
-        console.log(Citrix.user($location.search().username));;
+        console.log(Citrix.user($location.search().username));
     });
 
     module.factory('errorInterceptor', function($q) {
