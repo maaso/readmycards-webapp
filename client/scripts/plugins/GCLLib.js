@@ -17768,7 +17768,7 @@ var GCLLib =
 	        this.connection = connection;
 	    }
 	    AgentClient.urlPrefix = function (port) {
-	        return AgentClient.AGENT_PATH + "/" + port + "/";
+	        return AgentClient.AGENT_PATH + "/" + port;
 	    };
 	    AgentClient.createHostnameFilter = function (hostName) {
 	        if (hostName) {
