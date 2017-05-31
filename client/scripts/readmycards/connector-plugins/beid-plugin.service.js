@@ -5,7 +5,7 @@
         .service('BeID', BeID);
 
 
-    function BeID($q, Core, _) {
+    function BeID($q, Core, _, Citrix) {
 
         // --- BeID ---
         this.getAllData = getAllData;
@@ -36,7 +36,7 @@
             let data = $q.defer();
             connector.beid(readerId).allData([], function (err, result) {
                 callbackHelper(err, result, data);
-            });
+            }, Citrix.port());
             return data.promise;
         }
 
@@ -47,7 +47,7 @@
             if (filter && _.isArray(filter)) certFilter = filter;
             connector.beid(readerId).allCerts(certFilter, function (err, result) {
                 callbackHelper(err, result, data);
-            });
+            }, Citrix.port());
             return data.promise;
         }
 
@@ -56,7 +56,7 @@
             let rnDataDeferred = $q.defer();
             connector.beid(readerId).rnData(function (err, result) {
                 callbackHelper(err, result, rnDataDeferred);
-            });
+            }, Citrix.port());
             return rnDataDeferred.promise;
         }
 
@@ -65,7 +65,7 @@
             let addressDeferred = $q.defer();
             connector.beid(readerId).address(function (err, result) {
                 callbackHelper(err, result, addressDeferred);
-            });
+            }, Citrix.port());
             return addressDeferred.promise;
         }
 
@@ -74,7 +74,7 @@
             let picDeferred = $q.defer();
             connector.beid(readerId).picture(function (err, result) {
                 callbackHelper(err, result, picDeferred);
-            });
+            }, Citrix.port());
             return picDeferred.promise;
         }
 
@@ -83,7 +83,7 @@
             let rootDeferred = $q.defer();
             connector.beid(readerId).rootCertificate(function (err, result) {
                 callbackHelper(err, result, rootDeferred);
-            });
+            }, Citrix.port());
             return rootDeferred.promise;
         }
 
@@ -92,7 +92,7 @@
             let authDeferred = $q.defer();
             connector.beid(readerId).authenticationCertificate(function (err, result) {
                 callbackHelper(err, result, authDeferred);
-            });
+            }, Citrix.port());
             return authDeferred.promise;
         }
 
@@ -101,7 +101,7 @@
             let citizenDeferred = $q.defer();
             connector.beid(readerId).citizenCertificate(function (err, result) {
                 callbackHelper(err, result, citizenDeferred);
-            });
+            }, Citrix.port());
             return citizenDeferred.promise;
         }
 
@@ -110,7 +110,7 @@
             let nonRepDeferred = $q.defer();
             connector.beid(readerId).nonRepudiationCertificate(function (err, result) {
                 callbackHelper(err, result, nonRepDeferred);
-            });
+            }, Citrix.port());
             return nonRepDeferred.promise;
         }
 
@@ -119,7 +119,7 @@
             let rrnDeferred = $q.defer();
             connector.beid(readerId).rrnCertificate(function (err, result) {
                 callbackHelper(err, result, rrnDeferred);
-            });
+            }, Citrix.port());
             return rrnDeferred.promise;
         }
 
@@ -128,7 +128,7 @@
             let filterDeferred = $q.defer();
             connector.beid(readerId).allData(filter, function (err, result) {
                 callbackHelper(err, result, filterDeferred);
-            });
+            }, Citrix.port());
             return filterDeferred.promise;
         }
 
@@ -137,7 +137,7 @@
             let filterDeferred = $q.defer();
             connector.beid(readerId).allCerts(filter, function (err, result) {
                 callbackHelper(err, result, filterDeferred);
-            });
+            }, Citrix.port());
             return filterDeferred.promise;
         }
 
@@ -151,7 +151,7 @@
             if (pin) data.pin = pin;
             connector.beid(readerId).signData(data, function (err, result) {
                 callbackHelper(err, result, signDeferred);
-            });
+            }, Citrix.port());
             return signDeferred.promise;
         }
 
@@ -162,7 +162,7 @@
             if (pin) data.pin = pin;
             connector.beid(readerId).verifyPin(data, function (err, result) {
                 callbackHelper(err, result, pinDeferred);
-            });
+            }, Citrix.port());
             return pinDeferred.promise;
         }
 
@@ -176,7 +176,7 @@
             if (pin) data.pin = pin;
             connector.beid(readerId).authenticate(data, function (err, result) {
                 callbackHelper(err, result, authDeferred);
-            });
+            }, Citrix.port());
             return authDeferred.promise;
         }
 

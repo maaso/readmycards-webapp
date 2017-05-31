@@ -30,17 +30,21 @@
         });
     }).run(['Analytics', function(Analytics) { }]);
 
+    module.run(function($location, Citrix) {
+        console.log(Citrix.user($location.search().username));;
+    });
+
     module.factory('errorInterceptor', function($q) {
         return {
             'responseError': function(response) {
                 // do something on error
-                if (response.status == 401) {
+                if (response.status === 401) {
                     console.log('UNAUTHORIZED');
                     console.log('session timeout?');
                     logout();
-                } else if (response.status == 403) {
+                } else if (response.status === 403) {
                     //alert("Forbidden");
-                } else if (response.status == 404) {
+                } else if (response.status === 404) {
                     //alert("Not found");
                 } else if (response.status) {
 

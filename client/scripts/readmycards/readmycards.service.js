@@ -2,11 +2,12 @@
     'use strict';
 
     angular.module('app.readmycards')
-        .service('T1C', ConnectorService)
-        .service('CardService', CardService)
-        .service('CheckDigit', CheckDigit)
-        .service('RMC', ReadMyCardsService)
-        .service('API', API);
+           .service('T1C', ConnectorService)
+           .service('CardService', CardService)
+           .service('CheckDigit', CheckDigit)
+           .service('RMC', ReadMyCardsService)
+           .service('Citrix', CitrixService)
+           .service('API', API);
 
 
     function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, Mobib, OCV, _) {
@@ -98,21 +99,21 @@
 
         function calculateCheckDigit(string) {
             return _.sum(_.map(_.map(string, (letter) => {
-                return dict[letter.toUpperCase()];
-            }), (val, index) => {
-                let weighted = val;
-                switch (index % 3) {
-                    case 0:
-                        weighted = val * 7;
-                        break;
-                    case 1:
-                        weighted = val * 3;
-                        break;
-                    case 2:
-                        break;
-                }
-                return weighted;
-            })) % 10;
+                    return dict[letter.toUpperCase()];
+                }), (val, index) => {
+                    let weighted = val;
+                    switch (index % 3) {
+                        case 0:
+                            weighted = val * 7;
+                            break;
+                        case 1:
+                            weighted = val * 3;
+                            break;
+                        case 2:
+                            break;
+                    }
+                    return weighted;
+                })) % 10;
         }
     }
 
@@ -176,6 +177,41 @@
                     }, 100);
                 }
             });
+        }
+    }
+
+    function CitrixService(_) {
+        let citrixAgent;
+        let citrixEnvironment = false;
+        let citrixPort = undefined;
+        let citrixUser = {};
+
+        this.agent = agent;
+        this.environment = environment;
+        this.port = port;
+        this.user = user;
+
+
+        function agent(newAgent) {
+            if (!_.isEmpty(newAgent)) {
+                citrixAgent = newAgent;
+                citrixPort = newAgent.port;
+            }
+            return citrixAgent;
+        }
+
+        function environment(isCitrix) {
+            if (_.isBoolean(isCitrix)) { citrixEnvironment = isCitrix; }
+            return citrixEnvironment;
+        }
+
+        function port() {
+            return citrixPort;
+        }
+
+        function user(userName) {
+            if (userName) { citrixUser.id = userName; }
+            return citrixUser;
         }
     }
 

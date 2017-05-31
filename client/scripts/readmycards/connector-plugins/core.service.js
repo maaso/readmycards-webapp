@@ -2,10 +2,10 @@
     'use strict';
 
     angular.module('app.readmycards.plugins')
-        .service('Core', Core);
+           .service('Core', Core);
 
 
-    function Core($q) {
+    function Core($q, _, Citrix) {
         let connector;
         initializeLib();
 
@@ -42,97 +42,97 @@
 
         // Get info about the T1C installation
         function getInfo() {
-            var infoDeferred = $q.defer();
+            let infoDeferred = $q.defer();
             connector.core().info(function (err, result) {
                 callbackHelper(err, result, infoDeferred);
-            });
+            }, Citrix.port());
             return infoDeferred.promise;
         }
 
         // Get a list of all connected readers
         function getReaders() {
-            var readersDeferred = $q.defer();
+            let readersDeferred = $q.defer();
             connector.core().readers(function (err, result) {
                 callbackHelper(err, result, readersDeferred);
-            });
+            }, Citrix.port());
             return readersDeferred.promise;
         }
 
         // Poll for readers for a number of seconds
         function pollForReaders(secondsToPoll) {
-            var readersDeferred = $q.defer();
+            let readersDeferred = $q.defer();
             connector.core().pollReaders(secondsToPoll, function (err, result) {
                 callbackHelper(err, result, readersDeferred);
-            });
+            }, Citrix.port());
             return readersDeferred.promise;
         }
 
         // Get info about a specific reader
         function getReader(readerId) {
-            var readerDeferred = $q.defer();
+            let readerDeferred = $q.defer();
             connector.core().reader(readerId, function (err, result) {
                 callbackHelper(err, result, readerDeferred);
-            });
+            }, Citrix.port());
             return readerDeferred.promise;
         }
 
         // Get all readers that currently have a card inserted
         function getReadersWithCards() {
-            var readerCardsDeferred = $q.defer();
+            let readerCardsDeferred = $q.defer();
             connector.core().readersCardAvailable(function (err, result) {
                 callbackHelper(err, result, readerCardsDeferred);
-            });
+            }, Citrix.port());
             return readerCardsDeferred.promise;
         }
 
         // Get all readers that currently *do not* have a card inserted
         function getReadersWithoutCards() {
-            var readerCardsDeferred = $q.defer();
+            let readerCardsDeferred = $q.defer();
             connector.core().readersCardsUnavailable(function (err, result) {
                 callbackHelper(err, result, readerCardsDeferred);
-            });
+            }, Citrix.port());
             return readerCardsDeferred.promise;
         }
 
         // Poll for readers with inserted card for a number of seconds
         function pollForReadersWithCardInserted(secondsToPoll) {
-            var readersDeferred = $q.defer();
+            let readersDeferred = $q.defer();
             connector.core().pollCardInserted(secondsToPoll, function (err, result) {
                 callbackHelper(err, result, readersDeferred);
-            });
+            }, Citrix.port());
             return readersDeferred.promise;
         }
 
         // Returns a list of available plugins and plugin versions
         function listPlugins() {
-            var pluginsDeferred = $q.defer();
+            let pluginsDeferred = $q.defer();
             connector.core().plugins(function (err, result) {
                 callbackHelper(err, result, pluginsDeferred);
-            });
+            }, Citrix.port());
             return pluginsDeferred.promise;
         }
 
         // Get information on a specific plugin
         function getPlugin(pluginId) {
-            var pluginDeferred = $q.defer();
+            let pluginDeferred = $q.defer();
             connector.core().plugins(pluginId, function (err, result) {
                 callbackHelper(err, result, pluginDeferred);
-            });
+            }, Citrix.port());
             return pluginDeferred.promise;
         }
 
         // Get browser information that is needed to determine which GCL package to download
         function browserInfo() {
-            var browserDeferred = $q.defer();
+            let browserDeferred = $q.defer();
             connector.core().infoBrowser(function (err, result) {
                 callbackHelper(err, result, browserDeferred);
-            });
+            }, Citrix.port());
             return browserDeferred.promise;
         }
 
         // Get public key
         function getPubKey() {
-            var key = $q.defer();
+            let key = $q.defer();
             connector.core().getPubKey(function (err, result) {
                 callbackHelper(err, result, key);
             });
@@ -141,7 +141,7 @@
 
         // Set public key
         function setPubKey(pubKey) {
-            var key = $q.defer();
+            let key = $q.defer();
             connector.core().getPubKey(pubKey, function (err, result) {
                 callbackHelper(err, result, key);
             });
@@ -162,9 +162,26 @@
 
         function isGCLAvailable() {
             let available = $q.defer();
-            connector.core().info(function (err) {
-                if (err) available.resolve(false);
-                else available.resolve(true);
+            connector.core().info().then(res => {
+                if (_.isBoolean(res.data.citrix) && res.data.citrix) {
+                    Citrix.environment(res.data.citrix);
+                    connector.agent().get().then(res => {
+                        // find correct agent
+                        let citrixAgent = _.find(res.data, agent => {
+                            return agent.username === Citrix.user().id;
+                        });
+                        if (citrixAgent) {
+                            Citrix.agent(citrixAgent);
+                            available.resolve(true);
+                        } else {
+                            // TODO handle failure to find local agent
+                        }
+                    }, err => {
+                        console.log(err);
+                    });
+                } else { available.resolve(true); }
+            }, () => {
+                available.resolve(false);
             });
             return available.promise;
         }
