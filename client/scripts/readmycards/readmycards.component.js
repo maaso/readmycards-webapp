@@ -218,6 +218,9 @@
         .component('rmcFaq', {
             templateUrl: 'views/readmycards/components/faq.html'
         })
+           .component('rmcConsent', {
+               templateUrl: 'views/readmycards/components/no-consent.html'
+           })
         .component('rmcFooter', {
             templateUrl: 'views/readmycards/components/footer.html',
             controller: function ($scope, EVENTS) {

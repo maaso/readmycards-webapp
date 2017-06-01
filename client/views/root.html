@@ -20,6 +20,7 @@
         <card-polling error="root.error" poll-timeout="root.pollTimeout" ng-if="root.pollingCard"></card-polling>
 
         <reader-select ng-if="root.readerWithCard"></reader-select>
+        <rmc-consent ng-if="root.noConsent"></rmc-consent>
     </div>
     <nav class="st-faq sliding-faq" ng-class="{ 'st-faq-open': root.faqOpen }" id="menu-2">
         <rmc-faq></rmc-faq>
