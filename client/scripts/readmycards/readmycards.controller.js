@@ -293,7 +293,7 @@
         function promptConsent() {
             if (!checkConsent()) {
                 return T1C.core.getConnector().agent().getConsent(Citrix.port(), "Consent Required",
-                    "ReadMyCards wants to make use of the smartcard reader connected to your session (" + Citrix.user.id() + ").\n\nDo you want to grant access?").then(res => {
+                    "ReadMyCards wants to make use of the smartcard reader connected to your session (" + Citrix.user().id + ").\n\nDo you want to grant access?").then(res => {
                     if (res.data.consent) {
                         // store in localStorage + set ttl
                         $localStorage["rmcConsentGiven" + Citrix.user().id] = true;
