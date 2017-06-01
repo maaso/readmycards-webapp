@@ -17557,8 +17557,8 @@ var GCLLib =
 	    function EMV() {
 	        return _super !== null && _super.apply(this, arguments) || this;
 	    }
-	    EMV.prototype.pan = function (callback) {
-	        return this.connection.get(this.resolvedReaderURI() + EMV_PAN, undefined, callback);
+	    EMV.prototype.pan = function (callback, agentPort) {
+	        return this.connection.get(this.resolvedReaderURI(agentPort) + EMV_PAN, undefined, callback);
 	    };
 	    return EMV;
 	}(Card_1.GenericPinCard));
@@ -17747,7 +17747,6 @@ var GCLLib =
 	            return _.join(_.split(base, "/v1"), "/v1" + agent_1.AgentClient.urlPrefix(agentPort)) + suffix;
 	        }
 	        else {
-	            console.log("no agentport");
 	            return base + suffix;
 	        }
 	    };

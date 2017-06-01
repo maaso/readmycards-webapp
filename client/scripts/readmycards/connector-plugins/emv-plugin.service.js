@@ -5,7 +5,7 @@
         .service('EMV', Emv);
 
 
-    function Emv($q, Core) {
+    function Emv($q, Core, Citrix) {
 
         // === T1C Methods ===
         // --- EMV ---
@@ -35,7 +35,7 @@
             let panDeferred = $q.defer();
             connector.emv(readerId).pan(function (err, result) {
                 callbackHelper(err, result, panDeferred);
-            });
+            }, Citrix.port());
             return panDeferred.promise;
         }
 
