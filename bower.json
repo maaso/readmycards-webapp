@@ -23,7 +23,8 @@
     "es6-promise": "^4.0.5",
     "ngclipboard": "^1.1.1",
     "base-64": "^0.1.0",
-    "utf8": "^2.1.2"
+    "utf8": "^2.1.2",
+    "ngstorage": "^0.3.11"
   },
   "devDependencies": {
     "less": "2.7.1"

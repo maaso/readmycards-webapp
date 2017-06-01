@@ -246,9 +246,9 @@
 
 
                 function onKeyPressed(data) {
-                    if (data == '<') {
+                    if (data === '<') {
                         if (_.isEmpty(controller.pincode.value)) controller.cancelFunc(); else controller.pincode.value = controller.pincode.value.slice(0, controller.pincode.value.length - 1);
-                    } else if (data == '>') {
+                    } else if (data === '>') {
                         submitPin();
                     } else {
                         controller.pincode.value += data;

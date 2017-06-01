@@ -77,7 +77,7 @@
         });
     }
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics, Citrix) {
+    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics, Citrix, $localStorage, $q) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
@@ -200,81 +200,85 @@
 
 
         function pollForReaders() {
-            if (!controller.pollingReaders) controller.pollingReaders = true;
-            controller.error = false;
-            T1C.core.getConnector().core().pollReaders(30, function (err, result) {
-                // Success callback
-                // Found at least one reader, poll for cards
-                if (err) {
-                    controller.error = true;
+            promptConsent().then(() => {
+                if (!controller.pollingReaders) controller.pollingReaders = true;
+                controller.error = false;
+                T1C.core.getConnector().core().pollReaders(30, function (err, result) {
+                    // Success callback
+                    // Found at least one reader, poll for cards
+                    if (err) {
+                        controller.error = true;
+                        $scope.$apply();
+                    }
+                    else {
+                        controller.readers = result.data;
+                        controller.pollingReaders = false;
+                        Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
+                        $scope.$apply();
+                        // if (controller.readers.length > 1) toastr.success('Readers found!');
+                        // else toastr.success('Reader found!');
+                        pollForCard();
+                    }
+                }, function () {
+                    // Not used
+                    controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
                     $scope.$apply();
-                }
-                else {
-                    controller.readers = result.data;
-                    controller.pollingReaders = false;
-                    Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
-                    $scope.$apply();
-                    // if (controller.readers.length > 1) toastr.success('Readers found!');
-                    // else toastr.success('Reader found!');
-                    pollForCard();
-                }
-            }, function () {
-                // Not used
-                controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
-                $scope.$apply();
-            }, function () {
-                // timeout
-                // controller.pollingReaders = false;
-                // controller.pollTimeout = true;
-                // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
-                // $scope.$apply();
-                pollForReaders();
-            }, Citrix.port());
+                }, function () {
+                    // timeout
+                    // controller.pollingReaders = false;
+                    // controller.pollTimeout = true;
+                    // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
+                    // $scope.$apply();
+                    pollForReaders();
+                }, Citrix.port());
+            });
         }
 
         function pollForCard() {
-            if (!controller.pollingCard) controller.pollingCard = true;
-            controller.error = false;
-            T1C.core.getConnector().core().pollCardInserted(3, function (err, result) {
-                // Success callback
-                // controller.readers = result.data;
-                if (err) {
-                    controller.error = true;
+            promptConsent().then(() => {
+                if (!controller.pollingCard) controller.pollingCard = true;
+                controller.error = false;
+                T1C.core.getConnector().core().pollCardInserted(3, function (err, result) {
+                    // Success callback
+                    // controller.readers = result.data;
+                    if (err) {
+                        controller.error = true;
+                        $scope.$apply();
+                    }
+                    else {
+                        controller.pollingCard = false;
+                        controller.pollTimeout = false;
+                        Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
+                        pollIterations = 0;
+                        $scope.$apply();
+                        // if ($scope.readers.length > 1) toastr.success('Readers found!');
+                        // else toastr.success('Reader found!');
+                        // Found a card, attempt to read it
+                        // Refresh reader list first
+                        T1C.core.getReaders().then(function (result) {
+                            controller.readers = result.data;
+                            readCard();
+                        }, function () {
+                            pollForCard();
+                        });
+                    }
+                }, function () {
+                    // "Waiting for reader connection" callback
+                    controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
                     $scope.$apply();
-                }
-                else {
-                    controller.pollingCard = false;
-                    controller.pollTimeout = false;
-                    Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
-                    pollIterations = 0;
-                    $scope.$apply();
-                    // if ($scope.readers.length > 1) toastr.success('Readers found!');
-                    // else toastr.success('Reader found!');
-                    // Found a card, attempt to read it
-                    // Refresh reader list first
-                    T1C.core.getReaders().then(function (result) {
-                        controller.readers = result.data;
-                        readCard();
-                    }, function () {
-                        pollForCard();
+                }, function () {
+                    // "Waiting for card" callback
+                }, function () {
+                    // timeout
+                    pollIterations++;
+                    // if enough time has passed, show the card not recognized message
+                    if (pollIterations >= 5) controller.pollTimeout = true;
+                    RMC.checkReaderRemoval().then(function (removed) {
+                        if (removed) controller.pollingCard = false;
+                        else pollForCard();
                     });
-                }
-            }, function () {
-                // "Waiting for reader connection" callback
-                controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
-                $scope.$apply();
-            }, function () {
-                // "Waiting for card" callback
-            }, function () {
-                // timeout
-                pollIterations++;
-                // if enough time has passed, show the card not recognized message
-                if (pollIterations >= 5) controller.pollTimeout = true;
-                RMC.checkReaderRemoval().then(function (removed) {
-                    if (removed) controller.pollingCard = false;
-                    else pollForCard();
-                });
-            }, Citrix.port());
+                }, Citrix.port());
+            });
         }
 
         function promptDownload() {
@@ -282,6 +286,29 @@
             T1C.ds.getDownloadLink().then(function (res) {
                 controller.dlLink = res.url;
             })
+        }
+
+        function promptConsent() {
+            if (!checkConsent()) {
+                return T1C.core.getConnector().agent().getConsent(Citrix.port(), "Consent Required",
+                    "ReadMyCards wants to make use of the smartcard reader connected to your session (" + Citrix.user.id() + ").\n\nDo you want to grant access?").then(res => {
+                    if (res.data.consent) {
+                        // store in localStorage + set ttl
+                        $localStorage["rmcConsentGiven" + Citrix.user().id] = true;
+                        $localStorage["rmcConsentTTL" + Citrix.user().id] = moment().add(7, "days");
+                    }
+                    return $q.when();
+                }, () => {
+                    // timeout or unexpected error, retry
+                    return promptConsent();
+                });
+            } else { return $q.when(); }
+        }
+
+        function checkConsent() {
+            return $localStorage["rmcConsentGiven" + Citrix.user().id]
+                   && $localStorage["rmcConsentTTL" + Citrix.user().id]
+                   && (moment($localStorage["rmcConsentTTL" + Citrix.user().id] > moment()));
         }
 
         function readCard() {
