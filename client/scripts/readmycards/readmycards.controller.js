@@ -315,6 +315,7 @@
                 $state.go('root.reader', { readerId: controller.readerWithCard.id });
             }, () => {
                 controller.noConsent = true;
+                $scope.$apply();
             });
         }
     }
