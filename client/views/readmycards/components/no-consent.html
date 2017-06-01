@@ -1,60 +1,18 @@
 <div class="rmc-step">
-    <div class="rmc-title-block">
-        <span class="rmc-title hit-the-floor">ReadMyCards</span>
-        <div class="rmc-subtitle"><span class="rmc-subtitle-text">by Trust1Connector</span>
+  <div class="rmc-title-block">
+    <span class="rmc-title hit-the-floor">ReadMyCards</span>
+    <div class="rmc-subtitle"><span class="rmc-subtitle-text">by Trust1Connector</span>
     </div>
+  </div>
+  <!--<p class="rmc-promo-text text-ultralight">Read the content of your smartcard, using any type of reader, <strong>completely free</strong>.<br>-->
+  <!--This service is available for personal use, and we <strong>never</strong> save any data from your card.</p>-->
+  <div class="rmc-download-prompt">
+    <!--<div class="prompt-title"></div> -->
+    <div class="prompt-text text-ultralight">
+      To use this website, you need to consent to your reader being used.<br>Without consent, we are unable to access the card reader.
     </div>
-    <p class="rmc-promo-text text-ultralight">Read the content of your smartcard, using any type of reader, <strong>completely free</strong>.<br>
-        This service is available for personal use, and we <strong>never</strong> save any data from your card.</p>
-    <div class="rmc-download-prompt" ng-if="!$ctrl.waitingForInstall">
-        <div class="prompt-title">Download the Trust1Connector</div>
-        <div class="prompt-text text-ultralight">
-            To use this website, you need to install the Trust1Connector. This is a small piece of software that enables the
-            communication with your card reader, no matter which browser or reader you use.
-        </div>
-        <div class="block">
-            <span class="download-text">Enter your email address and we will send you a download link!</span>
-            <div class="email-form text-center">
-                <form data-ng-submit="$ctrl.registerDownload(userMail)" name="emailForm" class="">
-                    <input type="email"
-                           placeholder="Insert your email address"
-                           class="form-control"
-                           data-ng-model="userMail"
-                           required
-                           autofocus>
-                    <span type="submit" id="submit" ga-track-event="['button', 'click', 'Email Submit']" class="btn btn-submit" ng-disabled="emailForm.$invalid" data-ng-click="$ctrl.registerDownload(userMail)">Request Link</span>
-
-                    <div class="update-toggle">
-                        <div class="checkbox">
-                            <input type="checkbox" value="None" id="checkbox" name="check" ng-model="$ctrl.sendUpdates.value" />
-                            <label for="checkbox"></label>
-                        </div>
-                        <div class="checkbox-text">
-                            <span class="text-ultralight">Click here if you want to receive news/updates on the Trust1Connector or Trust1Team products and
-                            services. You can unsubscribe at any time!</span>
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-        <div class="footer-text">
-            <span>Your email address is required for validation purposes only and is not saved
-                unless you give us express permission by selecting the checkbox above.
-                It will never be shared with any third parties.</span>
-        </div>
+    <div class="prompt-text">
+      Please refresh and click "Yes" when asked for consent.
     </div>
-    <div class="rmc-download-prompt" ng-if="$ctrl.waitingForInstall">
-        <div class="prompt-title">Waiting for installation...</div>
-        <div class="prompt-text text-center text-ultralight">
-            <div class="text-center waiting-spinner">
-                <span class="fa fa-spinner fa-pulse fa-4x"></span>
-            </div>
-            <p>An email with download instructions is on its way to you.</p>
-            <p ng-if="!$ctrl.isFirefox">Check your email and, once the installation is complete, the Trust1Connector will automatically be detected.</p>
-            <p ng-if="$ctrl.isFirefox"><strong>Because you are using Firefox, you will need to manually restart your browser after installation.</strong>
-                <a class="text-small text-bold clickable" ng-click="$ctrl.firefoxModal()">Why?</a>
-            </p>
-        </div>
-    </div>
+  </div>
 </div>
