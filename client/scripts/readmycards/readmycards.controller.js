@@ -118,7 +118,9 @@
                 }
             } else {
                 // A card is present, determine type and read its data
-                readCard();
+                promptConsent().then(() => {
+                    readCard();
+                });
             }
 
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
