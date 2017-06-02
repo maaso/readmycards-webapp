@@ -13,6 +13,9 @@ module.exports = function createRouter(app) {
     router.route('/api/cards/lux/summarytosign')
         .post(jwtMW.validateJWT, ctrlLux.generateSummaryToSign);
 
+    router.route('/api/cards/luxtrust/summarytosign')
+        .post(jwtMW.validateJWT, ctrlLux.generateLuxTrustSummaryToSign);
+
     router.route('/api/cards/lux/xmltosign')
         .post(jwtMW.validateJWT, ctrlLux.uploadXMLToSign);
 
