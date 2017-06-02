@@ -198,6 +198,35 @@
                 });
             };
 
+            controller.downloadSummary = () => {
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/summary-download.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return controller.pinpad;
+                        },
+                        needPinToGenerate: () => {
+                            return true;
+                        },
+                        util: () => {
+                            return LuxTrustUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'SummaryDownloadCtrl',
+                    size: 'lg'
+                });
+
+                modal.result.then(function () {
+
+                }, function (err) {
+
+                });
+            };
+
             controller.sign = () => {
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/xml-download.html",
