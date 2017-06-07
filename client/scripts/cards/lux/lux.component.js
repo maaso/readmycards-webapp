@@ -321,100 +321,6 @@
             };
         }};
 
-    const luxCertificateStatus = {
-        templateUrl: 'views/cards/cert-status.html',
-        bindings: {
-            status: '<'
-        },
-        controller: function () {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'checking') controller.infoText = 'Validating card certificates...';
-                if (controller.status === 'valid') controller.infoText = 'All certificates OK. Card is valid.';
-                if (controller.status === 'invalid') controller.infoText = 'Certificate check failed. Card invalid.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-            };
-        }
-    };
-
-    const luxPinCheckStatus = {
-        templateUrl: 'views/cards/pin-check-status.html',
-        bindings: {
-            status: '<'
-        },
-        controller: function (_) {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
-                if (controller.status === 'valid') controller.infoText = 'Strong authentication OK.';
-                if (controller.status === '4remain') controller.infoText = 'Wrong PIN entered; 4 tries remaining.';
-                if (controller.status === '3remain') controller.infoText = 'Wrong PIN entered; 3 tries remaining.';
-                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
-                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
-                if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
-            };
-
-            controller.checkPin = () => {
-                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
-            }
-        }
-    };
-
-    const luxOtpPinCheckStatus = {
-        templateUrl: 'views/cards/pin-check-status.html',
-        bindings: {
-            status: '<'
-        },
-        controller: function (_) {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
-                if (controller.status === 'valid') controller.infoText = 'Strong authentication OK.';
-                if (controller.status === '4remain') controller.infoText = 'Wrong PIN entered; 4 tries remaining.';
-                if (controller.status === '3remain') controller.infoText = 'Wrong PIN entered; 3 tries remaining.';
-                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
-                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
-                if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
-            };
-
-            controller.checkPin = () => {
-                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
-            }
-        }
-    };
-
-    const luxTrustPinCheckStatus = {
-        templateUrl: 'views/cards/pin-check-status.html',
-        bindings: {
-            status: '<'
-        },
-        require: {
-            parent: '^luxTrustVisualizer'
-        },
-        controller: function (_) {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
-                if (controller.status === 'valid') controller.infoText = 'PIN check OK.';
-                if (controller.status === '4remain') controller.infoText = 'Wrong PIN entered; 4 tries remaining.';
-                if (controller.status === '3remain') controller.infoText = 'Wrong PIN entered; 3 tries remaining.';
-                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
-                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
-                if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
-            };
-
-            controller.checkPin = () => {
-                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
-            }
-        }
-    };
-
     const luxCard = {
         templateUrl: 'views/cards/lux/eid/lux-eid-card.html',
         bindings: {
@@ -458,10 +364,6 @@
         .component('luxVisualizer', luxVisualizer)
         .component('luxOtpVisualizer', luxOtpVisualizer)
         .component('luxTrustVisualizer', luxTrustVisualizer)
-        .component('luxCertificateStatus', luxCertificateStatus)
-        .component('luxPinCheckStatus', luxPinCheckStatus)
-        .component('luxTrustPinCheckStatus', luxTrustPinCheckStatus)
-        .component('luxOtpPinCheckStatus', luxOtpPinCheckStatus)
         .component('luxCard', luxCard)
         .component('luxOtpCard', luxOtpCard)
         .component('luxTrustCard', luxTrustCard);

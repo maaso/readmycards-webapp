@@ -22,8 +22,8 @@
 
     <div ng-if="!$ctrl.needPin && !$ctrl.readingData">
         <div class="status-wrapper">
-            <lux-certificate-status status="$ctrl.certStatus"></lux-certificate-status>
-            <lux-pin-check-status status="$ctrl.pinStatus"></lux-pin-check-status>
+            <certificate-status status="$ctrl.certStatus"></certificate-status>
+            <pin-check-status status="$ctrl.pinStatus" max-tries="5" ok-text="'Strong authentication OK.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
         </div>
 
         <lux-card biometric-data="$ctrl.biometricData" pic-data="$ctrl.pic" signature-data="$ctrl.signature"></lux-card>
