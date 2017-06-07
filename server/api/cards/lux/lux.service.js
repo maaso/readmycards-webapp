@@ -1,6 +1,7 @@
 'use strict';
 require('marko/node-require').install();
 let template = require('./lux.summary.marko');
+let luxTrustTemplate = require('./luxtrust.summary.marko');
 const request = require('request');
 const config = require(__base + 'modules/t1t-config');
 const cloudconvert = new (require('cloudconvert'))(config.cloudconvert.apikey);
@@ -41,6 +42,35 @@ function generateSummaryToSign(data, jwt) {
     return summaryPromise.promise;
 }
 
+function generateLuxTrustSummaryToSign(data, jwt) {
+    let summaryPromise  = q.defer();
+
+    luxTrustTemplate.stream(data)
+            .pipe(cloudconvert.convert({
+                inputformat: 'html',
+                outputformat: 'pdf',
+            }))
+            .on('error', err => {
+                return summaryPromise.reject(err);
+            })
+            .on('finished', conversion => {
+                miss.toPromise(request.get('http:' + conversion.output.url)).then(buffer => {
+
+                    let fileName = 'luxtrust_summary.pdf';
+
+                    uploadAndAssign(buffer, fileName, 'application/pdf', jwt).then(res => {
+                        return summaryPromise.resolve(res);
+                    }, err => {
+                        return summaryPromise.reject(err);
+                    })
+                }, err => {
+                    return summaryPromise.reject(err);
+                });
+            });
+
+    return summaryPromise.promise;
+}
+
 function uploadXML(jwt) {
     let xmlUpload = q.defer();
 
@@ -67,5 +97,6 @@ function uploadAndAssign(fileBuffer, fileName, fileType, jwt, skipConversion) {
 
 module.exports = {
     generateSummaryToSign: generateSummaryToSign,
+    generateLuxTrustSummaryToSign: generateLuxTrustSummaryToSign,
     uploadXML: uploadXML
 };

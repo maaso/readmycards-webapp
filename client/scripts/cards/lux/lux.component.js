@@ -146,7 +146,6 @@
                 let promises = [ T1C.ocv.validateCertificateChain(validationReq1), T1C.ocv.validateCertificateChain(validationReq2)];
 
                 $q.all(promises).then(results => {
-                    console.log(results);
                     let status = 'valid';
                     _.forEach(results, res => {
                         if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
@@ -165,7 +164,7 @@
                         pinpad: () => {
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
-                            })
+                            });
                         },
                         plugin: () => {
                             return T1C.luxtrust;
@@ -194,7 +193,41 @@
                         case 105:
                             controller.pinStatus = 'blocked';
                             break;
+                        case 109:
+                            controller.pinStatus = 'cancelled';
+                            break;
                     }
+                });
+            };
+
+            controller.downloadSummary = () => {
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/summary-download.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                                return res.data.pinpad;
+                            });
+                        },
+                        needPinToGenerate: () => {
+                            return false;
+                        },
+                        util: () => {
+                            return LuxTrustUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'SummaryDownloadCtrl',
+                    size: 'lg'
+                });
+
+                modal.result.then(function () {
+
+                }, function (err) {
+
                 });
             };
 
@@ -320,6 +353,7 @@
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
             };
 
             controller.checkPin = () => {
@@ -344,6 +378,7 @@
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
             };
 
             controller.checkPin = () => {
@@ -371,6 +406,7 @@
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
             };
 
             controller.checkPin = () => {

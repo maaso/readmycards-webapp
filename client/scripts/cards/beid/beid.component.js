@@ -77,6 +77,10 @@
                             Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
                             controller.pinStatus = 'blocked';
                             break;
+                        case 109:
+                            // cancelled on reader
+                            controller.pinStatus = 'cancelled';
+                            break;
                     }
                 });
             };
@@ -131,48 +135,9 @@
             controller.trackCertificatesClick = () => {
                 Analytics.trackEvent('button', 'click', 'Click on certificates feature');
             }
-        }};
-
-    const beidCertificateStatus = {
-        templateUrl: 'views/cards/cert-status.html',
-        bindings: {
-            status: '<'
-        },
-        controller: function () {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'checking') controller.infoText = 'Validating card certificates...';
-                if (controller.status === 'valid') controller.infoText = 'All certificates OK. Card is valid.';
-                if (controller.status === 'invalid') controller.infoText = 'Certificate check failed. Card invalid.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-            };
         }
     };
 
-    const beidPinCheckStatus = {
-        templateUrl: 'views/cards/pin-check-status.html',
-        bindings: {
-            status: '<'
-        },
-        require: {
-            parent: '^beidVisualizer'
-        },
-        controller: function (_) {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
-                if (controller.status === 'valid') controller.infoText = 'PIN check OK.';
-                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
-                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
-                if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-            };
-
-            controller.checkPin = () => {
-                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
-            }
-        }
-    };
 
     const beidCard = {
         templateUrl: 'views/cards/beid/beid-card.html',
@@ -198,7 +163,5 @@
 
     angular.module('app.cards.beid')
         .component('beidVisualizer', beidVisualizer)
-        .component('beidCertificateStatus', beidCertificateStatus)
-        .component('beidPinCheckStatus', beidPinCheckStatus)
         .component('beidCard', beidCard);
 })();

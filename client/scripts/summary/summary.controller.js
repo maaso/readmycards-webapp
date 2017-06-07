@@ -49,10 +49,10 @@
 
 
         function onKeyPressed(data) {
-            if (data == '<') {
+            if (data === '<') {
                 if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');
                 else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
-            } else if (data == '>') {
+            } else if (data === '>') {
                 submitPin();
             } else {
                 $scope.pincode.value += data;
@@ -107,7 +107,7 @@
                     if (pinpad) {
                         // start signing process
                         $scope.pinText = 'Enter PIN on reader...';
-                        SummaryUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                        util.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
                             $scope.currentStep = 3;
                             $scope.pinText = 'Signed';
                             $scope.downloadText = 'Download Ready!'
