@@ -155,47 +155,6 @@
             }
         }};
 
-    const oberthurCertificateStatus = {
-        templateUrl: 'views/cards/cert-status.html',
-        bindings: {
-            status: '<'
-        },
-        controller: function () {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'checking') controller.infoText = 'Validating card certificates...';
-                if (controller.status === 'valid') controller.infoText = 'All certificates OK. Card is valid.';
-                if (controller.status === 'invalid') controller.infoText = 'Certificate check failed. Card invalid.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-            };
-        }
-    };
-
-    const oberthurPinCheckStatus = {
-        templateUrl: 'views/cards/pin-check-status.html',
-        bindings: {
-            status: '<'
-        },
-        require: {
-            parent: '^oberthurVisualizer'
-        },
-        controller: function (_) {
-            let controller = this;
-            controller.$onChanges = () => {
-                if (controller.status === 'idle') controller.infoText = 'Click to check PIN code';
-                if (controller.status === 'valid') controller.infoText = 'PIN check OK.';
-                if (controller.status === '2remain') controller.infoText = 'Wrong PIN entered; 2 tries remaining.';
-                if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
-                if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
-                if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
-            };
-
-            controller.checkPin = () => {
-                if (!_.includes(['valid', 'blocked'], controller.status)) controller.parent.checkPin();
-            }
-        }
-    };
-
     const oberthurCard = {
         templateUrl: 'views/cards/oberthur/oberthur-card.html',
         bindings: {},
@@ -210,7 +169,5 @@
 
     angular.module('app.cards.oberthur')
            .component('oberthurVisualizer', oberthurVisualizer)
-           .component('oberthurCertificateStatus', oberthurCertificateStatus)
-           .component('oberthurPinCheckStatus', oberthurPinCheckStatus)
            .component('oberthurCard', oberthurCard);
 })();
