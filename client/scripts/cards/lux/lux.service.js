@@ -2,8 +2,8 @@
     'use strict';
 
     angular.module('app.cards.lux')
-        .service('LuxUtils', LuxUtils)
-        .service('LuxTrustUtils', LuxTrustUtils);
+           .service('LuxUtils', LuxUtils)
+           .service('LuxTrustUtils', LuxTrustUtils);
 
     function LuxUtils($http, $q, T1C, API, CheckDigit, _) {
         this.constructMachineReadableStrings = constructMachineReadableStrings;
@@ -102,9 +102,8 @@
 
             let signing = $q.defer();
 
-            prepareSign(readerId, pin).then(function () {
-                    return $q.when(documentId);
-                })
+            prepareSign(readerId, pin)
+                .then(function () { return $q.when(documentId); })
                 .then(dataToSign)
                 .then(function (dataToSign) {
                     if (hasPinpad) return $q.when({ readerId: readerId, pin: undefined, dataToSign: dataToSign });
@@ -209,15 +208,25 @@
                 printedBy: '@@name v@@version'
             };
         }
-
-
     }
 
-    function LuxTrustUtils($http, $q, T1C) {
+    function LuxTrustUtils($http, $q, T1C, _) {
+        this.generateSummaryToSign = generateSummaryToSign;
         this.generateXMLToSign = generateXMLToSign;
         this.signDocument = signDocumentWithPin;
 
         let rootCertificate1, rootCertificate2, authenticationCertificate, signingCertificate;
+
+        function generateSummaryToSign(readerId) {
+            let data = {
+                printDate: moment().format('MMMM D, YYYY'),
+                printedBy: '@@name v@@version'
+            };
+
+            return $http.post('api/cards/luxtrust/summarytosign', data).then(res => {
+                return res.data;
+            });
+        }
 
         function generateXMLToSign(readerId) {
             return $http.post('api/cards/lux/xmltosign').then(res => {
@@ -233,9 +242,8 @@
 
             let signing = $q.defer();
 
-            prepareSign(readerId, pin).then(function () {
-                return $q.when(documentId);
-            })
+            prepareSign(readerId, pin)
+                .then(function () { return $q.when(documentId); })
                 .then(dataToSign)
                 .then(function (dataToSign) {
                     if (hasPinpad) return $q.when({ readerId: readerId, pin: undefined, dataToSign: dataToSign });
@@ -281,6 +289,7 @@
         function dataToSign(documentId) {
             return $http.post('api/cards/lux/datatosign', {
                 docId: documentId,
+                digestAlgoWrapper: 'SHA256',
                 signCertificate: authenticationCertificate,
                 certificates: [
                     authenticationCertificate,
