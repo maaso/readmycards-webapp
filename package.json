@@ -1,7 +1,7 @@
 {
   "name": "ReadMyCards.eu",
   "description": "A smartcard-reading WebApp",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "Trust1Team",
   "devDependencies": {
     "autoprefixer": "^6.6.1",

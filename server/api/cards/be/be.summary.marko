@@ -253,6 +253,15 @@
         border: 1px solid #999;
         border-radius: 10px;
         padding: 5px 10px;
+        position: relative;
+    }
+
+    .summary-section > .summary-section-content > .summary-section-table {
+        line-height: 1;
+    }
+
+    .summary-section > .summary-section-content > .summary-section-table > tbody > tr {
+        vertical-align: top;
     }
 
     .inline {
@@ -261,12 +270,19 @@
 
     .summary-labels {
         font-size: 0.75em;
-        width: 30%;
+        width: 100px;
+    }
+    .summary-labels.spacer {
+        width: 80px;
     }
 
     .summary-values {
         font-size: 0.75em;
-        width: 65%;
+    }
+
+    .summary-values.spacer {
+        width: 155px;
+        padding-right: 20px;
     }
 
     .summary-footer {
@@ -439,24 +455,50 @@
     <div class="summary-section">
         <div class="summary-section-title">Personal Information</div>
         <div class="summary-section-content personal-info">
-            <div class="inline summary-labels">
-                <div>Name:</div>
-                <div>Given names:</div>
-                <div>Place of birth:</div>
-                <div>Date of birth:</div>
-                <div>Sex:</div>
-                <div>Nationality:</div>
-                <div>National number:</div>
-            </div>
-            <div class="inline summary-values">
-                <div>${data.rnData.name}</div>
-                <div>${data.rnData.first_names} ${data.rnData.third_name}</div>
-                <div>${data.rnData.birth_location}</div>
-                <div>${data.dob}</div>
-                <div>${data.rnData.sex}</div>
-                <div>${data.rnData.nationality}</div>
-                <div>${data.formattedRRNR}</div>
-            </div>
+            <table class="summary-section-table">
+                <tr>
+                    <td class="summary-labels">Name:</td>
+                    <td class="summary-values spacer">${data.rnData.name}</td>
+                    <td class="summary-labels spacer"></td>
+                    <td class="summary-values"></td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Given names:</td>
+                    <td class="summary-values spacer">${data.rnData.first_names} ${data.rnData.third_name}</td>
+                    <td class="summary-labels spacer"><b>Address:</b></td>
+                    <td class="summary-values"></td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Place of birth:</td>
+                    <td class="summary-values spacer">${data.rnData.birth_location}</td>
+                    <td class="summary-labels spacer">Street:</td>
+                    <td class="summary-values">${data.address.street_and_number}</td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Date of birth:</td>
+                    <td class="summary-values spacer">${data.dob}</td>
+                    <td class="summary-labels spacer">Postal code:</td>
+                    <td class="summary-values">${data.address.zipcode}</td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Sex:</td>
+                    <td class="summary-values spacer">${data.rnData.sex}</td>
+                    <td class="summary-labels spacer">Municipality:</td>
+                    <td class="summary-values">${data.address.municipality}</td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Nationality:</td>
+                    <td class="summary-values spacer">${data.rnData.nationality}</td>
+                    <td class="summary-labels spacer"></td>
+                    <td class="summary-values"></td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">National number:</td>
+                    <td class="summary-values spacer">${data.formattedRRNR}</td>
+                    <td class="summary-labels spacer"></td>
+                    <td class="summary-values"></td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -464,76 +506,74 @@
         <div class="summary-section">
             <div class="summary-section-title">Title & Special Status</div>
             <div class="summary-section-content specials">
-                <div class="inline summary-labels">
-                    <div>Title:</div>
-                <div>Special status:</div>
-        </div>
-        <div class="inline summary-values">
-            <div>
-            <if (data.rnData.title && data.rnData.title.length)>${data.rnData.title}</if>
-            <else>-</else>
-        </div>
-        <div>
-        <if (data.rnData.special && data.rnData.special.length)>${data.rnData.special}</if>
-        <else>-</else>
-</div>
-</div>
-</div>
-</div>
-</if>
-
-<div class="summary-section">
-    <div class="summary-section-title">Address</div>
-    <div class="summary-section-content address">
-        <div class="inline summary-labels">
-            <div>Street:</div>
-            <div>Postal code:</div>
-            <div>Municipality:</div>
-        </div>
-        <div class="inline summary-values">
-            <div>${data.address.street_and_number}</div>
-            <div>${data.address.zipcode}</div>
-            <div>${data.address.municipality}</div>
-        </div>
-    </div>
-</div>
-
-<div class="summary-section">
-    <div class="summary-section-title">Card Information</div>
-    <div class="summary-section-content card-info">
-        <div class="inline summary-labels">
-            <div>Card number:</div>
-            <div>Place of issue:</div>
-            <div>Chip number:</div>
-            <div>Valid from:</div>
-            <div>Valid until:</div>
-        </div>
-        <div class="inline summary-values">
-            <div>${data.formattedCardNumber}</div>
-            <div>${data.rnData.card_delivery_municipality}</div>
-            <div>${data.rnData.chip_number}</div>
-            <div>${data.validFrom}</div>
-            <div>${data.validUntil}</div>
-        </div>
-    </div>
-</div>
-
-<div class="summary-section">
-    <div class="summary-section-title">Signature:</div>
-    <div class="summary-section-content signature">
-        <div class="summary-values">
-            <div>
-                Digitally signed by <if (data.rnData.third_name && data.rnData.third_name.length)>${data.rnData.first_names} ${data.rnData.third_name} ${data.rnData.name}</if>
-                <else>${data.rnData.first_names} ${data.rnData.name}</else>
+                <table class="summary-section-table">
+                    <tr>
+                        <td class="summary-labels">
+                            Title:
+                        </td>
+                        <td class="summary-values">
+                            <if (data.rnData.title && data.rnData.title.length)>${data.rnData.title}</if>
+                            <else>-</else>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="summary-labels">
+                            Special status:
+                        </td>
+                        <td class="summary-values">
+                            <if (data.rnData.special && data.rnData.special.length)>${data.rnData.special}</if>
+                            <else>-</else>
+                        </td>
+                    </tr>
+                </table>
             </div>
+        </div>
+    </if>
 
+    <div class="summary-section">
+        <div class="summary-section-title">Card Information</div>
+        <div class="summary-section-content card-info">
+            <table class="summary-section-table">
+                <tr>
+                    <td class="summary-labels">Card number:</td>
+                    <td class="summary-values">${data.formattedCardNumber}</td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Place of issue:</td>
+                    <td class="summary-values">${data.rnData.card_delivery_municipality}</td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Chip number:</td>
+                    <td class="summary-values"> ${data.rnData.chip_number}</td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Valid from:</td>
+                    <td class="summary-values">${data.validFrom}</td>
+                </tr>
+                <tr>
+                    <td class="summary-labels">Valid until:</td>
+                    <td class="summary-values">${data.validUntil}</td>
+                </tr>
+            </table>
         </div>
     </div>
-</div>
 
-<div class="summary-footer">
-    <span>Created on ${data.printDate} by ${data.printedBy}</span>
-</div>
+    <div class="summary-section">
+        <div class="summary-section-title">Signature:</div>
+        <div class="summary-section-content signature">
+            <div class="summary-values">
+                <div>
+                    Digitally signed by <if (data.rnData.third_name && data.rnData.third_name.length)>${data.rnData.first_names} ${data.rnData.third_name} ${data.rnData.name}</if>
+                    <else>${data.rnData.first_names} ${data.rnData.name}</else>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="summary-footer">
+        <span>Created on ${data.printDate} by ${data.printedBy}</span>
+    </div>
 </div>
 
 
