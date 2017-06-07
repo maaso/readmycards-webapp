@@ -289,7 +289,7 @@
         function dataToSign(documentId) {
             return $http.post('api/cards/lux/datatosign', {
                 docId: documentId,
-                digestAlgoWrapper: 'SHA256',
+                digestAlgoWrapper: 'SHA1',
                 signCertificate: authenticationCertificate,
                 certificates: [
                     authenticationCertificate,
