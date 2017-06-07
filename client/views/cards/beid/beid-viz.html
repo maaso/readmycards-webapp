@@ -2,7 +2,7 @@
 
     <div class="status-wrapper">
         <certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></certificate-status>
-        <pin-check-status status="$ctrl.pinStatus" max-tries="3"></pin-check-status>
+        <pin-check-status status="$ctrl.pinStatus" max-tries="3" ok-text="'PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
     </div>
 
     <beid-card rn-data="$ctrl.rnData" pic-data="$ctrl.picData"></beid-card>
