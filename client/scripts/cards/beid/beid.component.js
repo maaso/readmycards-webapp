@@ -74,6 +74,10 @@
                             Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
                             controller.pinStatus = 'blocked';
                             break;
+                        case 109:
+                            // cancelled on reader
+                            controller.pinStatus = 'cancelled';
+                            break;
                     }
                 });
             };
@@ -157,6 +161,7 @@
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '3 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
             };
 
             controller.checkPin = () => {
