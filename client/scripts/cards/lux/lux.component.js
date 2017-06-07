@@ -146,7 +146,6 @@
                 let promises = [ T1C.ocv.validateCertificateChain(validationReq1), T1C.ocv.validateCertificateChain(validationReq2)];
 
                 $q.all(promises).then(results => {
-                    console.log(results);
                     let status = 'valid';
                     _.forEach(results, res => {
                         if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
@@ -165,7 +164,7 @@
                         pinpad: () => {
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
-                            })
+                            });
                         },
                         plugin: () => {
                             return T1C.luxtrust;
@@ -209,10 +208,12 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return controller.pinpad;
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                                return res.data.pinpad;
+                            });
                         },
                         needPinToGenerate: () => {
-                            return true;
+                            return false;
                         },
                         util: () => {
                             return LuxTrustUtils;
