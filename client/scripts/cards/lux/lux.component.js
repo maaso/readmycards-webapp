@@ -194,6 +194,9 @@
                         case 105:
                             controller.pinStatus = 'blocked';
                             break;
+                        case 109:
+                            controller.pinStatus = 'cancelled';
+                            break;
                     }
                 });
             };
@@ -349,6 +352,7 @@
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
             };
 
             controller.checkPin = () => {
@@ -373,6 +377,7 @@
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
             };
 
             controller.checkPin = () => {
@@ -400,6 +405,7 @@
                 if (controller.status === '1remain') controller.infoText = 'Wrong PIN entered; 1 try remaining!';
                 if (controller.status === 'blocked') controller.infoText = '5 invalid PINs entered. Card blocked.';
                 if (controller.status === 'error') controller.infoText = 'An error occurred during the validation process. Please try again later.';
+                if (controller.status === 'cancelled') controller.infoText = 'Cancelled on reader, click to try again.';
             };
 
             controller.checkPin = () => {
