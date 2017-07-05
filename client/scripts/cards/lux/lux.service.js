@@ -290,9 +290,9 @@
             return $http.post('api/cards/lux/datatosign', {
                 docId: documentId,
                 digestAlgoWrapper: 'SHA1',
-                signCertificate: authenticationCertificate,
+                signCertificate: signingCertificate,
                 certificates: [
-                    authenticationCertificate,
+                    signingCertificate,
                     rootCertificate2,
                     rootCertificate1
                 ],
