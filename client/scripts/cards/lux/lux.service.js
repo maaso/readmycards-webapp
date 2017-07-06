@@ -314,9 +314,9 @@
         function workflowSign(inputObj) {
             return $http.post('api/cards/lux/sign', {
                 docId: inputObj.documentId,
-                signCertificate: authenticationCertificate,
+                signCertificate: signingCertificate,
                 certificates: [
-                    authenticationCertificate,
+                    signingCertificate,
                     rootCertificate2,
                     rootCertificate1
                 ],
