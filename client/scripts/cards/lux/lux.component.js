@@ -84,24 +84,24 @@
                         if (!_.isEmpty(converted[1])) controller.signature = converted[1].data.base64Pic;
                     });
 
-                    controller.authCert = res.data.authentication_certificate;
-                    controller.nonRepCert = res.data.non_repudiation_certificate;
-                    controller.rootCerts = res.data.root_certificates;
+                    controller.authCert = res.data.authentication_certificate.base64;
+                    controller.nonRepCert = res.data.non_repudiation_certificate.base64;
+                    controller.rootCerts = _.map(res.data.root_certificates, 'base64');
 
                     controller.readingData = false;
 
                     let validationReq1 = {
                         certificateChain: [
-                            { order: 0, certificate: res.data.authentication_certificate },
-                            { order: 1, certificate: res.data.root_certificates[1] },
-                            { order: 2, certificate: res.data.root_certificates[0] },
+                            { order: 0, certificate: res.data.authentication_certificate.base64 },
+                            { order: 1, certificate: res.data.root_certificates[1].base64 },
+                            { order: 2, certificate: res.data.root_certificates[0].base64 },
                         ]
                     };
                     let validationReq2 = {
                         certificateChain: [
-                            { order: 0, certificate: res.data.non_repudiation_certificate },
-                            { order: 1, certificate: res.data.root_certificates[1] },
-                            { order: 2, certificate: res.data.root_certificates[0] },
+                            { order: 0, certificate: res.data.non_repudiation_certificate.base64 },
+                            { order: 1, certificate: res.data.root_certificates[1].base64 },
+                            { order: 2, certificate: res.data.root_certificates[0].base64 },
                         ]
                     };
                     let promises = [ T1C.ocv.validateCertificateChain(validationReq1), T1C.ocv.validateCertificateChain(validationReq2)];
@@ -131,16 +131,16 @@
 
                 let validationReq1 = {
                     certificateChain: [
-                        { order: 0, certificate: controller.cardData.authentication_certificate },
-                        { order: 1, certificate: controller.cardData.root_certificates[1] },
-                        { order: 2, certificate: controller.cardData.root_certificates[0] },
+                        { order: 0, certificate: controller.cardData.authentication_certificate.base64 },
+                        { order: 1, certificate: controller.cardData.root_certificates[1].base64 },
+                        { order: 2, certificate: controller.cardData.root_certificates[0].base64 },
                     ]
                 };
                 let validationReq2 = {
                     certificateChain: [
-                        { order: 0, certificate: controller.cardData.signing_certificate },
-                        { order: 1, certificate: controller.cardData.root_certificates[1] },
-                        { order: 2, certificate: controller.cardData.root_certificates[0] },
+                        { order: 0, certificate: controller.cardData.signing_certificate.base64 },
+                        { order: 1, certificate: controller.cardData.root_certificates[1].base64 },
+                        { order: 2, certificate: controller.cardData.root_certificates[0].base64 },
                     ]
                 };
                 let promises = [ T1C.ocv.validateCertificateChain(validationReq1), T1C.ocv.validateCertificateChain(validationReq2)];
@@ -293,7 +293,7 @@
                 modal.result.then(function (res) {
                     controller.pinStatus = undefined;
                     controller.otpResult = res.data;
-                    let toString = _.padStart(res.data.challenge.toString(), 8, '0');
+                    let toString = _.padStart(res.data.toString(), 8, '0');
                     controller.formattedChallenge = toString.substr(0,4) + ' ' +toString.substr(4,4);
                 }, function (err) {
                     switch (err.code) {
