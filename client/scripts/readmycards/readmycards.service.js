@@ -10,7 +10,7 @@
            .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, Mobib, OCV, _) {
+    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, Belfius, EMV, LuxId, Mobib, OCV, _) {
 
         // === T1C Methods ===
         // --- Core ---
@@ -21,6 +21,8 @@
         this.ocv = OCV;
         // --- BeID ---
         this.beid = BeID;
+        // --- Belfius ---;
+        this.belfius = Belfius;
         // --- EMV ---
         this.emv = EMV;
         // --- LuxId ---

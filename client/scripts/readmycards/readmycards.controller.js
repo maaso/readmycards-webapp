@@ -3,6 +3,8 @@
 
     angular.module('app.readmycards')
            .controller('ModalCtrl', modalCtrl)
+           .controller('ModalNonceCtrl', modalNonceCtrl)
+           .controller('ModalSendCommandCtrl', modalSendCommandCtrl)
            .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
            .controller('RootCtrl', rootCtrl)
            .controller('ReaderCtrl', readerCtrl);
@@ -18,6 +20,43 @@
 
         function cancel() {
             $uibModalInstance.dismiss("cancel");
+        }
+    }
+
+    function modalNonceCtrl($scope, $uibModalInstance, nonce) {
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+        $scope.nonce = nonce;
+
+        function ok() {
+            $uibModalInstance.close("ok");
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss("cancel");
+        }
+    }
+
+    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, stx, T1C) {
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+        $scope.send = send;
+
+        function ok() {
+            $uibModalInstance.close("ok");
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss("cancel");
+        }
+
+        function send(command) {
+            let promise;
+            if (stx) { promise = T1C.belfius.sendSTX(readerId, command); }
+            else { promise = T1C.belfius.sendCommand(readerId, command); }
+            promise.then(res => {
+
+            })
         }
     }
 
@@ -77,12 +116,17 @@
         });
     }
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics, Citrix, $localStorage, $q) {
+    function rootCtrl($scope, $state, $uibModal, gclAvailable, readers, cardPresent,
+                      RMC, T1C, EVENTS, _, Analytics, Citrix, $localStorage, $q) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
         controller.dismissPanels = dismissPanels;
+        controller.openSession = openSession;
+        controller.sendCommand = sendCommand;
+        controller.sendSTX = sendSTX;
+        controller.closeSession = closeSession;
 
         let pollIterations = 0;
 
@@ -92,6 +136,72 @@
             $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
             controller.cardTypesOpen = false;
             controller.faqOpen = false;
+        }
+
+        function openSession() {
+            console.log("open session");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/open-session.html",
+                resolve: {
+                    nonce: () => {
+                        return "1231445435dE4";
+                        // return T1C.belfius.openSession($state.params.readerId).then(function
+                        // (res) {
+                        //     return res.data;
+                        // })
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalNonceCtrl'
+            });
+        }
+
+        function sendCommand() {
+            console.log("send command");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/send-command.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    stx: () => {
+                        return false;
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
+        function sendSTX() {
+            console.log("send STX");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/send-stx.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    stx: () => {
+                        return true;
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
+        function closeSession() {
+            console.log("close session");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/close-session.html",
+                resolve: {
+                    close: () => {
+                        return T1C.belfius.closeSession($state.params.readerId);
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalCtrl'
+            });
         }
 
         function init() {
