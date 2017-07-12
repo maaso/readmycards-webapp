@@ -149,7 +149,7 @@
                         });
                         // check if card with same atr is present
                         // TODO deeper check to see if it is really the same card and not just a card of same type?
-                        return !(reader && reader.card.atr === card.atr);
+                        return !(reader && reader.card && reader.card.atr === card.atr);
                     }
                 }, function () {
                     // console.log('error occurred, assume card removed');
