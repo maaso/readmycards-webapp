@@ -13,6 +13,17 @@
 
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
     <div id="rmc-content">
+        <div class="text-center">
+            <span class="btn btn-primary btn-summary-download"
+                  ng-click="$ctrl.openSession()">Open Session</span>
+            <span class="btn btn-primary btn-summary-download"
+                  ng-click="$ctrl.sendCmd()">Send Command</span>
+            <span class="btn btn-primary btn-summary-download"
+                  ng-click="$ctrl.sendStx()">Send STX</span>
+            <span class="btn btn-primary btn-summary-download"
+                  ng-click="$ctrl.closeSession()">Close Session</span>
+        </div>
+
         <download-gcl dl-url="root.dlLink" is-firefox="root.isFirefox" ng-if="!root.gclAvailable"></download-gcl>
 
         <reader-polling error="root.error" ng-if="root.pollingReaders"></reader-polling>
