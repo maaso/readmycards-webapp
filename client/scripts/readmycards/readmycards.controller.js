@@ -304,7 +304,7 @@
         function checkConsent() {
             return $localStorage["rmcConsentGiven" + Citrix.user().id]
                    && $localStorage["rmcConsentTTL" + Citrix.user().id]
-                   && (moment($localStorage["rmcConsentTTL" + Citrix.user().id] > moment()));
+                   && (moment($localStorage["rmcConsentTTL" + Citrix.user().id]) > moment());
         }
 
         function readCard() {
