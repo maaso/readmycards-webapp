@@ -4,6 +4,7 @@
     angular.module('app.readmycards')
            .controller('ModalCtrl', modalCtrl)
            .controller('ModalNonceCtrl', modalNonceCtrl)
+           .controller('ModalUserNameCtrl', modalUserNameCtrl)
            .controller('ModalSendCommandCtrl', modalSendCommandCtrl)
            .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
            .controller('RootCtrl', rootCtrl)
@@ -30,6 +31,20 @@
 
         function ok() {
             $uibModalInstance.close("ok");
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss("cancel");
+        }
+    }
+
+    function modalUserNameCtrl($scope, $uibModalInstance, retry) {
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+        $scope.retry = retry;
+
+        function ok(username) {
+            $uibModalInstance.close(username);
         }
 
         function cancel() {

@@ -172,9 +172,12 @@
                         });
                         if (citrixAgent) {
                             Citrix.agent(citrixAgent);
+                            Citrix.updateLocation();
                             available.resolve(true);
                         } else {
-                            // TODO handle failure to find local agent
+                            Citrix.invalidLocalAgent().then(() => {
+                                available.resolve(isGCLAvailable());
+                            });
                         }
                     }, err => {
                         console.log(err);

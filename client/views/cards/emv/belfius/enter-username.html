@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h3>Enter Agent Username</h3>
+</div>
+<div class="modal-body">
+  <!--<h4 class="text-info text-light">Username</h4>-->
+  <form ng-submit="ok(username)">
+    <p ng-if="retry">No active Agent was found for the previously entered username, please try again.</p>
+    <input id="username" type="text" class="form-control" ng-model="username">
+  </form>
+
+
+
+</div>
+<div class="modal-footer">
+  <span class="btn btn-primary" ng-click="ok(username)"
+        data-ng-disabled="!username || !username.length">OK</span>
+</div>

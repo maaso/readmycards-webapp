@@ -182,7 +182,7 @@
         }
     }
 
-    function CitrixService(_) {
+    function CitrixService(_, $location, $q, $state, $uibModal) {
         let citrixAgent;
         let citrixEnvironment = false;
         let citrixPort = undefined;
@@ -192,6 +192,9 @@
         this.environment = environment;
         this.port = port;
         this.user = user;
+        this.checkUserName = checkUserName;
+        this.invalidLocalAgent = invalidLocalAgent;
+        this.updateLocation = updateLocation;
 
 
         function agent(newAgent) {
@@ -214,6 +217,50 @@
         function user(userName) {
             if (userName) { citrixUser.id = userName; }
             return citrixUser;
+        }
+
+        function invalidLocalAgent() {
+            let defer = $q.defer();
+
+            // re-prompt for username
+            promptUsername(true).then(username => {
+                if (username) {
+                    defer.resolve(user(username));
+                } else { defer.resolve(invalidLocalAgent()); }
+            });
+            return defer.promise;
+        }
+
+        function checkUserName() {
+            let defer = $q.defer();
+            let username = $location.search().username;
+
+            if (username) { defer.resolve(user(username)); }
+            else {
+                promptUsername(false).then(username => {
+                    if (username) {
+                        defer.resolve(user(username));
+                    } else { defer.reject(invalidLocalAgent()); }
+                });
+            }
+            return defer.promise;
+        }
+
+        function promptUsername(retry) {
+            return $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/enter-username.html",
+                backdrop: 'static',
+                resolve: {
+                    retry: function() {
+                        return retry;
+                    }
+                },
+                controller: 'ModalUserNameCtrl'
+            }).result;
+        }
+
+        function updateLocation() {
+            $location.search({ username: citrixUser.id });
         }
     }
 

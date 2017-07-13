@@ -13,8 +13,11 @@
                            templateUrl: '/views/root.html',
                            resolve: {
                                T1C: 'T1C',
-                               gclAvailable: function (T1C) {
-                                   return T1C.core.isGCLAvailable();
+                               username: function(Citrix) {
+                                   return Citrix.checkUserName();
+                               },
+                               gclAvailable: function (username, T1C) {
+                                   return T1C.core.isGCLAvailable("root");
                                },
                                readers: function ($q, gclAvailable, T1C) {
                                    if (gclAvailable) {
@@ -38,14 +41,12 @@
                                    }
                                }
                            },
-                           controller: 'RootCtrl as root',
-                           reloadOnSearch: false
+                           controller: 'RootCtrl as root'
                        })
                        .state('root.reader', {
                            url: ':readerId?username',
                            templateUrl: '/views/reader.html',
-                           controller: 'ReaderCtrl as ctrl',
-                           reloadOnSearch: false
+                           controller: 'ReaderCtrl as ctrl'
                        })
                }
            )
