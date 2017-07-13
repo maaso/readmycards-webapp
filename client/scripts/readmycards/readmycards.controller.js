@@ -41,6 +41,7 @@
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.send = send;
+        $scope.stx = stx;
 
         function ok() {
             $uibModalInstance.close("ok");
@@ -51,12 +52,20 @@
         }
 
         function send(command) {
+            clearVars();
             let promise;
             if (stx) { promise = T1C.belfius.sendSTX(readerId, command); }
             else { promise = T1C.belfius.sendCommand(readerId, command); }
             promise.then(res => {
-
+                $scope.result = res.data;
+            }, err => {
+                $scope.error = err;
             })
+        }
+
+        function clearVars() {
+            $scope.result = undefined;
+            $scope.error = undefined;
         }
     }
 
@@ -176,7 +185,7 @@
         function sendSTX() {
             console.log("send STX");
             $uibModal.open({
-                templateUrl: "views/cards/emv/belfius/send-stx.html",
+                templateUrl: "views/cards/emv/belfius/send-command.html",
                 resolve: {
                     readerId: () => {
                         return $state.params.readerId;
