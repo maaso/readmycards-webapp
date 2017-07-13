@@ -61,7 +61,7 @@
                $rootScope.$on('$stateChangeSuccess',
                    function () {
                        //restore all query string parameters back to $location.search
-                       $location.search({ username: "root" });
+                       $location.search(locationSearch);
                    });
            });
 
