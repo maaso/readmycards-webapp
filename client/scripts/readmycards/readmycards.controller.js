@@ -169,6 +169,7 @@
                 resolve: {
                     nonce: () => {
                         return T1C.belfius.openSession($state.params.readerId).then((res) => {
+                            RMC.sessionStatus(true);
                             return res.data;
                         });
                     }
@@ -218,7 +219,9 @@
                 templateUrl: "views/cards/emv/belfius/close-session.html",
                 resolve: {
                     close: () => {
-                        return T1C.belfius.closeSession($state.params.readerId);
+                        return T1C.belfius.closeSession($state.params.readerId).then(() => {
+                            RMC.sessionStatus(false);
+                        });
                     }
                 },
                 backdrop: 'static',

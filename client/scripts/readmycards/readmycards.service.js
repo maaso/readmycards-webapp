@@ -119,10 +119,17 @@
         }
     }
 
-    function ReadMyCardsService($rootScope, $timeout, T1C, EVENTS, _) {
+    function ReadMyCardsService($rootScope, $q, $timeout, T1C, EVENTS, _) {
         this.monitorCardRemoval = monitorCardRemoval;
         this.checkCardRemoval = checkCardRemoval;
         this.checkReaderRemoval = checkReaderRemoval;
+        this.sessionStatus = sessionStatus;
+
+        let sessionOpen = false;
+
+        function sessionStatus(bool) {
+            sessionOpen = bool;
+        }
 
         function monitorCardRemoval(readerId, card) {
             $timeout(function () {
@@ -138,25 +145,29 @@
             // Check card still inserted
             // Check same card inserted
             return $timeout(function() {
-                return T1C.core.getReadersWithCards().then(function (readerData) {
-                    $rootScope.$broadcast(EVENTS.READERS_WITH_CARDS, readerData);
-                    if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
-                        // no connected readers with cards
-                        // removal is true
+                if (sessionOpen) {
+                    return $q.when(false);
+                } else {
+                    return T1C.core.getReadersWithCards().then(function (readerData) {
+                        $rootScope.$broadcast(EVENTS.READERS_WITH_CARDS, readerData);
+                        if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
+                            // no connected readers with cards
+                            // removal is true
+                            return true;
+                        } else {
+                            // check if readerId still present
+                            let reader = _.find(readerData.data, function (reader) {
+                                return reader.id === readerId;
+                            });
+                            // check if card with same atr is present
+                            // TODO deeper check to see if it is really the same card and not just a card of same type?
+                            return !(reader && reader.card && reader.card.atr === card.atr);
+                        }
+                    }, function () {
+                        // console.log('error occurred, assume card removed');
                         return true;
-                    } else {
-                        // check if readerId still present
-                        let reader = _.find(readerData.data, function (reader) {
-                            return reader.id === readerId;
-                        });
-                        // check if card with same atr is present
-                        // TODO deeper check to see if it is really the same card and not just a card of same type?
-                        return !(reader && reader.card && reader.card.atr === card.atr);
-                    }
-                }, function () {
-                    // console.log('error occurred, assume card removed');
-                    return true;
-                });
+                    });
+                }
             }, 500);
         }
 
