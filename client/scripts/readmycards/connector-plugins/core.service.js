@@ -161,7 +161,6 @@
         /// ==============================
 
         function isGCLAvailable() {
-            console.log("gcl available?");
             let available = $q.defer();
             connector.core().info().then(res => {
                 if (_.isBoolean(res.data.citrix) && res.data.citrix) {
