@@ -107,9 +107,9 @@
         }
 
         function onKeyPressed(data) {
-            if (data == '<') {
+            if (data === '<') {
                 if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
-            } else if (data == '>') {
+            } else if (data === '>') {
                 submitPin();
             } else {
                 $scope.pincode.value += data;
@@ -153,11 +153,9 @@
                 templateUrl: "views/cards/emv/belfius/open-session.html",
                 resolve: {
                     nonce: () => {
-                        return "1231445435dE4";
-                        // return T1C.belfius.openSession($state.params.readerId).then(function
-                        // (res) {
-                        //     return res.data;
-                        // })
+                        return T1C.belfius.openSession($state.params.readerId).then((res) => {
+                            return res.data;
+                        });
                     }
                 },
                 backdrop: 'static',
