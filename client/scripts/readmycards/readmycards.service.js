@@ -193,7 +193,7 @@
         }
     }
 
-    function CitrixService(_, $location, $q, $state, $uibModal) {
+    function CitrixService(_, $location, $q, $uibModal) {
         let citrixAgent;
         let citrixEnvironment = false;
         let citrixPort = undefined;

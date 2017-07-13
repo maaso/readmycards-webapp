@@ -53,7 +53,7 @@
         function getReaders() {
             let readersDeferred = $q.defer();
             connector.core().readers(function (err, result) {
-                callbackHelper(err, result, readersDeferred);
+                callbackHelperExempt(err, result, readersDeferred);
             }, Citrix.port());
             return readersDeferred.promise;
         }
@@ -161,6 +161,7 @@
         /// ==============================
 
         function isGCLAvailable() {
+            console.log("gcl available?");
             let available = $q.defer();
             connector.core().info().then(res => {
                 if (_.isBoolean(res.data.citrix) && res.data.citrix) {
@@ -172,8 +173,14 @@
                         });
                         if (citrixAgent) {
                             Citrix.agent(citrixAgent);
-                            Citrix.updateLocation();
-                            available.resolve(true);
+                            getReaders().then(res => {
+                                Citrix.updateLocation();
+                                available.resolve(true);
+                            }, () => {
+                                Citrix.invalidLocalAgent().then(() => {
+                                    available.resolve(isGCLAvailable());
+                                });
+                            });
                         } else {
                             Citrix.invalidLocalAgent().then(() => {
                                 available.resolve(isGCLAvailable());
@@ -211,7 +218,23 @@
 
         // Helper function to reject or resolve the promise when appropriate
         function callbackHelper(err, result, promise) {
-            if (err) promise.reject(err);
+            if (err) {
+                if (err.data.code === 802) {
+                    // invalid HTTP request, probably agent is gone
+                    // reset app
+                    window.location.reload();
+                } else {
+                    promise.reject(err);
+                }
+            }
+            else promise.resolve(result);
+        }
+
+        // Helper function to reject or resolve the promise when appropriate
+        function callbackHelperExempt(err, result, promise) {
+            if (err) {
+                promise.reject(err);
+            }
             else promise.resolve(result);
         }
     }

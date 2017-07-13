@@ -74,7 +74,7 @@
             promise.then(res => {
                 $scope.result = res.data;
             }, err => {
-                $scope.error = err;
+                $scope.error = angular.toJson(err);
             })
         }
 

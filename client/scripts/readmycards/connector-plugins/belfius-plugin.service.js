@@ -5,7 +5,7 @@
            .service('Belfius', Belfius);
 
 
-    function Belfius($q, Core, _, Citrix) {
+    function Belfius($q, $state, $location, Core, _, Citrix) {
 
         // --- BeID ---
         this.openSession = openSession;
@@ -59,7 +59,15 @@
 
         // Helper function to reject or resolve the promise when appropriate
         function callbackHelper(err, result, promise) {
-            if (err) promise.reject(err);
+            if (err) {
+                if (err.data.code === 802) {
+                    // invalid HTTP request, probably agent is gone
+                    // reset app
+                    window.location.reload();
+                } else {
+                    promise.reject(err);
+                }
+            }
             else promise.resolve(result);
         }
     }
