@@ -218,7 +218,7 @@
         // Helper function to reject or resolve the promise when appropriate
         function callbackHelper(err, result, promise) {
             if (err) {
-                if (err.data.code === 802) {
+                if (err.data && err.data.code && err.data.code === 802) {
                     // invalid HTTP request, probably agent is gone
                     // reset app
                     window.location.reload();
