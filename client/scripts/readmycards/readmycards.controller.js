@@ -97,7 +97,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                T1C.luxtrust.challenge(readerId).then(handleSuccess, handleError);
+                T1C.getConnector().ocra(readerId).challenge({ challenge: "kgg0MTQ4NTkzNZMA" }).then(handleSuccess, handleError);
             }
             // else, wait until user enters pin
         }
@@ -129,7 +129,7 @@
         }
 
         function submitPin() {
-            T1C.luxtrust.challenge(readerId, $scope.pincode.value).then(handleSuccess, handleError);
+            T1C.core.getConnector().ocra(readerId).challenge({ challenge: "kgg0MTQ4NTkzNZMA", pin: $scope.pincode.value }).then(handleSuccess, handleError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {

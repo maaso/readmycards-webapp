@@ -130,10 +130,10 @@
         function prepareSign(readerId, pin) {
             return T1C.luxId.allData(readerId, pin).then(function (result) {
                 fullName = result.data.biometric.firstName + ' ' + result.data.biometric.lastName;
-                rootCertificate1 = result.data.root_certificates[0];
-                rootCertificate2 = result.data.root_certificates[1];
-                authenticationCertificate = result.data.authentication_certificate;
-                nonRepudiationCertificate = result.data.non_repudiation_certificate;
+                rootCertificate1 = result.data.root_certificates[0].base64;
+                rootCertificate2 = result.data.root_certificates[1].base64;
+                authenticationCertificate = result.data.authentication_certificate.base64;
+                nonRepudiationCertificate = result.data.non_repudiation_certificate.base64;
                 return { readerId: readerId, pin: pin };
             });
         }
@@ -268,10 +268,10 @@
         // OK
         function prepareSign(readerId, pin) {
             return T1C.luxtrust.allData(readerId, pin).then(function (result) {
-                rootCertificate1 = result.data.root_certificates[0];
-                rootCertificate2 = result.data.root_certificates[1];
-                authenticationCertificate = result.data.authentication_certificate;
-                signingCertificate = result.data.signing_certificate;
+                rootCertificate1 = result.data.root_certificates[0].base64;
+                rootCertificate2 = result.data.root_certificates[1].base64;
+                authenticationCertificate = result.data.authentication_certificate.base64;
+                signingCertificate = result.data.signing_certificate.base64;
                 return { readerId: readerId, pin: pin };
             });
         }
@@ -289,10 +289,10 @@
         function dataToSign(documentId) {
             return $http.post('api/cards/lux/datatosign', {
                 docId: documentId,
-                digestAlgoWrapper: 'SHA256',
-                signCertificate: authenticationCertificate,
+                digestAlgoWrapper: 'SHA1',
+                signCertificate: signingCertificate,
                 certificates: [
-                    authenticationCertificate,
+                    signingCertificate,
                     rootCertificate2,
                     rootCertificate1
                 ],
@@ -314,9 +314,9 @@
         function workflowSign(inputObj) {
             return $http.post('api/cards/lux/sign', {
                 docId: inputObj.documentId,
-                signCertificate: authenticationCertificate,
+                signCertificate: signingCertificate,
                 certificates: [
-                    authenticationCertificate,
+                    signingCertificate,
                     rootCertificate2,
                     rootCertificate1
                 ],

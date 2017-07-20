@@ -92,7 +92,7 @@
         // OK
         function rootCert(readerId) {
             return T1C.beid.getRootCert(readerId).then(function (res) {
-                rootCertificate = res.data;
+                rootCertificate = res.data.base64;
                 return readerId;
             });
         }
@@ -100,7 +100,7 @@
         // OK
         function citizenCert(readerId) {
             return T1C.beid.getCitizenCert(readerId).then(function (res) {
-                citizenCertificate = res.data;
+                citizenCertificate = res.data.base64;
                 return readerId;
             });
         }
@@ -108,7 +108,7 @@
         // OK
         function nonRepudiationCert(readerId) {
             return T1C.beid.getNonRepCert(readerId).then(function (res) {
-                nonRepudiationCertificate = res.data;
+                nonRepudiationCertificate = res.data.base64;
                 return readerId;
             });
         }
