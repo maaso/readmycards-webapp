@@ -22,8 +22,8 @@
 
     <div ng-if="!$ctrl.needPin && !$ctrl.readingData">
         <div class="status-wrapper">
-            <!--<beid-certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></beid-certificate-status>-->
-            <piv-pin-check-status status="$ctrl.pinStatus"></piv-pin-check-status>
+            <!--<certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></certificate-status>-->
+            <pin-check-status status="$ctrl.pinStatus" max-tries="5" ok-text="'PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
         </div>
 
         <piv-card card-data="$ctrl.cardData"></piv-card>
