@@ -15,7 +15,8 @@
             </div>
             <div class="tec-content inline">
                 <div class="tec-picture inline">
-                    <img class="pic" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
+                    <img class="pic" ng-if="!$ctrl.cardData.picture || $ctrl.cardData.picture.length === 0" src="images/default-pic.jpg"/>
+                    <img class="pic" ng-if="$ctrl.cardData.picture && $ctrl.cardData.picture.length > 0" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.cardData.picture }}"/>
                 </div>
                 <div class="tec-info inline">
                     <div class="personal-info section">

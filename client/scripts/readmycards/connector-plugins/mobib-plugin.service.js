@@ -40,6 +40,141 @@
         // Actual functions
         function allData(readerId) {
             return filteredWrapper(readerId, 'allData', []);
+
+            // return $q.when(angular.fromJson({"data":{"active":true,"card-issuing":{"card_expiration_date":"2020-01-18","card_holder_birth_date":"1981-10-22","card_holder_end_date":"not-a-date-time","card_holder_id":"3086021000007437420","card_holder_name":"GUILLAUME|VANDECASTEELE                            ","card_holder_start_date":"2015-01-19","card_revalidation_date":"not-a-date-time","card_type":1,"company_id":1,"gender":1,"language":1,"version":1},"contracts":[{"authenticator_kvc":122,"authenticator_value":1556572,"destination":8823093,"journey_interchanges_allowed":true,"origin":8893088,"passengers_max":0,"price_amount":0,"provider":1,"sale_date":"2016-09-12","sale_sam_count":4711,"sale_sam_id":1120323,"spatials":[],"tariff":{"multimodal":false,"nameref":250},"type_id":250,"validity_duration":{"unit":3,"value":1},"validity_start_date":"2016-09-12","vehicle_class_allowed":0,"version":4},{"authenticator_kvc":122,"authenticator_value":8403698,"journey_interchanges_allowed":true,"operator_map":15,"passengers_max":0,"price_amount":0,"provider":1,"sale_date":"2016-11-17","sale_sam_count":4813,"sale_sam_id":1120352,"spatials":[],"tariff":{"multimodal":true,"nameref":14},"type_id":15374,"validity_duration":{"unit":3,"value":1},"validity_start_date":"2016-11-17","vehicle_class_allowed":0,"version":4},{"authenticator_kvc":120,"authenticator_value":8566633,"journey_interchanges_allowed":true,"operator_map":15,"passengers_max":0,"price_amount":1400,"provider":2,"sale_date":"2017-01-27","sale_sam_count":78559,"sale_sam_id":95293,"spatials":[],"tariff":{"counter":{"journeys":0,"type":2},"multimodal":true,"nameref":3},"type_id":15363,"validity_duration":{"unit":0,"value":0},"validity_start_date":"2017-01-27","vehicle_class_allowed":0,"version":4},{"authenticator_kvc":120,"authenticator_value":11592317,"journey_interchanges_allowed":true,"operator_map":15,"passengers_max":0,"price_amount":1400,"provider":2,"sale_date":"2017-03-03","sale_sam_count":4326,"sale_sam_id":95310,"spatials":[],"tariff":{"counter":{"journeys":9,"type":2},"multimodal":true,"nameref":3},"type_id":15363,"validity_duration":{"unit":0,"value":0},"validity_start_date":"2017-03-03","vehicle_class_allowed":0,"version":4}],"picture":""},"success":true}));
+
+            // return $q.when(angular.fromJson({
+            //     "data": {
+            //         "active": true,
+            //         "card-issuing": {
+            //             "card_expiration_date": "2018-10-20",
+            //             "card_holder_birth_date": "1985-10-28",
+            //             "card_holder_end_date": "not-a-date-time",
+            //             "card_holder_id": "3086021000003012987",
+            //             "card_holder_name": "JONAS|VEKEMAN                                      ",
+            //             "card_holder_start_date": "2013-10-21",
+            //             "card_revalidation_date": "not-a-date-time",
+            //             "card_type": 1,
+            //             "company_id": 1,
+            //             "gender": 1,
+            //             "language": 1,
+            //             "version": 1
+            //         },
+            //         "contracts": [
+            //             {
+            //                 "authenticator_kvc": 120,
+            //                 "authenticator_value": 11090286,
+            //                 "journey_interchanges_allowed": true,
+            //                 "operator_map": 15,
+            //                 "passengers_max": 0,
+            //                 "price_amount": 210,
+            //                 "provider": 2,
+            //                 "sale_date": "2016-09-30",
+            //                 "sale_sam_count": 25796,
+            //                 "sale_sam_id": 95231,
+            //                 "spatials": [],
+            //                 "tariff": {
+            //                     "counter": {
+            //                         "journeys": 0,
+            //                         "type": 2
+            //                     },
+            //                     "multimodal": true,
+            //                     "nameref": 1
+            //                 },
+            //                 "type_id": 15361,
+            //                 "validity_start_date": "2016-09-30",
+            //                 "vehicle_class_allowed": 0,
+            //                 "version": 4
+            //             },
+            //             {
+            //                 "authenticator_kvc": 120,
+            //                 "authenticator_value": 3781172,
+            //                 "journey_interchanges_allowed": true,
+            //                 "operator_map": 15,
+            //                 "passengers_max": 0,
+            //                 "price_amount": 210,
+            //                 "provider": 2,
+            //                 "sale_date": "2016-09-30",
+            //                 "sale_sam_count": 25797,
+            //                 "sale_sam_id": 95231,
+            //                 "spatials": [],
+            //                 "tariff": {
+            //                     "counter": {
+            //                         "journeys": 0,
+            //                         "type": 2
+            //                     },
+            //                     "multimodal": true,
+            //                     "nameref": 1
+            //                 },
+            //                 "type_id": 15361,
+            //                 "validity_start_date": "2016-09-30",
+            //                 "vehicle_class_allowed": 0,
+            //                 "version": 4
+            //             },
+            //             {
+            //                 "authenticator_kvc": 120,
+            //                 "authenticator_value": 4179917,
+            //                 "journey_interchanges_allowed": true,
+            //                 "operator_map": 15,
+            //                 "passengers_max": 0,
+            //                 "price_amount": 800,
+            //                 "provider": 2,
+            //                 "sale_date": "2017-01-19",
+            //                 "sale_sam_count": 66941,
+            //                 "sale_sam_id": 90880,
+            //                 "spatials": [],
+            //                 "tariff": {
+            //                     "counter": {
+            //                         "journeys": 0,
+            //                         "type": 2
+            //                     },
+            //                     "multimodal": true,
+            //                     "nameref": 2
+            //                 },
+            //                 "type_id": 15362,
+            //                 "validity_duration": {
+            //                     "unit": 0,
+            //                     "value": 0
+            //                 },
+            //                 "validity_start_date": "2017-01-19",
+            //                 "vehicle_class_allowed": 1,
+            //                 "version": 4
+            //             },
+            //             {
+            //                 "authenticator_kvc": 120,
+            //                 "authenticator_value": 5524341,
+            //                 "journey_interchanges_allowed": true,
+            //                 "operator_map": 15,
+            //                 "passengers_max": 0,
+            //                 "price_amount": 800,
+            //                 "provider": 2,
+            //                 "sale_date": "2017-02-13",
+            //                 "sale_sam_count": 29629,
+            //                 "sale_sam_id": 95280,
+            //                 "spatials": [],
+            //                 "tariff": {
+            //                     "counter": {
+            //                         "journeys": 0,
+            //                         "type": 2
+            //                     },
+            //                     "multimodal": true,
+            //                     "nameref": 2
+            //                 },
+            //                 "type_id": 15362,
+            //                 "validity_duration": {
+            //                     "unit": 0,
+            //                     "value": 0
+            //                 },
+            //                 "validity_start_date": "2017-02-13",
+            //                 "vehicle_class_allowed": 1,
+            //                 "version": 4
+            //             }
+            //         ],
+            //         "picture": ""
+            //     },
+            //     "success": true
+            // }));
+
             // return $q.when(angular.fromJson({
             //     "data": {
             //         "active": false,

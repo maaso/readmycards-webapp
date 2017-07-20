@@ -109,7 +109,6 @@ var GCLLib =
                 this.core().getPubKey(function (err, gclResponse) {
                     if (err && err.data && !err.data.success) {
                         self.dsClient.getPubKey(function (err, dsResponse) {
-                            console.log(dsResponse);
                             if (err)
                                 return clientCb(err, null);
                             var innerCb = clientCb;
@@ -128,7 +127,6 @@ var GCLLib =
                 var self_cfg = this.cfg;
                 self.core().info(function (err, infoResponse) {
                     if (err) {
-                        console.log(JSON.stringify(err));
                         return;
                     }
                     var activated = infoResponse.data.activated;
@@ -167,13 +165,9 @@ var GCLLib =
             GCLClient.prototype.implicitDownload = function () {
                 var self = this;
                 this.core().info(function (error, data) {
-                    console.log("implicit error", JSON.stringify(error));
                     if (error) {
                         var _info = self.core().infoBrowserSync();
-                        console.log("implicit error", JSON.stringify(_info));
                         self.ds().downloadLink(_info, function (error, downloadResponse) {
-                            if (error)
-                                console.error("could not download GCL package:", error.description);
                             window.open(downloadResponse.url);
                             return;
                         });
@@ -584,16 +578,13 @@ var GCLLib =
             CoreService.prototype.pollCardInserted = function (secondsToPollCard, callback, connectReaderCb, insertCardCb, cardTimeoutCb) {
                 var maxSeconds = secondsToPollCard;
                 var self = this;
-                console.debug("start poll cards");
                 cardTimeout(callback, cardTimeoutCb, connectReaderCb, insertCardCb);
                 function cardTimeout(cb, rtcb, crcb, iccb) {
                     var selfTimeout = this;
                     setTimeout(function () {
-                        console.debug("seconds left:", maxSeconds);
                         --maxSeconds;
                         self.readers(function (error, data) {
                             if (error) {
-                                console.debug("Waiting...");
                                 crcb();
                                 cardTimeout(cb, rtcb, crcb, iccb);
                             }
@@ -602,14 +593,12 @@ var GCLLib =
                                 return rtcb();
                             }
                             else if (data.data.length === 0) {
-                                console.debug("Waiting...");
                                 crcb();
                                 cardTimeout(cb, rtcb, crcb, iccb);
                             }
                             else {
                                 var readerWithCard = self.checkReadersForCardObject(data.data);
                                 if (readerWithCard != null) {
-                                    console.debug("card found: " + JSON.stringify(readerWithCard));
                                     return cb(null, readerWithCard);
                                 }
                                 else {
@@ -635,16 +624,13 @@ var GCLLib =
             CoreService.prototype.pollReaders = function (secondsToPollReader, callback, connectReaderCb, readerTimeoutCb) {
                 var maxSeconds = secondsToPollReader;
                 var self = this;
-                console.debug("start poll readers");
                 readerTimeout(callback, readerTimeoutCb, connectReaderCb);
                 function readerTimeout(cb, rtcb, crcb) {
                     var selfTimeout = this;
                     setTimeout(function () {
-                        console.debug("seconds left:", maxSeconds);
                         --maxSeconds;
                         self.readers(function (error, data) {
                             if (error) {
-                                console.debug("Waiting...");
                                 crcb();
                                 readerTimeout(cb, rtcb, crcb);
                             }
@@ -653,12 +639,10 @@ var GCLLib =
                                 return rtcb();
                             }
                             else if (data.data.length === 0) {
-                                console.debug("Waiting...");
                                 crcb();
                                 readerTimeout(cb, rtcb, crcb);
                             }
                             else {
-                                console.debug("readerCount:", data.data.length);
                                 return cb(null, data);
                             }
                         });
