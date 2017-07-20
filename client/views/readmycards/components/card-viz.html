@@ -64,7 +64,7 @@
       <lux-otp-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxOTP'"></lux-otp-visualizer>
 
       <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
-      
+
       <oberthur-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'Oberthur'"></oberthur-visualizer>
 
       <piv-visualizer ng-if="$ctrl.cardType === 'PIV'" card-data="$ctrl.cardData"></piv-visualizer>
