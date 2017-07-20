@@ -40,33 +40,29 @@
             CardService = _CardService_;
         }));
 
-        describe('CardService card type detection', function () {
+        describe('CardService card type pretty names', function () {
             it ('notifies us of unknown card types', function () {
-                var card = {
-                    description: [ 'unknown type test' ]
-                };
-                expect(CardService.detectType(card)).to.equal('Unknown');
+                expect(CardService.getCardTypeName('unknown container type')).to.equal('Unknown');
             });
 
-            it ('can detect a Belgian eID card', function () {
-                var card = {
-                    description: [ 'Belgium Electronic ID card' ]
-                };
-                expect(CardService.detectType(card)).to.equal('BeID');
+            it ('can name a Belgian eID card', function () {
+                expect(CardService.getCardTypeName('beid')).to.equal('Belgian eID');
             });
 
-            it ('can detect an EMV card', function () {
-                var card = {
-                    description: [ 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium' ]
-                };
-                expect(CardService.detectType(card)).to.equal('EMV');
+            it ('can name an EMV card', function () {
+                expect(CardService.getCardTypeName('emv')).to.equal('EMV');
             });
 
             it ('can detect a MOBIB card', function () {
                 var card = {
                     description: [ 'MOBIB Card' ]
                 };
-                expect(CardService.detectType(card)).to.equal('MOBIB');
+
+                var basic = {
+                    description: [ 'MOBIB Basic Card' ]
+                };
+                expect(CardService.getCardTypeName('mobib', card)).to.equal('MOBIB');
+                expect(CardService.getCardTypeName('mobib', basic)).to.equal('MOBIB Basic');
             });
         });
     })
