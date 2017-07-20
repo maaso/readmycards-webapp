@@ -17,9 +17,9 @@
 
                 let validationReq = {
                     certificateChain: [
-                        { order: 0, certificate: controller.cardData.authentication_certificate },
-                        { order: 1, certificate: controller.cardData.issuer_certificate },
-                        { order: 2, certificate: controller.cardData.root_certificate }
+                        { order: 0, certificate: controller.cardData.authentication_certificate.base64 },
+                        { order: 1, certificate: controller.cardData.issuer_certificate.base64 },
+                        { order: 2, certificate: controller.cardData.root_certificate.base64 }
                     ]
                 };
                 Analytics.trackEvent('oberthur', 'cert-check', 'Start certificate check');

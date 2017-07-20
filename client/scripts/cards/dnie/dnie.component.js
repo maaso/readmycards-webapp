@@ -20,9 +20,9 @@
                     console.log(res.data);
                     let validationReq = {
                         certificateChain: [
-                            { "order": 0, certificate: res.data.authentication_certificate },
-                            { "order": 1, certificate: res.data.signing_certificate },
-                            { "order": 2, certificate: res.data.intermediate_certificate },
+                            { "order": 0, certificate: res.data.authentication_certificate.base64 },
+                            { "order": 1, certificate: res.data.signing_certificate.base64 },
+                            { "order": 2, certificate: res.data.intermediate_certificate.base64 },
                         ]
                     };
                     Analytics.trackEvent('dnie', 'cert-check', 'Start certificate check');

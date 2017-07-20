@@ -26,9 +26,11 @@
                     <h4 class="text-info text-light">Root</h4>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" value="{{ $ctrl.cardData.root_certificate }}">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.cardData.root_certificate.base64 }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: root_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.root_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: root_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.root_certificate.base64 }}"></button>
                         </span>
                     </div>
                 </div>
@@ -37,9 +39,11 @@
                     <h4 class="text-info text-light">Issuer</h4>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" value="{{ $ctrl.cardData.issuer_certificate }}">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.cardData.issuer_certificate.base64 }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: citizen_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.issuer_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: citizen_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.issuer_certificate.base64 }}"></button>
                         </span>
                     </div>
                 </div>
@@ -48,9 +52,11 @@
                     <h4 class="text-info text-light">Authentication</h4>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" value="{{ $ctrl.cardData.authentication_certificate }}">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.cardData.authentication_certificate.base64 }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: authentication_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.authentication_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: authentication_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.authentication_certificate.base64 }}"></button>
                         </span>
                     </div>
                 </div>
@@ -59,9 +65,11 @@
                     <h4 class="text-info text-light">Signing</h4>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" value="{{ $ctrl.cardData.signing_certificate }}">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.cardData.signing_certificate.base64 }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: non_repudiation_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.signing_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: non_repudiation_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.signing_certificate.base64 }}"></button>
                         </span>
                     </div>
                 </div>
@@ -70,9 +78,11 @@
                     <h4 class="text-info text-light">Encryption</h4>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" value="{{ $ctrl.cardData.encryption_certificate }}">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.cardData.encryption_certificate.base64 }}">
                         <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: rrn_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.encryption_certificate }}"></button>
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: rrn_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.encryption_certificate.base64 }}"></button>
                         </span>
                     </div>
                 </div>

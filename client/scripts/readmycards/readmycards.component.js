@@ -22,7 +22,6 @@
                         controller.cardType = CardService.detectType(readerInfo.data.card);
                         controller.card = readerInfo.data.card;
 
-                        console.log("ReadMyCards.component: " + controller.cardType);
                         if (controller.cardType === 'Unknown') {
                             // TODO Now manually triggered, should this not be automatic?
                             // registerUnknownType();

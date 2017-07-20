@@ -348,8 +348,12 @@
             controller.readerWithCard = _.find(controller.readers, function (o) {
                 return _.has(o, 'card');
             });
-            console.log(controller.readerWithCard.id);
-            $state.go('root.reader', { readerId: controller.readerWithCard.id});
+            if (controller.readerWithCard) {
+                $state.go('root.reader', { readerId: controller.readerWithCard.id});
+            } else {
+                // this normally should not happen, attempt to recover by polling for card
+                pollForCard();
+            }
         }
     }
 

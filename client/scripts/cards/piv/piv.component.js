@@ -60,7 +60,7 @@
 
     angular.module('app.cards.piv')
         .component('pivCard', pivCard)
-        .component('pivPinCheckStatus', pivPinCheckStatus)
+        // .component('pivPinCheckStatus', pivPinCheckStatus)
         .component('pivVisualizer', pivViz);
 
 })();

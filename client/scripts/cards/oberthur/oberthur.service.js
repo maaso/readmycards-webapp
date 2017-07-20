@@ -50,9 +50,9 @@
         // OK
         function prepareSign(readerId, pin) {
             return Core.getConnector().oberthur(readerId).allData([]).then(function (result) {
-                rootCertificate = result.data.root_certificate;
-                authenticationCertificate = result.data.authentication_certificate;
-                signingCertificate = result.data.signing_certificate;
+                rootCertificate = result.data.root_certificate.base64;
+                authenticationCertificate = result.data.authentication_certificate.base64;
+                signingCertificate = result.data.signing_certificate.base64;
                 return { readerId: readerId, pin: pin };
             });
         }
