@@ -19,7 +19,10 @@
                     controller.unknownCard = false;
                     // Detect Type and read data
                     T1C.core.getReader(controller.readerId).then(function (readerInfo) {
-                        controller.cardType = CardService.detectType(readerInfo.data.card);
+                        CardService.detectType(readerInfo.data.id).then(type => {
+                            controller.cardType = type;
+                            controller.cardTypePretty = CardService.getCardTypeName(type, readerInfo.data.card);
+                        });
                         controller.card = readerInfo.data.card;
 
                         if (controller.cardType === 'Unknown') {
@@ -29,7 +32,7 @@
                             controller.loading = false;
                             RMC.monitorCardRemoval(controller.readerId, controller.card);
                         } else {
-                            T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
+                            T1C.readAllData(readerInfo.data.id).then(function (res) {
                                 controller.cardData = res.data;
                                 controller.loading = false;
                                 RMC.monitorCardRemoval(controller.readerId, controller.card)
@@ -175,10 +178,12 @@
                 };
 
                 $scope.$on(EVENTS.READERS_WITH_CARDS, function (event, args) {
-                    if (args.data.length != controller.readers.length) {
+                    if (args.data.length !== controller.readers.length) {
                         controller.readers = args.data;
                         _.forEach(controller.readers, function (reader) {
-                            reader.cardType = CardService.detectType(reader.card);
+                            CardService.detectType(reader.id).then(type => {
+                                reader.cardType =CardService.getCardTypeName(type, reader.card);
+                            });
                         });
                     }
                 });

@@ -45,7 +45,7 @@
 
   <div class="card-viz" ng-if="!$ctrl.loading && !$ctrl.errorReadingCard && !$ctrl.unknownCard">
     <div class="card-type"><span class="text-light">
-            Card type: </span><span class="text-bold">{{$ctrl.cardType}}</span>
+            Card type: </span><span class="text-bold">{{$ctrl.cardTypePretty}}</span>
     </div>
 
     <div class="viz-container">
@@ -53,21 +53,27 @@
                        address-data="$ctrl.cardData.address"
                        pic-data="$ctrl.cardData.picture"
                        cert-data="$ctrl.cardData"
-                       ng-if="$ctrl.cardType === 'BeID'"></beid-visualizer>
+                       ng-if="$ctrl.cardType === 'beid'"></beid-visualizer>
 
-      <dnie-visualizer ng-if="$ctrl.cardType === 'DNIe'" card-data="$ctrl.cardData"></dnie-visualizer>
+      <dnie-visualizer ng-if="$ctrl.cardType === 'dnie'"
+                       card-data="$ctrl.cardData"></dnie-visualizer>
 
-      <emv-visualizer pan-data="$ctrl.cardData.pan" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
+      <emv-visualizer pan-data="$ctrl.cardData.pan"
+                      ng-if="$ctrl.cardType === 'emv'"></emv-visualizer>
 
-      <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
-      <lux-trust-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxTrust'"></lux-trust-visualizer>
-      <lux-otp-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxOTP'"></lux-otp-visualizer>
+      <lux-visualizer ng-if="$ctrl.cardType === 'luxeid'"></lux-visualizer>
+      <lux-trust-visualizer card-data="$ctrl.cardData"
+                            ng-if="$ctrl.cardType === 'luxtrust'"></lux-trust-visualizer>
+      <lux-otp-visualizer card-data="$ctrl.cardData"
+                          ng-if="$ctrl.cardType === 'ocra'"></lux-otp-visualizer>
 
-      <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
+      <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardTypePretty === 'MOBIB Basic'"
+                 ng-if="$ctrl.cardType === 'mobib'"></mobib-viz>
 
-      <oberthur-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'Oberthur'"></oberthur-visualizer>
+      <oberthur-visualizer card-data="$ctrl.cardData"
+                           ng-if="$ctrl.cardType === 'oberthur'"></oberthur-visualizer>
 
-      <piv-visualizer ng-if="$ctrl.cardType === 'PIV'" card-data="$ctrl.cardData"></piv-visualizer>
+      <piv-visualizer ng-if="$ctrl.cardType === 'piv'" card-data="$ctrl.cardData"></piv-visualizer>
     </div>
   </div>
 </div>

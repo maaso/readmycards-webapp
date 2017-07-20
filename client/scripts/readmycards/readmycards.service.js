@@ -2,11 +2,11 @@
     'use strict';
 
     angular.module('app.readmycards')
-        .service('T1C', ConnectorService)
-        .service('CardService', CardService)
-        .service('CheckDigit', CheckDigit)
-        .service('RMC', ReadMyCardsService)
-        .service('API', API);
+           .service('T1C', ConnectorService)
+           .service('CardService', CardService)
+           .service('CheckDigit', CheckDigit)
+           .service('RMC', ReadMyCardsService)
+           .service('API', API);
 
 
     function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, LuxTrust, Mobib, OCV, PIV,DNIe, _) {
@@ -39,43 +39,13 @@
         /// ===== UTILITY FUNCTIONS ======
         /// ==============================
 
-        function readAllData(readerId, card) {
-            switch (CardService.detectType(card)) {
-                case 'BeID':
-                    return getBeIDInitialData(readerId);
-                case 'EMV':
-                    return EMV.getAllEmvData(readerId);
-                case 'MOBIB':
-                case 'MOBIB Basic':
-                    return Mobib.allData(readerId);
-                case 'LuxTrust':
-                    return LuxTrust.allData(readerId);
-                case 'DNIe':
-                    console.log("DNIE!");
-                    return DNIe.allData(readerId);
-                case 'Oberthur':
-                    return Core.getConnector().oberthur(readerId).allData([]);
-                default:
-                    return $q.when('Not Supported');
-            }
-        }
-
-        function getBeIDInitialData(readerId) {
-            let promises = [];
-            let dataObject = { data: {}};
-            promises.push(BeID.getRnData(readerId).then(res => {
-                dataObject.data.rn = res.data;
-            }));
-            promises.push(BeID.getAddress(readerId).then(res => {
-                dataObject.data.address = res.data;
-            }));
-            promises.push(BeID.getPic(readerId).then(res => {
-                dataObject.data.picture = res.data;
-            }));
-
-            return $q.all(promises).then(() => {
-                dataObject.success = true;
-                return dataObject;
+        function readAllData(readerId) {
+            return Core.getConnector().containerFor(readerId).then(res => {
+                // luxeid is a special case and cannot work without a PIN, so skip it
+                if (res.data === 'luxeid') { return $q.when('Not Supported'); }
+                else { return Core.getConnector().dumpData(readerId, {}); }
+            }).catch(() => {
+                return $q.when('Not Supported');
             });
         }
     }
@@ -91,21 +61,21 @@
 
         function calculateCheckDigit(string) {
             return _.sum(_.map(_.map(string, (letter) => {
-                return dict[letter.toUpperCase()];
-            }), (val, index) => {
-                let weighted = val;
-                switch (index % 3) {
-                    case 0:
-                        weighted = val * 7;
-                        break;
-                    case 1:
-                        weighted = val * 3;
-                        break;
-                    case 2:
-                        break;
-                }
-                return weighted;
-            })) % 10;
+                    return dict[letter.toUpperCase()];
+                }), (val, index) => {
+                    let weighted = val;
+                    switch (index % 3) {
+                        case 0:
+                            weighted = val * 7;
+                            break;
+                        case 1:
+                            weighted = val * 3;
+                            break;
+                        case 2:
+                            break;
+                    }
+                    return weighted;
+                })) % 10;
         }
     }
 
@@ -172,25 +142,41 @@
         }
     }
 
-    function CardService(_) {
-        this.detectType = detectType;
+    function CardService(_, Core) {
+        this.detectType = detectContainer;
+        this.getCardTypeName = getCardTypeName;
 
-        function detectType(card) {
-            if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
-                if (findDescription( card.description, 'Belgium Electronic ID card')) { return 'BeID'; }
-                else if (findDescription(card.description, 'DNI electronico')) {return 'DNIe'; }
-                else if (findDescription(card.description, 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)')) { return 'LuxID'; }
-                else if (findDescription(card.description, 'LuxTrust card')) { return 'LuxTrust'; }
-                else if (findDescription(card.description, 'Juridic Person\'s Token (PKI)')) { return 'LuxOTP'; }
-                else if (findDescription(card.description, 'MOBIB Basic')) { return 'MOBIB Basic'; }
-                else if (findDescription(card.description, 'MOBIB')) { return 'MOBIB'; }
-                else if (findDescription(card.description, 'Mastercard')) { return 'EMV'; }
-                else if (findDescription(card.description, 'Oberthur')) { return 'Oberthur'; }
-                else if (findDescription(card.description, 'PIV')) { return 'PIV'; }
-                else if (findDescription(card.description, 'CIV')) { return 'PIV'; }
-                else { return 'Unknown'; }
-            } else {
-                return 'Unknown';
+
+        function detectContainer(readerId) {
+            return Core.getConnector().containerFor(readerId).then(res => {
+                return res.data;
+            })
+        }
+
+        function getCardTypeName(container, card) {
+            switch (container) {
+                case 'beid':
+                    return 'Belgian eID';
+                case 'dnie':
+                    return 'Spanish DNIe';
+                case 'luxeid':
+                    return 'Luxembourg eID';
+                case 'luxtrust':
+                    return 'LuxTrust';
+                case 'ocra':
+                    return 'OCRA/OTP';
+                case 'mobib':
+                    if (findDescription(card.description, 'Basic')) { return 'MOBIB Basic'; }
+                    else { return 'MOBIB'; }
+                    break;
+                case 'emv':
+                    return 'EMV';
+                case 'oberthur':
+                    return 'Oberthur';
+                case 'piv':
+                    return 'PIV';
+                default:
+                    return 'Unknown';
             }
 
             function findDescription(descriptions, toFind) {
