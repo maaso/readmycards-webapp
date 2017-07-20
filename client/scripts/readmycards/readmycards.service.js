@@ -53,6 +53,8 @@
                 case 'DNIe':
                     console.log("DNIE!");
                     return DNIe.allData(readerId);
+                case 'Oberthur':
+                    return Core.getConnector().oberthur(readerId).allData([]);
                 default:
                     return $q.when('Not Supported');
             }
@@ -183,6 +185,7 @@
                 else if (findDescription(card.description, 'MOBIB Basic')) { return 'MOBIB Basic'; }
                 else if (findDescription(card.description, 'MOBIB')) { return 'MOBIB'; }
                 else if (findDescription(card.description, 'Mastercard')) { return 'EMV'; }
+                else if (findDescription(card.description, 'Oberthur')) { return 'Oberthur'; }
                 else if (findDescription(card.description, 'PIV')) { return 'PIV'; }
                 else if (findDescription(card.description, 'CIV')) { return 'PIV'; }
                 else { return 'Unknown'; }

@@ -1,72 +1,75 @@
 <div class="card-viz-container">
-    <div class="loading-block" ng-if="$ctrl.loading">
-        <div class="spinner-container">
-            <span class="spinner fa fa-spinner fa-pulse"></span>
-            <p class="spinner-text text-light">Reading Card...</p>
-        </div>
+  <div class="loading-block" ng-if="$ctrl.loading">
+    <div class="spinner-container">
+      <span class="spinner fa fa-spinner fa-pulse"></span>
+      <p class="spinner-text text-light">Reading Card...</p>
     </div>
+  </div>
 
-    <div class="error-block" ng-if="!$ctrl.loading && $ctrl.errorReadingCard">
-        <span class="spinner fa fa-warning"></span>
-        <p class="error-text text-thin">Error reading card</p>
-        <a class="try-again clickable" ng-click="$ctrl.readAnother()">Try again?</a>
-    </div>
+  <div class="error-block" ng-if="!$ctrl.loading && $ctrl.errorReadingCard">
+    <span class="spinner fa fa-warning"></span>
+    <p class="error-text text-thin">Error reading card</p>
+    <a class="try-again clickable" ng-click="$ctrl.readAnother()">Try again?</a>
+  </div>
 
-    <div class="error-block" ng-if="!$ctrl.loading && $ctrl.unknownCard">
-        <span class="spinner fa fa-question-circle"></span>
-        <p class="error-text text-thin">
-            We're sorry, this type of card is currently not supported.
+  <div class="error-block" ng-if="!$ctrl.loading && $ctrl.unknownCard">
+    <span class="spinner fa fa-question-circle"></span>
+    <p class="error-text text-thin">
+      We're sorry, this type of card is currently not supported.
+    </p>
+    <p class="info-text text-thin">
+      You can find the list of currently supported card types <a class="clickable" ng-click="$ctrl.showSupportedCardTypes()">here</a>.
+    </p>
+    <span class="try-again">Insert a different card to try again!</span>
+    <!--<p class="info-text text-thin">-->
+    <!--If you would like us to support this type of card in the future, please let us know what kind of card it is in the box below.-->
+    <!--Thanks!-->
+    <!--</p>-->
+    <div class="feedback">
+      <div class="unknown-card-form" ng-hide="$ctrl.submitted">
+        <p class="text-thin text-left">
+          If you would like us to support this type of card in the future, let us know what kind of card this is.
         </p>
-        <p class="info-text text-thin">
-            You can find the list of currently supported card types <a class="clickable" ng-click="$ctrl.showSupportedCardTypes()">here</a>.
-        </p>
-        <span class="try-again">Insert a different card to try again!</span>
-        <!--<p class="info-text text-thin">-->
-            <!--If you would like us to support this type of card in the future, please let us know what kind of card it is in the box below.-->
-            <!--Thanks!-->
-        <!--</p>-->
-        <div class="feedback">
-            <div class="unknown-card-form" ng-hide="$ctrl.submitted">
-                <p class="text-thin text-left">
-                    If you would like us to support this type of card in the future, let us know what kind of card this is.
-                </p>
-                <form data-ng-submit="$ctrl.registerUnknownType(cardDesc)" class="form-inline">
-                    <input type="text"
-                           placeholder="Please provide a short description of the card"
-                           class="form-control"
-                           data-ng-model="cardDesc"
-                           autofocus>
-                    <span type="submit" id="submit" class="btn btn-default" data-ng-click="$ctrl.registerUnknownType(cardDesc)">Submit</span>
-                </form>
-            </div>
-            <p class="info-text text-thin" ng-show="$ctrl.submitted">Thank you for your feedback!</p>
-        </div>
+        <form data-ng-submit="$ctrl.registerUnknownType(cardDesc)" class="form-inline">
+          <input type="text"
+                 placeholder="Please provide a short description of the card"
+                 class="form-control"
+                 data-ng-model="cardDesc"
+                 autofocus>
+          <span type="submit" id="submit" class="btn btn-default" data-ng-click="$ctrl.registerUnknownType(cardDesc)">Submit</span>
+        </form>
+      </div>
+      <p class="info-text text-thin" ng-show="$ctrl.submitted">Thank you for your feedback!</p>
     </div>
+  </div>
 
-    <div class="card-viz" ng-if="!$ctrl.loading && !$ctrl.errorReadingCard && !$ctrl.unknownCard">
-        <div class="card-type"><span class="text-light">
+  <div class="card-viz" ng-if="!$ctrl.loading && !$ctrl.errorReadingCard && !$ctrl.unknownCard">
+    <div class="card-type"><span class="text-light">
             Card type: </span><span class="text-bold">{{$ctrl.cardType}}</span>
-        </div>
-
-        <div class="viz-container">
-            <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
-
-            <dnie-visualizer ng-if="$ctrl.cardType === 'DNIe'" card-data="$ctrl.cardData"></dnie-visualizer>
-
-            <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
-            <lux-trust-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxTrust'"></lux-trust-visualizer>
-            <lux-otp-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxOTP'"></lux-otp-visualizer>
-
-            <beid-visualizer rn-data="$ctrl.cardData.rn"
-                             address-data="$ctrl.cardData.address"
-                             pic-data="$ctrl.cardData.picture"
-                             cert-data="$ctrl.cardData"
-                             ng-if="$ctrl.cardType === 'BeID'"></beid-visualizer>
-            <emv-visualizer pan-data="$ctrl.cardData.pan" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
-
-            <piv-visualizer ng-if="$ctrl.cardType === 'PIV'" card-data="$ctrl.cardData"></piv-visualizer>
-        </div>
     </div>
+
+    <div class="viz-container">
+      <beid-visualizer rn-data="$ctrl.cardData.rn"
+                       address-data="$ctrl.cardData.address"
+                       pic-data="$ctrl.cardData.picture"
+                       cert-data="$ctrl.cardData"
+                       ng-if="$ctrl.cardType === 'BeID'"></beid-visualizer>
+
+      <dnie-visualizer ng-if="$ctrl.cardType === 'DNIe'" card-data="$ctrl.cardData"></dnie-visualizer>
+
+      <emv-visualizer pan-data="$ctrl.cardData.pan" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
+
+      <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
+      <lux-trust-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxTrust'"></lux-trust-visualizer>
+      <lux-otp-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'LuxOTP'"></lux-otp-visualizer>
+
+      <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
+      
+      <oberthur-visualizer card-data="$ctrl.cardData" ng-if="$ctrl.cardType === 'Oberthur'"></oberthur-visualizer>
+
+      <piv-visualizer ng-if="$ctrl.cardType === 'PIV'" card-data="$ctrl.cardData"></piv-visualizer>
+    </div>
+  </div>
 </div>
 
 

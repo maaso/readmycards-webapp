@@ -43,6 +43,7 @@ var GCLLib =
 /************************************************************************/
 /******/ ([
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* 0 */
 	/***/ function(module, exports, __webpack_require__) {
 
@@ -185,6 +186,183 @@ var GCLLib =
 		/***/ },
 	/* 1 */
 	/***/ function(module, exports) {
+=======
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _ = __webpack_require__(1);
+	var GCLConfig_1 = __webpack_require__(3);
+	exports.GCLConfig = GCLConfig_1.GCLConfig;
+	var CardFactory_1 = __webpack_require__(4);
+	var CoreService_1 = __webpack_require__(16);
+	var Connection_1 = __webpack_require__(21);
+	var DSClient_1 = __webpack_require__(47);
+	var OCVClient_1 = __webpack_require__(48);
+	var GCLClient = (function () {
+	    function GCLClient(cfg) {
+	        var _this = this;
+	        this.core = function () { return _this.coreService; };
+	        this.config = function () { return _this.cfg; };
+	        this.ds = function () { return _this.dsClient; };
+	        this.ocv = function () { return _this.ocvClient; };
+	        this.beid = function (reader_id) { return _this.cardFactory.createEidBE(reader_id); };
+	        this.dni = function (reader_id) { return _this.cardFactory.createDNI(reader_id); };
+	        this.luxeid = function (reader_id, pin) { return _this.cardFactory.createEidLUX(reader_id, pin); };
+	        this.luxtrust = function (reader_id, pin) { return _this.cardFactory.createLuxTrust(reader_id); };
+	        this.emv = function (reader_id) { return _this.cardFactory.createEmv(reader_id); };
+	        this.mobib = function (reader_id) { return _this.cardFactory.createMobib(reader_id); };
+	        this.ocra = function (reader_id) { return _this.cardFactory.createOcra(reader_id); };
+	        this.aventra = function (reader_id) { return _this.cardFactory.createAventraNO(reader_id); };
+	        this.oberthur = function (reader_id) { return _this.cardFactory.createOberthurNO(reader_id); };
+	        this.piv = function (reader_id) { return _this.cardFactory.createPIV(reader_id); };
+	        var self = this;
+	        this.cfg = GCLClient.resolveConfig(cfg);
+	        this.connection = new Connection_1.LocalConnection(this.cfg);
+	        this.authConnection = new Connection_1.LocalAuthConnection(this.cfg);
+	        this.remoteConnection = new Connection_1.RemoteConnection(this.cfg);
+	        this.localTestConnection = new Connection_1.LocalTestConnection(this.cfg);
+	        this.cardFactory = new CardFactory_1.CardFactory(this.cfg.gclUrl, this.connection);
+	        this.coreService = new CoreService_1.CoreService(this.cfg.gclUrl, this.authConnection);
+	        if (this.cfg.localTestMode) {
+	            this.dsClient = new DSClient_1.DSClient(this.cfg.dsUrl, this.localTestConnection, this.cfg);
+	        }
+	        else {
+	            this.dsClient = new DSClient_1.DSClient(this.cfg.dsUrl, this.remoteConnection, this.cfg);
+	        }
+	        this.ocvClient = new OCVClient_1.OCVClient(this.cfg.ocvUrl, this.remoteConnection);
+	        if (this.cfg.implicitDownload && true) {
+	            this.implicitDownload();
+	        }
+	        this.initSecurityContext(function (err) {
+	            if (err) {
+	                console.log(JSON.stringify(err));
+	                return;
+	            }
+	            self.registerAndActivate();
+	        });
+	        this.initOCVContext(function (err) {
+	            if (err) {
+	                console.warn("OCV not available for apikey, contact support@trust1team.com to add this capability");
+	            }
+	            else {
+	                console.log("OCV available for apikey");
+	            }
+	        });
+	    }
+	    GCLClient.resolveConfig = function (cfg) {
+	        var resolvedCfg = new GCLConfig_1.GCLConfig(cfg.dsUrlBase, cfg.apiKey);
+	        resolvedCfg.allowAutoUpdate = cfg.allowAutoUpdate;
+	        resolvedCfg.client_id = cfg.client_id;
+	        resolvedCfg.client_secret = cfg.client_secret;
+	        resolvedCfg.jwt = cfg.jwt;
+	        resolvedCfg.gclUrl = cfg.gclUrl;
+	        resolvedCfg.implicitDownload = cfg.implicitDownload;
+	        resolvedCfg.localTestMode = cfg.localTestMode;
+	        return resolvedCfg;
+	    };
+	    GCLClient.prototype.initOCVContext = function (cb) {
+	        return this.ocvClient.getInfo(cb);
+	    };
+	    GCLClient.prototype.initSecurityContext = function (cb) {
+	        var self = this;
+	        var clientCb = cb;
+	        this.core().getPubKey(function (err) {
+	            if (err && err.data && !err.data.success) {
+	                self.dsClient.getPubKey(function (error, dsResponse) {
+	                    if (err) {
+	                        return clientCb(err, null);
+	                    }
+	                    var innerCb = clientCb;
+	                    self.core().setPubKey(dsResponse.pubkey, function (pubKeyError) {
+	                        if (pubKeyError) {
+	                            return innerCb(err, null);
+	                        }
+	                        return innerCb(null, {});
+	                    });
+	                });
+	            }
+	            return cb(null, {});
+	        });
+	    };
+	    GCLClient.prototype.registerAndActivate = function () {
+	        var self = this;
+	        var self_cfg = this.cfg;
+	        self.core().info(function (err, infoResponse) {
+	            if (err) {
+	                console.log(JSON.stringify(err));
+	                return;
+	            }
+	            var activated = infoResponse.data.activated;
+	            var managed = infoResponse.data.managed;
+	            var core_version = infoResponse.data.version;
+	            var uuid = infoResponse.data.uid;
+	            var info = self.core().infoBrowserSync();
+	            var mergedInfo = _.merge({ managed: managed, core_version: core_version, activated: activated }, info.data);
+	            if (!activated) {
+	                self.dsClient.register(mergedInfo, uuid, function (error, activationResponse) {
+	                    if (err) {
+	                        console.log("Error while registering the device: " + JSON.stringify(err));
+	                        return;
+	                    }
+	                    self_cfg.jwt = activationResponse.token;
+	                    self.core().activate(function (activationError) {
+	                        if (activationError) {
+	                            console.log(JSON.stringify(err));
+	                            return;
+	                        }
+	                        mergedInfo.activated = true;
+	                        self.dsClient.sync(mergedInfo, uuid, function (syncError) {
+	                            if (syncError) {
+	                                console.log("Error while syncing the device: " + JSON.stringify(syncError));
+	                                return;
+	                            }
+	                        });
+	                    });
+	                });
+	            }
+	            else {
+	                self.dsClient.sync(mergedInfo, uuid, function (syncError, activationResponse) {
+	                    if (syncError) {
+	                        console.log("Error while syncing the device: " + JSON.stringify(syncError));
+	                        return;
+	                    }
+	                    self_cfg.jwt = activationResponse.token;
+	                    return;
+	                });
+	            }
+	        });
+	    };
+	    GCLClient.prototype.implicitDownload = function () {
+	        var self = this;
+	        this.core().info(function (error) {
+	            console.log("implicit error", JSON.stringify(error));
+	            if (error) {
+	                var _info = self.core().infoBrowserSync();
+	                console.log("implicit error", JSON.stringify(_info));
+	                self.ds().downloadLink(_info, function (linkError, downloadResponse) {
+	                    if (linkError) {
+	                        console.error("could not download GCL package:", linkError.description);
+	                    }
+	                    window.open(downloadResponse.url);
+	                    return;
+	                });
+	            }
+	            else {
+	                return;
+	            }
+	        });
+	    };
+	    return GCLClient;
+	}());
+	exports.GCLClient = GCLClient;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> oberthur
 
         "use strict";
         var defaultGclUrl = "https://localhost:10433/v1";
@@ -23777,6 +23955,3673 @@ var GCLLib =
 	  promise._state = REJECTED;
 	  promise._result = reason;
 	
+<<<<<<< HEAD
+	  asap(publishRejection, promise);
+	}
+	
+	function subscribe(parent, child, onFulfillment, onRejection) {
+	  var _subscribers = parent._subscribers;
+	  var length = _subscribers.length;
+	
+	  parent._onerror = null;
+	
+	  _subscribers[length] = child;
+	  _subscribers[length + FULFILLED] = onFulfillment;
+	  _subscribers[length + REJECTED] = onRejection;
+	
+	  if (length === 0 && parent._state) {
+	    asap(publish, parent);
+	  }
+	}
+	
+	function publish(promise) {
+	  var subscribers = promise._subscribers;
+	  var settled = promise._state;
+	
+	  if (subscribers.length === 0) {
+	    return;
+	  }
+	
+	  var child = undefined,
+	      callback = undefined,
+	      detail = promise._result;
+	
+	  for (var i = 0; i < subscribers.length; i += 3) {
+	    child = subscribers[i];
+	    callback = subscribers[i + settled];
+	
+	    if (child) {
+	      invokeCallback(settled, child, callback, detail);
+	    } else {
+	      callback(detail);
+	    }
+	  }
+	
+	  promise._subscribers.length = 0;
+=======
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(2)(module)))
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _ = __webpack_require__(1);
+	var defaultGclUrl = "https://localhost:10443/v1";
+	var defaultDSUrl = "https://accapim.t1t.be:443";
+	var defaultDSContextPath = "/trust1team/gclds/v1";
+	var defaultOCVContextPath = "/trust1team/ocv-api/v1";
+	var defaultDSContextPathTestMode = "/gcl-ds-web/v1";
+	var fileDownloadUrlPostfix = "/trust1team/gclds-file/v1";
+	var defaultAllowAutoUpdate = true;
+	var defaultImplicitDownload = false;
+	var defaultLocalTestMode = false;
+	var GCLConfig = (function () {
+	    function GCLConfig(dsUriValue, apiKey) {
+	        this._gclUrl = defaultGclUrl;
+	        this._dsUrl = dsUriValue + defaultDSContextPath;
+	        this._ocvUrl = dsUriValue + defaultOCVContextPath;
+	        this._dsFileDownloadUrl = dsUriValue + fileDownloadUrlPostfix;
+	        this._dsUrlBase = dsUriValue;
+	        this._apiKey = apiKey;
+	        this._jwt = "none";
+	        this._allowAutoUpdate = defaultAllowAutoUpdate;
+	        this._implicitDownload = defaultImplicitDownload;
+	        this._localTestMode = defaultLocalTestMode;
+	    }
+	    Object.defineProperty(GCLConfig.prototype, "ocvUrl", {
+	        get: function () {
+	            return this._ocvUrl;
+	        },
+	        set: function (value) {
+	            this._ocvUrl = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "gclUrl", {
+	        get: function () {
+	            return this._gclUrl;
+	        },
+	        set: function (value) {
+	            this._gclUrl = value || defaultGclUrl;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "dsUrl", {
+	        get: function () {
+	            return this._dsUrl;
+	        },
+	        set: function (dsUriValue) {
+	            if (_.endsWith(dsUriValue, defaultDSContextPath)) {
+	                this._dsUrlBase = _.replace(dsUriValue, defaultDSContextPath, "");
+	                this._dsUrl = dsUriValue;
+	                this._dsFileDownloadUrl = this._dsUrlBase + fileDownloadUrlPostfix;
+	            }
+	            else {
+	                this._dsUrl = dsUriValue + defaultDSContextPath;
+	                this._dsFileDownloadUrl = dsUriValue + fileDownloadUrlPostfix;
+	                this._dsUrlBase = dsUriValue;
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "apiKey", {
+	        get: function () {
+	            return this._apiKey;
+	        },
+	        set: function (value) {
+	            this._apiKey = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "allowAutoUpdate", {
+	        get: function () {
+	            return this._allowAutoUpdate;
+	        },
+	        set: function (value) {
+	            this._allowAutoUpdate = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "client_id", {
+	        get: function () {
+	            return this._client_id;
+	        },
+	        set: function (value) {
+	            this._client_id = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "client_secret", {
+	        get: function () {
+	            return this._client_secret;
+	        },
+	        set: function (value) {
+	            this._client_secret = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "jwt", {
+	        get: function () {
+	            return this._jwt;
+	        },
+	        set: function (value) {
+	            this._jwt = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "implicitDownload", {
+	        get: function () {
+	            return this._implicitDownload;
+	        },
+	        set: function (value) {
+	            this._implicitDownload = value;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "dsFilDownloadUrl", {
+	        get: function () {
+	            return this._dsFileDownloadUrl;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "dsUrlBase", {
+	        get: function () {
+	            return this._dsUrlBase;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(GCLConfig.prototype, "localTestMode", {
+	        get: function () {
+	            return this._localTestMode;
+	        },
+	        set: function (value) {
+	            this._localTestMode = value;
+	            if (this._localTestMode) {
+	                this._dsUrl = this._dsUrlBase + defaultDSContextPathTestMode;
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    return GCLConfig;
+	}());
+	exports.GCLConfig = GCLConfig;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var EMV_1 = __webpack_require__(5);
+	var EidBe_1 = __webpack_require__(7);
+	var EidLux_1 = __webpack_require__(8);
+	var mobib_1 = __webpack_require__(9);
+	var LuxTrust_1 = __webpack_require__(10);
+	var ocra_1 = __webpack_require__(11);
+	var Aventra_1 = __webpack_require__(12);
+	var Oberthur_1 = __webpack_require__(13);
+	var piv_1 = __webpack_require__(14);
+	var dni_1 = __webpack_require__(15);
+	var CONTAINER_CONTEXT_PATH = "/plugins/";
+	var CONTAINER_NEW_CONTEXT_PATH = "/containers/";
+	var CONTAINER_BEID = CONTAINER_CONTEXT_PATH + "beid";
+	var CONTAINER_LUXEID = CONTAINER_CONTEXT_PATH + "luxeid";
+	var CONTAINER_DNI = CONTAINER_NEW_CONTEXT_PATH + "dnie";
+	var CONTAINER_EMV = CONTAINER_CONTEXT_PATH + "emv";
+	var CONTAINER_LUXTRUST = CONTAINER_CONTEXT_PATH + "luxtrust";
+	var CONTAINER_MOBIB = CONTAINER_CONTEXT_PATH + "mobib";
+	var CONTAINER_OCRA = CONTAINER_CONTEXT_PATH + "ocra";
+	var CONTAINER_AVENTRA = CONTAINER_CONTEXT_PATH + "aventra";
+	var CONTAINER_OBERTHUR = CONTAINER_CONTEXT_PATH + "oberthur";
+	var CONTAINER_PIV = CONTAINER_CONTEXT_PATH + "piv";
+	var CardFactory = (function () {
+	    function CardFactory(url, connection) {
+	        this.url = url;
+	        this.connection = connection;
+	    }
+	    CardFactory.prototype.createDNI = function (reader_id) { return new dni_1.DNI(this.url + CONTAINER_DNI, this.connection, reader_id); };
+	    CardFactory.prototype.createEidBE = function (reader_id) { return new EidBe_1.EidBe(this.url + CONTAINER_BEID, this.connection, reader_id); };
+	    CardFactory.prototype.createEidLUX = function (reader_id, pin) {
+	        return new EidLux_1.EidLux(this.url + CONTAINER_LUXEID, this.connection, reader_id, pin);
+	    };
+	    CardFactory.prototype.createEmv = function (reader_id) { return new EMV_1.EMV(this.url + CONTAINER_EMV, this.connection, reader_id); };
+	    CardFactory.prototype.createLuxTrust = function (reader_id) { return new LuxTrust_1.LuxTrust(this.url + CONTAINER_LUXTRUST, this.connection, reader_id); };
+	    CardFactory.prototype.createMobib = function (reader_id) { return new mobib_1.Mobib(this.url + CONTAINER_MOBIB, this.connection, reader_id); };
+	    CardFactory.prototype.createOcra = function (reader_id) { return new ocra_1.Ocra(this.url + CONTAINER_OCRA, this.connection, reader_id); };
+	    CardFactory.prototype.createAventraNO = function (reader_id) { return new Aventra_1.Aventra(this.url + CONTAINER_AVENTRA, this.connection, reader_id); };
+	    CardFactory.prototype.createOberthurNO = function (reader_id) { return new Oberthur_1.Oberthur(this.url + CONTAINER_OBERTHUR, this.connection, reader_id); };
+	    CardFactory.prototype.createPIV = function (reader_id) { return new piv_1.PIV(this.url + CONTAINER_PIV, this.connection, reader_id); };
+	    return CardFactory;
+	}());
+	exports.CardFactory = CardFactory;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var EMV_PAN = "/pan";
+	var EMV = (function (_super) {
+	    __extends(EMV, _super);
+	    function EMV() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    EMV.prototype.pan = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + EMV_PAN, undefined, callback);
+	    };
+	    return EMV;
+	}(Card_1.GenericPinCard));
+	exports.EMV = EMV;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var GenericCard = (function () {
+	    function GenericCard(url, connection, reader_id) {
+	        this.url = url;
+	        this.connection = connection;
+	        this.reader_id = reader_id;
+	    }
+	    GenericCard.createFilterQueryParam = function (filters, pin) {
+	        var filter = filters.join(",");
+	        if (pin) {
+	            return { filter: filter, pin: pin };
+	        }
+	        else {
+	            return { filter: filter };
+	        }
+	    };
+	    GenericCard.prototype.resolvedReaderURI = function () {
+	        return this.url + "/" + this.reader_id;
+	    };
+	    return GenericCard;
+	}());
+	exports.GenericCard = GenericCard;
+	var GenericSmartCard = (function (_super) {
+	    __extends(GenericSmartCard, _super);
+	    function GenericSmartCard() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    GenericSmartCard.prototype.allData = function (filters, callback) {
+	        if (filters && filters.length) {
+	            return this.connection.get(this.resolvedReaderURI(), GenericCard.createFilterQueryParam(filters), callback);
+	        }
+	        else {
+	            return this.connection.get(this.resolvedReaderURI(), undefined, callback);
+	        }
+	    };
+	    return GenericSmartCard;
+	}(GenericCard));
+	exports.GenericSmartCard = GenericSmartCard;
+	var GenericPinCard = (function (_super) {
+	    __extends(GenericPinCard, _super);
+	    function GenericPinCard() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    GenericPinCard.prototype.verifyPin = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + GenericPinCard.VERIFY_PIN, body, undefined, callback);
+	    };
+	    return GenericPinCard;
+	}(GenericSmartCard));
+	GenericPinCard.VERIFY_PIN = "/verify-pin";
+	exports.GenericPinCard = GenericPinCard;
+	var GenericCertCard = (function (_super) {
+	    __extends(GenericCertCard, _super);
+	    function GenericCertCard() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    GenericCertCard.prototype.allAlgoRefsForAuthentication = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + GenericCertCard.AUTHENTICATE, undefined, callback);
+	    };
+	    GenericCertCard.prototype.allAlgoRefsForSigning = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + GenericCertCard.SIGN_DATA, undefined, callback);
+	    };
+	    GenericCertCard.prototype.allCerts = function (filters, callback) {
+	        if (filters && filters.length) {
+	            return this.connection.get(this.resolvedReaderURI() + GenericCertCard.ALL_CERTIFICATES, GenericCertCard.createFilterQueryParam(filters), callback);
+	        }
+	        else {
+	            return this.connection.get(this.resolvedReaderURI() + GenericCertCard.ALL_CERTIFICATES, undefined, callback);
+	        }
+	    };
+	    GenericCertCard.prototype.authenticate = function (body, callback) {
+	        body.algorithm_reference = body.algorithm_reference.toLocaleLowerCase();
+	        return this.connection.post(this.resolvedReaderURI() + GenericCertCard.AUTHENTICATE, body, undefined, callback);
+	    };
+	    GenericCertCard.prototype.signData = function (body, callback) {
+	        body.algorithm_reference = body.algorithm_reference.toLocaleLowerCase();
+	        return this.connection.post(this.resolvedReaderURI() + GenericCertCard.SIGN_DATA, body, undefined, callback);
+	    };
+	    GenericCertCard.prototype.getCertificate = function (certUrl, callback) {
+	        return this.connection.get(this.resolvedReaderURI() + GenericCertCard.ALL_CERTIFICATES + certUrl, undefined, callback);
+	    };
+	    return GenericCertCard;
+	}(GenericPinCard));
+	GenericCertCard.ALL_CERTIFICATES = "/certificates";
+	GenericCertCard.AUTHENTICATE = "/authenticate";
+	GenericCertCard.CERT_ROOT = "/root";
+	GenericCertCard.CERT_AUTHENTICATION = "/authentication";
+	GenericCertCard.CERT_NON_REPUDIATION = "/non-repudiation";
+	GenericCertCard.CERT_ISSUER = "/issuer";
+	GenericCertCard.CERT_SIGNING = "/signing";
+	GenericCertCard.CERT_ENCRYPTION = "/encryption";
+	GenericCertCard.CERT_CITIZEN = "/citizen";
+	GenericCertCard.CERT_RRN = "/rrn";
+	GenericCertCard.SIGN_DATA = "/sign";
+	exports.GenericCertCard = GenericCertCard;
+	var GenericSecuredCertCard = (function (_super) {
+	    __extends(GenericSecuredCertCard, _super);
+	    function GenericSecuredCertCard() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    GenericSecuredCertCard.prototype.allAlgoRefsForAuthentication = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + GenericSecuredCertCard.AUTHENTICATE, undefined, callback);
+	    };
+	    GenericSecuredCertCard.prototype.allAlgoRefsForSigning = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + GenericSecuredCertCard.SIGN_DATA, undefined, callback);
+	    };
+	    GenericSecuredCertCard.prototype.allData = function (filters, body, callback) {
+	        if (filters && filters.length) {
+	            return this.connection.post(this.resolvedReaderURI(), body, GenericSecuredCertCard.createFilterQueryParam(filters), callback);
+	        }
+	        else {
+	            return this.connection.post(this.resolvedReaderURI(), body, undefined, callback);
+	        }
+	    };
+	    GenericSecuredCertCard.prototype.allCerts = function (filters, body, callback) {
+	        if (filters && filters.length) {
+	            return this.connection.post(this.resolvedReaderURI() + GenericSecuredCertCard.ALL_CERTIFICATES, body, GenericSecuredCertCard.createFilterQueryParam(filters), callback);
+	        }
+	        else {
+	            return this.connection.post(this.resolvedReaderURI() + GenericSecuredCertCard.ALL_CERTIFICATES, body, undefined, callback);
+	        }
+	    };
+	    GenericSecuredCertCard.prototype.verifyPin = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + GenericSecuredCertCard.VERIFY_PIN, body, undefined, callback);
+	    };
+	    GenericSecuredCertCard.prototype.signData = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + GenericSecuredCertCard.SIGN_DATA, body, undefined, callback);
+	    };
+	    GenericSecuredCertCard.prototype.authenticate = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + GenericSecuredCertCard.AUTHENTICATE, body, undefined, callback);
+	    };
+	    GenericSecuredCertCard.prototype.getCertificate = function (certUrl, body, callback, params) {
+	        return this.connection.post(this.resolvedReaderURI() + GenericSecuredCertCard.ALL_CERTIFICATES + certUrl, body, params, callback);
+	    };
+	    GenericSecuredCertCard.prototype.getCertificateArray = function (certUrl, body, callback, params) {
+	        return this.connection.post(this.resolvedReaderURI() + GenericSecuredCertCard.ALL_CERTIFICATES + certUrl, body, params, callback);
+	    };
+	    return GenericSecuredCertCard;
+	}(GenericCard));
+	GenericSecuredCertCard.ALL_CERTIFICATES = "/certificates";
+	GenericSecuredCertCard.AUTHENTICATE = "/authenticate";
+	GenericSecuredCertCard.CERT_AUTHENTICATION = "/authentication";
+	GenericSecuredCertCard.CERT_NON_REPUDIATION = "/non-repudiation";
+	GenericSecuredCertCard.CERT_INTERMEDIATE = "/intermediate";
+	GenericSecuredCertCard.CERT_ROOT = "/root";
+	GenericSecuredCertCard.CERT_SIGNING = "/signing";
+	GenericSecuredCertCard.SIGN_DATA = "/sign";
+	GenericSecuredCertCard.VERIFY_PIN = "/verify-pin";
+	exports.GenericSecuredCertCard = GenericSecuredCertCard;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var EidBe = (function (_super) {
+	    __extends(EidBe, _super);
+	    function EidBe() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    EidBe.prototype.rnData = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + EidBe.RN_DATA, undefined, callback);
+	    };
+	    EidBe.prototype.address = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + EidBe.ADDRESS, undefined, callback);
+	    };
+	    EidBe.prototype.picture = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + EidBe.PHOTO, undefined, callback);
+	    };
+	    EidBe.prototype.rootCertificate = function (callback) {
+	        return this.getCertificate(EidBe.CERT_ROOT, callback);
+	    };
+	    EidBe.prototype.citizenCertificate = function (callback) {
+	        return this.getCertificate(EidBe.CERT_CITIZEN, callback);
+	    };
+	    EidBe.prototype.authenticationCertificate = function (callback) {
+	        return this.getCertificate(EidBe.CERT_AUTHENTICATION, callback);
+	    };
+	    EidBe.prototype.nonRepudiationCertificate = function (callback) {
+	        return this.getCertificate(EidBe.CERT_NON_REPUDIATION, callback);
+	    };
+	    EidBe.prototype.rrnCertificate = function (callback) {
+	        return this.getCertificate(EidBe.CERT_RRN, callback);
+	    };
+	    EidBe.prototype.verifyPin = function (body, callback) {
+	        var _req = { private_key_reference: EidBe.VERIFY_PRIV_KEY_REF };
+	        if (body.pin) {
+	            _req.pin = body.pin;
+	        }
+	        return this.connection.post(this.resolvedReaderURI() + Card_1.GenericCertCard.VERIFY_PIN, _req, undefined, callback);
+	    };
+	    return EidBe;
+	}(Card_1.GenericCertCard));
+	EidBe.RN_DATA = "/rn";
+	EidBe.ADDRESS = "/address";
+	EidBe.PHOTO = "/picture";
+	EidBe.VERIFY_PRIV_KEY_REF = "non-repudiation";
+	exports.EidBe = EidBe;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	function createFilterQueryParam(filters, pin) {
+	    return { filter: filters.join(","), pin: pin };
+>>>>>>> oberthur
+	}
+	
+	function ErrorObject() {
+	  this.error = null;
+	}
+<<<<<<< HEAD
+	
+	var TRY_CATCH_ERROR = new ErrorObject();
+	
+	function tryCatch(callback, detail) {
+	  try {
+	    return callback(detail);
+	  } catch (e) {
+	    TRY_CATCH_ERROR.error = e;
+	    return TRY_CATCH_ERROR;
+	  }
+	}
+	
+	function invokeCallback(settled, promise, callback, detail) {
+	  var hasCallback = isFunction(callback),
+	      value = undefined,
+	      error = undefined,
+	      succeeded = undefined,
+	      failed = undefined;
+	
+	  if (hasCallback) {
+	    value = tryCatch(callback, detail);
+	
+	    if (value === TRY_CATCH_ERROR) {
+	      failed = true;
+	      error = value.error;
+	      value = null;
+	    } else {
+	      succeeded = true;
+	    }
+	
+	    if (promise === value) {
+	      _reject(promise, cannotReturnOwn());
+	      return;
+	    }
+	  } else {
+	    value = detail;
+	    succeeded = true;
+	  }
+	
+	  if (promise._state !== PENDING) {
+	    // noop
+	  } else if (hasCallback && succeeded) {
+	      _resolve(promise, value);
+	    } else if (failed) {
+	      _reject(promise, error);
+	    } else if (settled === FULFILLED) {
+	      fulfill(promise, value);
+	    } else if (settled === REJECTED) {
+	      _reject(promise, value);
+	    }
+	}
+	
+	function initializePromise(promise, resolver) {
+	  try {
+	    resolver(function resolvePromise(value) {
+	      _resolve(promise, value);
+	    }, function rejectPromise(reason) {
+	      _reject(promise, reason);
+	    });
+	  } catch (e) {
+	    _reject(promise, e);
+	  }
+	}
+	
+	var id = 0;
+	function nextId() {
+	  return id++;
+	}
+	
+	function makePromise(promise) {
+	  promise[PROMISE_ID] = id++;
+	  promise._state = undefined;
+	  promise._result = undefined;
+	  promise._subscribers = [];
+	}
+	
+	function Enumerator(Constructor, input) {
+	  this._instanceConstructor = Constructor;
+	  this.promise = new Constructor(noop);
+	
+	  if (!this.promise[PROMISE_ID]) {
+	    makePromise(this.promise);
+	  }
+	
+	  if (isArray(input)) {
+	    this._input = input;
+	    this.length = input.length;
+	    this._remaining = input.length;
+	
+	    this._result = new Array(this.length);
+	
+	    if (this.length === 0) {
+	      fulfill(this.promise, this._result);
+	    } else {
+	      this.length = this.length || 0;
+	      this._enumerate();
+	      if (this._remaining === 0) {
+	        fulfill(this.promise, this._result);
+	      }
+	    }
+	  } else {
+	    _reject(this.promise, validationError());
+	  }
+	}
+	
+	function validationError() {
+	  return new Error('Array Methods must be provided an Array');
+	};
+	
+	Enumerator.prototype._enumerate = function () {
+	  var length = this.length;
+	  var _input = this._input;
+	
+	  for (var i = 0; this._state === PENDING && i < length; i++) {
+	    this._eachEntry(_input[i], i);
+	  }
+	};
+	
+	Enumerator.prototype._eachEntry = function (entry, i) {
+	  var c = this._instanceConstructor;
+	  var resolve$$ = c.resolve;
+	
+	  if (resolve$$ === resolve) {
+	    var _then = getThen(entry);
+	
+	    if (_then === then && entry._state !== PENDING) {
+	      this._settledAt(entry._state, i, entry._result);
+	    } else if (typeof _then !== 'function') {
+	      this._remaining--;
+	      this._result[i] = entry;
+	    } else if (c === Promise) {
+	      var promise = new c(noop);
+	      handleMaybeThenable(promise, entry, _then);
+	      this._willSettleAt(promise, i);
+	    } else {
+	      this._willSettleAt(new c(function (resolve$$) {
+	        return resolve$$(entry);
+	      }), i);
+	    }
+	  } else {
+	    this._willSettleAt(resolve$$(entry), i);
+	  }
+	};
+	
+	Enumerator.prototype._settledAt = function (state, i, value) {
+	  var promise = this.promise;
+	
+	  if (promise._state === PENDING) {
+	    this._remaining--;
+	
+	    if (state === REJECTED) {
+	      _reject(promise, value);
+	    } else {
+	      this._result[i] = value;
+	    }
+	  }
+	
+	  if (this._remaining === 0) {
+	    fulfill(promise, this._result);
+	  }
+	};
+	
+	Enumerator.prototype._willSettleAt = function (promise, i) {
+	  var enumerator = this;
+	
+	  subscribe(promise, undefined, function (value) {
+	    return enumerator._settledAt(FULFILLED, i, value);
+	  }, function (reason) {
+	    return enumerator._settledAt(REJECTED, i, reason);
+	  });
+	};
+	
+	/**
+	  `Promise.all` accepts an array of promises, and returns a new promise which
+	  is fulfilled with an array of fulfillment values for the passed promises, or
+	  rejected with the reason of the first passed promise to be rejected. It casts all
+	  elements of the passed iterable to promises as it runs this algorithm.
+	
+	  Example:
+	
+	  ```javascript
+	  let promise1 = resolve(1);
+	  let promise2 = resolve(2);
+	  let promise3 = resolve(3);
+	  let promises = [ promise1, promise2, promise3 ];
+	
+	  Promise.all(promises).then(function(array){
+	    // The array here would be [ 1, 2, 3 ];
+	  });
+	  ```
+	
+	  If any of the `promises` given to `all` are rejected, the first promise
+	  that is rejected will be given as an argument to the returned promises's
+	  rejection handler. For example:
+	
+	  Example:
+	
+	  ```javascript
+	  let promise1 = resolve(1);
+	  let promise2 = reject(new Error("2"));
+	  let promise3 = reject(new Error("3"));
+	  let promises = [ promise1, promise2, promise3 ];
+	
+	  Promise.all(promises).then(function(array){
+	    // Code here never runs because there are rejected promises!
+	  }, function(error) {
+	    // error.message === "2"
+	  });
+	  ```
+	
+	  @method all
+	  @static
+	  @param {Array} entries array of promises
+	  @param {String} label optional string for labeling the promise.
+	  Useful for tooling.
+	  @return {Promise} promise that is fulfilled when all `promises` have been
+	  fulfilled, or rejected if any of them become rejected.
+	  @static
+	*/
+	function all(entries) {
+	  return new Enumerator(this, entries).promise;
+	}
+	
+	/**
+	  `Promise.race` returns a new promise which is settled in the same way as the
+	  first passed promise to settle.
+	
+	  Example:
+	
+	  ```javascript
+	  let promise1 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      resolve('promise 1');
+	    }, 200);
+	  });
+	
+	  let promise2 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      resolve('promise 2');
+	    }, 100);
+	  });
+	
+	  Promise.race([promise1, promise2]).then(function(result){
+	    // result === 'promise 2' because it was resolved before promise1
+	    // was resolved.
+	  });
+	  ```
+	
+	  `Promise.race` is deterministic in that only the state of the first
+	  settled promise matters. For example, even if other promises given to the
+	  `promises` array argument are resolved, but the first settled promise has
+	  become rejected before the other promises became fulfilled, the returned
+	  promise will become rejected:
+	
+	  ```javascript
+	  let promise1 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      resolve('promise 1');
+	    }, 200);
+	  });
+	
+	  let promise2 = new Promise(function(resolve, reject){
+	    setTimeout(function(){
+	      reject(new Error('promise 2'));
+	    }, 100);
+	  });
+	
+	  Promise.race([promise1, promise2]).then(function(result){
+	    // Code here never runs
+	  }, function(reason){
+	    // reason.message === 'promise 2' because promise 2 became rejected before
+	    // promise 1 became fulfilled
+	  });
+	  ```
+	
+	  An example real-world use case is implementing timeouts:
+	
+	  ```javascript
+	  Promise.race([ajax('foo.json'), timeout(5000)])
+	  ```
+	
+	  @method race
+	  @static
+	  @param {Array} promises array of promises to observe
+	  Useful for tooling.
+	  @return {Promise} a promise which settles in the same way as the first passed
+	  promise to settle.
+	*/
+	function race(entries) {
+	  /*jshint validthis:true */
+	  var Constructor = this;
+	
+	  if (!isArray(entries)) {
+	    return new Constructor(function (_, reject) {
+	      return reject(new TypeError('You must pass an array to race.'));
+	    });
+	  } else {
+	    return new Constructor(function (resolve, reject) {
+	      var length = entries.length;
+	      for (var i = 0; i < length; i++) {
+	        Constructor.resolve(entries[i]).then(resolve, reject);
+	      }
+	    });
+	  }
+	}
+	
+	/**
+	  `Promise.reject` returns a promise rejected with the passed `reason`.
+	  It is shorthand for the following:
+	
+	  ```javascript
+	  let promise = new Promise(function(resolve, reject){
+	    reject(new Error('WHOOPS'));
+	  });
+	
+	  promise.then(function(value){
+	    // Code here doesn't run because the promise is rejected!
+	  }, function(reason){
+	    // reason.message === 'WHOOPS'
+	  });
+	  ```
+	
+	  Instead of writing the above, your code now simply becomes the following:
+	
+	  ```javascript
+	  let promise = Promise.reject(new Error('WHOOPS'));
+	
+	  promise.then(function(value){
+	    // Code here doesn't run because the promise is rejected!
+	  }, function(reason){
+	    // reason.message === 'WHOOPS'
+	  });
+	  ```
+	
+	  @method reject
+	  @static
+	  @param {Any} reason value that the returned promise will be rejected with.
+	  Useful for tooling.
+	  @return {Promise} a promise rejected with the given `reason`.
+	*/
+	function reject(reason) {
+	  /*jshint validthis:true */
+	  var Constructor = this;
+	  var promise = new Constructor(noop);
+	  _reject(promise, reason);
+	  return promise;
+	}
+	
+	function needsResolver() {
+	  throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
+	}
+	
+	function needsNew() {
+	  throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+	}
+	
+	/**
+	  Promise objects represent the eventual result of an asynchronous operation. The
+	  primary way of interacting with a promise is through its `then` method, which
+	  registers callbacks to receive either a promise's eventual value or the reason
+	  why the promise cannot be fulfilled.
+	
+	  Terminology
+	  -----------
+	
+	  - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
+	  - `thenable` is an object or function that defines a `then` method.
+	  - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
+	  - `exception` is a value that is thrown using the throw statement.
+	  - `reason` is a value that indicates why a promise was rejected.
+	  - `settled` the final resting state of a promise, fulfilled or rejected.
+	
+	  A promise can be in one of three states: pending, fulfilled, or rejected.
+	
+	  Promises that are fulfilled have a fulfillment value and are in the fulfilled
+	  state.  Promises that are rejected have a rejection reason and are in the
+	  rejected state.  A fulfillment value is never a thenable.
+	
+	  Promises can also be said to *resolve* a value.  If this value is also a
+	  promise, then the original promise's settled state will match the value's
+	  settled state.  So a promise that *resolves* a promise that rejects will
+	  itself reject, and a promise that *resolves* a promise that fulfills will
+	  itself fulfill.
+	
+	
+	  Basic Usage:
+	  ------------
+	
+	  ```js
+	  let promise = new Promise(function(resolve, reject) {
+	    // on success
+	    resolve(value);
+	
+	    // on failure
+	    reject(reason);
+	  });
+	
+	  promise.then(function(value) {
+	    // on fulfillment
+	  }, function(reason) {
+	    // on rejection
+	  });
+	  ```
+	
+	  Advanced Usage:
+	  ---------------
+	
+	  Promises shine when abstracting away asynchronous interactions such as
+	  `XMLHttpRequest`s.
+	
+	  ```js
+	  function getJSON(url) {
+	    return new Promise(function(resolve, reject){
+	      let xhr = new XMLHttpRequest();
+	
+	      xhr.open('GET', url);
+	      xhr.onreadystatechange = handler;
+	      xhr.responseType = 'json';
+	      xhr.setRequestHeader('Accept', 'application/json');
+	      xhr.send();
+	
+	      function handler() {
+	        if (this.readyState === this.DONE) {
+	          if (this.status === 200) {
+	            resolve(this.response);
+	          } else {
+	            reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
+	          }
+	        }
+	      };
+	    });
+	  }
+	
+	  getJSON('/posts.json').then(function(json) {
+	    // on fulfillment
+	  }, function(reason) {
+	    // on rejection
+	  });
+	  ```
+	
+	  Unlike callbacks, promises are great composable primitives.
+	
+	  ```js
+	  Promise.all([
+	    getJSON('/posts'),
+	    getJSON('/comments')
+	  ]).then(function(values){
+	    values[0] // => postsJSON
+	    values[1] // => commentsJSON
+	
+	    return values;
+	  });
+	  ```
+	
+	  @class Promise
+	  @param {function} resolver
+	  Useful for tooling.
+	  @constructor
+	*/
+	function Promise(resolver) {
+	  this[PROMISE_ID] = nextId();
+	  this._result = this._state = undefined;
+	  this._subscribers = [];
+	
+	  if (noop !== resolver) {
+	    typeof resolver !== 'function' && needsResolver();
+	    this instanceof Promise ? initializePromise(this, resolver) : needsNew();
+	  }
+	}
+	
+	Promise.all = all;
+	Promise.race = race;
+	Promise.resolve = resolve;
+	Promise.reject = reject;
+	Promise._setScheduler = setScheduler;
+	Promise._setAsap = setAsap;
+	Promise._asap = asap;
+	
+	Promise.prototype = {
+	  constructor: Promise,
+	
+	  /**
+	    The primary way of interacting with a promise is through its `then` method,
+	    which registers callbacks to receive either a promise's eventual value or the
+	    reason why the promise cannot be fulfilled.
+	  
+	    ```js
+	    findUser().then(function(user){
+	      // user is available
+	    }, function(reason){
+	      // user is unavailable, and you are given the reason why
+	    });
+	    ```
+	  
+	    Chaining
+	    --------
+	  
+	    The return value of `then` is itself a promise.  This second, 'downstream'
+	    promise is resolved with the return value of the first promise's fulfillment
+	    or rejection handler, or rejected if the handler throws an exception.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      return user.name;
+	    }, function (reason) {
+	      return 'default name';
+	    }).then(function (userName) {
+	      // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
+	      // will be `'default name'`
+	    });
+	  
+	    findUser().then(function (user) {
+	      throw new Error('Found user, but still unhappy');
+	    }, function (reason) {
+	      throw new Error('`findUser` rejected and we're unhappy');
+	    }).then(function (value) {
+	      // never reached
+	    }, function (reason) {
+	      // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
+	      // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
+	    });
+	    ```
+	    If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      throw new PedagogicalException('Upstream error');
+	    }).then(function (value) {
+	      // never reached
+	    }).then(function (value) {
+	      // never reached
+	    }, function (reason) {
+	      // The `PedgagocialException` is propagated all the way down to here
+	    });
+	    ```
+	  
+	    Assimilation
+	    ------------
+	  
+	    Sometimes the value you want to propagate to a downstream promise can only be
+	    retrieved asynchronously. This can be achieved by returning a promise in the
+	    fulfillment or rejection handler. The downstream promise will then be pending
+	    until the returned promise is settled. This is called *assimilation*.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      return findCommentsByAuthor(user);
+	    }).then(function (comments) {
+	      // The user's comments are now available
+	    });
+	    ```
+	  
+	    If the assimliated promise rejects, then the downstream promise will also reject.
+	  
+	    ```js
+	    findUser().then(function (user) {
+	      return findCommentsByAuthor(user);
+	    }).then(function (comments) {
+	      // If `findCommentsByAuthor` fulfills, we'll have the value here
+	    }, function (reason) {
+	      // If `findCommentsByAuthor` rejects, we'll have the reason here
+	    });
+	    ```
+	  
+	    Simple Example
+	    --------------
+	  
+	    Synchronous Example
+	  
+	    ```javascript
+	    let result;
+	  
+	    try {
+	      result = findResult();
+	      // success
+	    } catch(reason) {
+	      // failure
+	    }
+	    ```
+	  
+	    Errback Example
+	  
+	    ```js
+	    findResult(function(result, err){
+	      if (err) {
+	        // failure
+	      } else {
+	        // success
+	      }
+	    });
+	    ```
+	  
+	    Promise Example;
+	  
+	    ```javascript
+	    findResult().then(function(result){
+	      // success
+	    }, function(reason){
+	      // failure
+	    });
+	    ```
+	  
+	    Advanced Example
+	    --------------
+	  
+	    Synchronous Example
+	  
+	    ```javascript
+	    let author, books;
+	  
+	    try {
+	      author = findAuthor();
+	      books  = findBooksByAuthor(author);
+	      // success
+	    } catch(reason) {
+	      // failure
+	    }
+	    ```
+	  
+	    Errback Example
+	  
+	    ```js
+	  
+	    function foundBooks(books) {
+	  
+	    }
+	  
+	    function failure(reason) {
+	  
+	    }
+	  
+	    findAuthor(function(author, err){
+	      if (err) {
+	        failure(err);
+	        // failure
+	      } else {
+	        try {
+	          findBoooksByAuthor(author, function(books, err) {
+	            if (err) {
+	              failure(err);
+	            } else {
+	              try {
+	                foundBooks(books);
+	              } catch(reason) {
+	                failure(reason);
+	              }
+	            }
+	          });
+	        } catch(error) {
+	          failure(err);
+	        }
+	        // success
+	      }
+	    });
+	    ```
+	  
+	    Promise Example;
+	  
+	    ```javascript
+	    findAuthor().
+	      then(findBooksByAuthor).
+	      then(function(books){
+	        // found books
+	    }).catch(function(reason){
+	      // something went wrong
+	    });
+	    ```
+	  
+	    @method then
+	    @param {Function} onFulfilled
+	    @param {Function} onRejected
+	    Useful for tooling.
+	    @return {Promise}
+	  */
+	  then: then,
+	
+	  /**
+	    `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
+	    as the catch block of a try/catch statement.
+	  
+	    ```js
+	    function findAuthor(){
+	      throw new Error('couldn't find that author');
+	    }
+	  
+	    // synchronous
+	    try {
+	      findAuthor();
+	    } catch(reason) {
+	      // something went wrong
+	    }
+	  
+	    // async with promises
+	    findAuthor().catch(function(reason){
+	      // something went wrong
+	    });
+	    ```
+	  
+	    @method catch
+	    @param {Function} onRejection
+	    Useful for tooling.
+	    @return {Promise}
+	  */
+	  'catch': function _catch(onRejection) {
+	    return this.then(null, onRejection);
+	  }
+	};
+	
+	function polyfill() {
+	    var local = undefined;
+	
+	    if (typeof global !== 'undefined') {
+	        local = global;
+	    } else if (typeof self !== 'undefined') {
+	        local = self;
+	    } else {
+	        try {
+	            local = Function('return this')();
+	        } catch (e) {
+	            throw new Error('polyfill failed because global object is unavailable in this environment');
+	        }
+	    }
+	
+	    var P = local.Promise;
+	
+	    if (P) {
+	        var promiseToString = null;
+	        try {
+	            promiseToString = Object.prototype.toString.call(P.resolve());
+	        } catch (e) {
+	            // silently ignored
+	        }
+	
+	        if (promiseToString === '[object Promise]' && !P.cast) {
+	            return;
+	        }
+	    }
+	
+	    local.Promise = Promise;
+	}
+	
+	polyfill();
+	// Strange compat..
+	Promise.polyfill = polyfill;
+	Promise.Promise = Promise;
+	
+	return Promise;
+	
+	})));
+	//# sourceMappingURL=es6-promise.map
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), (function() { return this; }())))
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+	
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+	
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+	
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+	
+	
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+	
+	
+	
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+	
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+	
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+	
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+	
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+	
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+	
+	function noop() {}
+	
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	process.prependListener = noop;
+	process.prependOnceListener = noop;
+	
+	process.listeners = function (name) { return [] }
+	
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+	
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+=======
+	var EidLux = (function (_super) {
+	    __extends(EidLux, _super);
+	    function EidLux(url, connection, reader_id, pin) {
+	        var _this = _super.call(this, url, connection, reader_id) || this;
+	        _this.url = url;
+	        _this.connection = connection;
+	        _this.reader_id = reader_id;
+	        _this.pin = pin;
+	        return _this;
+	    }
+	    EidLux.prototype.allDataFilters = function () {
+	        return ["authentication-certificate", "biometric", "non-repudiation-certificate", "picture", "root-certificates"];
+	    };
+	    EidLux.prototype.allCertFilters = function () {
+	        return ["authentication-certificate", "non-repudiation-certificate", "root-certificates"];
+	    };
+	    EidLux.prototype.allData = function (filters, body, callback) {
+	        if (filters && filters.length) {
+	            return this.connection.post(this.resolvedReaderURI(), body, createFilterQueryParam(filters, this.pin), callback);
+	        }
+	        else {
+	            return this.connection.post(this.resolvedReaderURI(), body, createPinQueryParam(this.pin), callback);
+	        }
+	    };
+	    EidLux.prototype.allCerts = function (filters, body, callback) {
+	        if (filters && filters.length) {
+	            return this.connection.post(this.resolvedReaderURI() + EidLux.ALL_CERTIFICATES, body, createFilterQueryParam(filters, this.pin), callback);
+	        }
+	        else {
+	            return this.connection.post(this.resolvedReaderURI() + EidLux.ALL_CERTIFICATES, body, createPinQueryParam(this.pin), callback);
+	        }
+	    };
+	    EidLux.prototype.biometric = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + EidLux.BIOMETRIC, body, createPinQueryParam(this.pin), callback);
+	    };
+	    EidLux.prototype.picture = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + EidLux.PHOTO, body, createPinQueryParam(this.pin), callback);
+	    };
+	    EidLux.prototype.rootCertificate = function (body, callback) {
+	        return this.getCertificateArray(EidLux.CERT_ROOT, body, callback, createPinQueryParam(this.pin));
+	    };
+	    EidLux.prototype.authenticationCertificate = function (body, callback) {
+	        return this.getCertificate(EidLux.CERT_AUTHENTICATION, body, callback, createPinQueryParam(this.pin));
+	    };
+	    EidLux.prototype.nonRepudiationCertificate = function (body, callback) {
+	        return this.getCertificate(EidLux.CERT_NON_REPUDIATION, body, callback, createPinQueryParam(this.pin));
+	    };
+	    EidLux.prototype.verifyPin = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + EidLux.VERIFY_PIN, body, createPinQueryParam(this.pin), callback);
+	    };
+	    EidLux.prototype.signData = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + EidLux.SIGN_DATA, body, createPinQueryParam(this.pin), callback);
+	    };
+	    EidLux.prototype.authenticate = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + EidLux.AUTHENTICATE, body, createPinQueryParam(this.pin), callback);
+	    };
+	    EidLux.prototype.signatureImage = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + EidLux.SIGNATURE_IMAGE, body, createPinQueryParam(this.pin), callback);
+	    };
+	    return EidLux;
+	}(Card_1.GenericSecuredCertCard));
+	EidLux.BIOMETRIC = "/biometric";
+	EidLux.ADDRESS = "/address";
+	EidLux.PHOTO = "/picture";
+	EidLux.SIGNATURE_IMAGE = "/signature-image";
+	exports.EidLux = EidLux;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var MOBIB_CARD_ISSUING = "/card-issuing";
+	var MOBIB_CONTRACTS = "/contracts";
+	var MOBIB_PHOTO = "/picture";
+	var MOBIB_STATUS = "/status";
+	var Mobib = (function (_super) {
+	    __extends(Mobib, _super);
+	    function Mobib() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    Mobib.prototype.cardIssuing = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + MOBIB_CARD_ISSUING, undefined, callback);
+	    };
+	    Mobib.prototype.contracts = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + MOBIB_CONTRACTS, undefined, callback);
+	    };
+	    Mobib.prototype.picture = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + MOBIB_PHOTO, undefined, callback);
+	    };
+	    Mobib.prototype.status = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + MOBIB_STATUS, undefined, callback);
+	    };
+	    return Mobib;
+	}(Card_1.GenericSmartCard));
+	exports.Mobib = Mobib;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var LuxTrust = (function (_super) {
+	    __extends(LuxTrust, _super);
+	    function LuxTrust() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    LuxTrust.prototype.rootCertificate = function (callback) {
+	        return this.getCertificate(LuxTrust.CERT_ROOT, callback);
+	    };
+	    LuxTrust.prototype.authenticationCertificate = function (callback) {
+	        return this.getCertificate(LuxTrust.CERT_AUTHENTICATION, callback);
+	    };
+	    LuxTrust.prototype.signingCertificate = function (callback) {
+	        return this.getCertificate(LuxTrust.CERT_SIGNING, callback);
+	    };
+	    return LuxTrust;
+	}(Card_1.GenericCertCard));
+	exports.LuxTrust = LuxTrust;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var Ocra = (function (_super) {
+	    __extends(Ocra, _super);
+	    function Ocra() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    Ocra.prototype.challenge = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + Ocra.CHALLENGE, body, undefined, callback);
+	    };
+	    Ocra.prototype.readCounter = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + Ocra.READ_COUNTER, body, undefined, callback);
+	    };
+	    return Ocra;
+	}(Card_1.GenericPinCard));
+	Ocra.CHALLENGE = "/challenge";
+	Ocra.READ_COUNTER = "/read-counter";
+	exports.Ocra = Ocra;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var Aventra = (function (_super) {
+	    __extends(Aventra, _super);
+	    function Aventra() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    Aventra.prototype.allDataFilters = function () {
+	        return ["applet-info", "root_certificate", "authentication-certificate",
+	            "encryption_certificate", "issuer_certificate", "signing_certificate"];
+	    };
+	    Aventra.prototype.allCertFilters = function () {
+	        return ["root_certificate", "authentication-certificate", "encryption_certificate", "issuer_certificate", "signing_certificate"];
+	    };
+	    Aventra.prototype.allKeyRefs = function () {
+	        return ["authenticate", "sign", "encrypt"];
+	    };
+	    Aventra.prototype.rootCertificate = function (callback) {
+	        return this.getCertificate(Aventra.CERT_ROOT, callback);
+	    };
+	    Aventra.prototype.issuerCertificate = function (callback) {
+	        return this.getCertificate(Aventra.CERT_ISSUER, callback);
+	    };
+	    Aventra.prototype.authenticationCertificate = function (callback) {
+	        return this.getCertificate(Aventra.CERT_AUTHENTICATION, callback);
+	    };
+	    Aventra.prototype.signingCertificate = function (callback) {
+	        return this.getCertificate(Aventra.CERT_SIGNING, callback);
+	    };
+	    Aventra.prototype.encryptionCertificate = function (callback) {
+	        return this.getCertificate(Aventra.CERT_ENCRYPTION, callback);
+	    };
+	    Aventra.prototype.verifyPin = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + Aventra.VERIFY_PIN, body, undefined, callback);
+	    };
+	    Aventra.prototype.resetPin = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + Aventra.RESET_PIN, body, undefined, callback);
+	    };
+	    return Aventra;
+	}(Card_1.GenericCertCard));
+	Aventra.RESET_PIN = "/reset-pin";
+	exports.Aventra = Aventra;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var Oberthur = (function (_super) {
+	    __extends(Oberthur, _super);
+	    function Oberthur() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    Oberthur.prototype.allDataFilters = function () {
+	        return ["root_certificate", "authentication-certificate",
+	            "encryption_certificate", "issuer_certificate", "signing_certificate"];
+	    };
+	    Oberthur.prototype.allCertFilters = function () {
+	        return ["root_certificate", "authentication-certificate", "encryption_certificate", "issuer_certificate", "signing_certificate"];
+	    };
+	    Oberthur.prototype.allKeyRefs = function () {
+	        return ["authenticate", "sign", "encrypt"];
+	    };
+	    Oberthur.prototype.rootCertificate = function (callback) {
+	        return this.getCertificate(Oberthur.CERT_ROOT, callback);
+	    };
+	    Oberthur.prototype.issuerCertificate = function (callback) {
+	        return this.getCertificate(Oberthur.CERT_ISSUER, callback);
+	    };
+	    Oberthur.prototype.authenticationCertificate = function (callback) {
+	        return this.getCertificate(Oberthur.CERT_AUTHENTICATION, callback);
+	    };
+	    Oberthur.prototype.signingCertificate = function (callback) {
+	        return this.getCertificate(Oberthur.CERT_SIGNING, callback);
+	    };
+	    Oberthur.prototype.encryptionCertificate = function (callback) {
+	        return this.getCertificate(Oberthur.CERT_ENCRYPTION, callback);
+	    };
+	    Oberthur.prototype.verifyPin = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + Oberthur.VERIFY_PIN, body, undefined, callback);
+	    };
+	    return Oberthur;
+	}(Card_1.GenericCertCard));
+	exports.Oberthur = Oberthur;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var PIV = (function (_super) {
+	    __extends(PIV, _super);
+	    function PIV() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    PIV.prototype.allDataFilters = function () {
+	        return ["applet-info", "root_certificate", "authentication-certificate",
+	            "encryption_certificate", "issuer_certificate", "signing_certificate"];
+	    };
+	    PIV.prototype.allCertFilters = function () {
+	        return ["authentication-certificate", "signing_certificate"];
+	    };
+	    PIV.prototype.allKeyRefs = function () {
+	        return ["authenticate", "sign", "encrypt"];
+	    };
+	    PIV.prototype.printedInformation = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + PIV.PRINTED_INFORMATION, body, undefined, callback);
+	    };
+	    PIV.prototype.facialImage = function (body, callback) {
+	        return this.connection.post(this.resolvedReaderURI() + PIV.FACIAL_IMAGE, body, undefined, callback);
+	    };
+	    PIV.prototype.authenticationCertificate = function (body, callback) {
+	        return this.getCertificate(PIV.CERT_AUTHENTICATION, body, callback);
+	    };
+	    PIV.prototype.signingCertificate = function (body, callback) {
+	        return this.getCertificate(PIV.CERT_SIGNING, body, callback);
+	    };
+	    return PIV;
+	}(Card_1.GenericSecuredCertCard));
+	PIV.PRINTED_INFORMATION = "/printed-information";
+	PIV.FACIAL_IMAGE = "/facial-image";
+	exports.PIV = PIV;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Card_1 = __webpack_require__(6);
+	var DNI = (function (_super) {
+	    __extends(DNI, _super);
+	    function DNI() {
+	        return _super !== null && _super.apply(this, arguments) || this;
+	    }
+	    DNI.prototype.info = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + DNI.INFO, undefined, callback);
+	    };
+	    DNI.prototype.intermediateCertificate = function (callback) {
+	        return this.connection.get(this.resolvedReaderURI() + DNI.ALL_CERTIFICATES + DNI.CERT_INTERMEDIATE, undefined, callback);
+	    };
+	    DNI.prototype.authenticationCertificate = function (body, callback) {
+	        return this.getCertificate(DNI.CERT_AUTHENTICATION, body, callback);
+	    };
+	    DNI.prototype.signingCertificate = function (body, callback) {
+	        return this.getCertificate(DNI.CERT_SIGNING, body, callback);
+	    };
+	    return DNI;
+	}(Card_1.GenericSecuredCertCard));
+	DNI.INFO = "/info";
+	exports.DNI = DNI;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _ = __webpack_require__(1);
+	var platform = __webpack_require__(17);
+	var es6_promise_1 = __webpack_require__(18);
+	var CORE_INFO = "/";
+	var CORE_PLUGINS = "/plugins";
+	var CORE_READERS = "/card-readers";
+	var CORE_ACTIVATE = "/admin/activate";
+	var CORE_PUB_KEY = "/admin/certificate";
+	var CoreService = (function () {
+	    function CoreService(url, connection) {
+	        this.url = url;
+	        this.connection = connection;
+	    }
+	    CoreService.cardInsertedFilter = function (inserted) {
+	        return { "card-inserted": inserted };
+	    };
+	    CoreService.platformInfo = function () {
+	        return {
+	            data: {
+	                manufacturer: platform.manufacturer || "",
+	                browser: {
+	                    name: platform.name,
+	                    version: platform.version
+	                },
+	                os: {
+	                    name: platform.os.family,
+	                    version: platform.os.version,
+	                    architecture: platform.os.architecture
+	                },
+	                ua: platform.ua
+	            },
+	            success: true
+	        };
+	    };
+	    CoreService.prototype.activate = function (callback) {
+	        return this.connection.post(this.url + CORE_ACTIVATE, {}, undefined, callback);
+	    };
+	    CoreService.prototype.getPubKey = function (callback) {
+	        return this.connection.get(this.url + CORE_PUB_KEY, undefined, callback);
+	    };
+	    CoreService.prototype.info = function (callback) {
+	        return this.connection.get(this.url + CORE_INFO, undefined, callback);
+	    };
+	    CoreService.prototype.infoBrowser = function (callback) {
+	        if (callback) {
+	            callback(null, CoreService.platformInfo());
+	        }
+	        else {
+	            return es6_promise_1.Promise.resolve(CoreService.platformInfo());
+	        }
+	    };
+	    CoreService.prototype.plugins = function (callback) {
+	        return this.connection.get(this.url + CORE_PLUGINS, undefined, callback);
+	    };
+	    CoreService.prototype.pollCardInserted = function (secondsToPollCard, callback, connectReaderCb, insertCardCb, cardTimeoutCb) {
+	        var maxSeconds = secondsToPollCard || 30;
+	        var self = this;
+	        if (callback) {
+	            poll();
+	        }
+	        else {
+	            return new es6_promise_1.Promise(function (resolve, reject) {
+	                poll(resolve, reject);
+	            });
+	        }
+	        function poll(resolve, reject) {
+	            _.delay(function () {
+	                --maxSeconds;
+	                self.readers(function (error, data) {
+	                    if (error) {
+	                        if (connectReaderCb) {
+	                            connectReaderCb();
+	                        }
+	                        poll(resolve, reject);
+	                    }
+	                    if (maxSeconds === 0) {
+	                        if (cardTimeoutCb) {
+	                            return cardTimeoutCb();
+	                        }
+	                        else {
+	                            if (reject) {
+	                                reject({ success: false, message: "Timed out" });
+	                            }
+	                        }
+	                    }
+	                    else if (data.data.length === 0) {
+	                        if (connectReaderCb) {
+	                            connectReaderCb();
+	                        }
+	                        poll(resolve, reject);
+	                    }
+	                    else {
+	                        var readerWithCard = _.find(data.data, function (reader) {
+	                            return _.has(reader, "card");
+	                        });
+	                        if (readerWithCard != null) {
+	                            if (resolve) {
+	                                resolve(readerWithCard);
+	                            }
+	                            else {
+	                                return callback(null, readerWithCard);
+	                            }
+	                        }
+	                        else {
+	                            if (insertCardCb) {
+	                                insertCardCb();
+	                            }
+	                            poll(resolve, reject);
+	                        }
+	                    }
+	                });
+	            }, 1000);
+	        }
+	    };
+	    CoreService.prototype.pollReadersWithCards = function (secondsToPollCard, callback, connectReaderCb, insertCardCb, cardTimeoutCb) {
+	        var maxSeconds = secondsToPollCard || 30;
+	        var self = this;
+	        if (callback) {
+	            poll();
+	        }
+	        else {
+	            return new es6_promise_1.Promise(function (resolve, reject) {
+	                poll(resolve, reject);
+	            });
+	        }
+	        function poll(resolve, reject) {
+	            _.delay(function () {
+	                --maxSeconds;
+	                self.readers(function (error, data) {
+	                    if (error) {
+	                        if (connectReaderCb) {
+	                            connectReaderCb();
+	                        }
+	                        poll(resolve, reject);
+	                    }
+	                    if (maxSeconds === 0) {
+	                        if (cardTimeoutCb) {
+	                            return cardTimeoutCb();
+	                        }
+	                        else {
+	                            if (reject) {
+	                                reject({ success: false, message: "Timed out" });
+	                            }
+	                        }
+	                    }
+	                    else if (!_.isEmpty(data) && !_.isEmpty(data.data)) {
+	                        var readersWithCards = _.filter(data.data, function (reader) {
+	                            return _.has(reader, "card");
+	                        });
+	                        if (readersWithCards.length) {
+	                            var response = { data: readersWithCards, success: true };
+	                            if (resolve) {
+	                                resolve(response);
+	                            }
+	                            else {
+	                                return callback(null, response);
+	                            }
+	                        }
+	                        else {
+	                            if (insertCardCb) {
+	                                insertCardCb();
+	                            }
+	                            poll(resolve, reject);
+	                        }
+	                    }
+	                    else {
+	                        if (connectReaderCb) {
+	                            connectReaderCb();
+	                        }
+	                        poll(resolve, reject);
+	                    }
+	                });
+	            }, 1000);
+	        }
+	    };
+	    CoreService.prototype.pollReaders = function (secondsToPollReader, callback, connectReaderCb, readerTimeoutCb) {
+	        var maxSeconds = secondsToPollReader || 30;
+	        var self = this;
+	        if (callback) {
+	            poll();
+	        }
+	        else {
+	            return new es6_promise_1.Promise(function (resolve, reject) {
+	                poll(resolve, reject);
+	            });
+	        }
+	        function poll(resolve, reject) {
+	            _.delay(function () {
+	                --maxSeconds;
+	                self.readers(function (error, data) {
+	                    if (error) {
+	                        if (connectReaderCb) {
+	                            connectReaderCb();
+	                        }
+	                        poll(resolve, reject);
+	                    }
+	                    if (maxSeconds === 0) {
+	                        if (readerTimeoutCb) {
+	                            return readerTimeoutCb();
+	                        }
+	                        else {
+	                            if (reject) {
+	                                reject({ success: false, message: "Timed out" });
+	                            }
+	                        }
+	                    }
+	                    else if (_.isEmpty(data) || _.isEmpty(data.data)) {
+	                        if (connectReaderCb) {
+	                            connectReaderCb();
+	                        }
+	                        poll(resolve, reject);
+	                    }
+	                    else {
+	                        if (resolve) {
+	                            resolve(data);
+	                        }
+	                        else {
+	                            return callback(null, data);
+	                        }
+	                    }
+	                });
+	            }, 1000);
+	        }
+	    };
+	    CoreService.prototype.reader = function (reader_id, callback) {
+	        return this.connection.get(this.url + CORE_READERS + "/" + reader_id, undefined, callback);
+	    };
+	    CoreService.prototype.readers = function (callback) {
+	        return this.connection.get(this.url + CORE_READERS, undefined, callback);
+	    };
+	    CoreService.prototype.readersCardAvailable = function (callback) {
+	        return this.connection.get(this.url + CORE_READERS, CoreService.cardInsertedFilter(true), callback);
+	    };
+	    CoreService.prototype.readersCardsUnavailable = function (callback) {
+	        return this.connection.get(this.url + CORE_READERS, CoreService.cardInsertedFilter(false), callback);
+	    };
+	    CoreService.prototype.setPubKey = function (pubkey, callback) {
+	        return this.connection.put(this.url + CORE_PUB_KEY, { certificate: pubkey }, undefined, callback);
+	    };
+	    CoreService.prototype.infoBrowserSync = function () { return CoreService.platformInfo(); };
+	    CoreService.prototype.getUrl = function () { return this.url; };
+	    CoreService.prototype.version = function () {
+	        return "v1.0.2";
+	    };
+	    return CoreService;
+	}());
+	exports.CoreService = CoreService;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*!
+	 * Platform.js <https://mths.be/platform>
+	 * Copyright 2014-2016 Benjamin Tan <https://demoneaux.github.io/>
+	 * Copyright 2011-2013 John-David Dalton <http://allyoucanleet.com/>
+	 * Available under MIT license <https://mths.be/mit>
+	 */
+	;(function() {
+	  'use strict';
+	
+	  /** Used to determine if values are of the language type `Object`. */
+	  var objectTypes = {
+	    'function': true,
+	    'object': true
+	  };
+	
+	  /** Used as a reference to the global object. */
+	  var root = (objectTypes[typeof window] && window) || this;
+	
+	  /** Backup possible global object. */
+	  var oldRoot = root;
+	
+	  /** Detect free variable `exports`. */
+	  var freeExports = objectTypes[typeof exports] && exports;
+	
+	  /** Detect free variable `module`. */
+	  var freeModule = objectTypes[typeof module] && module && !module.nodeType && module;
+	
+	  /** Detect free variable `global` from Node.js or Browserified code and use it as `root`. */
+	  var freeGlobal = freeExports && freeModule && typeof global == 'object' && global;
+	  if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal || freeGlobal.self === freeGlobal)) {
+	    root = freeGlobal;
+	  }
+	
+	  /**
+	   * Used as the maximum length of an array-like object.
+	   * See the [ES6 spec](http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
+	   * for more details.
+	   */
+	  var maxSafeInteger = Math.pow(2, 53) - 1;
+	
+	  /** Regular expression to detect Opera. */
+	  var reOpera = /\bOpera/;
+	
+	  /** Possible global object. */
+	  var thisBinding = this;
+	
+	  /** Used for native method references. */
+	  var objectProto = Object.prototype;
+	
+	  /** Used to check for own properties of an object. */
+	  var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	  /** Used to resolve the internal `[[Class]]` of values. */
+	  var toString = objectProto.toString;
+	
+	  /*--------------------------------------------------------------------------*/
+	
+	  /**
+	   * Capitalizes a string value.
+	   *
+	   * @private
+	   * @param {string} string The string to capitalize.
+	   * @returns {string} The capitalized string.
+	   */
+	  function capitalize(string) {
+	    string = String(string);
+	    return string.charAt(0).toUpperCase() + string.slice(1);
+	  }
+	
+	  /**
+	   * A utility function to clean up the OS name.
+	   *
+	   * @private
+	   * @param {string} os The OS name to clean up.
+	   * @param {string} [pattern] A `RegExp` pattern matching the OS name.
+	   * @param {string} [label] A label for the OS.
+	   */
+	  function cleanupOS(os, pattern, label) {
+	    // Platform tokens are defined at:
+	    // http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
+	    // http://web.archive.org/web/20081122053950/http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
+	    var data = {
+	      '10.0': '10',
+	      '6.4':  '10 Technical Preview',
+	      '6.3':  '8.1',
+	      '6.2':  '8',
+	      '6.1':  'Server 2008 R2 / 7',
+	      '6.0':  'Server 2008 / Vista',
+	      '5.2':  'Server 2003 / XP 64-bit',
+	      '5.1':  'XP',
+	      '5.01': '2000 SP1',
+	      '5.0':  '2000',
+	      '4.0':  'NT',
+	      '4.90': 'ME'
+	    };
+	    // Detect Windows version from platform tokens.
+	    if (pattern && label && /^Win/i.test(os) && !/^Windows Phone /i.test(os) &&
+	        (data = data[/[\d.]+$/.exec(os)])) {
+	      os = 'Windows ' + data;
+	    }
+	    // Correct character case and cleanup string.
+	    os = String(os);
+	
+	    if (pattern && label) {
+	      os = os.replace(RegExp(pattern, 'i'), label);
+	    }
+	
+	    os = format(
+	      os.replace(/ ce$/i, ' CE')
+	        .replace(/\bhpw/i, 'web')
+	        .replace(/\bMacintosh\b/, 'Mac OS')
+	        .replace(/_PowerPC\b/i, ' OS')
+	        .replace(/\b(OS X) [^ \d]+/i, '$1')
+	        .replace(/\bMac (OS X)\b/, '$1')
+	        .replace(/\/(\d)/, ' $1')
+	        .replace(/_/g, '.')
+	        .replace(/(?: BePC|[ .]*fc[ \d.]+)$/i, '')
+	        .replace(/\bx86\.64\b/gi, 'x86_64')
+	        .replace(/\b(Windows Phone) OS\b/, '$1')
+	        .replace(/\b(Chrome OS \w+) [\d.]+\b/, '$1')
+	        .split(' on ')[0]
+	    );
+	
+	    return os;
+	  }
+	
+	  /**
+	   * An iteration utility for arrays and objects.
+	   *
+	   * @private
+	   * @param {Array|Object} object The object to iterate over.
+	   * @param {Function} callback The function called per iteration.
+	   */
+	  function each(object, callback) {
+	    var index = -1,
+	        length = object ? object.length : 0;
+	
+	    if (typeof length == 'number' && length > -1 && length <= maxSafeInteger) {
+	      while (++index < length) {
+	        callback(object[index], index, object);
+	      }
+	    } else {
+	      forOwn(object, callback);
+	    }
+	  }
+	
+	  /**
+	   * Trim and conditionally capitalize string values.
+	   *
+	   * @private
+	   * @param {string} string The string to format.
+	   * @returns {string} The formatted string.
+	   */
+	  function format(string) {
+	    string = trim(string);
+	    return /^(?:webOS|i(?:OS|P))/.test(string)
+	      ? string
+	      : capitalize(string);
+	  }
+	
+	  /**
+	   * Iterates over an object's own properties, executing the `callback` for each.
+	   *
+	   * @private
+	   * @param {Object} object The object to iterate over.
+	   * @param {Function} callback The function executed per own property.
+	   */
+	  function forOwn(object, callback) {
+	    for (var key in object) {
+	      if (hasOwnProperty.call(object, key)) {
+	        callback(object[key], key, object);
+	      }
+	    }
+	  }
+	
+	  /**
+	   * Gets the internal `[[Class]]` of a value.
+	   *
+	   * @private
+	   * @param {*} value The value.
+	   * @returns {string} The `[[Class]]`.
+	   */
+	  function getClassOf(value) {
+	    return value == null
+	      ? capitalize(value)
+	      : toString.call(value).slice(8, -1);
+	  }
+	
+	  /**
+	   * Host objects can return type values that are different from their actual
+	   * data type. The objects we are concerned with usually return non-primitive
+	   * types of "object", "function", or "unknown".
+	   *
+	   * @private
+	   * @param {*} object The owner of the property.
+	   * @param {string} property The property to check.
+	   * @returns {boolean} Returns `true` if the property value is a non-primitive, else `false`.
+	   */
+	  function isHostType(object, property) {
+	    var type = object != null ? typeof object[property] : 'number';
+	    return !/^(?:boolean|number|string|undefined)$/.test(type) &&
+	      (type == 'object' ? !!object[property] : true);
+	  }
+	
+	  /**
+	   * Prepares a string for use in a `RegExp` by making hyphens and spaces optional.
+	   *
+	   * @private
+	   * @param {string} string The string to qualify.
+	   * @returns {string} The qualified string.
+	   */
+	  function qualify(string) {
+	    return String(string).replace(/([ -])(?!$)/g, '$1?');
+	  }
+	
+	  /**
+	   * A bare-bones `Array#reduce` like utility function.
+	   *
+	   * @private
+	   * @param {Array} array The array to iterate over.
+	   * @param {Function} callback The function called per iteration.
+	   * @returns {*} The accumulated result.
+	   */
+	  function reduce(array, callback) {
+	    var accumulator = null;
+	    each(array, function(value, index) {
+	      accumulator = callback(accumulator, value, index, array);
+	    });
+	    return accumulator;
+	  }
+	
+	  /**
+	   * Removes leading and trailing whitespace from a string.
+	   *
+	   * @private
+	   * @param {string} string The string to trim.
+	   * @returns {string} The trimmed string.
+	   */
+	  function trim(string) {
+	    return String(string).replace(/^ +| +$/g, '');
+	  }
+	
+	  /*--------------------------------------------------------------------------*/
+	
+	  /**
+	   * Creates a new platform object.
+	   *
+	   * @memberOf platform
+	   * @param {Object|string} [ua=navigator.userAgent] The user agent string or
+	   *  context object.
+	   * @returns {Object} A platform object.
+	   */
+	  function parse(ua) {
+	
+	    /** The environment context object. */
+	    var context = root;
+	
+	    /** Used to flag when a custom context is provided. */
+	    var isCustomContext = ua && typeof ua == 'object' && getClassOf(ua) != 'String';
+	
+	    // Juggle arguments.
+	    if (isCustomContext) {
+	      context = ua;
+	      ua = null;
+	    }
+	
+	    /** Browser navigator object. */
+	    var nav = context.navigator || {};
+	
+	    /** Browser user agent string. */
+	    var userAgent = nav.userAgent || '';
+	
+	    ua || (ua = userAgent);
+	
+	    /** Used to flag when `thisBinding` is the [ModuleScope]. */
+	    var isModuleScope = isCustomContext || thisBinding == oldRoot;
+	
+	    /** Used to detect if browser is like Chrome. */
+	    var likeChrome = isCustomContext
+	      ? !!nav.likeChrome
+	      : /\bChrome\b/.test(ua) && !/internal|\n/i.test(toString.toString());
+	
+	    /** Internal `[[Class]]` value shortcuts. */
+	    var objectClass = 'Object',
+	        airRuntimeClass = isCustomContext ? objectClass : 'ScriptBridgingProxyObject',
+	        enviroClass = isCustomContext ? objectClass : 'Environment',
+	        javaClass = (isCustomContext && context.java) ? 'JavaPackage' : getClassOf(context.java),
+	        phantomClass = isCustomContext ? objectClass : 'RuntimeObject';
+	
+	    /** Detect Java environments. */
+	    var java = /\bJava/.test(javaClass) && context.java;
+	
+	    /** Detect Rhino. */
+	    var rhino = java && getClassOf(context.environment) == enviroClass;
+	
+	    /** A character to represent alpha. */
+	    var alpha = java ? 'a' : '\u03b1';
+	
+	    /** A character to represent beta. */
+	    var beta = java ? 'b' : '\u03b2';
+	
+	    /** Browser document object. */
+	    var doc = context.document || {};
+	
+	    /**
+	     * Detect Opera browser (Presto-based).
+	     * http://www.howtocreate.co.uk/operaStuff/operaObject.html
+	     * http://dev.opera.com/articles/view/opera-mini-web-content-authoring-guidelines/#operamini
+	     */
+	    var opera = context.operamini || context.opera;
+	
+	    /** Opera `[[Class]]`. */
+	    var operaClass = reOpera.test(operaClass = (isCustomContext && opera) ? opera['[[Class]]'] : getClassOf(opera))
+	      ? operaClass
+	      : (opera = null);
+	
+	    /*------------------------------------------------------------------------*/
+	
+	    /** Temporary variable used over the script's lifetime. */
+	    var data;
+	
+	    /** The CPU architecture. */
+	    var arch = ua;
+	
+	    /** Platform description array. */
+	    var description = [];
+	
+	    /** Platform alpha/beta indicator. */
+	    var prerelease = null;
+	
+	    /** A flag to indicate that environment features should be used to resolve the platform. */
+	    var useFeatures = ua == userAgent;
+	
+	    /** The browser/environment version. */
+	    var version = useFeatures && opera && typeof opera.version == 'function' && opera.version();
+	
+	    /** A flag to indicate if the OS ends with "/ Version" */
+	    var isSpecialCasedOS;
+	
+	    /* Detectable layout engines (order is important). */
+	    var layout = getLayout([
+	      { 'label': 'EdgeHTML', 'pattern': 'Edge' },
+	      'Trident',
+	      { 'label': 'WebKit', 'pattern': 'AppleWebKit' },
+	      'iCab',
+	      'Presto',
+	      'NetFront',
+	      'Tasman',
+	      'KHTML',
+	      'Gecko'
+	    ]);
+	
+	    /* Detectable browser names (order is important). */
+	    var name = getName([
+	      'Adobe AIR',
+	      'Arora',
+	      'Avant Browser',
+	      'Breach',
+	      'Camino',
+	      'Epiphany',
+	      'Fennec',
+	      'Flock',
+	      'Galeon',
+	      'GreenBrowser',
+	      'iCab',
+	      'Iceweasel',
+	      'K-Meleon',
+	      'Konqueror',
+	      'Lunascape',
+	      'Maxthon',
+	      { 'label': 'Microsoft Edge', 'pattern': 'Edge' },
+	      'Midori',
+	      'Nook Browser',
+	      'PaleMoon',
+	      'PhantomJS',
+	      'Raven',
+	      'Rekonq',
+	      'RockMelt',
+	      'SeaMonkey',
+	      { 'label': 'Silk', 'pattern': '(?:Cloud9|Silk-Accelerated)' },
+	      'Sleipnir',
+	      'SlimBrowser',
+	      { 'label': 'SRWare Iron', 'pattern': 'Iron' },
+	      'Sunrise',
+	      'Swiftfox',
+	      'WebPositive',
+	      'Opera Mini',
+	      { 'label': 'Opera Mini', 'pattern': 'OPiOS' },
+	      'Opera',
+	      { 'label': 'Opera', 'pattern': 'OPR' },
+	      'Chrome',
+	      { 'label': 'Chrome Mobile', 'pattern': '(?:CriOS|CrMo)' },
+	      { 'label': 'Firefox', 'pattern': '(?:Firefox|Minefield)' },
+	      { 'label': 'Firefox for iOS', 'pattern': 'FxiOS' },
+	      { 'label': 'IE', 'pattern': 'IEMobile' },
+	      { 'label': 'IE', 'pattern': 'MSIE' },
+	      'Safari'
+	    ]);
+	
+	    /* Detectable products (order is important). */
+	    var product = getProduct([
+	      { 'label': 'BlackBerry', 'pattern': 'BB10' },
+	      'BlackBerry',
+	      { 'label': 'Galaxy S', 'pattern': 'GT-I9000' },
+	      { 'label': 'Galaxy S2', 'pattern': 'GT-I9100' },
+	      { 'label': 'Galaxy S3', 'pattern': 'GT-I9300' },
+	      { 'label': 'Galaxy S4', 'pattern': 'GT-I9500' },
+	      'Google TV',
+	      'Lumia',
+	      'iPad',
+	      'iPod',
+	      'iPhone',
+	      'Kindle',
+	      { 'label': 'Kindle Fire', 'pattern': '(?:Cloud9|Silk-Accelerated)' },
+	      'Nexus',
+	      'Nook',
+	      'PlayBook',
+	      'PlayStation 3',
+	      'PlayStation 4',
+	      'PlayStation Vita',
+	      'TouchPad',
+	      'Transformer',
+	      { 'label': 'Wii U', 'pattern': 'WiiU' },
+	      'Wii',
+	      'Xbox One',
+	      { 'label': 'Xbox 360', 'pattern': 'Xbox' },
+	      'Xoom'
+	    ]);
+	
+	    /* Detectable manufacturers. */
+	    var manufacturer = getManufacturer({
+	      'Apple': { 'iPad': 1, 'iPhone': 1, 'iPod': 1 },
+	      'Archos': {},
+	      'Amazon': { 'Kindle': 1, 'Kindle Fire': 1 },
+	      'Asus': { 'Transformer': 1 },
+	      'Barnes & Noble': { 'Nook': 1 },
+	      'BlackBerry': { 'PlayBook': 1 },
+	      'Google': { 'Google TV': 1, 'Nexus': 1 },
+	      'HP': { 'TouchPad': 1 },
+	      'HTC': {},
+	      'LG': {},
+	      'Microsoft': { 'Xbox': 1, 'Xbox One': 1 },
+	      'Motorola': { 'Xoom': 1 },
+	      'Nintendo': { 'Wii U': 1,  'Wii': 1 },
+	      'Nokia': { 'Lumia': 1 },
+	      'Samsung': { 'Galaxy S': 1, 'Galaxy S2': 1, 'Galaxy S3': 1, 'Galaxy S4': 1 },
+	      'Sony': { 'PlayStation 4': 1, 'PlayStation 3': 1, 'PlayStation Vita': 1 }
+	    });
+	
+	    /* Detectable operating systems (order is important). */
+	    var os = getOS([
+	      'Windows Phone',
+	      'Android',
+	      'CentOS',
+	      { 'label': 'Chrome OS', 'pattern': 'CrOS' },
+	      'Debian',
+	      'Fedora',
+	      'FreeBSD',
+	      'Gentoo',
+	      'Haiku',
+	      'Kubuntu',
+	      'Linux Mint',
+	      'OpenBSD',
+	      'Red Hat',
+	      'SuSE',
+	      'Ubuntu',
+	      'Xubuntu',
+	      'Cygwin',
+	      'Symbian OS',
+	      'hpwOS',
+	      'webOS ',
+	      'webOS',
+	      'Tablet OS',
+	      'Linux',
+	      'Mac OS X',
+	      'Macintosh',
+	      'Mac',
+	      'Windows 98;',
+	      'Windows '
+	    ]);
+	
+	    /*------------------------------------------------------------------------*/
+	
+	    /**
+	     * Picks the layout engine from an array of guesses.
+	     *
+	     * @private
+	     * @param {Array} guesses An array of guesses.
+	     * @returns {null|string} The detected layout engine.
+	     */
+	    function getLayout(guesses) {
+	      return reduce(guesses, function(result, guess) {
+	        return result || RegExp('\\b' + (
+	          guess.pattern || qualify(guess)
+	        ) + '\\b', 'i').exec(ua) && (guess.label || guess);
+	      });
+	    }
+	
+	    /**
+	     * Picks the manufacturer from an array of guesses.
+	     *
+	     * @private
+	     * @param {Array} guesses An object of guesses.
+	     * @returns {null|string} The detected manufacturer.
+	     */
+	    function getManufacturer(guesses) {
+	      return reduce(guesses, function(result, value, key) {
+	        // Lookup the manufacturer by product or scan the UA for the manufacturer.
+	        return result || (
+	          value[product] ||
+	          value[/^[a-z]+(?: +[a-z]+\b)*/i.exec(product)] ||
+	          RegExp('\\b' + qualify(key) + '(?:\\b|\\w*\\d)', 'i').exec(ua)
+	        ) && key;
+	      });
+	    }
+	
+	    /**
+	     * Picks the browser name from an array of guesses.
+	     *
+	     * @private
+	     * @param {Array} guesses An array of guesses.
+	     * @returns {null|string} The detected browser name.
+	     */
+	    function getName(guesses) {
+	      return reduce(guesses, function(result, guess) {
+	        return result || RegExp('\\b' + (
+	          guess.pattern || qualify(guess)
+	        ) + '\\b', 'i').exec(ua) && (guess.label || guess);
+	      });
+	    }
+	
+	    /**
+	     * Picks the OS name from an array of guesses.
+	     *
+	     * @private
+	     * @param {Array} guesses An array of guesses.
+	     * @returns {null|string} The detected OS name.
+	     */
+	    function getOS(guesses) {
+	      return reduce(guesses, function(result, guess) {
+	        var pattern = guess.pattern || qualify(guess);
+	        if (!result && (result =
+	              RegExp('\\b' + pattern + '(?:/[\\d.]+|[ \\w.]*)', 'i').exec(ua)
+	            )) {
+	          result = cleanupOS(result, pattern, guess.label || guess);
+	        }
+	        return result;
+	      });
+	    }
+	
+	    /**
+	     * Picks the product name from an array of guesses.
+	     *
+	     * @private
+	     * @param {Array} guesses An array of guesses.
+	     * @returns {null|string} The detected product name.
+	     */
+	    function getProduct(guesses) {
+	      return reduce(guesses, function(result, guess) {
+	        var pattern = guess.pattern || qualify(guess);
+	        if (!result && (result =
+	              RegExp('\\b' + pattern + ' *\\d+[.\\w_]*', 'i').exec(ua) ||
+	              RegExp('\\b' + pattern + '(?:; *(?:[a-z]+[_-])?[a-z]+\\d+|[^ ();-]*)', 'i').exec(ua)
+	            )) {
+	          // Split by forward slash and append product version if needed.
+	          if ((result = String((guess.label && !RegExp(pattern, 'i').test(guess.label)) ? guess.label : result).split('/'))[1] && !/[\d.]+/.test(result[0])) {
+	            result[0] += ' ' + result[1];
+	          }
+	          // Correct character case and cleanup string.
+	          guess = guess.label || guess;
+	          result = format(result[0]
+	            .replace(RegExp(pattern, 'i'), guess)
+	            .replace(RegExp('; *(?:' + guess + '[_-])?', 'i'), ' ')
+	            .replace(RegExp('(' + guess + ')[-_.]?(\\w)', 'i'), '$1 $2'));
+	        }
+	        return result;
+	      });
+	    }
+	
+	    /**
+	     * Resolves the version using an array of UA patterns.
+	     *
+	     * @private
+	     * @param {Array} patterns An array of UA patterns.
+	     * @returns {null|string} The detected version.
+	     */
+	    function getVersion(patterns) {
+	      return reduce(patterns, function(result, pattern) {
+	        return result || (RegExp(pattern +
+	          '(?:-[\\d.]+/|(?: for [\\w-]+)?[ /-])([\\d.]+[^ ();/_-]*)', 'i').exec(ua) || 0)[1] || null;
+	      });
+	    }
+	
+	    /**
+	     * Returns `platform.description` when the platform object is coerced to a string.
+	     *
+	     * @name toString
+	     * @memberOf platform
+	     * @returns {string} Returns `platform.description` if available, else an empty string.
+	     */
+	    function toStringPlatform() {
+	      return this.description || '';
+	    }
+	
+	    /*------------------------------------------------------------------------*/
+	
+	    // Convert layout to an array so we can add extra details.
+	    layout && (layout = [layout]);
+	
+	    // Detect product names that contain their manufacturer's name.
+	    if (manufacturer && !product) {
+	      product = getProduct([manufacturer]);
+	    }
+	    // Clean up Google TV.
+	    if ((data = /\bGoogle TV\b/.exec(product))) {
+	      product = data[0];
+	    }
+	    // Detect simulators.
+	    if (/\bSimulator\b/i.test(ua)) {
+	      product = (product ? product + ' ' : '') + 'Simulator';
+	    }
+	    // Detect Opera Mini 8+ running in Turbo/Uncompressed mode on iOS.
+	    if (name == 'Opera Mini' && /\bOPiOS\b/.test(ua)) {
+	      description.push('running in Turbo/Uncompressed mode');
+	    }
+	    // Detect IE Mobile 11.
+	    if (name == 'IE' && /\blike iPhone OS\b/.test(ua)) {
+	      data = parse(ua.replace(/like iPhone OS/, ''));
+	      manufacturer = data.manufacturer;
+	      product = data.product;
+	    }
+	    // Detect iOS.
+	    else if (/^iP/.test(product)) {
+	      name || (name = 'Safari');
+	      os = 'iOS' + ((data = / OS ([\d_]+)/i.exec(ua))
+	        ? ' ' + data[1].replace(/_/g, '.')
+	        : '');
+	    }
+	    // Detect Kubuntu.
+	    else if (name == 'Konqueror' && !/buntu/i.test(os)) {
+	      os = 'Kubuntu';
+	    }
+	    // Detect Android browsers.
+	    else if ((manufacturer && manufacturer != 'Google' &&
+	        ((/Chrome/.test(name) && !/\bMobile Safari\b/i.test(ua)) || /\bVita\b/.test(product))) ||
+	        (/\bAndroid\b/.test(os) && /^Chrome/.test(name) && /\bVersion\//i.test(ua))) {
+	      name = 'Android Browser';
+	      os = /\bAndroid\b/.test(os) ? os : 'Android';
+	    }
+	    // Detect Silk desktop/accelerated modes.
+	    else if (name == 'Silk') {
+	      if (!/\bMobi/i.test(ua)) {
+	        os = 'Android';
+	        description.unshift('desktop mode');
+	      }
+	      if (/Accelerated *= *true/i.test(ua)) {
+	        description.unshift('accelerated');
+	      }
+	    }
+	    // Detect PaleMoon identifying as Firefox.
+	    else if (name == 'PaleMoon' && (data = /\bFirefox\/([\d.]+)\b/.exec(ua))) {
+	      description.push('identifying as Firefox ' + data[1]);
+	    }
+	    // Detect Firefox OS and products running Firefox.
+	    else if (name == 'Firefox' && (data = /\b(Mobile|Tablet|TV)\b/i.exec(ua))) {
+	      os || (os = 'Firefox OS');
+	      product || (product = data[1]);
+	    }
+	    // Detect false positives for Firefox/Safari.
+	    else if (!name || (data = !/\bMinefield\b/i.test(ua) && /\b(?:Firefox|Safari)\b/.exec(name))) {
+	      // Escape the `/` for Firefox 1.
+	      if (name && !product && /[\/,]|^[^(]+?\)/.test(ua.slice(ua.indexOf(data + '/') + 8))) {
+	        // Clear name of false positives.
+	        name = null;
+	      }
+	      // Reassign a generic name.
+	      if ((data = product || manufacturer || os) &&
+	          (product || manufacturer || /\b(?:Android|Symbian OS|Tablet OS|webOS)\b/.test(os))) {
+	        name = /[a-z]+(?: Hat)?/i.exec(/\bAndroid\b/.test(os) ? os : data) + ' Browser';
+	      }
+	    }
+	    // Detect non-Opera (Presto-based) versions (order is important).
+	    if (!version) {
+	      version = getVersion([
+	        '(?:Cloud9|CriOS|CrMo|Edge|FxiOS|IEMobile|Iron|Opera ?Mini|OPiOS|OPR|Raven|Silk(?!/[\\d.]+$))',
+	        'Version',
+	        qualify(name),
+	        '(?:Firefox|Minefield|NetFront)'
+	      ]);
+	    }
+	    // Detect stubborn layout engines.
+	    if ((data =
+	          layout == 'iCab' && parseFloat(version) > 3 && 'WebKit' ||
+	          /\bOpera\b/.test(name) && (/\bOPR\b/.test(ua) ? 'Blink' : 'Presto') ||
+	          /\b(?:Midori|Nook|Safari)\b/i.test(ua) && !/^(?:Trident|EdgeHTML)$/.test(layout) && 'WebKit' ||
+	          !layout && /\bMSIE\b/i.test(ua) && (os == 'Mac OS' ? 'Tasman' : 'Trident') ||
+	          layout == 'WebKit' && /\bPlayStation\b(?! Vita\b)/i.test(name) && 'NetFront'
+	        )) {
+	      layout = [data];
+	    }
+	    // Detect Windows Phone 7 desktop mode.
+	    if (name == 'IE' && (data = (/; *(?:XBLWP|ZuneWP)(\d+)/i.exec(ua) || 0)[1])) {
+	      name += ' Mobile';
+	      os = 'Windows Phone ' + (/\+$/.test(data) ? data : data + '.x');
+	      description.unshift('desktop mode');
+	    }
+	    // Detect Windows Phone 8.x desktop mode.
+	    else if (/\bWPDesktop\b/i.test(ua)) {
+	      name = 'IE Mobile';
+	      os = 'Windows Phone 8.x';
+	      description.unshift('desktop mode');
+	      version || (version = (/\brv:([\d.]+)/.exec(ua) || 0)[1]);
+	    }
+	    // Detect IE 11.
+	    else if (name != 'IE' && layout == 'Trident' && (data = /\brv:([\d.]+)/.exec(ua))) {
+	      if (name) {
+	        description.push('identifying as ' + name + (version ? ' ' + version : ''));
+	      }
+	      name = 'IE';
+	      version = data[1];
+	    }
+	    // Leverage environment features.
+	    if (useFeatures) {
+	      // Detect server-side environments.
+	      // Rhino has a global function while others have a global object.
+	      if (isHostType(context, 'global')) {
+	        if (java) {
+	          data = java.lang.System;
+	          arch = data.getProperty('os.arch');
+	          os = os || data.getProperty('os.name') + ' ' + data.getProperty('os.version');
+	        }
+	        if (isModuleScope && isHostType(context, 'system') && (data = [context.system])[0]) {
+	          os || (os = data[0].os || null);
+	          try {
+	            data[1] = context.require('ringo/engine').version;
+	            version = data[1].join('.');
+	            name = 'RingoJS';
+	          } catch(e) {
+	            if (data[0].global.system == context.system) {
+	              name = 'Narwhal';
+	            }
+	          }
+	        }
+	        else if (
+	          typeof context.process == 'object' && !context.process.browser &&
+	          (data = context.process)
+	        ) {
+	          name = 'Node.js';
+	          arch = data.arch;
+	          os = data.platform;
+	          version = /[\d.]+/.exec(data.version)[0];
+	        }
+	        else if (rhino) {
+	          name = 'Rhino';
+	        }
+	      }
+	      // Detect Adobe AIR.
+	      else if (getClassOf((data = context.runtime)) == airRuntimeClass) {
+	        name = 'Adobe AIR';
+	        os = data.flash.system.Capabilities.os;
+	      }
+	      // Detect PhantomJS.
+	      else if (getClassOf((data = context.phantom)) == phantomClass) {
+	        name = 'PhantomJS';
+	        version = (data = data.version || null) && (data.major + '.' + data.minor + '.' + data.patch);
+	      }
+	      // Detect IE compatibility modes.
+	      else if (typeof doc.documentMode == 'number' && (data = /\bTrident\/(\d+)/i.exec(ua))) {
+	        // We're in compatibility mode when the Trident version + 4 doesn't
+	        // equal the document mode.
+	        version = [version, doc.documentMode];
+	        if ((data = +data[1] + 4) != version[1]) {
+	          description.push('IE ' + version[1] + ' mode');
+	          layout && (layout[1] = '');
+	          version[1] = data;
+	        }
+	        version = name == 'IE' ? String(version[1].toFixed(1)) : version[0];
+	      }
+	      os = os && format(os);
+	    }
+	    // Detect prerelease phases.
+	    if (version && (data =
+	          /(?:[ab]|dp|pre|[ab]\d+pre)(?:\d+\+?)?$/i.exec(version) ||
+	          /(?:alpha|beta)(?: ?\d)?/i.exec(ua + ';' + (useFeatures && nav.appMinorVersion)) ||
+	          /\bMinefield\b/i.test(ua) && 'a'
+	        )) {
+	      prerelease = /b/i.test(data) ? 'beta' : 'alpha';
+	      version = version.replace(RegExp(data + '\\+?$'), '') +
+	        (prerelease == 'beta' ? beta : alpha) + (/\d+\+?/.exec(data) || '');
+	    }
+	    // Detect Firefox Mobile.
+	    if (name == 'Fennec' || name == 'Firefox' && /\b(?:Android|Firefox OS)\b/.test(os)) {
+	      name = 'Firefox Mobile';
+	    }
+	    // Obscure Maxthon's unreliable version.
+	    else if (name == 'Maxthon' && version) {
+	      version = version.replace(/\.[\d.]+/, '.x');
+	    }
+	    // Detect Xbox 360 and Xbox One.
+	    else if (/\bXbox\b/i.test(product)) {
+	      os = null;
+	      if (product == 'Xbox 360' && /\bIEMobile\b/.test(ua)) {
+	        description.unshift('mobile mode');
+	      }
+	    }
+	    // Add mobile postfix.
+	    else if ((/^(?:Chrome|IE|Opera)$/.test(name) || name && !product && !/Browser|Mobi/.test(name)) &&
+	        (os == 'Windows CE' || /Mobi/i.test(ua))) {
+	      name += ' Mobile';
+	    }
+	    // Detect IE platform preview.
+	    else if (name == 'IE' && useFeatures && context.external === null) {
+	      description.unshift('platform preview');
+	    }
+	    // Detect BlackBerry OS version.
+	    // http://docs.blackberry.com/en/developers/deliverables/18169/HTTP_headers_sent_by_BB_Browser_1234911_11.jsp
+	    else if ((/\bBlackBerry\b/.test(product) || /\bBB10\b/.test(ua)) && (data =
+	          (RegExp(product.replace(/ +/g, ' *') + '/([.\\d]+)', 'i').exec(ua) || 0)[1] ||
+	          version
+	        )) {
+	      data = [data, /BB10/.test(ua)];
+	      os = (data[1] ? (product = null, manufacturer = 'BlackBerry') : 'Device Software') + ' ' + data[0];
+	      version = null;
+	    }
+	    // Detect Opera identifying/masking itself as another browser.
+	    // http://www.opera.com/support/kb/view/843/
+	    else if (this != forOwn && product != 'Wii' && (
+	          (useFeatures && opera) ||
+	          (/Opera/.test(name) && /\b(?:MSIE|Firefox)\b/i.test(ua)) ||
+	          (name == 'Firefox' && /\bOS X (?:\d+\.){2,}/.test(os)) ||
+	          (name == 'IE' && (
+	            (os && !/^Win/.test(os) && version > 5.5) ||
+	            /\bWindows XP\b/.test(os) && version > 8 ||
+	            version == 8 && !/\bTrident\b/.test(ua)
+	          ))
+	        ) && !reOpera.test((data = parse.call(forOwn, ua.replace(reOpera, '') + ';'))) && data.name) {
+	      // When "identifying", the UA contains both Opera and the other browser's name.
+	      data = 'ing as ' + data.name + ((data = data.version) ? ' ' + data : '');
+	      if (reOpera.test(name)) {
+	        if (/\bIE\b/.test(data) && os == 'Mac OS') {
+	          os = null;
+	        }
+	        data = 'identify' + data;
+	      }
+	      // When "masking", the UA contains only the other browser's name.
+	      else {
+	        data = 'mask' + data;
+	        if (operaClass) {
+	          name = format(operaClass.replace(/([a-z])([A-Z])/g, '$1 $2'));
+	        } else {
+	          name = 'Opera';
+	        }
+	        if (/\bIE\b/.test(data)) {
+	          os = null;
+	        }
+	        if (!useFeatures) {
+	          version = null;
+	        }
+	      }
+	      layout = ['Presto'];
+	      description.push(data);
+	    }
+	    // Detect WebKit Nightly and approximate Chrome/Safari versions.
+	    if ((data = (/\bAppleWebKit\/([\d.]+\+?)/i.exec(ua) || 0)[1])) {
+	      // Correct build number for numeric comparison.
+	      // (e.g. "532.5" becomes "532.05")
+	      data = [parseFloat(data.replace(/\.(\d)$/, '.0$1')), data];
+	      // Nightly builds are postfixed with a "+".
+	      if (name == 'Safari' && data[1].slice(-1) == '+') {
+	        name = 'WebKit Nightly';
+	        prerelease = 'alpha';
+	        version = data[1].slice(0, -1);
+	      }
+	      // Clear incorrect browser versions.
+	      else if (version == data[1] ||
+	          version == (data[2] = (/\bSafari\/([\d.]+\+?)/i.exec(ua) || 0)[1])) {
+	        version = null;
+	      }
+	      // Use the full Chrome version when available.
+	      data[1] = (/\bChrome\/([\d.]+)/i.exec(ua) || 0)[1];
+	      // Detect Blink layout engine.
+	      if (data[0] == 537.36 && data[2] == 537.36 && parseFloat(data[1]) >= 28 && layout == 'WebKit') {
+	        layout = ['Blink'];
+	      }
+	      // Detect JavaScriptCore.
+	      // http://stackoverflow.com/questions/6768474/how-can-i-detect-which-javascript-engine-v8-or-jsc-is-used-at-runtime-in-androi
+	      if (!useFeatures || (!likeChrome && !data[1])) {
+	        layout && (layout[1] = 'like Safari');
+	        data = (data = data[0], data < 400 ? 1 : data < 500 ? 2 : data < 526 ? 3 : data < 533 ? 4 : data < 534 ? '4+' : data < 535 ? 5 : data < 537 ? 6 : data < 538 ? 7 : data < 601 ? 8 : '8');
+	      } else {
+	        layout && (layout[1] = 'like Chrome');
+	        data = data[1] || (data = data[0], data < 530 ? 1 : data < 532 ? 2 : data < 532.05 ? 3 : data < 533 ? 4 : data < 534.03 ? 5 : data < 534.07 ? 6 : data < 534.10 ? 7 : data < 534.13 ? 8 : data < 534.16 ? 9 : data < 534.24 ? 10 : data < 534.30 ? 11 : data < 535.01 ? 12 : data < 535.02 ? '13+' : data < 535.07 ? 15 : data < 535.11 ? 16 : data < 535.19 ? 17 : data < 536.05 ? 18 : data < 536.10 ? 19 : data < 537.01 ? 20 : data < 537.11 ? '21+' : data < 537.13 ? 23 : data < 537.18 ? 24 : data < 537.24 ? 25 : data < 537.36 ? 26 : layout != 'Blink' ? '27' : '28');
+	      }
+	      // Add the postfix of ".x" or "+" for approximate versions.
+	      layout && (layout[1] += ' ' + (data += typeof data == 'number' ? '.x' : /[.+]/.test(data) ? '' : '+'));
+	      // Obscure version for some Safari 1-2 releases.
+	      if (name == 'Safari' && (!version || parseInt(version) > 45)) {
+	        version = data;
+	      }
+	    }
+	    // Detect Opera desktop modes.
+	    if (name == 'Opera' &&  (data = /\bzbov|zvav$/.exec(os))) {
+	      name += ' ';
+	      description.unshift('desktop mode');
+	      if (data == 'zvav') {
+	        name += 'Mini';
+	        version = null;
+	      } else {
+	        name += 'Mobile';
+	      }
+	      os = os.replace(RegExp(' *' + data + '$'), '');
+	    }
+	    // Detect Chrome desktop mode.
+	    else if (name == 'Safari' && /\bChrome\b/.exec(layout && layout[1])) {
+	      description.unshift('desktop mode');
+	      name = 'Chrome Mobile';
+	      version = null;
+	
+	      if (/\bOS X\b/.test(os)) {
+	        manufacturer = 'Apple';
+	        os = 'iOS 4.3+';
+	      } else {
+	        os = null;
+	      }
+	    }
+	    // Strip incorrect OS versions.
+	    if (version && version.indexOf((data = /[\d.]+$/.exec(os))) == 0 &&
+	        ua.indexOf('/' + data + '-') > -1) {
+	      os = trim(os.replace(data, ''));
+	    }
+	    // Add layout engine.
+	    if (layout && !/\b(?:Avant|Nook)\b/.test(name) && (
+	        /Browser|Lunascape|Maxthon/.test(name) ||
+	        name != 'Safari' && /^iOS/.test(os) && /\bSafari\b/.test(layout[1]) ||
+	        /^(?:Adobe|Arora|Breach|Midori|Opera|Phantom|Rekonq|Rock|Sleipnir|Web)/.test(name) && layout[1])) {
+	      // Don't add layout details to description if they are falsey.
+	      (data = layout[layout.length - 1]) && description.push(data);
+	    }
+	    // Combine contextual information.
+	    if (description.length) {
+	      description = ['(' + description.join('; ') + ')'];
+	    }
+	    // Append manufacturer to description.
+	    if (manufacturer && product && product.indexOf(manufacturer) < 0) {
+	      description.push('on ' + manufacturer);
+	    }
+	    // Append product to description.
+	    if (product) {
+	      description.push((/^on /.test(description[description.length - 1]) ? '' : 'on ') + product);
+	    }
+	    // Parse the OS into an object.
+	    if (os) {
+	      data = / ([\d.+]+)$/.exec(os);
+	      isSpecialCasedOS = data && os.charAt(os.length - data[0].length - 1) == '/';
+	      os = {
+	        'architecture': 32,
+	        'family': (data && !isSpecialCasedOS) ? os.replace(data[0], '') : os,
+	        'version': data ? data[1] : null,
+	        'toString': function() {
+	          var version = this.version;
+	          return this.family + ((version && !isSpecialCasedOS) ? ' ' + version : '') + (this.architecture == 64 ? ' 64-bit' : '');
+	        }
+	      };
+	    }
+	    // Add browser/OS architecture.
+	    if ((data = /\b(?:AMD|IA|Win|WOW|x86_|x)64\b/i.exec(arch)) && !/\bi686\b/i.test(arch)) {
+	      if (os) {
+	        os.architecture = 64;
+	        os.family = os.family.replace(RegExp(' *' + data), '');
+	      }
+	      if (
+	          name && (/\bWOW64\b/i.test(ua) ||
+	          (useFeatures && /\w(?:86|32)$/.test(nav.cpuClass || nav.platform) && !/\bWin64; x64\b/i.test(ua)))
+	      ) {
+	        description.unshift('32-bit');
+	      }
+	    }
+	    // Chrome 39 and above on OS X is always 64-bit.
+	    else if (
+	        os && /^OS X/.test(os.family) &&
+	        name == 'Chrome' && parseFloat(version) >= 39
+	    ) {
+	      os.architecture = 64;
+	    }
+	
+	    ua || (ua = null);
+	
+	    /*------------------------------------------------------------------------*/
+	
+	    /**
+	     * The platform object.
+	     *
+	     * @name platform
+	     * @type Object
+	     */
+	    var platform = {};
+	
+	    /**
+	     * The platform description.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.description = ua;
+	
+	    /**
+	     * The name of the browser's layout engine.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.layout = layout && layout[0];
+	
+	    /**
+	     * The name of the product's manufacturer.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.manufacturer = manufacturer;
+	
+	    /**
+	     * The name of the browser/environment.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.name = name;
+	
+	    /**
+	     * The alpha/beta release indicator.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.prerelease = prerelease;
+	
+	    /**
+	     * The name of the product hosting the browser.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.product = product;
+	
+	    /**
+	     * The browser's user agent string.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.ua = ua;
+	
+	    /**
+	     * The browser/environment version.
+	     *
+	     * @memberOf platform
+	     * @type string|null
+	     */
+	    platform.version = name && version;
+	
+	    /**
+	     * The name of the operating system.
+	     *
+	     * @memberOf platform
+	     * @type Object
+	     */
+	    platform.os = os || {
+	
+	      /**
+	       * The CPU architecture the OS is built for.
+	       *
+	       * @memberOf platform.os
+	       * @type number|null
+	       */
+	      'architecture': null,
+	
+	      /**
+	       * The family of the OS.
+	       *
+	       * Common values include:
+	       * "Windows", "Windows Server 2008 R2 / 7", "Windows Server 2008 / Vista",
+	       * "Windows XP", "OS X", "Ubuntu", "Debian", "Fedora", "Red Hat", "SuSE",
+	       * "Android", "iOS" and "Windows Phone"
+	       *
+	       * @memberOf platform.os
+	       * @type string|null
+	       */
+	      'family': null,
+	
+	      /**
+	       * The version of the OS.
+	       *
+	       * @memberOf platform.os
+	       * @type string|null
+	       */
+	      'version': null,
+	
+	      /**
+	       * Returns the OS string.
+	       *
+	       * @memberOf platform.os
+	       * @returns {string} The OS string.
+	       */
+	      'toString': function() { return 'null'; }
+	    };
+	
+	    platform.parse = parse;
+	    platform.toString = toStringPlatform;
+	
+	    if (platform.version) {
+	      description.unshift(version);
+	    }
+	    if (platform.name) {
+	      description.unshift(name);
+	    }
+	    if (os && name && !(os == String(os).split(' ')[0] && (os == name.split(' ')[0] || product))) {
+	      description.push(product ? '(' + os + ')' : 'on ' + os);
+	    }
+	    if (description.length) {
+	      platform.description = description.join(' ');
+	    }
+	    return platform;
+	  }
+	
+	  /*--------------------------------------------------------------------------*/
+	
+	  // Export platform.
+	  var platform = parse();
+	
+	  // Some AMD build optimizers, like r.js, check for condition patterns like the following:
+	  if (true) {
+	    // Expose platform on the global object to prevent errors when platform is
+	    // loaded by a script tag in the presence of an AMD loader.
+	    // See http://requirejs.org/docs/errors.html#mismatch for more details.
+	    root.platform = platform;
+	
+	    // Define as an anonymous module so platform can be aliased through path mapping.
+	    !(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	      return platform;
+	    }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  }
+	  // Check for `exports` after `define` in case a build optimizer adds an `exports` object.
+	  else if (freeExports && freeModule) {
+	    // Export for CommonJS support.
+	    forOwn(platform, function(value, key) {
+	      freeExports[key] = value;
+	    });
+	  }
+	  else {
+	    // Export to the global object.
+	    root.platform = platform;
+	  }
+	}.call(this));
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module), (function() { return this; }())))
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var require;/* WEBPACK VAR INJECTION */(function(process, global) {/*!
+	 * @overview es6-promise - a tiny implementation of Promises/A+.
+	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
+	 * @license   Licensed under MIT license
+	 *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
+	 * @version   3.3.1
+	 */
+	
+	(function (global, factory) {
+	     true ? module.exports = factory() :
+	    typeof define === 'function' && define.amd ? define(factory) :
+	    (global.ES6Promise = factory());
+	}(this, (function () { 'use strict';
+	
+	function objectOrFunction(x) {
+	  return typeof x === 'function' || typeof x === 'object' && x !== null;
+	}
+	
+	function isFunction(x) {
+	  return typeof x === 'function';
+	}
+	
+	var _isArray = undefined;
+	if (!Array.isArray) {
+	  _isArray = function (x) {
+	    return Object.prototype.toString.call(x) === '[object Array]';
+	  };
+	} else {
+	  _isArray = Array.isArray;
+	}
+	
+	var isArray = _isArray;
+	
+	var len = 0;
+	var vertxNext = undefined;
+	var customSchedulerFn = undefined;
+	
+	var asap = function asap(callback, arg) {
+	  queue[len] = callback;
+	  queue[len + 1] = arg;
+	  len += 2;
+	  if (len === 2) {
+	    // If len is 2, that means that we need to schedule an async flush.
+	    // If additional callbacks are queued before the queue is flushed, they
+	    // will be processed by this flush that we are scheduling.
+	    if (customSchedulerFn) {
+	      customSchedulerFn(flush);
+	    } else {
+	      scheduleFlush();
+	    }
+	  }
+	};
+	
+	function setScheduler(scheduleFn) {
+	  customSchedulerFn = scheduleFn;
+	}
+	
+	function setAsap(asapFn) {
+	  asap = asapFn;
+	}
+	
+	var browserWindow = typeof window !== 'undefined' ? window : undefined;
+	var browserGlobal = browserWindow || {};
+	var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
+	var isNode = typeof self === 'undefined' && typeof process !== 'undefined' && ({}).toString.call(process) === '[object process]';
+	
+	// test for web worker but not in IE10
+	var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
+	
+	// node
+	function useNextTick() {
+	  // node version 0.10.x displays a deprecation warning when nextTick is used recursively
+	  // see https://github.com/cujojs/when/issues/410 for details
+	  return function () {
+	    return process.nextTick(flush);
+	  };
+	}
+	
+	// vertx
+	function useVertxTimer() {
+	  return function () {
+	    vertxNext(flush);
+	  };
+	}
+	
+	function useMutationObserver() {
+	  var iterations = 0;
+	  var observer = new BrowserMutationObserver(flush);
+	  var node = document.createTextNode('');
+	  observer.observe(node, { characterData: true });
+	
+	  return function () {
+	    node.data = iterations = ++iterations % 2;
+	  };
+	}
+	
+	// web worker
+	function useMessageChannel() {
+	  var channel = new MessageChannel();
+	  channel.port1.onmessage = flush;
+	  return function () {
+	    return channel.port2.postMessage(0);
+	  };
+	}
+	
+	function useSetTimeout() {
+	  // Store setTimeout reference so es6-promise will be unaffected by
+	  // other code modifying setTimeout (like sinon.useFakeTimers())
+	  var globalSetTimeout = setTimeout;
+	  return function () {
+	    return globalSetTimeout(flush, 1);
+	  };
+	}
+	
+	var queue = new Array(1000);
+	function flush() {
+	  for (var i = 0; i < len; i += 2) {
+	    var callback = queue[i];
+	    var arg = queue[i + 1];
+	
+	    callback(arg);
+	
+	    queue[i] = undefined;
+	    queue[i + 1] = undefined;
+	  }
+	
+	  len = 0;
+	}
+	
+	function attemptVertx() {
+	  try {
+	    var r = require;
+	    var vertx = __webpack_require__(20);
+	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
+	    return useVertxTimer();
+	  } catch (e) {
+	    return useSetTimeout();
+	  }
+	}
+	
+	var scheduleFlush = undefined;
+	// Decide what async method to use to triggering processing of queued callbacks:
+	if (isNode) {
+	  scheduleFlush = useNextTick();
+	} else if (BrowserMutationObserver) {
+	  scheduleFlush = useMutationObserver();
+	} else if (isWorker) {
+	  scheduleFlush = useMessageChannel();
+	} else if (browserWindow === undefined && "function" === 'function') {
+	  scheduleFlush = attemptVertx();
+	} else {
+	  scheduleFlush = useSetTimeout();
+	}
+	
+	function then(onFulfillment, onRejection) {
+	  var _arguments = arguments;
+	
+	  var parent = this;
+	
+	  var child = new this.constructor(noop);
+	
+	  if (child[PROMISE_ID] === undefined) {
+	    makePromise(child);
+	  }
+	
+	  var _state = parent._state;
+	
+	  if (_state) {
+	    (function () {
+	      var callback = _arguments[_state - 1];
+	      asap(function () {
+	        return invokeCallback(_state, child, callback, parent._result);
+	      });
+	    })();
+	  } else {
+	    subscribe(parent, child, onFulfillment, onRejection);
+	  }
+	
+	  return child;
+	}
+	
+	/**
+	  `Promise.resolve` returns a promise that will become resolved with the
+	  passed `value`. It is shorthand for the following:
+	
+	  ```javascript
+	  let promise = new Promise(function(resolve, reject){
+	    resolve(1);
+	  });
+	
+	  promise.then(function(value){
+	    // value === 1
+	  });
+	  ```
+	
+	  Instead of writing the above, your code now simply becomes the following:
+	
+	  ```javascript
+	  let promise = Promise.resolve(1);
+	
+	  promise.then(function(value){
+	    // value === 1
+	  });
+	  ```
+	
+	  @method resolve
+	  @static
+	  @param {Any} value value that the returned promise will be resolved with
+	  Useful for tooling.
+	  @return {Promise} a promise that will become fulfilled with the given
+	  `value`
+	*/
+	function resolve(object) {
+	  /*jshint validthis:true */
+	  var Constructor = this;
+	
+	  if (object && typeof object === 'object' && object.constructor === Constructor) {
+	    return object;
+	  }
+	
+	  var promise = new Constructor(noop);
+	  _resolve(promise, object);
+	  return promise;
+	}
+	
+	var PROMISE_ID = Math.random().toString(36).substring(16);
+	
+	function noop() {}
+	
+	var PENDING = void 0;
+	var FULFILLED = 1;
+	var REJECTED = 2;
+	
+	var GET_THEN_ERROR = new ErrorObject();
+	
+	function selfFulfillment() {
+	  return new TypeError("You cannot resolve a promise with itself");
+	}
+	
+	function cannotReturnOwn() {
+	  return new TypeError('A promises callback cannot return that same promise.');
+	}
+	
+	function getThen(promise) {
+	  try {
+	    return promise.then;
+	  } catch (error) {
+	    GET_THEN_ERROR.error = error;
+	    return GET_THEN_ERROR;
+	  }
+	}
+	
+	function tryThen(then, value, fulfillmentHandler, rejectionHandler) {
+	  try {
+	    then.call(value, fulfillmentHandler, rejectionHandler);
+	  } catch (e) {
+	    return e;
+	  }
+	}
+	
+	function handleForeignThenable(promise, thenable, then) {
+	  asap(function (promise) {
+	    var sealed = false;
+	    var error = tryThen(then, thenable, function (value) {
+	      if (sealed) {
+	        return;
+	      }
+	      sealed = true;
+	      if (thenable !== value) {
+	        _resolve(promise, value);
+	      } else {
+	        fulfill(promise, value);
+	      }
+	    }, function (reason) {
+	      if (sealed) {
+	        return;
+	      }
+	      sealed = true;
+	
+	      _reject(promise, reason);
+	    }, 'Settle: ' + (promise._label || ' unknown promise'));
+	
+	    if (!sealed && error) {
+	      sealed = true;
+	      _reject(promise, error);
+	    }
+	  }, promise);
+	}
+	
+	function handleOwnThenable(promise, thenable) {
+	  if (thenable._state === FULFILLED) {
+	    fulfill(promise, thenable._result);
+	  } else if (thenable._state === REJECTED) {
+	    _reject(promise, thenable._result);
+	  } else {
+	    subscribe(thenable, undefined, function (value) {
+	      return _resolve(promise, value);
+	    }, function (reason) {
+	      return _reject(promise, reason);
+	    });
+	  }
+	}
+	
+	function handleMaybeThenable(promise, maybeThenable, then$$) {
+	  if (maybeThenable.constructor === promise.constructor && then$$ === then && maybeThenable.constructor.resolve === resolve) {
+	    handleOwnThenable(promise, maybeThenable);
+	  } else {
+	    if (then$$ === GET_THEN_ERROR) {
+	      _reject(promise, GET_THEN_ERROR.error);
+	    } else if (then$$ === undefined) {
+	      fulfill(promise, maybeThenable);
+	    } else if (isFunction(then$$)) {
+	      handleForeignThenable(promise, maybeThenable, then$$);
+	    } else {
+	      fulfill(promise, maybeThenable);
+	    }
+	  }
+	}
+	
+	function _resolve(promise, value) {
+	  if (promise === value) {
+	    _reject(promise, selfFulfillment());
+	  } else if (objectOrFunction(value)) {
+	    handleMaybeThenable(promise, value, getThen(value));
+	  } else {
+	    fulfill(promise, value);
+	  }
+	}
+	
+	function publishRejection(promise) {
+	  if (promise._onerror) {
+	    promise._onerror(promise._result);
+	  }
+	
+	  publish(promise);
+	}
+	
+	function fulfill(promise, value) {
+	  if (promise._state !== PENDING) {
+	    return;
+	  }
+	
+	  promise._result = value;
+	  promise._state = FULFILLED;
+	
+	  if (promise._subscribers.length !== 0) {
+	    asap(publish, promise);
+	  }
+	}
+	
+	function _reject(promise, reason) {
+	  if (promise._state !== PENDING) {
+	    return;
+	  }
+	  promise._state = REJECTED;
+	  promise._result = reason;
+	
 	  asap(publishRejection, promise);
 	}
 	
@@ -24750,10 +28595,6 @@ var GCLLib =
 	process.removeListener = noop;
 	process.removeAllListeners = noop;
 	process.emit = noop;
-	process.prependListener = noop;
-	process.prependOnceListener = noop;
-	
-	process.listeners = function (name) { return [] }
 	
 	process.binding = function (name) {
 	    throw new Error('process.binding is not supported');
@@ -24770,6 +28611,7 @@ var GCLLib =
 /* 20 */
 /***/ (function(module, exports) {
 
+>>>>>>> oberthur
 	/* (ignored) */
 
 /***/ }),

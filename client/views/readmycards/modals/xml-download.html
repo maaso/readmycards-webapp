@@ -10,6 +10,10 @@
     </div>
 
 
+    <div class="text-center" style="min-height: 45px;">
+        <span ng-if="currentStep === 0" class="btn btn-lg btn-line-primary btn-w200" ng-click="startProcess()">Start Signing</span>
+        <!--<span ng-if="currentStep === 3" class="btn btn-lg btn-line-primary btn-w200" ng-click="doDownload()">Download</span>-->
+    </div>
 
     <ul class="step-list">
         <li class="step" ng-class="{ 'active': currentStep === 1, 'completed': currentStep > 1 }">
@@ -52,7 +56,7 @@
 
 
     <div class="text-center">
-        <span ng-if="currentStep === 0" class="btn btn-lg btn-line-primary btn-w200" ng-click="startProcess()">Start Signing</span>
+        <!--<span ng-if="currentStep === 0" class="btn btn-lg btn-line-primary btn-w200" ng-click="startProcess()">Start Signing</span>-->
         <span ng-if="currentStep === 3" class="btn btn-lg btn-line-primary btn-w200" ng-click="doDownload()">Download</span>
     </div>
 
