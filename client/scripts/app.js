@@ -13,11 +13,13 @@
         'angular-google-analytics',
         'ngFileSaver',
         'ngclipboard',
+        'ngFitText',
 
         /* custom modules */
         'app.plugin.lodash',
         'app.readmycards',
-        'app.cards'
+        'app.cards',
+        'app.summary'
 
     ]);
 

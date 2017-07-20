@@ -8,7 +8,7 @@
             addressData: '<',
             picData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C, Analytics) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeUtils, T1C, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -52,6 +52,9 @@
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
+                        },
+                        plugin: () => {
+                            return T1C.beid;
                         }
                     },
                     backdrop: 'static',
@@ -109,10 +112,16 @@
                             return T1C.core.getReader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
+                        },
+                        needPinToGenerate: () => {
+                            return false;
+                        },
+                        util: () => {
+                            return BeUtils;
                         }
                     },
                     backdrop: 'static',
-                    controller: 'BeIDSummaryDownloadCtrl',
+                    controller: 'SummaryDownloadCtrl',
                     size: 'lg'
                 });
 

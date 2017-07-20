@@ -1,0 +1,54 @@
+<div id="dni-viz" class="clearfix top-info">
+
+    <div class="status-wrapper">
+        <certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></certificate-status>
+        <pin-check-status status="$ctrl.pinStatus" max-tries="3" ok-text="'PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
+    </div>
+
+    <dnie-card card-data="$ctrl.cardData"></dnie-card>
+
+    <div class="certificates-toggle col-sm-12">
+        <span ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.loadingCerts ? 'Loading...' : $ctrl.doCollapse ? 'Show extended info': 'Hide extended info'}}</span>
+    </div>
+    <div>
+        <div uib-collapse="$ctrl.doCollapse">
+            <div class="certificates col-sm-12">
+                <span class="size-h3 text-primary">Certificates</span>
+                <div class="col-sm-12" ng-if="$ctrl.cardData.intermediate_certificate">
+                    <h4 class="text-info text-light">Intermediate</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ $ctrl.cardData.intermediate_certificate }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: intermediate_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.intermediate_certificate }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.cardData.authentication_certificate">
+                    <h4 class="text-info text-light">Authentication</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ $ctrl.cardData.authentication_certificate }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: authentication_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.authentication_certificate }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.cardData.signing_certificate">
+                    <h4 class="text-info text-light">Non Repudiation</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ $ctrl.cardData.signing_certificate }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy" ga-track-event="['button', 'click', 'Copy button clicked: signing_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.cardData.signing_certificate }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

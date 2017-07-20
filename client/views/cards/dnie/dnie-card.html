@@ -1,0 +1,118 @@
+<div class="card dni-card two-sided">
+    <div class="front">
+        <div class="specimen text-uppercase">Specimen</div>
+        <div class="chip-icon"></div>
+
+        <div class="header">
+            <div class="dni text-uppercase"><i>Documento Nacional de identidad</i></div>
+            <div class="dni-underline"></div>
+            <div class="espana">ESPAÑA</div>
+        </div>
+
+        <div class="content">
+            <div class="apellido section">
+                <div class="labels">primer apellido</div>
+                <div class="values">{{$ctrl.cardData.info.firstLastName}}</div>
+                <div class="labels">segundo apellido</div>
+                <div class="values">{{$ctrl.cardData.info.secondLastName}}</div>
+
+            </div>
+            <div class="nombre section">
+                <div class="labels">nombre</div>
+                <div class="values">{{$ctrl.cardData.info.firstName}}</div>
+            </div>
+
+            <div class="sex-nationality section">
+                <div class="labels">
+                    <div class="labels inline sex">sexo</div>
+                    <div class="labels inline nationality">nacionalidad</div>
+                </div>
+                <div class="values">
+                    <div class="text-light inline sex"><em>N/A</em></div>
+                    <div class="text-light inline nationality"><em>N/A</em></div>
+                </div>
+            </div>
+            <div class="dob section">
+                <div class="labels">fecha de nacimiento</div>
+                <div class="values">
+                    <div class="text-light inline dob-day"><em>N/A</em></div>
+                    <div class="text-light inline dob-month"><em>N/A</em></div>
+                    <div class="text-light inline dob-year"><em>N/A</em></div>
+                </div>
+            </div>
+
+            <div class="desp section">
+                <div class="labels">idesp</div>
+                <div class="values">{{$ctrl.cardData.info.idesp}}</div>
+            </div>
+
+            <div class="validity section">
+                <div class="labels">valido hasta</div>
+                <div class="values">
+                    <div class="text-light inline validity-day"><em>N/A</em></div>
+                    <div class="text-light inline validity-month"><em>N/A</em></div>
+                    <div class="text-light inline validity-year"><em>N/A</em></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="signature">
+
+        </div>
+        <div class="picture-wrapper">
+            <img class="pic" src="images/default-pic.jpg"/>
+        </div>
+        <div class="dni-number">
+            <div class="labels">DNI núm.</div>
+            <div class="values">{{$ctrl.cardData.info.number}}</div>
+        </div>
+    </div>
+
+    <div class="back">
+        <div class="specimen text-uppercase">Specimen</div>
+
+        <div class="left-column">
+            <div class="place-of-birth">
+                <div class="labels">lugar de nacimiento</div>
+                <div class="text-light"><em>Not available</em></div>
+            </div>
+
+            <div class="province-country">
+                <div class="labels">provincia-país</div>
+                <div class="text-light"><em>Not available</em></div>
+            </div>
+
+            <div class="parents">
+                <div class="labels">hijo de</div>
+                <div class="text-light"><em>Not available</em></div>
+            </div>
+
+            <div class="address">
+                <div class="labels">DOMICILIO</div>
+                <div class="text-light"><em>Not available</em></div>
+            </div>
+
+            <div class="municipality">
+                <div class="labels">lugar de domicilio</div>
+                <div class="text-light"><em>Not available</em></div>
+            </div>
+
+            <div class="province-country repeat">
+                <div class="labels">provincia-país</div>
+                <div class="values">españa</div>
+            </div>
+        </div>
+
+
+        <div class="equipo">
+            <div class="labels">EQUIPO</div>
+            <div class="text-light"><em>Not available</em></div>
+        </div>
+
+        <div class="machine-readable-zone">
+            <div>{{$ctrl.machineReadable1}}</div>
+            <div>{{$ctrl.machineReadable2}}</div>
+            <div>{{$ctrl.machineReadable3}}</div>
+        </div>
+    </div>
+</div>

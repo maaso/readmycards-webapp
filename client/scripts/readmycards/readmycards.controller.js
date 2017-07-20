@@ -4,6 +4,7 @@
     angular.module('app.readmycards')
         .controller('ModalCtrl', modalCtrl)
         .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
+        .controller('ModalChallengeCtrl', modalChallengeCtrl)
         .controller('RootCtrl', rootCtrl)
         .controller('ReaderCtrl', readerCtrl);
 
@@ -21,7 +22,7 @@
         }
     }
 
-    function modalPinCheckCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, T1C, _) {
+    function modalPinCheckCtrl($scope, readerId, pinpad, plugin, $uibModalInstance, EVENTS, T1C, _) {
         $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         $scope.pincode = {
             value: ''
@@ -37,7 +38,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                T1C.beid.verifyPin(readerId).then(handleVerificationSuccess, handleVerificationError);
+                plugin.verifyPin(readerId).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
@@ -59,9 +60,13 @@
         }
 
         function onKeyPressed(data) {
-            if (data == '<') {
-                if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
-            } else if (data == '>') {
+            if (data === '<') {
+                if (_.isEmpty($scope.pincode.value)) {
+                    $uibModalInstance.dismiss('cancel');
+                } else {
+                    $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
+                }
+            } else if (data === '>') {
                 submitPin();
             } else {
                 $scope.pincode.value += data;
@@ -69,7 +74,62 @@
         }
 
         function submitPin() {
-            T1C.beid.verifyPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
+            plugin.verifyPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
+        }
+
+        $scope.$on(EVENTS.START_OVER, function () {
+            $scope.cancel();
+        });
+    }
+
+    function modalChallengeCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, T1C, _) {
+        $scope.pincode = {
+            value: ''
+        };
+        $scope.pinpad = pinpad;
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+        $scope.onKeyPressed = onKeyPressed;
+        $scope.submitPin = submitPin;
+
+        init();
+
+        function init() {
+            // If pinpad reader, send verification request directly to reader
+            if (pinpad) {
+                T1C.luxtrust.challenge(readerId).then(handleSuccess, handleError);
+            }
+            // else, wait until user enters pin
+        }
+
+        function handleSuccess(res) {
+            $uibModalInstance.close(res);
+        }
+
+        function handleError(err) {
+            $uibModalInstance.dismiss(err.data);
+        }
+
+        function ok() {
+            $uibModalInstance.close('ok');
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        function onKeyPressed(data) {
+            if (data === '<') {
+                if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
+            } else if (data === '>') {
+                submitPin();
+            } else {
+                $scope.pincode.value += data;
+            }
+        }
+
+        function submitPin() {
+            T1C.luxtrust.challenge(readerId, $scope.pincode.value).then(handleSuccess, handleError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {
@@ -288,6 +348,7 @@
             controller.readerWithCard = _.find(controller.readers, function (o) {
                 return _.has(o, 'card');
             });
+            console.log(controller.readerWithCard.id);
             $state.go('root.reader', { readerId: controller.readerWithCard.id});
         }
     }

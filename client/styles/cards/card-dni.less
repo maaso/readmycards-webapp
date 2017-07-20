@@ -1,0 +1,304 @@
+#dni-viz {
+  .specimen {
+    opacity: .2;
+  }
+}
+
+
+.cert-status {
+  margin-right: 5px;
+}
+
+.pin-check-status {
+  margin-left: 5px;
+}
+
+.dni-card {
+  font-family: Arial, sans-serif;
+  @chip-width: 132px;
+
+
+  .labels {
+    font-size: 10.5px;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+  }
+
+  .values {
+    font-weight: bold;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    font-size: 14.5px;
+    margin-top: -1px;
+    padding: 1px 0 2px;
+  }
+
+  .section {
+    padding-top: 2px;
+  }
+
+  .front {
+    //background-image: url('../images/dnie-front.png');
+    //background-size: cover;
+    position: relative;
+
+    .header {
+      position: relative;
+      //font-family: "Helvetica Neue", sans-serif;
+
+      .dni {
+        position: absolute;
+        top: 5px;
+        right: 30px;
+        font-size: 18px;
+        letter-spacing: -1px;
+        font-weight: bold;
+      }
+      .dni-underline {
+        position: absolute;
+        background: #000;
+        height: 2px;
+        width: 338px;
+        top: 30px;
+        right: 30px;
+      }
+
+      .espana {
+        font-family: Arial, sans-serif;
+        position: absolute;
+        top: 52px;
+        left: 25px;
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: -1.5px;
+      }
+    }
+    .content {
+      margin-left: @chip-width + 15;
+      margin-top: 36px;
+
+      .sex-nationality {
+        padding: 0;
+
+        .nationality {
+          &.labels {
+            margin-left: 16px;
+          }
+
+          &.values {
+            margin-left: 28px;
+          }
+        }
+      }
+
+      .dob {
+        margin-top: -5px;
+        .dob-month, .dob-year {
+          margin-left: 25px;
+        }
+      }
+
+      .desp {
+        margin-top: -3px;
+      }
+
+      .validity {
+        margin-top: -2px;
+        .validity-month {
+          margin-left: 18px;
+        }
+
+        .validity-year {
+          margin-left: 15px;
+        }
+      }
+
+
+      .chip {
+        width: @chip-width;
+      }
+    }
+    .dni-number {
+      position: absolute;
+      bottom: 12px;
+      left: 15px;
+    }
+
+    .picture-wrapper {
+      position: absolute;
+      bottom: 2px;
+      right: 10px;
+
+      .pic {
+        max-width: 145px;
+      }
+    }
+  }
+
+  .back {
+    //background-image: url('../images/dnie-back.png');
+    //background-size: cover;
+    position: relative;
+
+    .left-column {
+      position: absolute;
+      left: 10px;
+      top: 14px;
+
+      .province-country, .parents, .address, .municipality {
+        margin-top: 1px;
+
+        &.repeat {
+          margin-top: 14px;
+        }
+      }
+    }
+
+    .equipo {
+      position: absolute;
+      left: 368px;
+      top: 162px;
+
+      .values {
+        letter-spacing: 1px;
+      }
+    }
+
+    .machine-readable-zone {
+      position: absolute;
+      line-height: 1.15;
+      letter-spacing: 0.5px;
+      left: 30px;
+      top: 222px;
+      font-family: 'OCR-B', monospace;
+      font-size: 24px;
+    }
+  }
+}
+
+
+.summary-modal {
+
+  .header {
+    margin: 0 30px;
+
+    .title {
+      font-size: 40px;
+      color: @brand-primary;
+    }
+
+    .info-text {
+      color: #333;
+      font-weight: 300;
+    }
+
+    .start-text {
+      font-weight: normal;
+      color: @brand-primary;
+    }
+  }
+
+  .summary-start {
+    padding-top: 15px;
+    min-height: 60px;
+  }
+
+  .dummy-summary-wrapper {
+    position: absolute;
+    top: 245px;
+    right: 35px;
+
+    .specimen {
+      font-family: Arial, sans-serif;
+      position: absolute;
+      font-size: 80px;
+      font-weight: bold;
+      text-align: center;
+      top: 80px;
+      bottom: 0;
+      left: -20px;
+      right: 0;
+      height: 150px;
+      width: 340px;
+      margin: auto;
+      opacity: .2;
+      transform: rotate(-55deg);
+      text-transform: uppercase;
+    }
+
+    .dummy-summary {
+      max-width: 340px;
+    }
+  }
+
+
+  .step-list {
+    list-style-type: none;
+
+    .pinpad {
+      position: absolute;
+      right: 0;
+      top: 225px;
+      max-width: 500px;
+      z-index: 100;
+      background: #fff;
+    }
+
+    .step {
+      margin: 50px 0;
+
+      &:first-of-type {
+        margin: 20px 0 50px 0;
+      }
+
+
+      > div {
+        display: inline-block;
+      }
+
+      &.completed {
+        .step-number {
+          background: @brand-success;
+        }
+      }
+
+      &.active {
+        .step-number {
+          background: @brand-primary;
+        }
+
+        .step-desc {
+          color: #333;
+        }
+      }
+
+      .step-number {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: #aaa;
+        color: #fff;
+
+        font-size: 60px;
+        //font-weight: 300;
+      }
+
+
+      .step-desc {
+        position: relative;
+        margin-left: 40px;
+        font-size: 30px;
+        vertical-align: text-bottom;
+        color: #999;
+        z-index: 110;
+      }
+
+    }
+  }
+}
