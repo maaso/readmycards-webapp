@@ -25,14 +25,12 @@
                             controller.card = readerInfo.data.card;
 
                             if (controller.cardType === 'unknown') {
-                                console.log("unknown card");
                                 // TODO Now manually triggered, should this not be automatic?
                                 // registerUnknownType();
                                 controller.unknownCard = true;
                                 controller.loading = false;
                                 RMC.monitorCardRemoval(controller.readerId, controller.card);
                             } else {
-                                console.log("read data");
                                 T1C.readAllData(readerInfo.data.id).then(function (res) {
                                     controller.cardData = res.data;
                                     controller.loading = false;
