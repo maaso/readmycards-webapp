@@ -22,34 +22,36 @@
                         CardService.detectType(readerInfo.data.id).then(type => {
                             controller.cardType = type;
                             controller.cardTypePretty = CardService.getCardTypeName(type, readerInfo.data.card);
-                        });
-                        controller.card = readerInfo.data.card;
+                            controller.card = readerInfo.data.card;
 
-                        if (controller.cardType === 'Unknown') {
-                            // TODO Now manually triggered, should this not be automatic?
-                            // registerUnknownType();
-                            controller.unknownCard = true;
-                            controller.loading = false;
-                            RMC.monitorCardRemoval(controller.readerId, controller.card);
-                        } else {
-                            T1C.readAllData(readerInfo.data.id).then(function (res) {
-                                controller.cardData = res.data;
+                            if (controller.cardType === 'unknown') {
+                                console.log("unknown card");
+                                // TODO Now manually triggered, should this not be automatic?
+                                // registerUnknownType();
+                                controller.unknownCard = true;
                                 controller.loading = false;
-                                RMC.monitorCardRemoval(controller.readerId, controller.card)
-                            }, function (error) {
-                                if (error.status === 412 && (error.data.code === 900 || error.data.code === 0)) {
-                                    // this usually means the card was removed during reading, check if it is still present
-                                    RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
-                                        if (removed) $scope.$emit(EVENTS.START_OVER);
-                                        controller.$onInit();
-                                    });
-                                } else {
-                                    controller.errorReadingCard = true;
+                                RMC.monitorCardRemoval(controller.readerId, controller.card);
+                            } else {
+                                console.log("read data");
+                                T1C.readAllData(readerInfo.data.id).then(function (res) {
+                                    controller.cardData = res.data;
                                     controller.loading = false;
                                     RMC.monitorCardRemoval(controller.readerId, controller.card)
-                                }
-                            });
-                        }
+                                }, function (error) {
+                                    if (error.status === 412 && (error.data.code === 900 || error.data.code === 0)) {
+                                        // this usually means the card was removed during reading, check if it is still present
+                                        RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
+                                            if (removed) $scope.$emit(EVENTS.START_OVER);
+                                            controller.$onInit();
+                                        });
+                                    } else {
+                                        controller.errorReadingCard = true;
+                                        controller.loading = false;
+                                        RMC.monitorCardRemoval(controller.readerId, controller.card)
+                                    }
+                                });
+                            }
+                        });
                     }, function (error) {
                         if (error.message === EVENTS.NETWORK_ERROR) {
                             // try again after short delay

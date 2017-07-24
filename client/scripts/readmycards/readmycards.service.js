@@ -149,6 +149,8 @@
 
         function detectContainer(readerId) {
             return Core.getConnector().containerFor(readerId).then(res => {
+                // change result for unsupported card types
+                if (res.data === 'aventra') { return 'unknown'; }
                 return res.data;
             })
         }
