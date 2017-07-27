@@ -6,7 +6,7 @@
         bindings: {
             cardData: '<'
         },
-        controller: function ($uibModal, $stateParams, T1C) {
+        controller: function ($uibModal, $stateParams, Core) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -14,7 +14,7 @@
                 controller.needPin = true;
 
                 // check type of reader
-                T1C.core.getReader($stateParams.readerId).then(res => {
+                Core.getReader($stateParams.readerId).then(res => {
                     controller.pinpad = res.data.pinpad;
                     if (!controller.pinpad) {
                         controller.pincode = { value: '' };
@@ -33,9 +33,14 @@
 
             function getAllData(pin) {
                 controller.readingData = true;
-                T1C.piv.printedInformation($stateParams.readerId, pin).then(res => {
+                Core.getConnector().piv($stateParams.readerId).printedInformation({ pin }).then(res => {
                     console.log(res);
                     controller.cardData = res.data;
+                    controller.pinStatus = 'valid';
+                    controller.readingData = false;
+                }, () => {
+                    // TODO not all PIV/CIV cards support printedinformation, need to use
+                    // allData call once it is implemented
                     controller.pinStatus = 'valid';
                     controller.readingData = false;
                 });

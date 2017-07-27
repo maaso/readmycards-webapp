@@ -9,7 +9,7 @@
            .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, EMV, LuxId, LuxTrust, Mobib, OCV, PIV,DNIe, _) {
+    function ConnectorService($q, Core, DS, BeID, EMV, LuxId, LuxTrust, Mobib, OCV, PIV,DNIe, _) {
 
         // === T1C Methods ===
         // --- Core ---
@@ -41,9 +41,10 @@
 
         function readAllData(readerId) {
             return Core.getConnector().containerFor(readerId).then(res => {
-                // luxeid is a special case and cannot work without a PIN, so skip it
-                if (res.data === 'luxeid') { return $q.when('Not Supported'); }
-                else { return Core.getConnector().dumpData(readerId, {}); }
+                // luxeid/piv is a special case and cannot work without a PIN, so skip it
+                if (_.includes(['luxeid', 'piv'], res.data)) { return $q.when('Not Supported'); }
+                else {
+                    return Core.getConnector().dumpData(readerId, {}); }
             }).catch(() => {
                 return $q.when('Not Supported');
             });
@@ -152,7 +153,7 @@
                 // change result for unsupported card types
                 if (res.data === 'aventra') { return 'unknown'; }
                 return res.data;
-            })
+            });
         }
 
         function getCardTypeName(container, card) {

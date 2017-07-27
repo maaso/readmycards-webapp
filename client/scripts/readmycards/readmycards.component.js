@@ -49,6 +49,10 @@
                                     }
                                 });
                             }
+                        }).catch(err => {
+                            controller.unknownCard = true;
+                            controller.loading = false;
+                            RMC.monitorCardRemoval(controller.readerId, readerInfo.data.card);
                         });
                     }, function (error) {
                         if (error.message === EVENTS.NETWORK_ERROR) {
