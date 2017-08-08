@@ -132,6 +132,28 @@
                 });
             };
 
+            controller.uploadAndSign = () => {
+                $uibModal.open({
+                    templateUrl: "views/readmycards/modals/uploadandsign.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                                return res.data.pinpad;
+                            })
+                        },
+                        util: () => {
+                            return BeUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'UploadAndSignCtrl',
+                    size: 'lg'
+                });
+            };
+
             controller.trackCertificatesClick = () => {
                 Analytics.trackEvent('button', 'click', 'Click on certificates feature');
             }
