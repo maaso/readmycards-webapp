@@ -199,7 +199,7 @@
                 url: 'api/ul',
                 data: { file: files[0] }
             }).then(res => {
-                generatedFile = res;
+                generatedFile = res.data;
                 $scope.currentStep = 2;
                 $scope.generateText = 'Uploaded';
 
