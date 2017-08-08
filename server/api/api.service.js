@@ -4,6 +4,7 @@ const config = require(__base + 'modules/t1t-config');
 const cloudconvert = new (require('cloudconvert'))(config.cloudconvert.apikey);
 const q = require('q');
 const miss = require('mississippi2');
+const signboxApi = require(__base + "server/components/signbox.service");
 
 
 
@@ -31,7 +32,15 @@ function jp2000ToJpeg(base64JP2000) {
     return pic.promise;
 }
 
+function uploadDocument(file, jwt) {
+    return signboxApi.uploadDocument(file.buffer, file.originalname, file.mimetype, jwt, false).then(res => {
+        let parsedBody = JSON.parse(res);
+        return signboxApi.assignDocumentToWorkflow(parsedBody[0].uuid, jwt)
+    });
+}
+
 
 module.exports = {
-    jp2000ToJpeg: jp2000ToJpeg
+    jp2000ToJpeg: jp2000ToJpeg,
+    uploadDocument: uploadDocument
 };

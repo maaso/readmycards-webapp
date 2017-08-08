@@ -1,0 +1,66 @@
+<div class="modal-body summary-modal">
+
+    <div class="header">
+        <p class="title text-center">Upload And Sign Document</p>
+
+        <p class="info-text text-justify">Click the button below to upload your own PDF
+            document. Once the upload completes, you will be prompted for your PIN code to sign
+            the document.
+            After completion of the signing process you will be able to download the signed
+            PDF.
+        </p>
+    </div>
+
+    <div class="summary-start text-center">
+        <span ng-if="currentStep === 0" class="btn btn-lg btn-primary btn-w200"
+              ngf-multiple="false"
+              accept=".pdf,.doc,.docx,.dwg,.ppt,.pptx,.xls,.xlsx"
+              ngf-pattern="'.pdf,.doc,.docx,.dwg,.ppt,.pptx,.xls,.xlsx'"
+              ngf-select="startProcess($files)">Select Document</span>
+    </div>
+
+    <ul class="step-list">
+        <li class="step" ng-class="{ 'active': currentStep === 1, 'completed': currentStep > 1 }">
+            <div class="step-number-wrapper">
+                <div class="step-number">
+                    <span ng-class="{ 'fa fa-pulse fa-spinner': currentStep === 1, 'fa fa-check': currentStep > 1 }">{{ currentStep < 1 ? '1' : ''}}</span>
+                </div>
+            </div>
+            <div class="step-desc">{{generateText}}</div>
+        </li>
+        <li class="step" ng-class="{ 'active': currentStep === 2, 'completed': currentStep > 2 }">
+            <div class="step-number-wrapper">
+                <div class="step-number">
+                    <span ng-class="{ 'fa fa-pulse fa-spinner': currentStep === 2, 'fa fa-check': currentStep > 2 }">{{ currentStep < 2 ? '2' : ''}}</span>
+                </div>
+            </div>
+            <div class="step-desc">{{pinText}}</div>
+        </li>
+        <li ng-if="!pinpad && enterPin">
+            <div class="pinpad">
+                <rmc-keypad pincode="pincode" submit-func="submitPin" cancel-func="cancel"></rmc-keypad>
+            </div>
+        </li>
+        <li class="step" ng-class="{ 'active': currentStep === 3, 'completed': currentStep > 3 }">
+            <div class="step-number-wrapper">
+                <div class="step-number">
+                    <span>3</span>
+                </div>
+            </div>
+            <div class="step-desc">
+                <span>{{downloadText}}</span>
+            </div>
+        </li>
+    </ul>
+
+    <div class="dummy-summary-wrapper">
+        <div class="specimen">Specimen</div>
+        <img class="dummy-summary" src="images/summary-demo.jpg">
+    </div>
+
+
+    <div class="summary-download text-center">
+        <span ng-if="currentStep === 3" class="btn btn-lg btn-primary btn-w200" ng-click="doDownload()">Download</span>
+    </div>
+
+</div>

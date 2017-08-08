@@ -14,6 +14,8 @@
         'ngFileSaver',
         'ngclipboard',
         'ngFitText',
+        'ngFileUpload',
+
 
         /* custom modules */
         'app.plugin.lodash',

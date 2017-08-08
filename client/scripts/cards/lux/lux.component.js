@@ -30,7 +30,7 @@
             };
 
             controller.downloadSummary = () => {
-                let modal = $uibModal.open({
+                $uibModal.open({
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
                         readerId: () => {
@@ -50,11 +50,25 @@
                     controller: 'SummaryDownloadCtrl',
                     size: 'lg'
                 });
+            };
 
-                modal.result.then(function () {
-
-                }, function (err) {
-
+            controller.uploadAndSign = () => {
+                $uibModal.open({
+                    templateUrl: "views/readmycards/modals/uploadandsign.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return controller.pinpad;
+                        },
+                        util: () => {
+                            return LuxUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'UploadAndSignCtrl',
+                    size: 'lg'
                 });
             };
 
@@ -228,6 +242,26 @@
 
                 }, function (err) {
 
+                });
+            };
+
+            controller.uploadAndSign = () => {
+                $uibModal.open({
+                    templateUrl: "views/readmycards/modals/uploadandsign.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return controller.pinpad;
+                        },
+                        util: () => {
+                            return LuxTrustUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'UploadAndSignCtrl',
+                    size: 'lg'
                 });
             };
 

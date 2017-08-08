@@ -16,7 +16,8 @@ let datastore  = gcloud.datastore({
 module.exports = {
     convertJP2toJPEG: convertJP2toJPEG,
     processDownload: processDownload,
-    processUnknownCard: processUnknownCard
+    processUnknownCard: processUnknownCard,
+    processUpload: processUpload
 };
 
 
@@ -120,6 +121,14 @@ function processUnknownCard(req, res) {
         let id = typeKey.path.pop();
         return res.json({ success: true, data: id });
     });
+}
+
+function processUpload(req, res) {
+    service.uploadDocument(req.file, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    })
 }
 
 // Utility functions
