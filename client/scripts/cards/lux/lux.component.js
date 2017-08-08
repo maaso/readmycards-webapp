@@ -79,7 +79,6 @@
             function getAllData(pin) {
                 controller.readingData = true;
                 T1C.luxId.allData($stateParams.readerId, pin).then(res => {
-                    console.log(res);
                     controller.pinStatus = 'valid';
                     controller.certStatus = 'checking';
                     controller.biometricData = res.data.biometric;
@@ -366,7 +365,6 @@
             let controller = this;
 
             controller.$onInit = () => {
-                console.log(controller.biometricData);
                 controller.formattedBirthDate = LuxUtils.formatBirthDate(controller.biometricData.birthDate);
                 controller.formattedValidFrom = LuxUtils.formatValidity(controller.biometricData.validityStartDate);
                 controller.formattedValidUntil = LuxUtils.formatValidity(controller.biometricData.validityEndDate);
