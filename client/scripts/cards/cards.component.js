@@ -9,6 +9,20 @@
         }
     };
 
+    const activationStatus = {
+        templateUrl: 'views/cards/activation-status.html',
+        bindings: {
+            status: '<'
+        },
+        controller: function () {
+            let controller = this;
+            controller.$onChanges = () => {
+                if (controller.status) { controller.infoText = 'Card is activated.'; }
+                else { controller.infoText = 'Card is not activated.'; }
+            };
+        }
+    };
+
     const pinCheckStatus = {
         templateUrl: 'views/cards/pin-check-status.html',
         bindings: {
@@ -54,6 +68,7 @@
     };
 
     angular.module('app.cards')
+           .component('activationStatus', activationStatus)
            .component('certificateStatus', certificateStatus)
            .component('pinCheckStatus', pinCheckStatus)
            .component('printSummary', printSummary);

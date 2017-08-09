@@ -1,0 +1,6 @@
+<div class="card-status" uib-alert
+     ng-class="{ 'alert-warning': !$ctrl.status, 'alert-success': $ctrl.status }">
+        <i class="fa fa-lg"
+           ng-class="{ 'fa-exclamation-triangle': !$ctrl.status, 'fa-check-circle': $ctrl.status }"></i>
+        <span class="info-text text-ultralight">{{$ctrl.infoText}}</span>
+</div>

@@ -141,6 +141,7 @@
             controller.$onInit = () => {
                 controller.pinStatus = 'idle';
                 controller.certStatus = 'checking';
+                controller.activationStatus = controller.cardData.activated;
 
                 let validationReq1 = {
                     certificateChain: [
