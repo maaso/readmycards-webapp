@@ -29,7 +29,7 @@ function generateSummaryToSign(data, jwt) {
                 let fileName = _.join(_.split(data.biometric.lastName, ' '), '_') + '_' + _.join(_.split(data.biometric.firstName, ' '), '_')
                     + '_summary.pdf';
 
-                uploadAndAssign(buffer, fileName, 'application/pdf', jwt).then(res => {
+                uploadAndAssign(buffer, fileName, 'application/pdf', jwt, false).then(res => {
                     return summaryPromise.resolve(res);
                 }, err => {
                     return summaryPromise.reject(err);
@@ -58,7 +58,7 @@ function generateLuxTrustSummaryToSign(data, jwt) {
 
                     let fileName = 'luxtrust_summary.pdf';
 
-                    uploadAndAssign(buffer, fileName, 'application/pdf', jwt).then(res => {
+                    uploadAndAssign(buffer, fileName, 'application/pdf', jwt, false).then(res => {
                         return summaryPromise.resolve(res);
                     }, err => {
                         return summaryPromise.reject(err);
@@ -75,7 +75,7 @@ function uploadXML(jwt) {
     let xmlUpload = q.defer();
 
     miss.toPromise(fs.createReadStream('example.xml')).then(buffer => {
-        uploadAndAssign(buffer, 'example.xml', 'text/xml', jwt).then(result => {
+        uploadAndAssign(buffer, 'example.xml', 'text/xml', jwt, true).then(result => {
             return xmlUpload.resolve(result);
         }, err => {
             return xmlUpload.reject(err);

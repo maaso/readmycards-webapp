@@ -27,7 +27,7 @@ function generateSummaryToSign(data, jwt) {
                 let fileName = data.rnData.name + '_' + _.join(_.split(data.rnData.first_names, ' '), '_') + '_'
                     + data.rnData.third_name + '_summary.pdf';
 
-                signboxApi.uploadDocument(buffer, fileName, 'application/pdf', jwt).then(res => {
+                signboxApi.uploadDocument(buffer, fileName, 'application/pdf', jwt, true).then(res => {
                     let parsedBody = JSON.parse(res);
 
                     signboxApi.assignDocumentToWorkflow(parsedBody[0].uuid, jwt).then(result => {

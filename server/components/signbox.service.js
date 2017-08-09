@@ -49,9 +49,7 @@ function getDataToSign(data, jwt) {
 
     options.body.additionalInformation.role = config.signbox.role;
 
-    console.log(options);
     return rp.post(options).then(res => {
-        console.log(res);
         return res;
     }, err => {
         console.log('error');
@@ -63,19 +61,19 @@ function getDataToSign(data, jwt) {
 /**
  *
  */
-function uploadDocument(fileBuffer, fileName, fileType, jwt) {
+function uploadDocument(fileBuffer, fileName, fileType, jwt, skipConversion) {
     let options = {
         uri: config.signbox.uri + config.signbox.path + '/documents/upload',
         headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt },
         formData: {
-            skipConversion: 'true',
             file: {
                 value:  fileBuffer,
                 options: {
                     filename: fileName,
                     contentType: fileType
                 }
-            }
+            },
+            skipConversion: skipConversion ? 'true' : 'false'
         }
     };
     return rp.post(options);
