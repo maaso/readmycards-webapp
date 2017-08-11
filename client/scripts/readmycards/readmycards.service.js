@@ -43,9 +43,8 @@
             return Core.getConnector().containerFor(readerId).then(res => {
                 // luxeid/piv is a special case and cannot work without a PIN, so skip it
                 if (_.includes(['luxeid', 'piv'], res.data)) { return $q.when('Not Supported'); }
-                // Reading certs from PT eID takes a long time, initially only read id Data
-                if (res.data === 'pteid') { return Core.getConnector().pteid(readerId).idData(); }
-                else { return Core.getConnector().dumpData(readerId, {}); }
+                else {
+                    return Core.getConnector().dumpData(readerId, {}); }
             }).catch(() => {
                 return $q.when('Not Supported');
             });
@@ -179,8 +178,6 @@
                     return 'Oberthur';
                 case 'piv':
                     return 'PIV';
-                case 'pteid':
-                    return 'Portuguese eID';
                 default:
                     return 'Unknown';
             }
