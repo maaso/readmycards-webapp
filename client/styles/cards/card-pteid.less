@@ -52,13 +52,12 @@
 
   .labels {
     font-size: 9px;
-    color: red;
     font-weight: bold;
     text-transform: uppercase;
 
     div.inline {
       padding-left: 4px;
-      border-left: 1px solid red;
+      border-left: 1px solid #999;
 
       &:first-of-type {
         padding-left: 0;
@@ -73,8 +72,10 @@
   }
 
   .values {
-    font-size: 0.85em;
+    font-size: 14px;
+    letter-spacing: 0.9px;
     font-weight: bold;
+    text-transform: uppercase;
   }
 
   .section {
@@ -82,23 +83,23 @@
   }
 
   .front {
-    background-image: url('../images/pt-front.png');
-    background-size: cover;
+    //background-image: url('../images/pt-front.png');
+    //background-size: cover;
 
     .content-wrapper {
       height: 100%;
-      @content-margin: 148px;
+      @content-margin: 142px;
       width: calc(100%);
       padding-left: @content-margin;
       padding-right: 10px;
 
       .header {
-        height: 63px;
+        height: 60px;
         position: relative;
 
         .citizen-card-wrapper {
           position: absolute;
-          top: 8px;
+          top: 5px;
 
           .citizen-card {
             text-transform: uppercase;
@@ -115,8 +116,8 @@
 
         .portugal-wrapper {
           position: absolute;
-          top: 0;
-          left: 165px;
+          top: -1px;
+          left: 168px;
 
           .portugal {
             padding-left: 2px;
@@ -141,17 +142,23 @@
       .surname {
         height: 48px;
         border-top: 1px solid #999;
+
+        .values {
+          margin-top: -5px;
+        }
       }
 
       .given-name {
-        height: 40px;
+        height: 42px;
         margin-top: -1px;
         border-top: 1px solid #999;
+
+        .values {
+          margin-top: -3px;
+        }
       }
 
       .other {
-
-
         .info, .picture {
           display: inline-block;
         }
@@ -161,8 +168,9 @@
           border-top: 1px solid #999;
 
           .personal-info {
-            height: 40px;
+            height: 42px;
             margin-bottom: 3px;
+            position: relative;
 
             .labels {
               font-size: 8.5px;
@@ -175,6 +183,10 @@
 
             .sex {
               width: 28px;
+
+              .values {
+                margin-left: 1px;
+              }
             }
 
             .height {
@@ -187,10 +199,22 @@
 
             .dob {
               width: 80px;
+              .values {
+                margin-left: 1px;
+              }
             }
 
-            .sex, .height, .nationality {
-              border-right: 1px solid red;
+            .borders {
+              position: absolute;
+              top: 0;
+              div {
+                height: 40px;
+                border-right: 1px solid #999;
+
+                &:last-of-type {
+                  border-right: 0;
+                }
+              }
             }
 
           }
@@ -198,6 +222,7 @@
           .document-info {
             border-top: 1px solid #999;
             height: 50px;
+            position: relative;
 
             .labels {
               .lang-en {
@@ -207,7 +232,6 @@
 
             .document-number {
               width: 143px;
-              border-right: 1px solid red;
               vertical-align: top;
               position: relative;
 
@@ -222,10 +246,22 @@
                 }
               }
 
+              .doc-number-wrapper {
+                .doc-number-1 {
+                  margin-left: 12px;
+                  margin-top: -2px;
+                  font-size: 16px;
+                  letter-spacing: 2.5px;
+                }
+
+                .doc-number-2 {
+                  margin-left: 10px;
+                }
+              }
+
               .civil-id {
                 position: absolute;
-                color: red;
-                top: 15px;
+                top: 12px;
                 left: 5px;
                 text-transform: uppercase;
                 font-weight: bold;
@@ -239,6 +275,23 @@
                 font-size: 8.5px;
                 letter-spacing: 0;
               }
+              .values {
+                margin-top: 1px;
+                margin-left: 1px;
+              }
+            }
+
+            .borders {
+              position: absolute;
+              top: 0;
+              div {
+                height: 40px;
+                border-right: 1px solid #999;
+
+                &:last-of-type {
+                  border-right: 0;
+                }
+              }
             }
           }
 
@@ -250,7 +303,6 @@
 
         .picture {
           position: relative;
-          margin-left: 5px;
           width: 115px;
 
           .loading-indicator {

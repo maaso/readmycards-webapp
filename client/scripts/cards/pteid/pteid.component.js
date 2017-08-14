@@ -150,11 +150,14 @@
             idData: '<',
             photo: '<'
         },
-        controller: function () {
+        controller: function (_) {
             let controller = this;
 
             controller.$onInit = () => {
-                console.log(controller.idData);
+                let documentNumberComponents = _.split(controller.idData.document_number, " ");
+                console.log(documentNumberComponents);
+                controller.docNumberPart1 = _.pullAt(documentNumberComponents, 0)[0];
+                controller.docNumberPart2 = _.join(documentNumberComponents, " ");
             };
         }
     };
