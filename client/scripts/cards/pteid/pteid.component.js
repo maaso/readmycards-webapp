@@ -6,7 +6,7 @@
         bindings: {
             cardData: '<'
         },
-        controller: function ($rootScope, $q, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, API, Analytics, _) {
+        controller: function ($rootScope, $q, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, API, PtUtils, Analytics, _) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -16,7 +16,6 @@
                 // validate certificate chain
                 Core.getConnector().pteid($stateParams.readerId).allCerts({ filter: [], parseCerts: false}).then(res => {
                     API.convertJPEG2000toJPEG(controller.cardData.photo).then(converted => {
-                        console.log(converted);
                         controller.photo = converted.data.base64Pic
                     });
 
@@ -60,7 +59,7 @@
                             })
                         },
                         plugin: () => {
-                            return T1C.beid;
+                            return PtUtils;
                         }
                     },
                     backdrop: 'static',
@@ -155,7 +154,6 @@
 
             controller.$onInit = () => {
                 let documentNumberComponents = _.split(controller.idData.document_number, " ");
-                console.log(documentNumberComponents);
                 controller.docNumberPart1 = _.pullAt(documentNumberComponents, 0)[0];
                 controller.docNumberPart2 = _.join(documentNumberComponents, " ");
             };

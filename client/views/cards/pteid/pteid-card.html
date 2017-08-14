@@ -72,12 +72,11 @@
                     <div class="document-info">
                         <div class="document-number inline">
                             <div class="labels">
-                                    <div class="inline lang-pt">№ documento</div>
-                                    <div class="inline lang-en">document no.</div>
+                                <div class="inline lang-pt">№ documento</div>
+                                <div class="inline lang-en">document no.</div>
                             </div>
                             <div class="civil-id">№ ID civil | Civil ID no.</div>
 
-                            <!--<div class="values">{{$ctrl.idData.document_number}}</div>-->
                             <div class="values doc-number-wrapper">
                                 <div class="doc-number-1 inline">{{$ctrl.docNumberPart1}}</div>
                                 <div class="doc-number-2 inline">{{$ctrl.docNumberPart2}}</div>
@@ -98,8 +97,8 @@
                     </div>
                     <div class="signature">
                         <!--<div class="labels">-->
-                            <!--<div class="inline lang-pt">assinatura do titular</div>-->
-                            <!--<div class="inline lang-en">holder's signature</div>-->
+                        <!--<div class="inline lang-pt">assinatura do titular</div>-->
+                        <!--<div class="inline lang-en">holder's signature</div>-->
                         <!--</div>-->
                     </div>
                 </div>
@@ -117,34 +116,64 @@
 
     <div class="back">
         <div class="specimen text-uppercase">Specimen</div>
-        <div class="back-wrapper">
-            <div class="rrnr-barcode section">
-                <div class="rrnr inline">
+
+        <div class="top-content">
+            <div class="header">
+                <div class="portugal text-uppercase">Portugal</div>
+                <div class="citizen-card-wrapper">
+                    <div class="citizen-card pt">cartão de cidadão</div>
+                    <div class="citizen-card en">citizen card</div>
+                </div>
+            </div>
+
+            <div class="parents">
+                <div class="labels">
+                    <div class="inline lang-pt">filiação</div>
+                    <div class="inline lang-en">parents</div>
+                </div>
+                <div class="values">
+                    {{$ctrl.idData.given_name_father}} {{$ctrl.idData.surname_father}} *
+                    {{$ctrl.idData.given_name_mother}} {{$ctrl.idData.surname_mother}}
+                </div>
+            </div>
+
+            <div class="numbers">
+                <div class="tax inline">
                     <div class="labels">
-                        <div>Identificatienummer van het Rijksregister</div>
-                        <div><i>Identification number of the National Register</i></div>
+                        <div class="lang-pt">№ identificação fiscal</div>
+                        <div class="lang-en">tax no.</div>
                     </div>
-                    <div class="values">
-                        <div>{{$ctrl.formattedRRNR}}</div>
+                    <div class="values">{{$ctrl.idData.tax_no}}</div>
+                </div>
+                <div class="social-security inline">
+                    <div class="labels">
+                        <div class="lang-pt">№ segurança social</div>
+                        <div class="lang-en">social security no.</div>
                     </div>
+                    <div class="values">{{$ctrl.idData.social_security_no}}</div>
                 </div>
-                <div class="barcode inline">
-                    <div class="barcode-wrapper">{{$ctrl.rnData.national_number}}{{$ctrl.rnData.card_number.substr(3)}}</div>
+                <div class="health inline">
+                    <div class="labels">
+                        <div class="lang-pt">№ utente de saúde</div>
+                        <div class="lang-en">health no.</div>
+                    </div>
+                    <div class="values">{{$ctrl.idData.health_no}}</div>
+                </div>
+                <div class="borders">
+                    <div class="tax inline"></div>
+                    <div class="social-security inline"></div>
+                    <div class="health inline"></div>
                 </div>
             </div>
+        </div>
 
-            <div class="issuer section">
-                <div class="issuer-place labels">
-                    <div>Plaats van afgifte/<i>Place of issue</i></div>
-                </div>
-                <div class="values">{{$ctrl.rnData.card_delivery_municipality}}</div>
-            </div>
 
-            <div class="machine-readable-zone">
-                <div>{{$ctrl.machineReadable1}}</div>
-                <div>{{$ctrl.machineReadable2}}</div>
-                <div>{{$ctrl.machineReadable3}}</div>
-            </div>
+
+
+        <div class="machine-readable-zone">
+            <div>{{$ctrl.idData.mrz1}}</div>
+            <div>{{$ctrl.idData.mrz2}}</div>
+            <div>{{$ctrl.idData.mrz3}}</div>
         </div>
     </div>
 </div>

@@ -328,37 +328,106 @@
   }
 
   .back {
-    .back-wrapper {
-      padding: 10px 20px;
+    //background-image: url('../images/pt-back.png');
+    //background-size: cover;
+    position: relative;
 
-      .rrnr {
-        .labels {
-          line-height: 1.1;
+    .top-content {
+      margin-left: 86px;
+      width: 410px;
+
+      .header {
+        position: relative;
+        .portugal {
+          margin-top: 5px;
+          padding-left: 1px;
+          color: #3a5572;
+          font-size: 19px;
+          font-family: "Savoy", serif;
+          font-weight: bold;
+          letter-spacing: 0
         }
+
+        .citizen-card-wrapper {
+          position: absolute;
+          top: 22px;
+
+          .citizen-card {
+            text-transform: uppercase;
+            font-weight: bolder;
+            letter-spacing: 1px;
+            font-size: 10px;
+
+            &.en {
+              margin-top: -6px;
+            }
+          }
+        }
+      }
+
+      .parents {
+        margin-top: 25px;
+        border-top: 1px solid #999;
+        height: 75px;
+
         .values {
-          padding-top: 2px;
+          line-height: 1;
         }
       }
 
-      .barcode {
-        font-family: 'Barcode', sans-serif;
-        transform : scale(1.25,3.3);
+      .numbers {
+        border-top: 1px solid #999;
+        position: relative;
 
-        .barcode-wrapper {
-          margin-left: 35px;
-          margin-top: -12px;
+        .labels {
+          .lang-en {
+            margin-top: -3px;
+          }
         }
-      }
 
-      .machine-readable-zone {
-        margin-top: 110px;
-        line-height: 1;
-        font-family: 'OCR-B', monospace;
-        font-size: 1.8em;
+        .values {
+          line-height: 1;
+          font-size: 18px;
+          letter-spacing: 0.5px;
+        }
+
+        .tax {
+          width: 138px;
+        }
+
+        .social-security {
+          width: 132px;
+        }
+
+        .health {}
+
+
+        .borders {
+          position: absolute;
+          top: 0;
+          div {
+            height: 40px;
+            border-right: 1px solid #999;
+
+            &:last-of-type {
+              border-right: 0;
+            }
+          }
+        }
       }
     }
 
+    .machine-readable-zone {
+      top: 212px;
+      left: 15px;
+      position: absolute;
+      line-height: 1;
+      font-family: 'OCR-B', monospace;
+      font-size: 26px;
+    }
   }
+
+
 }
 
 
