@@ -6,7 +6,7 @@
         bindings: {
             cardData: '<'
         },
-        controller: function ($rootScope, $q, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, Analytics, _) {
+        controller: function ($rootScope, $q, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, API, Analytics, _) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -15,6 +15,11 @@
 
                 // validate certificate chain
                 Core.getConnector().pteid($stateParams.readerId).allCerts({ filter: [], parseCerts: false}).then(res => {
+                    API.convertJPEG2000toJPEG(controller.cardData.photo).then(converted => {
+                        console.log(converted);
+                        controller.photo = converted.data.base64Pic
+                    });
+
                     const validationReq = {
                         certificateChain: [
                             { order: 0, certificate: res.data.authentication_certificate.base64 },
@@ -142,7 +147,8 @@
     const pteidCard = {
         templateUrl: 'views/cards/pteid/pteid-card.html',
         bindings: {
-            idData: '<'
+            idData: '<',
+            photo: '<'
         },
         controller: function () {
             let controller = this;

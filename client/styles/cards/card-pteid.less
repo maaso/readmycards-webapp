@@ -94,19 +94,59 @@
 
       .header {
         height: 63px;
+        position: relative;
+
+        .citizen-card-wrapper {
+          position: absolute;
+          top: 8px;
+
+          .citizen-card {
+            text-transform: uppercase;
+            font-weight: bolder;
+            letter-spacing: 0.6px;
+            font-size: 14px;
+
+            &.en {
+              margin-top: -9px;
+            }
+          }
+
+        }
+
+        .portugal-wrapper {
+          position: absolute;
+          top: 0;
+          left: 165px;
+
+          .portugal {
+            padding-left: 2px;
+            color: #3a5572;
+            font-size: 34px;
+            font-family: "Savoy", serif;
+            font-weight: bold;
+            letter-spacing: 0.2px
+          }
+
+          .portuguese-republic {
+            padding-left: 1px;
+            margin-top: -13px;
+            text-transform: uppercase;
+            font-size: 8.5px;
+            font-weight: bolder;
+            letter-spacing: 0.1px;
+          }
+        }
       }
 
       .surname {
         height: 48px;
         border-top: 1px solid #999;
-        border-top: 1px solid red;
       }
 
       .given-name {
         height: 40px;
         margin-top: -1px;
         border-top: 1px solid #999;
-        border-top: 1px solid red;
       }
 
       .other {
@@ -119,14 +159,18 @@
         .info {
           width: 230px;
           border-top: 1px solid #999;
-          border-top: 1px solid red;
 
           .personal-info {
             height: 40px;
             margin-bottom: 3px;
 
             .labels {
-              font-size: 7.5px;
+              font-size: 8.5px;
+              letter-spacing: 0;
+
+              .lang-en {
+                margin-top: -3px;
+              }
             }
 
             .sex {
@@ -153,19 +197,78 @@
 
           .document-info {
             border-top: 1px solid #999;
-            border-top: 1px solid red;
             height: 50px;
+
+            .labels {
+              .lang-en {
+                margin-top: -3px;
+              }
+            }
+
+            .document-number {
+              width: 143px;
+              border-right: 1px solid red;
+              vertical-align: top;
+              position: relative;
+
+              .labels {
+                font-size: 9px;
+                letter-spacing: 0.5px;
+                padding-bottom: 10px;
+
+                .lang-pt, .lang-en {
+                  margin-left: 1.5px;
+                  margin-right: 1.5px;
+                }
+              }
+
+              .civil-id {
+                position: absolute;
+                color: red;
+                top: 15px;
+                left: 5px;
+                text-transform: uppercase;
+                font-weight: bold;
+                font-size: 9px;
+                letter-spacing: 0.5px;
+              }
+            }
+
+            .validity {
+              .labels {
+                font-size: 8.5px;
+                letter-spacing: 0;
+              }
+            }
           }
 
           .signature {
             border-top: 1px solid #999;
-            border-top: 1px solid red;
-            height: 40px;
+            height: 62px;
           }
         }
 
         .picture {
+          position: relative;
+          margin-left: 5px;
+          width: 115px;
 
+          .loading-indicator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            font-size: 2em;
+            height: 30px;
+            width: 30px;
+            color: #ddd;
+          }
+
+          .pt-pic {
+            max-width: 115px;
+          }
         }
       }
 
