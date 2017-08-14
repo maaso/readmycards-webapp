@@ -105,7 +105,7 @@
             };
 
             controller.downloadSummary = () => {
-                Analytics.trackEvent('button', 'click', 'Print button clicked');
+                // Analytics.trackEvent('button', 'click', 'Print button clicked');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
@@ -121,7 +121,7 @@
                             return false;
                         },
                         util: () => {
-                            return BeUtils;
+                            return PtUtils;
                         }
                     },
                     backdrop: 'static',
@@ -137,7 +137,7 @@
             };
 
             controller.trackCertificatesClick = () => {
-                Analytics.trackEvent('button', 'click', 'Click on certificates feature');
+                // Analytics.trackEvent('button', 'click', 'Click on certificates feature');
             }
         }
     };
