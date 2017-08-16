@@ -254,16 +254,16 @@
             determineType(readerId, pin).then(getDataForType).then(function(signData) {
                 signData.docId = documentId;
                 return $q.when(signData)
-                         // .then(dataToSign)
-                         // .then(function (dataToSign) {
-                         //     return $q.when({ readerId: readerId, pin: pin, dataToSign: dataToSign });
-                         // })
-                         // .then(signWithConnector)
-                         // .then(function (signedData) {
-                         //     signData.signedData = signedData;
-                         //     return $q.when(signData);
-                         // })
-                         // .then(workflowSign)
+                         .then(dataToSign)
+                         .then(function (dataToSign) {
+                             return $q.when({ readerId: readerId, pin: pin, dataToSign: dataToSign });
+                         })
+                         .then(signWithConnector)
+                         .then(function (signedData) {
+                             signData.signedData = signedData;
+                             return $q.when(signData);
+                         })
+                         .then(workflowSign)
                          .then(function () { signing.resolve(); });
             });
 
@@ -272,7 +272,6 @@
 
         // Needs proxy
         function dataToSign(signData) {
-            console.log(signData);
             return $http.post('api/cards/datatosign', signData).then(function (res) { return res.data; });
         }
 
