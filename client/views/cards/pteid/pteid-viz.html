@@ -1,0 +1,92 @@
+<div id="pteid-viz" class="clearfix top-info">
+
+    <div class="status-wrapper">
+        <certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></certificate-status>
+        <pin-check-status status="$ctrl.pinStatus" max-tries="3" ok-text="'PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
+    </div>
+
+    <pteid-card id-data="$ctrl.cardData" photo="$ctrl.photo"></pteid-card>
+
+    <div class="print-button">
+        <print-summary print-function="$ctrl.downloadSummary"></print-summary>
+    </div>
+
+    <div class="certificates-toggle col-sm-12">
+        <span ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.loadingCerts ? 'Loading...' : $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>
+    </div>
+    <div>
+        <div uib-collapse="$ctrl.doCollapse || !$ctrl.certData">
+            <div class="certificates col-sm-12">
+                <span class="size-h3 text-primary">Certificates</span>
+                <div class="col-sm-12" ng-if="$ctrl.certData.root_certificate">
+                    <h4 class="text-info text-light">Root</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.certData.root_certificate.base64 }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: root_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_certificate.base64 }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.certData.root_authentication_certificate">
+                    <h4 class="text-info text-light">Root Authentication</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.certData.root_authentication_certificate.base64 }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: citizen_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_authentication_certificate.base64 }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.certData.root_non_repudiation_certificate">
+                    <h4 class="text-info text-light">Root Non Repudiation</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.certData.root_non_repudiation_certificate.base64 }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: non_repudiation_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.root_non_repudiation_certificate.base64 }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.certData.authentication_certificate">
+                    <h4 class="text-info text-light">Authentication</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.certData.authentication_certificate.base64 }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: authentication_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.authentication_certificate.base64 }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" ng-if="$ctrl.certData.non_repudiation_certificate">
+                    <h4 class="text-info text-light">Non Repudiation</h4>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               value="{{ $ctrl.certData.non_repudiation_certificate.base64 }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default fa fa-copy"
+                                    ga-track-event="['button', 'click', 'Copy button clicked: non_repudiation_certificate']" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.certData.non_repudiation_certificate.base64 }}"></button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>

@@ -11,9 +11,6 @@
         this.formatValidity = formatValidity;
         this.generateXMLToSign = generateXMLToSign;
         this.generateSummaryToSign = generateSummaryToSign;
-        this.signDocument = signDocumentWithPin;
-
-        let rootCertificate1, rootCertificate2, authenticationCertificate, nonRepudiationCertificate, fullName;
 
         function constructMachineReadableStrings(biometricData) {
             let mrs = [];
@@ -93,105 +90,6 @@
             })
         }
 
-        function signDocumentWithPin(documentId, readerId, hasPinpad, pin) {
-            fullName = '';
-            nonRepudiationCertificate = '';
-            authenticationCertificate = '';
-            rootCertificate1 = '';
-            rootCertificate2 = '';
-
-            let signing = $q.defer();
-
-            prepareSign(readerId, pin)
-                .then(function () { return $q.when(documentId); })
-                .then(dataToSign)
-                .then(function (dataToSign) {
-                    if (hasPinpad) return $q.when({ readerId: readerId, pin: undefined, dataToSign: dataToSign });
-                    else return $q.when({ readerId: readerId, pin: pin, dataToSign: dataToSign });
-                })
-                .then(signWithEid)
-                .then(function (signedData) {
-                    return $q.when({ documentId: documentId, signedData: signedData });
-                })
-                .then(workflowSign)
-                .then(function () {
-                    fullName = '';
-                    nonRepudiationCertificate = '';
-                    authenticationCertificate = '';
-                    rootCertificate1 = '';
-                    rootCertificate2 = '';
-                    signing.resolve();
-                });
-
-            return signing.promise;
-        }
-
-        // OK
-        function prepareSign(readerId, pin) {
-            return T1C.luxId.allData(readerId, pin).then(function (result) {
-                fullName = result.data.biometric.firstName + ' ' + result.data.biometric.lastName;
-                rootCertificate1 = result.data.root_certificates[0].base64;
-                rootCertificate2 = result.data.root_certificates[1].base64;
-                authenticationCertificate = result.data.authentication_certificate.base64;
-                nonRepudiationCertificate = result.data.non_repudiation_certificate.base64;
-                return { readerId: readerId, pin: pin };
-            });
-        }
-
-        // OK
-        function signWithGcl(readerId, pin, hash, algorithm) {
-            return T1C.luxId.signData(readerId, pin, algorithm, hash).then(function (res) {
-                return res.data;
-            }, function (err) {
-                return $q.reject(err);
-            });
-        }
-
-        // Needs proxy
-        function dataToSign(documentId) {
-            return $http.post('api/cards/lux/datatosign', {
-                docId: documentId,
-                signCertificate: nonRepudiationCertificate,
-                certificates: [
-                    nonRepudiationCertificate,
-                    rootCertificate2,
-                    rootCertificate1
-                ],
-                additionalInformation: {
-                    name: fullName
-                }
-            }).then(function (res) {
-                return res.data;
-            })
-        }
-
-        // OK
-        function signWithEid (inputObj) {
-            let readerId = inputObj.readerId;
-            let pin = inputObj.pin;
-            let dataToSign = inputObj.dataToSign;
-            return $q.when(signWithGcl(readerId, pin, dataToSign.bytes, dataToSign.digestAlgorithm));
-        }
-
-        // Needs proxy
-        function workflowSign(inputObj) {
-            return $http.post('api/cards/lux/sign', {
-                docId: inputObj.documentId,
-                signCertificate: nonRepudiationCertificate,
-                certificates: [
-                    nonRepudiationCertificate,
-                    rootCertificate2,
-                    rootCertificate1
-                ],
-                signedData: inputObj.signedData,
-                additionalInformation: {
-                    name: fullName
-                }
-            }).then(function (res) {
-                return res.data;
-            });
-        }
-
         function prepareSummaryData(biometric, picBase64, sigBase64) {
             let mrs = constructMachineReadableStrings(biometric);
             return {
@@ -213,9 +111,6 @@
     function LuxTrustUtils($http, $q, T1C, _) {
         this.generateSummaryToSign = generateSummaryToSign;
         this.generateXMLToSign = generateXMLToSign;
-        this.signDocument = signDocumentWithPin;
-
-        let rootCertificate1, rootCertificate2, authenticationCertificate, signingCertificate;
 
         function generateSummaryToSign(readerId) {
             let data = {
@@ -232,99 +127,6 @@
             return $http.post('api/cards/lux/xmltosign').then(res => {
                 return res.data;
             })
-        }
-
-        function signDocumentWithPin(documentId, readerId, hasPinpad, pin) {
-            signingCertificate = '';
-            authenticationCertificate = '';
-            rootCertificate1 = '';
-            rootCertificate2 = '';
-
-            let signing = $q.defer();
-
-            prepareSign(readerId, pin)
-                .then(function () { return $q.when(documentId); })
-                .then(dataToSign)
-                .then(function (dataToSign) {
-                    if (hasPinpad) return $q.when({ readerId: readerId, pin: undefined, dataToSign: dataToSign });
-                    else return $q.when({ readerId: readerId, pin: pin, dataToSign: dataToSign });
-                })
-                .then(signWithEid)
-                .then(function (signedData) {
-                    return $q.when({ documentId: documentId, signedData: signedData });
-                })
-                .then(workflowSign)
-                .then(function () {
-                    signingCertificate = '';
-                    authenticationCertificate = '';
-                    rootCertificate1 = '';
-                    rootCertificate2 = '';
-                    signing.resolve();
-                });
-
-            return signing.promise;
-        }
-
-        // OK
-        function prepareSign(readerId, pin) {
-            return T1C.luxtrust.allData(readerId, pin).then(function (result) {
-                rootCertificate1 = result.data.root_certificates[0].base64;
-                rootCertificate2 = result.data.root_certificates[1].base64;
-                authenticationCertificate = result.data.authentication_certificate.base64;
-                signingCertificate = result.data.signing_certificate.base64;
-                return { readerId: readerId, pin: pin };
-            });
-        }
-
-        // OK
-        function signWithGcl(readerId, pin, hash, algorithm) {
-            return T1C.luxtrust.signData(readerId, pin, algorithm, hash).then(function (res) {
-                return res.data;
-            }, function (err) {
-                return $q.reject(err);
-            });
-        }
-
-        // Needs proxy
-        function dataToSign(documentId) {
-            return $http.post('api/cards/lux/datatosign', {
-                docId: documentId,
-                digestAlgoWrapper: 'SHA1',
-                signCertificate: signingCertificate,
-                certificates: [
-                    signingCertificate,
-                    rootCertificate2,
-                    rootCertificate1
-                ],
-                additionalInformation: {}
-            }).then(function (res) {
-                return res.data;
-            })
-        }
-
-        // OK
-        function signWithEid (inputObj) {
-            let readerId = inputObj.readerId;
-            let pin = inputObj.pin;
-            let dataToSign = inputObj.dataToSign;
-            return $q.when(signWithGcl(readerId, pin, dataToSign.bytes, dataToSign.digestAlgorithm));
-        }
-
-        // Needs proxy
-        function workflowSign(inputObj) {
-            return $http.post('api/cards/lux/sign', {
-                docId: inputObj.documentId,
-                signCertificate: signingCertificate,
-                certificates: [
-                    signingCertificate,
-                    rootCertificate2,
-                    rootCertificate1
-                ],
-                signedData: inputObj.signedData,
-                additionalInformation: {}
-            }).then(function (res) {
-                return res.data;
-            });
         }
     }
 

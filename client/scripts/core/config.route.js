@@ -13,6 +13,9 @@
                         templateUrl: '/views/root.html',
                         resolve: {
                             T1C: 'T1C',
+                            connector: function(Connector) {
+                                return Connector.init();
+                            },
                             gclAvailable: function (T1C) {
                                 return T1C.core.isGCLAvailable();
                             },

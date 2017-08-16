@@ -1,0 +1,183 @@
+<div class="card pteid-card two-sided">
+    <div class="front">
+        <div class="specimen text-uppercase">Specimen</div>
+        <div class="chip-icon"></div>
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="citizen-card-wrapper inline">
+                    <div class="citizen-card pt">cartão de cidadão</div>
+                    <div class="citizen-card en">citizen card</div>
+                </div>
+                <div class="portugal-wrapper inline">
+                    <div class="portugal text-uppercase">Portugal</div>
+                    <div class="portuguese-republic">
+                        <div class="inline">república portuguesa</div>
+                        <div class="inline spacer">|</div>
+                        <div class="inline">portuguese republic</div>
+                    </div>
+                </div>
+            </div>
+            <div class="surname">
+                <div class="labels">
+                    <div class="inline lang-pt">appelido(s)</div>
+                    <div class="inline lang-en">surname</div>
+                </div>
+                <div class="values">{{$ctrl.idData.surname}}</div>
+            </div>
+            <div class="given-name">
+                <div class="labels">
+                    <div class="inline lang-pt">nome(s)</div>
+                    <div class="inline lang-en">given name</div>
+                </div>
+                <div class="values">{{$ctrl.idData.name}}</div>
+            </div>
+            <div class="other">
+                <div class="info">
+                    <div class="personal-info">
+                        <div class="sex inline">
+                            <div class="labels">
+                                <div class="lang-pt">sexo</div>
+                                <div class="lang-en">sex</div>
+                            </div>
+                            <div class="values">{{$ctrl.idData.gender}}</div>
+                        </div>
+                        <div class="height inline">
+                            <div class="labels">
+                                <div class="lang-pt">altura</div>
+                                <div class="lang-en">height</div>
+                            </div>
+                            <div class="values">{{$ctrl.idData.height}}</div>
+                        </div>
+                        <div class="nationality inline">
+                            <div class="labels">
+                                <div class="lang-pt">nacionalidade</div>
+                                <div class="lang-en">nationality</div>
+                            </div>
+                            <div class="values">{{$ctrl.idData.nationality}}</div>
+                        </div>
+                        <div class="dob inline">
+                            <div class="labels">
+                                <div class="label-wrapper">
+                                    <div class="lang-pt">data de nascimento</div>
+                                    <div class="lang-en">date of birth</div>
+                                </div>
+                            </div>
+                            <div class="values">{{$ctrl.idData.date_of_birth}}</div>
+                        </div>
+                        <div class="borders">
+                            <div class="sex inline"></div>
+                            <div class="height inline"></div>
+                            <div class="nationality inline"></div>
+                            <div class="dob inline"></div>
+                        </div>
+                    </div>
+                    <div class="document-info">
+                        <div class="document-number inline">
+                            <div class="labels">
+                                <div class="label-wrapper">
+                                    <div class="inline lang-pt">№ documento</div>
+                                    <div class="inline lang-en">document no.</div>
+                                </div>
+                            </div>
+                            <div class="civil-id">№ ID civil | <span class="lang-en">Civil ID no.</span></div>
+
+                            <div class="values doc-number-wrapper">
+                                <div class="doc-number-1 inline">{{$ctrl.docNumberPart1}}</div>
+                                <div class="doc-number-2 inline">{{$ctrl.docNumberPart2}}</div>
+                            </div>
+
+                        </div>
+                        <div class="validity inline">
+                            <div class="labels">
+                                <div class="lang-pt">data de validade</div>
+                                <div class="lang-en">expiry date</div>
+                            </div>
+                            <div class="values">{{$ctrl.idData.validity_end_date}}</div>
+                        </div>
+                        <div class="borders">
+                            <div class="document-number inline"></div>
+                            <div class="validity inline"></div>
+                        </div>
+                    </div>
+                    <div class="signature">
+                        <!--<div class="labels">-->
+                        <!--<div class="inline lang-pt">assinatura do titular</div>-->
+                        <!--<div class="inline lang-en">holder's signature</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+                <div class="picture">
+                    <div class="loading-indicator" ng-if="!$ctrl.photo">
+                        <i class="fa fa-spinner fa-pulse"></i>
+                    </div>
+                    <img class="pt-pic" ng-if="$ctrl.photo" ng-attr-src="{{ 'data:image/jpeg;base64,' + $ctrl.photo }}"/>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="back">
+        <div class="specimen text-uppercase">Specimen</div>
+
+        <div class="top-content">
+            <div class="header">
+                <div class="portugal text-uppercase">Portugal</div>
+                <div class="citizen-card-wrapper">
+                    <div class="citizen-card pt">cartão de cidadão</div>
+                    <div class="citizen-card en">citizen card</div>
+                </div>
+            </div>
+
+            <div class="parents">
+                <div class="labels">
+                    <div class="inline lang-pt">filiação</div>
+                    <div class="inline lang-en">parents</div>
+                </div>
+                <div class="values">
+                    {{$ctrl.idData.given_name_father}} {{$ctrl.idData.surname_father}} *
+                    {{$ctrl.idData.given_name_mother}} {{$ctrl.idData.surname_mother}}
+                </div>
+            </div>
+
+            <div class="numbers">
+                <div class="tax inline">
+                    <div class="labels">
+                        <div class="lang-pt">№ identificação fiscal</div>
+                        <div class="lang-en">tax no.</div>
+                    </div>
+                    <div class="values">{{$ctrl.idData.tax_no}}</div>
+                </div>
+                <div class="social-security inline">
+                    <div class="labels">
+                        <div class="lang-pt">№ segurança social</div>
+                        <div class="lang-en">social security no.</div>
+                    </div>
+                    <div class="values">{{$ctrl.idData.social_security_no}}</div>
+                </div>
+                <div class="health inline">
+                    <div class="labels">
+                        <div class="lang-pt">№ utente de saúde</div>
+                        <div class="lang-en">health no.</div>
+                    </div>
+                    <div class="values">{{$ctrl.idData.health_no}}</div>
+                </div>
+                <div class="borders">
+                    <div class="tax inline"></div>
+                    <div class="social-security inline"></div>
+                    <div class="health inline"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="machine-readable-zone">
+            <div>{{$ctrl.idData.mrz1}}</div>
+            <div>{{$ctrl.idData.mrz2}}</div>
+            <div>{{$ctrl.idData.mrz3}}</div>
+        </div>
+    </div>
+</div>

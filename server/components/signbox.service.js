@@ -49,7 +49,6 @@ function getDataToSign(data, jwt) {
 
     options.body.additionalInformation.role = config.signbox.role;
 
-    console.log(options);
     return rp.post(options).then(res => {
         console.log(res);
         return res;

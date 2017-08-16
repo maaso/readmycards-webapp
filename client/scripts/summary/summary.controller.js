@@ -6,7 +6,7 @@
         .controller('XMLDownloadCtrl', xmlDlCtrl);
 
 
-    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, needPinToGenerate, util, SummaryUtils, FileSaver, Blob, EVENTS, _) {
+    function summaryDlCtrl($scope, $uibModalInstance, readerId, pinpad, needPinToGenerate, util, CardService, SummaryUtils, FileSaver, Blob, EVENTS, _) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
@@ -71,7 +71,7 @@
                     $scope.currentStep = 2;
                     $scope.generateText = 'Generated';
                     $scope.pinText = 'Signing...';
-                    util.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+                    CardService.signDocument(generatedFile.id, readerId, $scope.pincode.value).then(() => {
                         $scope.currentStep = 3;
                         $scope.pinText = 'Signed';
                         $scope.downloadText = 'Download Ready!';
@@ -83,7 +83,7 @@
             } else {
                 // summary has been generated, do sign
                 $scope.pinText = "Signing...";
-                util.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+                CardService.signDocument(generatedFile.id, readerId, $scope.pincode.value).then(() => {
                     $scope.currentStep = 3;
                     $scope.pinText = 'Signed';
                     $scope.downloadText = 'Download Ready!';
@@ -107,7 +107,7 @@
                     if (pinpad) {
                         // start signing process
                         $scope.pinText = 'Enter PIN on reader...';
-                        util.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                        CardService.signDocument(generatedFile.id, readerId, null).then(() => {
                             $scope.currentStep = 3;
                             $scope.pinText = 'Signed';
                             $scope.downloadText = 'Download Ready!'
@@ -125,7 +125,7 @@
         });
     }
 
-    function xmlDlCtrl($scope, $uibModalInstance, readerId, pinpad, needPinToGenerate, util, SummaryUtils, FileSaver, Blob, EVENTS, _) {
+    function xmlDlCtrl($scope, $uibModalInstance, readerId, pinpad, needPinToGenerate, util, CardService, SummaryUtils, FileSaver, Blob, EVENTS, _) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
@@ -190,7 +190,7 @@
                     $scope.currentStep = 2;
                     $scope.generateText = 'Generated';
                     $scope.pinText = 'Signing...';
-                    util.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+                    CardService.signDocument(generatedFile.id, readerId, $scope.pincode.value).then(() => {
                         $scope.currentStep = 3;
                         $scope.pinText = 'Signed';
                         $scope.downloadText = 'Download Ready!';
@@ -202,7 +202,7 @@
             } else {
                 // summary has been generated, do sign
                 $scope.pinText = "Signing...";
-                util.signDocument(generatedFile.id, readerId, pinpad, $scope.pincode.value).then(() => {
+                CardService.signDocument(generatedFile.id, readerId, $scope.pincode.value).then(() => {
                     $scope.currentStep = 3;
                     $scope.pinText = 'Signed';
                     $scope.downloadText = 'Download Ready!';
@@ -226,7 +226,7 @@
                     if (pinpad) {
                         // start signing process
                         $scope.pinText = 'Enter PIN on reader...';
-                        SummaryUtils.signDocument(generatedFile.id, readerId, pinpad, null).then(() => {
+                        CardService.signDocument(generatedFile.id, readerId, null).then(() => {
                             $scope.currentStep = 3;
                             $scope.pinText = 'Signed';
                             $scope.downloadText = 'Download Ready!'

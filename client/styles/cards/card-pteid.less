@@ -1,0 +1,577 @@
+#pteid-viz {
+
+  .certificates-toggle {
+    margin-top: 50px;
+    font-size: 1.2em;
+    font-weight: 300;
+    span {
+      color: @gray-light;
+
+      &:hover {
+        color: @t1t-green-dark;
+      }
+    }
+  }
+
+  .certificates {
+    margin-top: 40px;
+
+    &:first-of-type {
+      margin-top: 20px;
+    }
+
+    > div {
+      margin-bottom: 20px;
+    }
+
+    input {
+      user-select: text;
+
+      padding: 6px 6px 6px 2px;
+    }
+
+    .input-group {
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+  }
+}
+
+
+.cert-status {
+  margin-right: 5px;
+}
+
+.pin-check-status {
+  margin-left: 5px;
+}
+
+.pteid-card {
+  font-family: "Arial Narrow", sans-serif;
+  @chip-width: 132px;
+
+
+  .labels {
+    font-size: 9px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #5589ac;
+
+    div.inline {
+      padding-left: 4px;
+      border-left: 1px solid #999;
+
+      &:first-of-type {
+        padding-left: 0;
+        border-left: 0;
+      }
+    }
+  }
+  
+  .lang-en {
+    font-style: italic;
+  }
+
+  .values {
+    font-size: 14px;
+    letter-spacing: 0.9px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .section {
+    padding-top: 5px;
+  }
+
+  .front {
+    //background-image: url('../images/pt-front.png');
+    //background-size: cover;
+
+    .content-wrapper {
+      height: 100%;
+      @content-margin: 142px;
+      width: calc(100%);
+      padding-left: @content-margin;
+      padding-right: 10px;
+
+      .header {
+        height: 60px;
+        position: relative;
+
+        .citizen-card-wrapper {
+          position: absolute;
+          top: 5px;
+          color: #c6cacf;
+
+          .citizen-card {
+            text-transform: uppercase;
+            font-weight: bolder;
+            letter-spacing: 0.6px;
+            font-size: 14px;
+
+            &.en {
+              margin-top: -9px;
+            }
+          }
+
+        }
+
+        .portugal-wrapper {
+          position: absolute;
+          top: -1px;
+          left: 168px;
+
+          .portugal {
+            padding-left: 2px;
+            color: #a9b1c7;
+            font-size: 34px;
+            font-family: "Savoy", serif;
+            font-weight: bold;
+            letter-spacing: 0.2px
+          }
+
+          .portuguese-republic {
+            padding-left: 1px;
+            margin-top: -13px;
+            text-transform: uppercase;
+            font-size: 8.5px;
+            font-weight: bolder;
+            letter-spacing: 0.1px;
+            color: #c6cacf;
+          }
+        }
+      }
+
+      .surname {
+        height: 48px;
+        border-top: 1px solid #999;
+
+        .values {
+          margin-top: -5px;
+        }
+      }
+
+      .given-name {
+        height: 42px;
+        margin-top: -1px;
+        border-top: 1px solid #999;
+
+        .values {
+          margin-top: -3px;
+        }
+      }
+
+      .other {
+        .info, .picture {
+          display: inline-block;
+        }
+
+        .info {
+          width: 230px;
+          border-top: 1px solid #999;
+
+          .personal-info {
+            height: 42px;
+            margin-bottom: 3px;
+            position: relative;
+
+            .labels {
+              font-size: 8.5px;
+              letter-spacing: 0;
+
+              .lang-en {
+                margin-top: -3px;
+              }
+            }
+
+            .sex {
+              width: 28px;
+
+              .values {
+                margin-left: 1px;
+              }
+            }
+
+            .height {
+              width: 40px;
+            }
+
+            .nationality {
+              width: 68px;
+            }
+
+            .dob {
+              width: 80px;
+
+              .labels {
+                height: 23px;
+                position: relative;
+
+                .label-wrapper {
+                  position: absolute;
+                  width: 200px;
+                  z-index: 10;
+                }
+              }
+
+              .values {
+                margin-left: 1px;
+              }
+            }
+
+            .borders {
+              position: absolute;
+              top: 0;
+              div {
+                height: 40px;
+                border-right: 1px solid #999;
+
+                &:last-of-type {
+                  border-right: 0;
+                }
+              }
+            }
+
+          }
+
+          .document-info {
+            border-top: 1px solid #999;
+            height: 50px;
+            position: relative;
+
+            .labels {
+              .lang-en {
+                margin-top: -3px;
+              }
+            }
+
+            .document-number {
+              width: 143px;
+              vertical-align: top;
+              position: relative;
+
+              .labels {
+                font-size: 9px;
+                letter-spacing: 0.5px;
+                height: 24px;
+                position: relative;
+
+                .label-wrapper {
+                  position: absolute;
+                  width: 200px;
+
+                  .lang-pt, .lang-en {
+                    margin-left: 1.5px;
+                    margin-right: 1.5px;
+                  }
+                }
+              }
+
+              .doc-number-wrapper {
+                .doc-number-1 {
+                  margin-left: 12px;
+                  margin-top: -2px;
+                  font-size: 16px;
+                  letter-spacing: 2.5px;
+                }
+
+                .doc-number-2 {
+                  margin-left: 10px;
+                }
+              }
+
+              .civil-id {
+                position: absolute;
+                top: 12px;
+                left: 5px;
+                text-transform: uppercase;
+                font-weight: bold;
+                font-size: 9px;
+                letter-spacing: 0.5px;
+                color: #5589ac;
+              }
+            }
+
+            .validity {
+              .labels {
+                font-size: 8.5px;
+                letter-spacing: 0;
+              }
+              .values {
+                margin-top: 1px;
+                margin-left: 1px;
+              }
+            }
+
+            .borders {
+              position: absolute;
+              top: 0;
+              div {
+                height: 40px;
+                border-right: 1px solid #999;
+
+                &:last-of-type {
+                  border-right: 0;
+                }
+              }
+            }
+          }
+
+          .signature {
+            border-top: 1px solid #999;
+            height: 62px;
+          }
+        }
+
+        .picture {
+          position: relative;
+          width: 115px;
+
+          .loading-indicator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            font-size: 2em;
+            height: 30px;
+            width: 30px;
+            color: #ddd;
+          }
+
+          .pt-pic {
+            max-width: 115px;
+          }
+        }
+      }
+
+    }
+  }
+
+  .back {
+    //background-image: url('../images/pt-back.png');
+    //background-size: cover;
+    position: relative;
+
+    .top-content {
+      margin-left: 86px;
+      width: 410px;
+
+      .header {
+        position: relative;
+        .portugal {
+          margin-top: 5px;
+          color: #a9b1c7;
+          font-size: 19px;
+          font-family: "Savoy", serif;
+          font-weight: bold;
+          letter-spacing: 0
+        }
+
+        .citizen-card-wrapper {
+          position: absolute;
+          top: 22px;
+          color: #c6cacf;
+
+          .citizen-card {
+            text-transform: uppercase;
+            font-weight: bolder;
+            letter-spacing: 1px;
+            font-size: 10px;
+
+            &.en {
+              margin-top: -6px;
+            }
+          }
+        }
+      }
+
+      .parents {
+        margin-top: 25px;
+        border-top: 1px solid #999;
+        height: 75px;
+
+        .values {
+          line-height: 1;
+        }
+      }
+
+      .numbers {
+        border-top: 1px solid #999;
+        position: relative;
+
+        .labels {
+          .lang-en {
+            margin-top: -3px;
+          }
+        }
+
+        .values {
+          line-height: 1;
+          font-size: 18px;
+          letter-spacing: 0.5px;
+        }
+
+        .tax {
+          width: 138px;
+        }
+
+        .social-security {
+          width: 132px;
+        }
+
+        .health {}
+
+
+        .borders {
+          position: absolute;
+          top: 0;
+          div {
+            height: 40px;
+            border-right: 1px solid #999;
+
+            &:last-of-type {
+              border-right: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .machine-readable-zone {
+      top: 212px;
+      left: 15px;
+      position: absolute;
+      line-height: 1;
+      font-family: 'OCR-B', monospace;
+      font-size: 26px;
+    }
+  }
+
+
+}
+
+
+.summary-modal {
+
+  .header {
+    margin: 0 30px;
+
+    .title {
+      font-size: 40px;
+      color: @brand-primary;
+    }
+
+    .info-text {
+      color: #333;
+      font-weight: 300;
+    }
+
+    .start-text {
+      font-weight: normal;
+      color: @brand-primary;
+    }
+  }
+
+  .summary-start {
+    padding-top: 15px;
+    min-height: 60px;
+  }
+
+  .dummy-summary-wrapper {
+    position: absolute;
+    top: 245px;
+    right: 35px;
+
+    .specimen {
+      font-family: Arial, sans-serif;
+      position: absolute;
+      font-size: 80px;
+      font-weight: bold;
+      text-align: center;
+      top: 80px;
+      bottom: 0;
+      left: -20px;
+      right: 0;
+      height: 150px;
+      width: 340px;
+      margin: auto;
+      opacity: .2;
+      transform: rotate(-55deg);
+      text-transform: uppercase;
+    }
+
+    .dummy-summary {
+      max-width: 340px;
+    }
+  }
+
+
+  .step-list {
+    list-style-type: none;
+
+    .pinpad {
+      position: absolute;
+      right: 0;
+      top: 225px;
+      max-width: 500px;
+      z-index: 100;
+      background: #fff;
+    }
+
+    .step {
+      margin: 50px 0;
+
+      &:first-of-type {
+        margin: 20px 0 50px 0;
+      }
+
+
+      > div {
+        display: inline-block;
+      }
+
+      &.completed {
+        .step-number {
+          background: @brand-success;
+        }
+      }
+
+      &.active {
+        .step-number {
+          background: @brand-primary;
+        }
+
+        .step-desc {
+          color: #333;
+        }
+      }
+
+      .step-number {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: #aaa;
+        color: #fff;
+
+        font-size: 60px;
+        //font-weight: 300;
+      }
+
+
+      .step-desc {
+        position: relative;
+        margin-left: 40px;
+        font-size: 30px;
+        vertical-align: text-bottom;
+        color: #999;
+        z-index: 110;
+      }
+
+    }
+  }
+}
