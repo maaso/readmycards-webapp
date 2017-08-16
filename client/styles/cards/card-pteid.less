@@ -201,6 +201,18 @@
 
             .dob {
               width: 80px;
+
+              .labels {
+                height: 23px;
+                position: relative;
+
+                .label-wrapper {
+                  position: absolute;
+                  width: 200px;
+                  z-index: 10;
+                }
+              }
+
               .values {
                 margin-left: 1px;
               }
@@ -240,11 +252,17 @@
               .labels {
                 font-size: 9px;
                 letter-spacing: 0.5px;
-                padding-bottom: 10px;
+                height: 24px;
+                position: relative;
 
-                .lang-pt, .lang-en {
-                  margin-left: 1.5px;
-                  margin-right: 1.5px;
+                .label-wrapper {
+                  position: absolute;
+                  width: 200px;
+
+                  .lang-pt, .lang-en {
+                    margin-left: 1.5px;
+                    margin-right: 1.5px;
+                  }
                 }
               }
 

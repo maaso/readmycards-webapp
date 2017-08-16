@@ -3,7 +3,6 @@
 
     angular.module('app.readmycards')
            .service('T1C', ConnectorService)
-           .service('CardService', CardService)
            .service('CheckDigit', CheckDigit)
            .service('RMC', ReadMyCardsService)
            .service('API', API);
@@ -141,55 +140,6 @@
                     }, 100);
                 }
             });
-        }
-    }
-
-    function CardService(_, Core) {
-        this.detectType = detectContainer;
-        this.getCardTypeName = getCardTypeName;
-
-
-        function detectContainer(readerId) {
-            return Core.getConnector().containerFor(readerId).then(res => {
-                // change result for unsupported card types
-                if (res.data === 'aventra') { return 'unknown'; }
-                return res.data;
-            });
-        }
-
-        function getCardTypeName(container, card) {
-            switch (container) {
-                case 'beid':
-                    return 'Belgian eID';
-                case 'dnie':
-                    return 'Spanish DNIe';
-                case 'luxeid':
-                    return 'Luxembourg eID';
-                case 'luxtrust':
-                    return 'LuxTrust';
-                case 'ocra':
-                    return 'OCRA/OTP';
-                case 'mobib':
-                    if (findDescription(card.description, 'Basic')) { return 'MOBIB Basic'; }
-                    else { return 'MOBIB'; }
-                    break;
-                case 'emv':
-                    return 'EMV';
-                case 'oberthur':
-                    return 'Oberthur';
-                case 'piv':
-                    return 'PIV';
-                case 'pteid':
-                    return 'Portuguese eID';
-                default:
-                    return 'Unknown';
-            }
-
-            function findDescription(descriptions, toFind) {
-                return !!_.find(descriptions, desc => {
-                    return desc.indexOf(toFind) > -1;
-                })
-            }
         }
     }
 

@@ -24,7 +24,7 @@ function generateSummaryToSign(data, jwt) {
         .on('finished', conversion => {
             miss.toPromise(request.get('http:' + conversion.output.url)).then(buffer => {
 
-                let fileName = data.idData.given_name + '_' + data.idData.surname + '_summary.pdf';
+                let fileName = data.idData.name + '_' + data.idData.surname + '_summary.pdf';
 
                 signboxApi.uploadDocument(buffer, fileName, 'application/pdf', jwt).then(res => {
                     let parsedBody = JSON.parse(res);

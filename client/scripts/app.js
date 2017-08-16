@@ -17,6 +17,7 @@
 
         /* custom modules */
         'app.plugin.lodash',
+        'app.connector',
         'app.readmycards',
         'app.cards',
         'app.summary'

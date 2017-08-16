@@ -8,16 +8,16 @@ module.exports = function createRouter(app) {
     const router = new express.Router();
 
     router.route('/api/cards/be/download')
-        .post(jwtMW.validateJWT, ctrlBe.download);
+          .post(jwtMW.validateJWT, ctrlBe.download);
 
     router.route('/api/cards/be/summarytosign')
-        .post(jwtMW.validateJWT, ctrlBe.generateSummaryToSign);
+          .post(jwtMW.validateJWT, ctrlBe.generateSummaryToSign);
 
     router.route('/api/cards/be/datatosign')
-        .post(jwtMW.validateJWT, ctrlBe.getDataToSign);
+          .post(jwtMW.validateJWT, ctrlBe.getDataToSign);
 
     router.route('/api/cards/be/sign')
-        .post(jwtMW.validateJWT, ctrlBe.workflowSign);
+          .post(jwtMW.validateJWT, ctrlBe.workflowSign);
 
     // Register our routes
     app.use(router);
