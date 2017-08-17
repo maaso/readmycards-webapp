@@ -5,7 +5,7 @@
            .service('CardService', CardService);
 
 
-    function CardService($q, $http, Connector) {
+    function CardService($q, $http, Connector, _) {
         this.detectType = detectContainer;
         this.getCardTypeName = getCardTypeName;
         this.signDocument = signDocument;
