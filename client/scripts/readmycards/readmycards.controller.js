@@ -3,7 +3,7 @@
 
     angular.module('app.readmycards')
            .controller('ModalCtrl', modalCtrl)
-           .controller('ModalNonceCtrl', modalNonceCtrl)
+           .controller('ModalSessionOpenCtrl', modalSessionOpenCtrl)
            .controller('ModalUserNameCtrl', modalUserNameCtrl)
            .controller('ModalSendCommandCtrl', modalSendCommandCtrl)
            .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
@@ -24,10 +24,19 @@
         }
     }
 
-    function modalNonceCtrl($scope, $uibModalInstance, nonce) {
+    function modalSessionOpenCtrl($scope, $uibModalInstance, readerId, Core, RMC) {
         $scope.ok = ok;
         $scope.cancel = cancel;
-        $scope.nonce = nonce;
+        $scope.open = open;
+
+        let connector = Core.getConnector();
+
+        function open(timeout) {
+            connector.belfius(readerId).openSession(timeout).then((res) => {
+                RMC.sessionStatus(true);
+                $scope.sessionId = res.data;
+            });
+        }
 
         function ok() {
             $uibModalInstance.close("ok");
@@ -52,11 +61,14 @@
         }
     }
 
-    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, stx, T1C) {
+    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, stx, Core) {
         $scope.ok = ok;
         $scope.cancel = cancel;
+        $scope.getNonce = getNonce;
         $scope.send = send;
         $scope.stx = stx;
+
+        let connector = Core.getConnector();
 
         function ok() {
             $uibModalInstance.close("ok");
@@ -66,16 +78,26 @@
             $uibModalInstance.dismiss("cancel");
         }
 
-        function send(command) {
+        function getNonce(sessionId) {
             clearVars();
-            let promise;
-            if (stx) { promise = T1C.belfius.sendSTX(readerId, command); }
-            else { promise = T1C.belfius.sendCommand(readerId, command); }
-            promise.then(res => {
+            connector.belfius(readerId).nonce(sessionId).then(res => {
+                console.log(res);
                 $scope.result = res.data;
             }, err => {
+                console.log(err);
                 $scope.error = angular.toJson(err);
             })
+        }
+
+        function send(sessionId, command) {
+            clearVars();
+            connector.belfius(readerId).stx(command, sessionId).then(res => {
+                console.log(res);
+                $scope.result = res.data;
+            }, err => {
+                console.log(err);
+                $scope.error = angular.toJson(err);
+            });
         }
 
         function clearVars() {
@@ -141,14 +163,15 @@
     }
 
     function rootCtrl($scope, $state, $uibModal, gclAvailable, readers, cardPresent,
-                      RMC, T1C, EVENTS, _, Analytics, Citrix, $localStorage, $q) {
+                      RMC, T1C, EVENTS, _, Analytics, Citrix, Core) {
         let controller = this;
+        let connector = Core.getConnector();
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
         controller.dismissPanels = dismissPanels;
         controller.openSession = openSession;
-        controller.sendCommand = sendCommand;
+        controller.getNonce = getNonce;
         controller.sendSTX = sendSTX;
         controller.closeSession = closeSession;
 
@@ -167,20 +190,17 @@
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/open-session.html",
                 resolve: {
-                    nonce: () => {
-                        return T1C.belfius.openSession($state.params.readerId).then((res) => {
-                            RMC.sessionStatus(true);
-                            return res.data;
-                        });
+                    readerId: () => {
+                        return $state.params.readerId;
                     }
                 },
                 backdrop: 'static',
-                controller: 'ModalNonceCtrl'
+                controller: 'ModalSessionOpenCtrl'
             });
         }
 
-        function sendCommand() {
-            console.log("send command");
+        function getNonce() {
+            console.log("get nonce");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/send-command.html",
                 resolve: {
@@ -219,7 +239,7 @@
                 templateUrl: "views/cards/emv/belfius/close-session.html",
                 resolve: {
                     close: () => {
-                        return T1C.belfius.closeSession($state.params.readerId).then(() => {
+                        return connector.belfius($state.params.readerId).closeSession().then(res => {
                             RMC.sessionStatus(false);
                         });
                     }
@@ -230,7 +250,7 @@
         }
 
         function init() {
-            console.log('Using T1C-js ' + T1C.core.version());
+            console.log('Using T1C-js ' + Core.version());
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
@@ -259,7 +279,7 @@
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
                 Analytics.trackEvent('T1C', 'install', 'Trust1Connector installed');
                 controller.gclAvailable = true;
-                T1C.core.initializeAfterInstall().then(function (res) {
+                Core.initializeAfterInstall().then(function (res) {
                     pollForReaders();
                 });
             });
@@ -282,7 +302,7 @@
             });
 
             $scope.$on(EVENTS.START_OVER, function (event, currentReaderId) {
-                T1C.core.getReaders().then(function (result) {
+                Core.getReaders().then(function (result) {
                     if (_.find(result.data, function (reader) {
                             return _.has(reader, 'card');
                         })) {
@@ -337,7 +357,7 @@
         function pollForReaders() {
             if (!controller.pollingReaders) controller.pollingReaders = true;
             controller.error = false;
-            T1C.core.getConnector().core().pollReaders(30, function (err, result) {
+            Core.getConnector().core().pollReaders(30, function (err, result) {
                 // Success callback
                 // Found at least one reader, poll for cards
                 if (err) {
@@ -370,7 +390,7 @@
         function pollForCard() {
             if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            T1C.core.getConnector().core().pollCardInserted(3, function (err, result) {
+            Core.getConnector().core().pollCardInserted(3, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
@@ -387,7 +407,7 @@
                     // else toastr.success('Reader found!');
                     // Found a card, attempt to read it
                     // Refresh reader list first
-                    T1C.core.getReaders().then(function (result) {
+                    Core.getReaders().then(function (result) {
                         controller.readers = result.data;
                         readCard();
                     }, function () {
@@ -419,39 +439,11 @@
             })
         }
 
-        function promptConsent() {
-            if (!checkConsent()) {
-                return T1C.core.getConnector().agent().getConsent(Citrix.port(), "Consent Required",
-                    "ReadMyCards wants to make use of the smartcard reader connected to your session (" + Citrix.user().id + ").\n\nDo you want to grant access?").then(res => {
-                    if (res.data.consent) {
-                        // store in localStorage + set ttl
-                        $localStorage["rmcConsentGiven" + Citrix.user().id] = true;
-                        $localStorage["rmcConsentTTL" + Citrix.user().id] = moment().add(7, "days");
-                        return $q.when();
-                    } else { return $q.reject(); }
-                }, () => {
-                    // timeout or unexpected error, retry
-                    return promptConsent();
-                });
-            } else { return $q.when(); }
-        }
-
-        function checkConsent() {
-            return $localStorage["rmcConsentGiven" + Citrix.user().id]
-                   && $localStorage["rmcConsentTTL" + Citrix.user().id]
-                   && (moment($localStorage["rmcConsentTTL" + Citrix.user().id]) > moment());
-        }
-
         function readCard() {
-            promptConsent().then(() => {
-                controller.readerWithCard = _.find(controller.readers, function (o) {
-                    return _.has(o, 'card');
-                });
-                $state.go('root.reader', { readerId: controller.readerWithCard.id });
-            }, () => {
-                controller.noConsent = true;
-                $scope.$apply();
+            controller.readerWithCard = _.find(controller.readers, function (o) {
+                return _.has(o, 'card');
             });
+            $state.go('root.reader', { readerId: controller.readerWithCard.id });
         }
     }
 

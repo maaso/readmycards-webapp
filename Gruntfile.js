@@ -46,7 +46,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.src %>/scripts",
                 dest: "<%= dir.local %>/scripts",
-                src: ["**/*.js"]
+                src: ["**/*.js", "!plugins/GCLLib.js"]
             }
         },
         /**
@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.local %>",
-                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*" ]
+                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*", "scripts/plugins/GCLLib.js" ]
             },
             fa : {
                 expand: true,

@@ -1,19 +1,27 @@
 <div class="modal-header">
-  <h3>Session Opened</h3>
+  <h3>Opening Session</h3>
 </div>
 <div class="modal-body">
-  <h4 class="text-info text-light">Nonce</h4>
+  <div>
+    <label for="timeout">Session Timeout (s)</label>
+    <input id="timeout" type="number" class="form-control" data-ng-model="timeout">
+  </div>
 
-  <div class="input-group">
-    <input id="nonce" type="text" class="form-control" value="{{ nonce }}">
-    <span class="input-group-btn">
+  <div style="margin-top: 30px;" ng-if="sessionId">
+    <label for="session-id">Session ID</label>
+
+    <div class="input-group">
+      <input id="session-id" type="text" class="form-control" value="{{ sessionId }}">
+      <span class="input-group-btn">
     <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard
-            data-clipboard-text="{{ nonce }}"></button>
+            data-clipboard-text="{{ sessionId }}"></button>
   </span>
+    </div>
   </div>
 
 
 </div>
 <div class="modal-footer">
-  <span class="btn btn-primary" ng-click="ok()">OK</span>
+  <span class="btn btn-primary" ng-click="open()">Open</span>
+  <span class="btn btn-default" data-ng-click="ok()">Done</span>
 </div>

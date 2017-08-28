@@ -26,11 +26,15 @@
 </style>
 
 <div class="modal-header">
-  <h3>Send {{ stx ? 'STX' : 'Command' }}</h3>
+  <h3>{{ stx ? 'Send STX' : 'Get Nonce' }}</h3>
 </div>
 <div class="modal-body">
   <div>
-    <label for="command-in">Enter {{ stx? 'STX' : 'Command' }}:</label>
+    <label for="session-id">Enter Session ID:</label>
+    <input id="session-id" type="text" class="form-control" data-ng-model="sessionId">
+  </div>
+  <div ng-if="stx">
+    <label for="command-in">Enter STX:</label>
     <textarea id="command-in" class="command-input" data-ng-model="command"></textarea>
   </div>
 
@@ -45,8 +49,9 @@
   </div>
 </div>
 <div class="modal-footer">
-  <span class="btn btn-primary" data-ng-click="send(command)"
-        data-ng-disabled="!command || !command.length">Send
+  <span class="btn btn-primary" data-ng-click="getNonce(sessionId)" ng-if="!stx">Get Nonce
+  </span>
+  <span class="btn btn-primary" data-ng-click="send(sessionId, command)" ng-if="stx">Send
   </span>
   <span class="btn btn-default" data-ng-click="ok()">Done</span>
 </div>

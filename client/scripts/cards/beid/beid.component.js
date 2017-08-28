@@ -18,9 +18,9 @@
                 T1C.beid.getAllCerts($stateParams.readerId, filter).then(res => {
                     let validationReq = {
                         certificateChain: [
-                            { order: 0, certificate: res.data.authentication_certificate },
-                            { order: 1, certificate: res.data.citizen_certificate },
-                            { order: 2, certificate: res.data.root_certificate },
+                            { order: 0, certificate: res.data.authentication_certificate.base64 },
+                            { order: 1, certificate: res.data.citizen_certificate.base64 },
+                            { order: 2, certificate: res.data.root_certificate.base64 },
                         ]
                     };
                     Analytics.trackEvent('beid', 'cert-check', 'Start certificate check');
