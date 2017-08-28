@@ -204,6 +204,11 @@
             gclConfig.allowAutoUpdate = true;
             gclConfig.implicitDownload = false;
             connector = new GCLLib.GCLClient(gclConfig);
+
+            GCLLib.GCLClient.initialize(gclConfig).then(client => {
+                console.log(client);
+                console.log(client.cfg.citrix);
+            });
         }
 
         function initializeAfterInstall() {

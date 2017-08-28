@@ -61,7 +61,7 @@
         }
     }
 
-    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, stx, Core) {
+    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, stx, Core, Citrix) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.getNonce = getNonce;
@@ -80,9 +80,9 @@
 
         function getNonce(sessionId) {
             clearVars();
-            connector.belfius(readerId).nonce(sessionId).then(res => {
+            connector.belfius(readerId).nonce(sessionId, Citrix.port()).then(res => {
                 console.log(res);
-                $scope.result = res.data;
+                $scope.result = angular.toJson(res.data);
             }, err => {
                 console.log(err);
                 $scope.error = angular.toJson(err);
@@ -91,9 +91,9 @@
 
         function send(sessionId, command) {
             clearVars();
-            connector.belfius(readerId).stx(command, sessionId).then(res => {
+            connector.belfius(readerId).stx(command, sessionId, Citrox.port()).then(res => {
                 console.log(res);
-                $scope.result = res.data;
+                $scope.result = angular.toJson(res.data);
             }, err => {
                 console.log(err);
                 $scope.error = angular.toJson(err);
