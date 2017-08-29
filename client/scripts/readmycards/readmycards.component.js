@@ -7,7 +7,7 @@
             bindings: {
                 readerId: '<'
             },
-            controller: function ($scope, $timeout, $rootScope, CardService, T1C, API, RMC, EVENTS) {
+            controller: function ($scope, $timeout, $rootScope, CardService, API, RMC, EVENTS, Connector) {
                 let controller = this;
                 controller.readAnother = readAnother;
                 this.registerUnknownType = registerUnknownType;
@@ -18,7 +18,7 @@
                     controller.errorReadingCard = false;
                     controller.unknownCard = false;
                     // Detect Type and read data
-                    T1C.core.getReader(controller.readerId).then(function (readerInfo) {
+                    Connector.get().core().reader(controller.readerId).then(function (readerInfo) {
                         controller.cardType = CardService.detectType(readerInfo.data.card);
                         controller.card = readerInfo.data.card;
 
@@ -29,7 +29,7 @@
                             controller.loading = false;
                             RMC.monitorCardRemoval(controller.readerId, controller.card);
                         } else {
-                            T1C.readAllData(readerInfo.data.id, readerInfo.data.card).then(function (res) {
+                            Connector.get().dumpData(readerInfo.data.id).then(res => {
                                 controller.cardData = res.data;
                                 controller.loading = false;
                                 RMC.monitorCardRemoval(controller.readerId, controller.card)
@@ -98,7 +98,7 @@
                 dlUrl: '<',
                 isFirefox: '<'
             },
-            controller: function ($scope, $uibModal, T1C, $timeout, API, EVENTS) {
+            controller: function ($scope, $uibModal, Connector, $timeout, API, EVENTS) {
                 var controller = this;
                 this.firefoxModal = firefoxModal;
                 this.registerDownload = registerDownload;
@@ -111,7 +111,7 @@
 
                 function pollForGcl() {
                     $timeout(function () {
-                        T1C.core.getInfo().then(function (res) {
+                        Connector.get().core().info().then(function (res) {
                             // Info retrieved, GCL is installed
                             $scope.$emit(EVENTS.GCL_INSTALLED);
                         }, function (err) {
@@ -168,14 +168,14 @@
         })
         .component('readerSelect', {
             templateUrl: 'views/readmycards/components/reader-list.html',
-            controller: function ($scope, $state, $timeout, T1C, CardService, EVENTS, _) {
-                var controller = this;
+            controller: function ($scope, $state, $timeout, CardService, EVENTS, _) {
+                let controller = this;
                 this.$onInit = function () {
                     controller.readers = [];
                 };
 
                 $scope.$on(EVENTS.READERS_WITH_CARDS, function (event, args) {
-                    if (args.data.length != controller.readers.length) {
+                    if (args.data.length !== controller.readers.length) {
                         controller.readers = args.data;
                         _.forEach(controller.readers, function (reader) {
                             reader.cardType = CardService.detectType(reader.card);
@@ -194,7 +194,7 @@
         .component('rmcHeader', {
             templateUrl: 'views/readmycards/components/header.html',
             controller: function ($scope, EVENTS) {
-                var controller = this;
+                let controller = this;
                 this.home = home;
                 this.toggleCardTypes = toggleCardTypes;
 

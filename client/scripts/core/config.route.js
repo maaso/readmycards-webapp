@@ -16,16 +16,14 @@
                                    return Citrix.checkUserName();
                                },
                                connector: function(Connector) {
-                                   return Connector.init().then(res => {
-                                       return res;
-                                   });
+                                   return Connector.init();
                                },
                                gclAvailable: function (connector, username, T1C) {
-                                   return T1C.core.isGCLAvailable("root");
+                                   return T1C.isGCLAvailable();
                                },
-                               readers: function ($q, gclAvailable, T1C) {
+                               readers: function ($q, gclAvailable, Connector) {
                                    if (gclAvailable) {
-                                       return T1C.core.getReaders().then(function (response) {
+                                       return Connector.get().core().readers().then(function (response) {
                                            return response;
                                        }, function () {
                                            // Should an error occur, we don't want it to block the app

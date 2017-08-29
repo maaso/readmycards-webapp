@@ -188,9 +188,9 @@
     }
 
     function rootCtrl($scope, $state, $uibModal, gclAvailable, readers, cardPresent,
-                      RMC, T1C, EVENTS, _, Analytics, Citrix, Core) {
+                      RMC, EVENTS, _, Analytics, Citrix, Core, Connector) {
         let controller = this;
-        let connector = Core.getConnector();
+        let connector = Connector.get();
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
@@ -421,7 +421,7 @@
         }
 
         function init() {
-            console.log('Using T1C-js ' + Core.version());
+            console.log('Using T1C-js ' + Connector.get().core().version());
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
@@ -450,7 +450,7 @@
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
                 Analytics.trackEvent('T1C', 'install', 'Trust1Connector installed');
                 controller.gclAvailable = true;
-                Core.initializeAfterInstall().then(function (res) {
+                Connector.init().then(() => {
                     pollForReaders();
                 });
             });
@@ -528,7 +528,7 @@
         function pollForReaders() {
             if (!controller.pollingReaders) controller.pollingReaders = true;
             controller.error = false;
-            Core.getConnector().core().pollReaders(30, function (err, result) {
+            Connector.get().core().pollReaders(30, function (err, result) {
                 // Success callback
                 // Found at least one reader, poll for cards
                 if (err) {
@@ -605,9 +605,9 @@
 
         function promptDownload() {
             // Prompt for dl
-            T1C.ds.getDownloadLink().then(function (res) {
+            connector.download().then(res => {
                 controller.dlLink = res.url;
-            })
+            });
         }
 
         function readCard() {

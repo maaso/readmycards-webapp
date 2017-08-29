@@ -8,7 +8,7 @@
                 panData: '<'
             },
             controller: function () {
-                var controller = this;
+                let controller = this;
             }
         });
 })();

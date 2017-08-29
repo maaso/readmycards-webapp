@@ -3,14 +3,14 @@
 
     const luxVisualizer = {
         templateUrl: 'views/cards/lux/lux-viz.html',
-        controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, T1C, API) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, API, Connector) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.needPin = true;
 
                 // check type of reader
-                T1C.core.getReader($stateParams.readerId).then(res => {
+                Connector.get().core().reader($stateParams.readerId).then(res => {
                     controller.pinpad = res.data.pinpad;
                     if (!controller.pinpad) controller.pincode = { value: '' };
                     else {
@@ -27,7 +27,7 @@
 
             function getAllData(pin) {
                 controller.readingData = true;
-                T1C.luxId.allData($stateParams.readerId, pin).then(res => {
+                Connector.get().luxeid($stateParams.readerId, pin).allData([]).then(res => {
                     controller.readingData = false;
                     controller.pinStatus = 'valid';
                     controller.certStatus = 'checking';
@@ -42,29 +42,6 @@
                     controller.authCert = res.data.authentication_certificate;
                     controller.nonRepCert = res.data.non_repudiation_certificate;
                     controller.rootCerts = res.data.root_certificates;
-
-                    // TODO implement certificate check once we figure out how to deal with the dual root certs
-                    // let validationReq1 = {
-                    //     certificateChain: [
-                    //         { order: 0, certificate: res.data.authentication_certificate },
-                    //         { order: 1, certificate: res.data.root_certificate },
-                    //     ]
-                    // };
-                    // let validationReq2 = {
-                    //     certificateChain: [
-                    //         { order: 0, certificate: res.data.non_repudiation_certificate },
-                    //         { order: 1, certificate: res.data.root_certificate },
-                    //     ]
-                    // };
-                    // let promises = [ T1C.validateCertificateChain(validationReq1), T1C.validateCertificateChain(validationReq2)];
-                    //
-                    // $q.all(promises).then(results => {
-                    //     let status = 'valid';
-                    //     _.forEach(results, res => {
-                    //         if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
-                    //     });
-                    //     controller.certStatus = status;
-                    // });
 
                     $timeout(() => {
                         controller.certStatus = 'valid';

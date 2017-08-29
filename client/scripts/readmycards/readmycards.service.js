@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('app.readmycards')
-           .service('T1C', ConnectorService)
+           .service('T1C', T1CUtilityService)
            .service('CardService', CardService)
            .service('CheckDigit', CheckDigit)
            .service('RMC', ReadMyCardsService)
@@ -10,67 +10,49 @@
            .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, Belfius, EMV, LuxId, Mobib, OCV, Connector, _) {
-
+    function T1CUtilityService($q, Connector, Citrix, _) {
         // === T1C Methods ===
-        // --- Core ---
-        this.core = Core;
-        // --- DS ---
-        this.ds = DS;
-        // --- OCV ---
-        this.ocv = OCV;
-        // --- Belfius ---;
-        this.belfius = Belfius;
-        // --- EMV ---
-        this.emv = EMV;
-        // --- LuxId ---
-        this.luxId = LuxId;
-        // --- Mobib ---
-        this.mobib = Mobib;
         // --- Utility ---
-        this.isCardTypeBeId = isCardTypeBeId;
-        this.readAllData = readAllData;
+        this.isGCLAvailable = isGCLAvailable;
 
         /// ==============================
         /// ===== UTILITY FUNCTIONS ======
         /// ==============================
-
-        // Check if the car
-        function isCardTypeBeId(readerId) {
-            let typeDeferred = $q.defer();
-            // TODO user direct reader access when available
-            Core.getReaders().then(function (result) {
-                let reader = _.find(result.data, function (reader) {
-                    return reader.id === readerId;
-                });
-
-                if (reader.card) {
-                    if (reader.card.description[0] === 'Belgium Electronic ID card') typeDeferred.resolve(true);
-                    else typeDeferred.resolve(false);
-                } else {
-                    typeDeferred.reject('No card present in reader');
-                }
+        function isGCLAvailable() {
+            console.log("check gcl available");
+            let available = $q.defer();
+            Connector.get().core().info().then(res => {
+                if (_.isBoolean(res.data.citrix) && res.data.citrix) {
+                    Citrix.environment(res.data.citrix);
+                    Connector.get().agent().get().then(res => {
+                        // find correct agent
+                        let citrixAgent = _.find(res.data, agent => {
+                            return agent.username === Citrix.user().id;
+                        });
+                        if (citrixAgent) {
+                            Citrix.agent(citrixAgent).then(() => {
+                                Connector.get().core().readers().then(() => {
+                                    Citrix.updateLocation();
+                                    available.resolve(true);
+                                }, () => {
+                                    Citrix.invalidLocalAgent().then(() => {
+                                        available.resolve(isGCLAvailable());
+                                    });
+                                });
+                            });
+                        } else {
+                            Citrix.invalidLocalAgent().then(() => {
+                                available.resolve(isGCLAvailable());
+                            });
+                        }
+                    }, err => {
+                        console.log(err);
+                    });
+                } else { available.resolve(true); }
+            }, () => {
+                available.resolve(false);
             });
-            return typeDeferred.promise;
-        }
-
-        function readAllData(readerId, card) {
-            switch (CardService.detectType(card)) {
-                case 'BeID':
-                    return getBeIDInitialData(readerId);
-                case 'EMV':
-                    return EMV.getAllEmvData(readerId);
-                case 'MOBIB':
-                case 'MOBIB Basic':
-                    return Mobib.allData(readerId);
-                default:
-                    return $q.when('Not Supported');
-            }
-        }
-
-        function getBeIDInitialData(readerId) {
-            let filter = [ 'rn', 'picture', 'address'];
-            return Connector.get().beid(readerId).allData({ filters: filter });
+            return available.promise;
         }
     }
 
@@ -103,7 +85,7 @@
         }
     }
 
-    function ReadMyCardsService($rootScope, $q, $timeout, T1C, EVENTS, _) {
+    function ReadMyCardsService($rootScope, $q, $timeout, Connector, EVENTS, _) {
         this.monitorCardRemoval = monitorCardRemoval;
         this.checkCardRemoval = checkCardRemoval;
         this.checkReaderRemoval = checkReaderRemoval;
@@ -132,7 +114,7 @@
                 if (sessionOpen) {
                     return $q.when(false);
                 } else {
-                    return T1C.core.getReadersWithCards().then(function (readerData) {
+                    return Connector.get().core().readersCardAvailable().then(function (readerData) {
                         $rootScope.$broadcast(EVENTS.READERS_WITH_CARDS, readerData);
                         if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
                             // no connected readers with cards
@@ -157,7 +139,7 @@
 
         function checkReaderRemoval() {
             // check reader still connected
-            return T1C.core.getReaders().then(function (readerData) {
+            return Connector.get().core().readers().then(function (readerData) {
                 if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
                     // no connected readers
                     // broadcast removal event
@@ -286,7 +268,7 @@
         }
     }
 
-    function API($http, $q, T1C, _) {
+    function API($http, $q, Connector, _) {
         this.convertJPEG2000toJPEG = convertJPEG2000toJPEG;
         this.storeUnknownCardInfo = storeUnknownCardInfo;
         this.storeDownloadInfo = storeDownloadInfo;
@@ -322,7 +304,7 @@
                 return data;
             }, function () {
                 return {};
-            }), T1C.core.browserInfo().then(function (data) {
+            }), Connector.get().core().infoBrowser().then(function (data) {
                 return data;
             }, function () {
                 return {};

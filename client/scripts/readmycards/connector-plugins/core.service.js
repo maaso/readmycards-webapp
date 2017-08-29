@@ -25,10 +25,6 @@
         this.setPubKey = setPubKey;
         // --- Config ---
         this.getApiKey = getApiKey;
-        // --- Utility ---
-        this.isGCLAvailable = isGCLAvailable;
-        this.initializeAfterInstall = initializeAfterInstall;
-        this.version = version;
 
         /// ===============================
         /// ===== CORE FUNCTIONALITY ======
@@ -153,70 +149,6 @@
         /// =================================
         function getApiKey() {
             return $q.when(connector.config().apiKey);
-        }
-
-        /// ==============================
-        /// ===== UTILITY FUNCTIONS ======
-        /// ==============================
-
-        function isGCLAvailable() {
-            let available = $q.defer();
-            connector.core().info().then(res => {
-                if (_.isBoolean(res.data.citrix) && res.data.citrix) {
-                    Citrix.environment(res.data.citrix);
-                    connector.agent().get().then(res => {
-                        // find correct agent
-                        let citrixAgent = _.find(res.data, agent => {
-                            return agent.username === Citrix.user().id;
-                        });
-                        if (citrixAgent) {
-                            Citrix.agent(citrixAgent).then(() => {
-                                connector = Connector.get();
-                                getReaders().then(() => {
-                                    Citrix.updateLocation();
-                                    available.resolve(true);
-                                }, () => {
-                                    Citrix.invalidLocalAgent().then(() => {
-                                        available.resolve(isGCLAvailable());
-                                    });
-                                });
-                            });
-                        } else {
-                            Citrix.invalidLocalAgent().then(() => {
-                                available.resolve(isGCLAvailable());
-                            });
-                        }
-                    }, err => {
-                        console.log(err);
-                    });
-                } else { available.resolve(true); }
-            }, () => {
-                available.resolve(false);
-            });
-            return available.promise;
-        }
-
-        // Initialize the T1C connector with some custom config
-        function initializeLib() {
-            let gclConfig = new GCLLib.GCLConfig();
-            gclConfig.apiKey = "7de3b216-ade2-4391-b2e2-86b80bac4d7d"; //test apikey rate limited
-            gclConfig.gclUrl = "https://localhost:10443/v1"; //override config for local dev
-            gclConfig.dsUrl = "https://accapim.t1t.be:443"; //trust1team/gclds/v1
-            gclConfig.allowAutoUpdate = true;
-            gclConfig.implicitDownload = false;
-            connector = new GCLLib.GCLClient(gclConfig);
-
-            GCLLib.GCLClient.initialize(gclConfig).then(client => {
-                connector = client;
-            });
-        }
-
-        function initializeAfterInstall() {
-            return $q.when(initializeLib());
-        }
-
-        function version() {
-            return connector.core().version();
         }
 
 
