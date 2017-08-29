@@ -4,7 +4,7 @@
     angular.module('app.cards.beid')
         .service('BeUtils', BeUtils);
 
-    function BeUtils($http, $q, CheckDigit, T1C, _) {
+    function BeUtils($http, $q, CheckDigit, Connector, _) {
         this.constructMachineReadableStrings = constructMachineReadableStrings;
         this.formatCardNumber = formatCardNumber;
         this.formatRRNR = formatRRNR;
@@ -24,9 +24,9 @@
 
         function generateSummaryToSign(readerId) {
             let promises = [
-                T1C.beid.getRnData(readerId),
-                T1C.beid.getAddress(readerId),
-                T1C.beid.getPic(readerId)
+                Connector.get().beid(readerId).rnData(),
+                Connector.get().beid(readerId).address(),
+                Connector.get().beid(readerId).picture()
             ];
 
             return $q.all(promises).then(function (results) {
@@ -79,7 +79,7 @@
 
         // OK
         function readRnData(readerId) {
-            return T1C.beid.getRnData(readerId).then(function (result) {
+            return Connector.get().beid(readerId).rnData().then(function (result) {
                 fullName = result.data.first_names.split(" ", 1) + ' ' + result.data.name;
                 return readerId;
             });
@@ -87,7 +87,7 @@
 
         // OK
         function signWithGcl(readerId, pin, hash, algorithm) {
-            return T1C.beid.signData(readerId, pin, algorithm, hash).then(function (res) {
+            return Connector.get().beid(readerId).signData({ pin: pin, algorithm_reference: algorithm, data: hash }).then(function (res) {
                 return res.data;
             }, function (err) {
                 return $q.reject(err);
@@ -96,7 +96,7 @@
 
         // OK
         function rootCert(readerId) {
-            return T1C.beid.getRootCert(readerId).then(function (res) {
+            return Connector.get().beid(readerId).rootCertificate().then(function (res) {
                 rootCertificate = res.data.base64;
                 return readerId;
             });
@@ -104,7 +104,7 @@
 
         // OK
         function citizenCert(readerId) {
-            return T1C.beid.getCitizenCert(readerId).then(function (res) {
+            return Connector.get().beid(readerId).citizenCertificate().then(function (res) {
                 citizenCertificate = res.data.base64;
                 return readerId;
             });
@@ -112,7 +112,7 @@
 
         // OK
         function nonRepudiationCert(readerId) {
-            return T1C.beid.getNonRepCert(readerId).then(function (res) {
+            return Connector.get().beid(readerId).nonRepudiationCertificate().then(function (res) {
                 nonRepudiationCertificate = res.data.base64;
                 return readerId;
             });

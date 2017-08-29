@@ -26,16 +26,12 @@
 </style>
 
 <div class="modal-header">
-  <h3>Send Command</h3>
+  <h3>Get CCID Features</h3>
 </div>
 <div class="modal-body">
   <div>
     <label for="session-id">Enter Session ID:</label>
     <input id="session-id" type="text" class="form-control" data-ng-model="sessionId">
-  </div>
-  <div>
-    <label for="command-in">Enter Command (JSON string or array of strings):</label>
-    <textarea id="command-in" class="command-input" data-ng-model="command"></textarea>
   </div>
 
   <div ng-show="result" style="margin-top: 20px;">
@@ -49,7 +45,7 @@
   </div>
 </div>
 <div class="modal-footer">
-  <span class="btn btn-primary" data-ng-click="submit(sessionId, command)">Send
+  <span class="btn btn-primary" data-ng-click="submit(sessionId)">Send
   </span>
   <span class="btn btn-default" data-ng-click="ok()">Done</span>
 </div>

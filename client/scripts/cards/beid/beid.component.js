@@ -8,14 +8,14 @@
             addressData: '<',
             picData: '<',
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, T1C, Analytics) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, Connector, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.certStatus = 'checking';
                 controller.pinStatus = 'idle';
                 const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
-                T1C.beid.getAllCerts($stateParams.readerId, filter).then(res => {
+                Connector.get().beid($stateParams.readerId).allCerts(filter).then(res => {
                     let validationReq = {
                         certificateChain: [
                             { order: 0, certificate: res.data.authentication_certificate.base64 },
@@ -24,7 +24,7 @@
                         ]
                     };
                     Analytics.trackEvent('beid', 'cert-check', 'Start certificate check');
-                    T1C.ocv.validateCertificateChain(validationReq).then(res => {
+                    Connector.get().ocv().validateCertificateChain(validationReq).then(res => {
                         if (res.crlResponse.status && res.ocspResponse.status) {
                             Analytics.trackEvent('beid', 'cert-valid', 'Certificates are valid');
                             controller.certStatus = 'valid';
@@ -49,7 +49,7 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.get().core().reader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
                         }
@@ -85,7 +85,7 @@
                 } else {
                     if (!controller.loadingCerts) {
                         controller.loadingCerts = true;
-                        T1C.beid.getAllCerts($stateParams.readerId).then(res => {
+                        Connector.get().beid($stateParams.readerId).allCerts([]).then(res => {
                             controller.loadingCerts = false;
                             controller.certData = res.data;
                         });
@@ -102,7 +102,7 @@
                             return $stateParams.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.get().core().reader($stateParams.readerId).then(function (res) {
                                 return res.data.pinpad;
                             })
                         }

@@ -26,7 +26,7 @@
 </style>
 
 <div class="modal-header">
-  <h3>Send Command</h3>
+  <h3>Verify CCID Feature</h3>
 </div>
 <div class="modal-body">
   <div>
@@ -34,8 +34,12 @@
     <input id="session-id" type="text" class="form-control" data-ng-model="sessionId">
   </div>
   <div>
-    <label for="command-in">Enter Command (JSON string or array of strings):</label>
-    <textarea id="command-in" class="command-input" data-ng-model="command"></textarea>
+    <label for="feature">Enter Feature:</label>
+    <input id="feature" type="text" class="form-control" data-ng-model="feature">
+  </div>
+  <div>
+    <label for="apdu">Enter APDU:</label>
+    <textarea id="apdu" class="command-input" data-ng-model="apdu"></textarea>
   </div>
 
   <div ng-show="result" style="margin-top: 20px;">
@@ -49,7 +53,7 @@
   </div>
 </div>
 <div class="modal-footer">
-  <span class="btn btn-primary" data-ng-click="submit(sessionId, command)">Send
+  <span class="btn btn-primary" data-ng-click="submit(sessionId, feature, apdu)">Send
   </span>
   <span class="btn btn-default" data-ng-click="ok()">Done</span>
 </div>

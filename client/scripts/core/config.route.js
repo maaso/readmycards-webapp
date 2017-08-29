@@ -12,11 +12,15 @@
                            url: '/',
                            templateUrl: '/views/root.html',
                            resolve: {
-                               T1C: 'T1C',
                                username: function(Citrix) {
                                    return Citrix.checkUserName();
                                },
-                               gclAvailable: function (username, T1C) {
+                               connector: function(Connector) {
+                                   return Connector.init().then(res => {
+                                       return res;
+                                   });
+                               },
+                               gclAvailable: function (connector, username, T1C) {
                                    return T1C.core.isGCLAvailable("root");
                                },
                                readers: function ($q, gclAvailable, T1C) {

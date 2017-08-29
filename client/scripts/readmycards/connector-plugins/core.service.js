@@ -5,9 +5,8 @@
            .service('Core', Core);
 
 
-    function Core($q, _, Citrix) {
-        let connector;
-        initializeLib();
+    function Core($q, _, Citrix, Connector) {
+        let connector = Connector.get();
 
         // === T1C Methods ===
         // --- Core ---
@@ -72,7 +71,7 @@
             let readerDeferred = $q.defer();
             connector.core().reader(readerId, function (err, result) {
                 callbackHelper(err, result, readerDeferred);
-            }, Citrix.port());
+            });
             return readerDeferred.promise;
         }
 
@@ -171,13 +170,15 @@
                             return agent.username === Citrix.user().id;
                         });
                         if (citrixAgent) {
-                            Citrix.agent(citrixAgent);
-                            getReaders().then(res => {
-                                Citrix.updateLocation();
-                                available.resolve(true);
-                            }, () => {
-                                Citrix.invalidLocalAgent().then(() => {
-                                    available.resolve(isGCLAvailable());
+                            Citrix.agent(citrixAgent).then(() => {
+                                connector = Connector.get();
+                                getReaders().then(() => {
+                                    Citrix.updateLocation();
+                                    available.resolve(true);
+                                }, () => {
+                                    Citrix.invalidLocalAgent().then(() => {
+                                        available.resolve(isGCLAvailable());
+                                    });
                                 });
                             });
                         } else {
@@ -206,8 +207,7 @@
             connector = new GCLLib.GCLClient(gclConfig);
 
             GCLLib.GCLClient.initialize(gclConfig).then(client => {
-                console.log(client);
-                console.log(client.cfg.citrix);
+                connector = client;
             });
         }
 

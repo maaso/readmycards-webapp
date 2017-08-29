@@ -18,7 +18,8 @@
         /* custom modules */
         'app.plugin.lodash',
         'app.readmycards',
-        'app.cards'
+        'app.cards',
+        'app.connector'
 
     ]);
 

@@ -14,14 +14,41 @@
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
     <div id="rmc-content">
         <div class="text-center">
+            <h4>Belfius Container</h4>
             <span class="btn btn-default btn-summary-download"
-                  ng-click="root.openSession()">Open Session</span>
+                  ng-click="root.openBelfiusSession()">Open Session</span>
             <span class="btn btn-default btn-summary-download"
                   ng-click="root.getNonce()">Get Nonce</span>
             <span class="btn btn-default btn-summary-download"
                   ng-click="root.sendSTX()">Send STX</span>
             <span class="btn btn-default btn-summary-download"
-                  ng-click="root.closeSession()">Close Session</span>
+                  ng-click="root.closeBelfiusSession()">Close Session</span>
+        </div>
+
+        <div class="text-center" style="margin-top: 15px;">
+            <h4>Remote Loading Container</h4>
+            <div>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.openSession()">Open Session</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.sendCommand()">Send Command(s)</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.getCcidFeatures()">Get CCID Features</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.verifyCcidFeature()">Verify CCID Feature</span>
+            </div>
+
+            <div style="margin-top: 5px;">
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.isPresent()">Verify Card Present</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.getAtr()">Get ATR</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.sendApdu()">Send APDU(s)</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.closeSession()">Close Session</span>
+            </div>
+
         </div>
 
         <download-gcl dl-url="root.dlLink" is-firefox="root.isFirefox" ng-if="!root.gclAvailable"></download-gcl>

@@ -10,7 +10,7 @@
            .service('API', API);
 
 
-    function ConnectorService($q, $timeout, CardService, Core, DS, BeID, Belfius, EMV, LuxId, Mobib, OCV, _) {
+    function ConnectorService($q, $timeout, CardService, Core, DS, Belfius, EMV, LuxId, Mobib, OCV, Connector, _) {
 
         // === T1C Methods ===
         // --- Core ---
@@ -19,8 +19,6 @@
         this.ds = DS;
         // --- OCV ---
         this.ocv = OCV;
-        // --- BeID ---
-        this.beid = BeID;
         // --- Belfius ---;
         this.belfius = Belfius;
         // --- EMV ---
@@ -71,22 +69,8 @@
         }
 
         function getBeIDInitialData(readerId) {
-            let promises = [];
-            let dataObject = { data: {}};
-            promises.push(BeID.getRnData(readerId).then(res => {
-                dataObject.data.rn = res.data;
-            }));
-            promises.push(BeID.getAddress(readerId).then(res => {
-                dataObject.data.address = res.data;
-            }));
-            promises.push(BeID.getPic(readerId).then(res => {
-                dataObject.data.picture = res.data;
-            }));
-
-            return $q.all(promises).then(() => {
-                dataObject.success = true;
-                return dataObject;
-            });
+            let filter = [ 'rn', 'picture', 'address'];
+            return Connector.get().beid(readerId).allData({ filters: filter });
         }
     }
 
@@ -193,7 +177,7 @@
         }
     }
 
-    function CitrixService(_, $location, $q, $uibModal) {
+    function CitrixService(_, $location, $q, $uibModal, Connector) {
         let citrixAgent;
         let citrixEnvironment = false;
         let citrixPort = undefined;
@@ -209,11 +193,13 @@
 
 
         function agent(newAgent) {
+            let promise = $q.when();
             if (!_.isEmpty(newAgent)) {
                 citrixAgent = newAgent;
                 citrixPort = newAgent.port;
+                promise = Connector.init(citrixPort);
             }
-            return citrixAgent;
+            return $q.when(promise);
         }
 
         function environment(isCitrix) {
@@ -324,7 +310,7 @@
             function createPayload(card, description) {
                 let payload = [];
                 _.forEach(card, function (value, key) {
-                    if (key != 'atr') payload.push({ name: key, value: value });
+                    if (key !== 'atr') payload.push({ name: key, value: value });
                 });
                 if (description) payload.push({ name: 'user description', value: description });
                 return payload;

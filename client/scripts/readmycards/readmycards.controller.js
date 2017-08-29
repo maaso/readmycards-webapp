@@ -24,7 +24,7 @@
         }
     }
 
-    function modalSessionOpenCtrl($scope, $uibModalInstance, readerId, Core, RMC) {
+    function modalSessionOpenCtrl($scope, $uibModalInstance, belfius, readerId, Core, RMC) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.open = open;
@@ -32,10 +32,19 @@
         let connector = Core.getConnector();
 
         function open(timeout) {
-            connector.belfius(readerId).openSession(timeout).then((res) => {
-                RMC.sessionStatus(true);
-                $scope.sessionId = res.data;
-            });
+            console.log(timeout);
+            if (belfius) {
+                connector.belfius(readerId).openSession(timeout).then((res) => {
+                    RMC.sessionStatus(true);
+                    $scope.sessionId = res.data;
+                });
+            } else {
+                connector.readerapi(readerId).openSession(timeout).then(res => {
+                    RMC.sessionStatus(true);
+                    $scope.sessionId = res.data;
+                })
+            }
+
         }
 
         function ok() {
@@ -61,12 +70,10 @@
         }
     }
 
-    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, stx, Core, Citrix) {
+    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, type, Core) {
         $scope.ok = ok;
         $scope.cancel = cancel;
-        $scope.getNonce = getNonce;
-        $scope.send = send;
-        $scope.stx = stx;
+        $scope.submit = submit;
 
         let connector = Core.getConnector();
 
@@ -78,26 +85,44 @@
             $uibModalInstance.dismiss("cancel");
         }
 
-        function getNonce(sessionId) {
+        function submit(sessionId, payload, secondaryPayload) {
             clearVars();
-            connector.belfius(readerId).nonce(sessionId, Citrix.port()).then(res => {
-                console.log(res);
-                $scope.result = angular.toJson(res.data);
-            }, err => {
-                console.log(err);
-                $scope.error = angular.toJson(err);
-            })
-        }
+            switch (type) {
+                case 'apdu':
+                    connector.readerapi(readerId).apdu(angular.fromJson(payload), sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'atr':
+                    connector.readerapi(readerId).atr(sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'ccid-features':
+                    connector.readerapi(readerId).ccidFeatures(sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'ccid':
+                    connector.readerapi(readerId).ccid(payload, secondaryPayload, sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'command':
+                    connector.readerapi(readerId).command(angular.fromJson(payload), sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'is-present':
+                    connector.readerapi(readerId).isPresent(sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'nonce':
+                    connector.belfius(readerId).nonce(sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'stx':
+                    connector.belfius(readerId).stx(payload, sessionId).then(handleSuccess, handleError);
+                    break;
+            }
 
-        function send(sessionId, command) {
-            clearVars();
-            connector.belfius(readerId).stx(command, sessionId, Citrox.port()).then(res => {
+            function handleSuccess(res) {
                 console.log(res);
                 $scope.result = angular.toJson(res.data);
-            }, err => {
+            }
+
+            function handleError(err) {
                 console.log(err);
                 $scope.error = angular.toJson(err);
-            });
+            }
         }
 
         function clearVars() {
@@ -106,7 +131,7 @@
         }
     }
 
-    function modalPinCheckCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, T1C, _) {
+    function modalPinCheckCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, Connector, _) {
         $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         $scope.pincode = {
             value: ''
@@ -122,7 +147,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                T1C.beid.verifyPin(readerId).then(handleVerificationSuccess, handleVerificationError);
+                Connector.get().beid(readerId).verifyPin({}).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
@@ -154,7 +179,7 @@
         }
 
         function submitPin() {
-            T1C.beid.verifyPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
+            Connector.get().beid(readerId).verifyPin({ pin: $scope.pincode.value }).then(handleVerificationSuccess, handleVerificationError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {
@@ -171,9 +196,17 @@
         controller.cardPresent = cardPresent;
         controller.dismissPanels = dismissPanels;
         controller.openSession = openSession;
+        controller.openBelfiusSession = openBelfiusSession;
+        controller.getAtr = getAtr;
+        controller.getCcidFeatures = getCcidFeatures;
         controller.getNonce = getNonce;
+        controller.isPresent = isPresent;
+        controller.sendApdu = sendApdu;
+        controller.sendCommand = sendCommand;
         controller.sendSTX = sendSTX;
         controller.closeSession = closeSession;
+        controller.closeBelfiusSession = closeBelfiusSession;
+        controller.verifyCcidFeature = verifyCcidFeature;
 
         let pollIterations = 0;
 
@@ -185,13 +218,16 @@
             controller.faqOpen = false;
         }
 
-        function openSession() {
+        function openBelfiusSession() {
             console.log("open session");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/open-session.html",
                 resolve: {
                     readerId: () => {
                         return $state.params.readerId;
+                    },
+                    belfius: () => {
+                        return true;
                     }
                 },
                 backdrop: 'static',
@@ -199,16 +235,118 @@
             });
         }
 
+        function openSession() {
+            console.log("open session");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/open-session.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    belfius: () => {
+                        return false;
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSessionOpenCtrl'
+            });
+        }
+
+        function getAtr() {
+            console.log("get ATR");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/get-atr.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'atr';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
+        function getCcidFeatures() {
+            console.log("get CCID features");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/get-ccid-features.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'ccid-features';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
         function getNonce() {
             console.log("get nonce");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/get-nonce.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'nonce';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
+        function isPresent() {
+            console.log("isPresent");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/is-present.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'is-present';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
+        function sendApdu() {
+            console.log("send APDU");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/send-apdu.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'apdu';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
+        function sendCommand() {
+            console.log("send command");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/send-command.html",
                 resolve: {
                     readerId: () => {
                         return $state.params.readerId;
                     },
-                    stx: () => {
-                        return false;
+                    type: () => {
+                        return 'command';
                     }
                 },
                 backdrop: 'static',
@@ -219,13 +357,13 @@
         function sendSTX() {
             console.log("send STX");
             $uibModal.open({
-                templateUrl: "views/cards/emv/belfius/send-command.html",
+                templateUrl: "views/cards/emv/belfius/send-stx.html",
                 resolve: {
                     readerId: () => {
                         return $state.params.readerId;
                     },
-                    stx: () => {
-                        return true;
+                    type: () => {
+                        return 'stx';
                     }
                 },
                 backdrop: 'static',
@@ -239,9 +377,42 @@
                 templateUrl: "views/cards/emv/belfius/close-session.html",
                 resolve: {
                     close: () => {
+                        return connector.readerapi($state.params.readerId).closeSession().then(res => {
+                            RMC.sessionStatus(false);
+                        });
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalCtrl'
+            });
+        }
+
+        function closeBelfiusSession() {
+            console.log("close session");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/close-session.html",
+                resolve: {
+                    close: () => {
                         return connector.belfius($state.params.readerId).closeSession().then(res => {
                             RMC.sessionStatus(false);
                         });
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalCtrl'
+            });
+        }
+
+        function verifyCcidFeature() {
+            console.log("verify CCID feature");
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/verify-ccid-feature.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'ccid';
                     }
                 },
                 backdrop: 'static',
