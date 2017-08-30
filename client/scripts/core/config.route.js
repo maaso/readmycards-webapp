@@ -33,7 +33,7 @@
                                        return $q.when([]);
                                    }
                                },
-                               cardPresent: function ($q, gclAvailable, readers, T1C, _) {
+                               cardPresent: function ($q, gclAvailable, readers, _) {
                                    if (gclAvailable) {
                                        return $q.when(!!_.find(readers.data, function (o) {
                                            return _.has(o, 'card');

@@ -4,7 +4,7 @@
     angular.module('app.cards.lux')
         .service('LuxUtils', LuxUtils);
 
-    function LuxUtils($http, $q, T1C, _) {
+    function LuxUtils() {
         this.formatBirthDate = formatBirthDate;
         this.formatValidity = formatValidity;
 

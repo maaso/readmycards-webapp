@@ -24,15 +24,13 @@
         }
     }
 
-    function modalSessionOpenCtrl($scope, $uibModalInstance, belfius, readerId, Core, RMC) {
+    function modalSessionOpenCtrl($scope, $uibModalInstance, belfius, readerId, Connector, RMC) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.open = open;
-
-        let connector = Core.getConnector();
+        let connector = Connector.get();
 
         function open(timeout) {
-            console.log(timeout);
             if (belfius) {
                 connector.belfius(readerId).openSession(timeout).then((res) => {
                     RMC.sessionStatus(true);
@@ -70,12 +68,12 @@
         }
     }
 
-    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, type, Core) {
+    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, type, Connector) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.submit = submit;
 
-        let connector = Core.getConnector();
+        let connector = Connector.get();
 
         function ok() {
             $uibModalInstance.close("ok");
@@ -188,7 +186,7 @@
     }
 
     function rootCtrl($scope, $state, $uibModal, gclAvailable, readers, cardPresent,
-                      RMC, EVENTS, _, Analytics, Citrix, Core, Connector) {
+                      RMC, EVENTS, _, Analytics, Citrix, Connector) {
         let controller = this;
         let connector = Connector.get();
         controller.gclAvailable = gclAvailable;
@@ -473,7 +471,7 @@
             });
 
             $scope.$on(EVENTS.START_OVER, function (event, currentReaderId) {
-                Core.getReaders().then(function (result) {
+                Connector.get().core().readers().then(function (result) {
                     if (_.find(result.data, function (reader) {
                             return _.has(reader, 'card');
                         })) {
@@ -555,13 +553,13 @@
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
                 // $scope.$apply();
                 pollForReaders();
-            }, Citrix.port());
+            });
         }
 
         function pollForCard() {
             if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            Core.getConnector().core().pollCardInserted(3, function (err, result) {
+            Connector.get().core().pollCardInserted(3, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
@@ -578,7 +576,7 @@
                     // else toastr.success('Reader found!');
                     // Found a card, attempt to read it
                     // Refresh reader list first
-                    Core.getReaders().then(function (result) {
+                    Connector.get().core().readers().then(function (result) {
                         controller.readers = result.data;
                         readCard();
                     }, function () {
@@ -600,7 +598,7 @@
                     if (removed) controller.pollingCard = false;
                     else pollForCard();
                 });
-            }, Citrix.port());
+            });
         }
 
         function promptDownload() {
