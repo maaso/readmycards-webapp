@@ -186,7 +186,7 @@
         });
     }
 
-    function rootCtrl($scope, $state, $uibModal, gclAvailable, readers, cardPresent,
+    function rootCtrl($scope, $rootScope, $location, $state, $uibModal, gclAvailable, readers, cardPresent,
                       RMC, EVENTS, _, Analytics, Connector) {
         let controller = this;
         let connector = Connector.get();
@@ -208,6 +208,12 @@
         controller.sendCcidCommand = sendCcidCommand;
 
         let pollIterations = 0;
+
+        $rootScope.$on('$locationChangeSuccess', () => {
+            if ($location.search().username !== controller.currentUserName) {
+                location.reload();
+            }
+        });
 
         init();
 
@@ -420,9 +426,13 @@
         }
 
         function init() {
-            console.log('Using T1C-js ' + Connector.get().core().version());
+            if (gclAvailable) {
+                console.log('Using T1C-js ' + Connector.get().core().version());
+            } else { console.log("No GCL installation found"); }
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
+            controller.currentUserName = $location.search().username;
 
             // Determine initial action we need to take
             if (!controller.cardPresent) {

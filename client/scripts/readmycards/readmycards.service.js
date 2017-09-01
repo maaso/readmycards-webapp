@@ -21,37 +21,44 @@
         function isGCLAvailable() {
             console.log("check gcl available");
             let available = $q.defer();
-            Connector.get().core().info().then(res => {
-                if (_.isBoolean(res.data.citrix) && res.data.citrix) {
-                    Citrix.environment(res.data.citrix);
-                    Connector.get().agent().get().then(res => {
-                        // find correct agent
-                        let citrixAgent = _.find(res.data, agent => {
-                            return agent.username === Citrix.user().id;
-                        });
-                        if (citrixAgent) {
-                            Citrix.agent(citrixAgent).then(() => {
-                                Connector.get().core().readers().then(() => {
-                                    Citrix.updateLocation();
-                                    available.resolve(true);
-                                }, () => {
-                                    Citrix.invalidLocalAgent().then(() => {
-                                        available.resolve(isGCLAvailable());
+            // get Connector
+            let connector = Connector.get();
+
+            if (connector && connector.GCLInstalled) {
+                connector.core().info().then(res => {
+                    if (_.isBoolean(res.data.citrix) && res.data.citrix) {
+                        Citrix.environment(res.data.citrix);
+                        connector.agent().get().then(res => {
+                            // find correct agent
+                            let citrixAgent = _.find(res.data, agent => {
+                                return agent.username === Citrix.user().id;
+                            });
+                            if (citrixAgent) {
+                                Citrix.agent(citrixAgent).then(() => {
+                                    connector.core().readers().then(() => {
+                                        Citrix.updateLocation();
+                                        available.resolve(true);
+                                    }, () => {
+                                        Citrix.invalidLocalAgent().then(() => {
+                                            available.resolve(isGCLAvailable());
+                                        });
                                     });
                                 });
-                            });
-                        } else {
-                            Citrix.invalidLocalAgent().then(() => {
-                                available.resolve(isGCLAvailable());
-                            });
-                        }
-                    }, err => {
-                        console.log(err);
-                    });
-                } else { available.resolve(true); }
-            }, () => {
+                            } else {
+                                Citrix.invalidLocalAgent().then(() => {
+                                    available.resolve(isGCLAvailable());
+                                });
+                            }
+                        }, err => {
+                            console.log(err);
+                        });
+                    } else { available.resolve(true); }
+                }, () => {
+                    available.resolve(false);
+                });
+            } else {
                 available.resolve(false);
-            });
+            }
             return available.promise;
         }
     }

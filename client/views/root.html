@@ -13,16 +13,7 @@
 
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
     <div id="rmc-content">
-        <div class="text-center">
-            <h4>Belfius Container</h4>
-            <span class="btn btn-default btn-summary-download"
-                  ng-click="root.getNonce()">Get Nonce</span>
-            <span class="btn btn-default btn-summary-download"
-                  ng-click="root.sendSTX()">Send STX</span>
-        </div>
-
         <div class="text-center" style="margin-top: 15px;">
-            <h4>Remote Loading Container</h4>
             <div>
                 <span class="btn btn-default btn-summary-download"
                       ng-click="root.openSession()">Open Session</span>
@@ -32,6 +23,10 @@
                       ng-click="root.getCcidFeatures()">Get CCID Features</span>
                 <span class="btn btn-default btn-summary-download"
                       ng-click="root.sendCcidCommand()">Send CCID Command</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.getNonce()">Get Nonce</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.sendSTX()">Send STX</span>
             </div>
 
             <div style="margin-top: 5px;">
