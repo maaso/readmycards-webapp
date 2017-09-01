@@ -72,6 +72,7 @@
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.submit = submit;
+        console.log(type);
 
         let connector = Connector.get();
 
@@ -186,7 +187,7 @@
     }
 
     function rootCtrl($scope, $state, $uibModal, gclAvailable, readers, cardPresent,
-                      RMC, EVENTS, _, Analytics, Citrix, Connector) {
+                      RMC, EVENTS, _, Analytics, Connector) {
         let controller = this;
         let connector = Connector.get();
         controller.gclAvailable = gclAvailable;
@@ -204,7 +205,7 @@
         controller.sendSTX = sendSTX;
         controller.closeSession = closeSession;
         controller.closeBelfiusSession = closeBelfiusSession;
-        controller.verifyCcidFeature = verifyCcidFeature;
+        controller.sendCcidCommand = sendCcidCommand;
 
         let pollIterations = 0;
 
@@ -401,8 +402,8 @@
             });
         }
 
-        function verifyCcidFeature() {
-            console.log("verify CCID feature");
+        function sendCcidCommand() {
+            console.log("sendCcidCommand");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/verify-ccid-feature.html",
                 resolve: {
@@ -414,7 +415,7 @@
                     }
                 },
                 backdrop: 'static',
-                controller: 'ModalCtrl'
+                controller: 'ModalSendCommandCtrl'
             });
         }
 
