@@ -4,6 +4,7 @@
     angular.module('app.readmycards')
            .controller('ModalCtrl', modalCtrl)
            .controller('ModalSessionOpenCtrl', modalSessionOpenCtrl)
+           .controller('ModalSessionCloseCtrl', modalSessionCloseCtrl)
            .controller('ModalUserNameCtrl', modalUserNameCtrl)
            .controller('ModalSendCommandCtrl', modalSendCommandCtrl)
            .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
@@ -53,6 +54,22 @@
             $uibModalInstance.dismiss("cancel");
         }
     }
+
+    function modalSessionCloseCtrl($scope, $uibModalInstance, close) {
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+        $scope.open = open;
+        $scope.sessionId = close;
+
+        function ok() {
+            $uibModalInstance.close("ok");
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss("cancel");
+        }
+    }
+
 
     function modalUserNameCtrl($scope, $uibModalInstance, retry) {
         $scope.ok = ok;
@@ -384,11 +401,12 @@
                     close: () => {
                         return connector.readerapi($state.params.readerId).closeSession().then(res => {
                             RMC.sessionStatus(false);
+                            return res.data;
                         });
                     }
                 },
                 backdrop: 'static',
-                controller: 'ModalCtrl'
+                controller: 'ModalSessionCloseCtrl'
             });
         }
 
