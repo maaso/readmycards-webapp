@@ -85,11 +85,10 @@
         }
     }
 
-    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, type, Connector) {
+    function modalSendCommandCtrl($scope, $uibModalInstance, readerId, type, Connector, RMC) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.submit = submit;
-        console.log(type);
 
         let connector = Connector.get();
 
@@ -115,6 +114,12 @@
                     break;
                 case 'ccid':
                     connector.readerapi(readerId).ccid(payload, secondaryPayload, sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'close-session':
+                    connector.readerapi(readerId).closeSession(sessionId).then(res => {
+                        $scope.result = { sessionId };
+                        RMC.sessionStatus(false);
+                    }, handleError);
                     break;
                 case 'command':
                     connector.readerapi(readerId).command(angular.fromJson(payload), sessionId).then(handleSuccess, handleError);
@@ -212,7 +217,6 @@
         controller.cardPresent = cardPresent;
         controller.dismissPanels = dismissPanels;
         controller.openSession = openSession;
-        controller.openBelfiusSession = openBelfiusSession;
         controller.getAtr = getAtr;
         controller.getCcidFeatures = getCcidFeatures;
         controller.getNonce = getNonce;
@@ -221,7 +225,6 @@
         controller.sendCommand = sendCommand;
         controller.sendSTX = sendSTX;
         controller.closeSession = closeSession;
-        controller.closeBelfiusSession = closeBelfiusSession;
         controller.sendCcidCommand = sendCcidCommand;
 
         let pollIterations = 0;
@@ -238,23 +241,6 @@
             $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
             controller.cardTypesOpen = false;
             controller.faqOpen = false;
-        }
-
-        function openBelfiusSession() {
-            console.log("open session");
-            $uibModal.open({
-                templateUrl: "views/cards/emv/belfius/open-session.html",
-                resolve: {
-                    readerId: () => {
-                        return $state.params.readerId;
-                    },
-                    belfius: () => {
-                        return true;
-                    }
-                },
-                backdrop: 'static',
-                controller: 'ModalSessionOpenCtrl'
-            });
         }
 
         function openSession() {
@@ -398,31 +384,15 @@
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/close-session.html",
                 resolve: {
-                    close: () => {
-                        return connector.readerapi($state.params.readerId).closeSession().then(res => {
-                            RMC.sessionStatus(false);
-                            return res.data;
-                        });
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'close-session';
                     }
                 },
                 backdrop: 'static',
-                controller: 'ModalSessionCloseCtrl'
-            });
-        }
-
-        function closeBelfiusSession() {
-            console.log("close session");
-            $uibModal.open({
-                templateUrl: "views/cards/emv/belfius/close-session.html",
-                resolve: {
-                    close: () => {
-                        return connector.belfius($state.params.readerId).closeSession().then(res => {
-                            RMC.sessionStatus(false);
-                        });
-                    }
-                },
-                backdrop: 'static',
-                controller: 'ModalCtrl'
+                controller: 'ModalSendCommandCtrl'
             });
         }
 

@@ -1,9 +1,16 @@
 <div class="modal-header">
-  <h3>Session Closed</h3>
+  <h3>Close Session</h3>
 </div>
-<div class="modal-body">
-  <p>Session {{sessionId}} successfully closed.</p>
+<div class="modal-body" ng-hide="result">
+  <div>
+    <label for="session-id">Enter Session ID:</label>
+    <input id="session-id" type="text" class="form-control" data-ng-model="sessionId">
+  </div>
+</div>
+<div class="modal-body" ng-if="result">
+  <p>Session {{result.sessionId}} successfully closed.</p>
 </div>
 <div class="modal-footer">
-  <span class="btn btn-primary" ng-click="ok()">OK</span>
+  <span class="btn btn-primary" data-ng-click="submit(sessionId)" ng-hide="result">Close</span>
+  <span class="btn btn-default" data-ng-click="ok()">Done</span>
 </div>
