@@ -136,12 +136,10 @@
             }
 
             function handleSuccess(res) {
-                console.log(res);
                 $scope.result = angular.toJson(res.data);
             }
 
             function handleError(err) {
-                console.log(err);
                 $scope.error = angular.toJson(err);
             }
         }
