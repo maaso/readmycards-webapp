@@ -61,6 +61,7 @@
                 };
 
                 $scope.$on(EVENTS.REINITIALIZE, function () {
+
                     controller.$onInit();
                 });
 
@@ -76,20 +77,6 @@
                 function readAnother() {
                     $scope.$emit(EVENTS.START_OVER, controller.readerId);
                 }
-            }
-        })
-        .component('rmcFlow', {
-            templateUrl: 'views/readmycards/components/flow.html',
-            bindings: {
-                policies: '<',
-                editable: '<',
-                type: '@'
-            },
-            controller: function () {
-                var controller = this;
-                this.$onInit = function() {
-
-                };
             }
         })
         .component('downloadGcl', {

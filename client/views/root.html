@@ -39,7 +39,19 @@
                 <span class="btn btn-default btn-summary-download"
                       ng-click="root.closeSession()">Close Session</span>
             </div>
-
+        </div>
+        <div class="text-center" style="margin-top: 15px;">
+            <h4>EMV</h4>
+            <div>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.emvApplications()">Applications</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.emvApplicationData()">Application Data</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.emvIssuerCert()">Issuer PK Cert</span>
+                <span class="btn btn-default btn-summary-download"
+                      ng-click="root.emvIccCert()">ICC PK Cert</span>
+            </div>
         </div>
 
         <download-gcl dl-url="root.dlLink" is-firefox="root.isFirefox" ng-if="!root.gclAvailable"></download-gcl>
@@ -49,7 +61,6 @@
         <card-polling error="root.error" poll-timeout="root.pollTimeout" ng-if="root.pollingCard"></card-polling>
 
         <reader-select ng-if="root.readerWithCard"></reader-select>
-        <rmc-consent ng-if="root.noConsent"></rmc-consent>
     </div>
     <nav class="st-faq sliding-faq" ng-class="{ 'st-faq-open': root.faqOpen }" id="menu-2">
         <rmc-faq></rmc-faq>

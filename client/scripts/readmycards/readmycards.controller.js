@@ -206,7 +206,7 @@
         });
     }
 
-    function rootCtrl($scope, $rootScope, $location, $state, $uibModal, gclAvailable, readers, cardPresent,
+    function rootCtrl($scope, $rootScope, $location, $state, $timeout, $uibModal, gclAvailable, readers, cardPresent,
                       RMC, EVENTS, _, Analytics, Connector) {
         let controller = this;
         let connector = Connector.get();
@@ -476,32 +476,38 @@
                         if (_.find(result.data, function (reader) {
                                 return _.has(reader, 'card') && reader.id === currentReaderId;
                             })) {
-                            controller.readers = result.data;
-                            controller.readerWithCard = _.find(result.data, function (reader) {
-                                return reader.id === currentReaderId;
+                            $timeout(() => {
+                                controller.readers = result.data;
+                                controller.readerWithCard = _.find(result.data, function (reader) {
+                                    return reader.id === currentReaderId;
+                                });
+                                controller.cardPresent = true;
+                                $scope.$broadcast(EVENTS.REINITIALIZE);
                             });
-                            controller.cardPresent = true;
-                            $scope.$broadcast(EVENTS.REINITIALIZE);
                         } else {
                             $state.go('root.reader', { readerId: _.find(result.data, function (reader) {
                                 return _.has(reader, 'card');
                             }).id});
                         }
                     } else {
-                        controller.readers = result.data;
-                        controller.readerWithCard = undefined;
-                        controller.cardPresent = false;
-                        if (_.isEmpty(controller.readers)) {
-                            pollForReaders();
-                        } else {
-                            pollForCard();
-                        }
+                        $timeout(() => {
+                            controller.readers = result.data;
+                            controller.readerWithCard = undefined;
+                            controller.cardPresent = false;
+                            if (_.isEmpty(controller.readers)) {
+                                pollForReaders();
+                            } else {
+                                pollForCard();
+                            }
+                        });
                     }
                 }, function () {
-                    controller.readers = [];
-                    controller.readerWithCard = undefined;
-                    controller.cardPresent = false;
-                    pollForReaders();
+                    $timeout(() => {
+                        controller.readers = [];
+                        controller.readerWithCard = undefined;
+                        controller.cardPresent = false;
+                        pollForReaders();
+                    })
                 });
             });
 
@@ -527,28 +533,30 @@
                 // Success callback
                 // Found at least one reader, poll for cards
                 if (err) {
-                    controller.error = true;
-                    $scope.$apply();
+                    $timeout(() => {
+                        controller.error = true;
+                    });
                 }
                 else {
-                    controller.readers = result.data;
-                    controller.pollingReaders = false;
-                    Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
-                    $scope.$apply();
-                    // if (controller.readers.length > 1) toastr.success('Readers found!');
-                    // else toastr.success('Reader found!');
-                    pollForCard();
+                    $timeout(() => {
+                        controller.readers = result.data;
+                        controller.pollingReaders = false;
+                        Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
+                        // if (controller.readers.length > 1) toastr.success('Readers found!');
+                        // else toastr.success('Reader found!');
+                        pollForCard();
+                    })
                 }
             }, function () {
                 // Not used
-                controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
-                $scope.$apply();
+                $timeout(() => {
+                    controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
+                });
             }, function () {
                 // timeout
                 // controller.pollingReaders = false;
                 // controller.pollTimeout = true;
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
-                // $scope.$apply();
                 pollForReaders();
             });
         }
@@ -560,30 +568,32 @@
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
-                    controller.error = true;
-                    $scope.$apply();
-                }
-                else {
-                    controller.pollingCard = false;
-                    controller.pollTimeout = false;
-                    Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
-                    pollIterations = 0;
-                    $scope.$apply();
-                    // if ($scope.readers.length > 1) toastr.success('Readers found!');
-                    // else toastr.success('Reader found!');
-                    // Found a card, attempt to read it
-                    // Refresh reader list first
-                    Connector.get().core().readers().then(function (result) {
-                        controller.readers = result.data;
-                        readCard();
-                    }, function () {
-                        pollForCard();
+                    $timeout(() => {
+                        controller.error = true;
+                    })
+                } else {
+                    $timeout(() => {
+                        controller.pollingCard = false;
+                        controller.pollTimeout = false;
+                        Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
+                        pollIterations = 0;
+                        // if ($scope.readers.length > 1) toastr.success('Readers found!');
+                        // else toastr.success('Reader found!');
+                        // Found a card, attempt to read it
+                        // Refresh reader list first
+                        Connector.get().core().readers().then(function (result) {
+                            controller.readers = result.data;
+                            readCard();
+                        }, function () {
+                            pollForCard();
+                        });
                     });
                 }
             }, function () {
                 // "Waiting for reader connection" callback
-                controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
-                $scope.$apply();
+                $timeout(() => {
+                    controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
+                });
             }, function () {
                 // "Waiting for card" callback
             }, function () {
@@ -606,10 +616,12 @@
         }
 
         function readCard() {
-            controller.readerWithCard = _.find(controller.readers, function (o) {
-                return _.has(o, 'card');
+            $timeout(() => {
+                controller.readerWithCard = _.find(controller.readers, function (o) {
+                    return _.has(o, 'card');
+                });
+                $state.go('root.reader', { readerId: controller.readerWithCard.id });
             });
-            $state.go('root.reader', { readerId: controller.readerWithCard.id });
         }
     }
 
