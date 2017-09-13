@@ -6,11 +6,16 @@
         bindings: {
             cardData: '<',
         },
-        controller: function (_) {
+        controller: function (_, EmvUtils) {
             let controller = this;
 
             controller.$onInit = () => {
-                console.log(controller.cardData);
+                console.log(controller.cardData.application_data);
+                controller.cardNumber =
+                    EmvUtils.constructCardNumber(controller.cardData.application_data.pan);
+                controller.expiration =
+                    EmvUtils.constructExpirationDate(controller.cardData.application_data.expiration_date);
+                // controller.cardData.application_data.name = "Maarten Somers"
             };
         }
     };

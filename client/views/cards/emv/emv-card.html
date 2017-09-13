@@ -2,5 +2,31 @@
     <div class="front">
         <div class="specimen text-uppercase">Specimen</div>
         <div class="chip-icon"></div>
+        <div class="content">
+            <div class="card-number">
+                <div class="labels inline">
+                    <div>CARD</div>
+                </div>
+                <div class="values inline">
+                    <div>{{ $ctrl.cardNumber }}</div>
+                </div>
+            </div>
+            <div class="name" ng-show="$ctrl.cardData.application_data.name">
+                <div class="labels inline">
+                    <div>HOLDER</div>
+                </div>
+                <div class="values inline text-uppercase">
+                    <div>{{ $ctrl.cardData.application_data.name }}</div>
+                </div>
+            </div>
+            <div class="validity">
+                <div class="labels inline">
+                    <div>EXPIRES</div>
+                </div>
+                <div class="values inline">
+                    <div>{{ $ctrl.expiration }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

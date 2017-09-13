@@ -637,7 +637,9 @@
                 templateUrl: "views/cards/emv/belfius/emv-applications.html",
                 resolve: {
                     data: () => {
-                        return Connector.get().emv($state.params.readerId).applications();
+                        return Connector.get().emv($state.params.readerId).applications().then(res => {
+                            return JSON.stringify(res);
+                        });
                     }
                 },
                 backdrop: 'static',
@@ -650,7 +652,9 @@
                 templateUrl: "views/cards/emv/belfius/emv-application-data.html",
                 resolve: {
                     data: () => {
-                        return Connector.get().emv($state.params.readerId).applicationData();
+                        return Connector.get().emv($state.params.readerId).applicationData().then(res => {
+                            return JSON.stringify(res);
+                        });
                     }
                 },
                 backdrop: 'static',

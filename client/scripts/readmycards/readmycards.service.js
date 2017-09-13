@@ -92,7 +92,7 @@
         }
     }
 
-    function ReadMyCardsService($rootScope, $q, $timeout, Connector, EVENTS, _) {
+    function ReadMyCardsService($rootScope, $q, $timeout, $state, Connector, EVENTS, _) {
         this.monitorCardRemoval = monitorCardRemoval;
         this.checkCardRemoval = checkCardRemoval;
         this.checkReaderRemoval = checkReaderRemoval;
@@ -107,7 +107,7 @@
         function monitorCardRemoval(readerId, card) {
             $timeout(function () {
                 checkCardRemoval(readerId, card).then(function (removed) {
-                    if (removed) $rootScope.$broadcast(EVENTS.START_OVER);
+                    if (removed) $rootScope.$broadcast(EVENTS.START_OVER, $state.params.readerId);
                     else monitorCardRemoval(readerId, card);
                 });
             }, 500);

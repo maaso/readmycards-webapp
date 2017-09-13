@@ -61,7 +61,7 @@
                 };
 
                 $scope.$on(EVENTS.REINITIALIZE, function () {
-
+                    console.log("reinit");
                     controller.$onInit();
                 });
 
