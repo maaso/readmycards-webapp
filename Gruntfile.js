@@ -46,7 +46,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.src %>/scripts",
                 dest: "<%= dir.local %>/scripts",
-                src: ["**/*.js", "!plugins/GCLLib.js"]
+                src: ["**/*.js", "!plugins/**/*.js"]
             }
         },
         /**
@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.local %>",
-                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*", "scripts/plugins/GCLLib.js" ]
+                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*", "scripts/plugins/**/*.js" ]
             },
             fa : {
                 expand: true,
@@ -217,7 +217,7 @@ module.exports = function(grunt) {
                 options: {
                     livereload: true
                 },
-                files: ['<%= dir.src %>/scripts/**/*.js'],
+                files: ['<%= dir.src %>/scripts/**/*.js', '!<%= dir.src %>/scripts/plugins/**/*.js'],
                 tasks: ['babel:dev', 'replace:local']
             },
             styles: {
@@ -233,6 +233,13 @@ module.exports = function(grunt) {
                 },
                 files: [ '<%= dir.src %>/index.html' ],
                 tasks: [ 'copy:indexDev' ]
+            },
+            plugins: {
+                options: {
+                    livereload: true
+                },
+                files: [ '<%= dir.src %>/scripts/plugins/**/*.js'],
+                tasks: [ 'copy:local' ]
             }
         }, // End Watch
         /**
