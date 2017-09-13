@@ -4,7 +4,7 @@
     angular.module('app.readmycards')
            .controller('ModalCtrl', modalCtrl)
            .controller('ModalSessionOpenCtrl', modalSessionOpenCtrl)
-           .controller('ModalSessionCloseCtrl', modalSessionCloseCtrl)
+           .controller('ModalStaticDataCtrl', modalStaticDataCtrl)
            .controller('ModalUserNameCtrl', modalUserNameCtrl)
            .controller('ModalSendCommandCtrl', modalSendCommandCtrl)
            .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
@@ -55,11 +55,11 @@
         }
     }
 
-    function modalSessionCloseCtrl($scope, $uibModalInstance, close) {
+    function modalStaticDataCtrl($scope, $uibModalInstance, data) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.open = open;
-        $scope.sessionId = close;
+        $scope.data = data;
 
         function ok() {
             $uibModalInstance.close("ok");
@@ -69,7 +69,6 @@
             $uibModalInstance.dismiss("cancel");
         }
     }
-
 
     function modalUserNameCtrl($scope, $uibModalInstance, retry) {
         $scope.ok = ok;
@@ -132,6 +131,12 @@
                     break;
                 case 'stx':
                     connector.belfius(readerId).stx(payload, sessionId).then(handleSuccess, handleError);
+                    break;
+                case 'emv-issuer':
+                    connector.emv(readerId).issuerPublicKeyCertificate(payload).then(handleSuccess, handleSuccess);
+                    break;
+                case 'emv-icc':
+                    connector.emv(readerId).iccPublicKeyCertificate(payload).then(handleSuccess, handleError);
                     break;
             }
 
@@ -224,6 +229,10 @@
         controller.sendSTX = sendSTX;
         controller.closeSession = closeSession;
         controller.sendCcidCommand = sendCcidCommand;
+        controller.emvApplications = emvApplications;
+        controller.emvApplicationData = emvApplicationData;
+        controller.emvIssuerCert = emvIssuerCert;
+        controller.emvIccCert = emvIccCert;
 
         let pollIterations = 0;
 
@@ -525,7 +534,6 @@
             });
         }
 
-
         function pollForReaders() {
             if (!controller.pollingReaders) controller.pollingReaders = true;
             controller.error = false;
@@ -621,6 +629,64 @@
                     return _.has(o, 'card');
                 });
                 $state.go('root.reader', { readerId: controller.readerWithCard.id });
+            });
+        }
+
+        function emvApplications() {
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/emv-applications.html",
+                resolve: {
+                    data: () => {
+                        return Connector.get().emv($state.params.readerId).applications();
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalStaticDataCtrl'
+            });
+        }
+
+        function emvApplicationData() {
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/emv-application-data.html",
+                resolve: {
+                    data: () => {
+                        return Connector.get().emv($state.params.readerId).applicationData();
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalStaticDataCtrl'
+            });
+        }
+
+        function emvIssuerCert() {
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/emv-issuer-cert.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'emv-issuer';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
+        function emvIccCert() {
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/emv-icc-cert.html",
+                resolve: {
+                    readerId: () => {
+                        return $state.params.readerId;
+                    },
+                    type: () => {
+                        return 'emv-icc';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
             });
         }
     }
