@@ -13,6 +13,8 @@
                 this.registerUnknownType = registerUnknownType;
                 this.showSupportedCardTypes = toggleCardTypes;
 
+                let currentReaderId = controller.readerId;
+
                 this.$onInit = function () {
                     controller.loading = true;
                     controller.errorReadingCard = false;
@@ -58,6 +60,13 @@
                         }
                     });
 
+                };
+
+                this.$onChanges = (changed) => {
+                    if (changed.readerId && changed.readerId.currentValue !== currentReaderId) {
+                        currentReaderId = changed.readerId.currentValue;
+                        controller.$onInit();
+                    }
                 };
 
                 $scope.$on(EVENTS.REINITIALIZE, function () {
@@ -155,6 +164,9 @@
         })
         .component('readerSelect', {
             templateUrl: 'views/readmycards/components/reader-list.html',
+            bindings: {
+                currentReaderId: '<'
+            },
             controller: function ($scope, $state, $timeout, CardService, EVENTS, _) {
                 let controller = this;
                 this.$onInit = function () {
@@ -175,7 +187,16 @@
             templateUrl: 'views/readmycards/components/reader-icon.html',
             bindings: {
                 index: '<',
-                reader: '<'
+                reader: '<',
+                currentReaderId: '<'
+            },
+            controller: function($scope, EVENTS) {
+                let controller = this;
+                controller.selectReader = selectReader;
+
+                function selectReader() {
+                    $scope.$emit(EVENTS.SELECT_READER, controller.reader);
+                }
             }
         })
         .component('rmcHeader', {

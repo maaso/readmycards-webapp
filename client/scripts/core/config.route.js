@@ -45,20 +45,16 @@
                            },
                            controller: 'RootCtrl as root'
                        })
-                       .state('root.reader', {
-                           url: ':readerId?username',
-                           templateUrl: '/views/reader.html',
-                           controller: 'ReaderCtrl as ctrl'
-                       })
                }
            )
-           .run( function ($rootScope, $location) {
+           .run( function ($rootScope, $location, _) {
                let locationSearch;
 
                $rootScope.$on('$stateChangeStart',
                    function (event, toState, toParams, fromState, fromParams) {
                        //save location.search so we can add it back after transition is done
                        locationSearch = $location.search();
+                       console.log(locationSearch);
                    });
 
                $rootScope.$on('$stateChangeSuccess',

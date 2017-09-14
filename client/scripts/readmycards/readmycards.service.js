@@ -28,13 +28,9 @@
                 connector.core().info().then(res => {
                     if (_.isBoolean(res.data.citrix) && res.data.citrix) {
                         Citrix.environment(res.data.citrix);
-                        connector.agent().get().then(res => {
-                            // find correct agent
-                            let citrixAgent = _.find(res.data, agent => {
-                                return agent.username === Citrix.user().id;
-                            });
-                            if (citrixAgent) {
-                                Citrix.agent(citrixAgent).then(() => {
+                        connector.agent().get(Citrix.userSelectionParams()).then(res => {
+                            if (res.data && typeof res.data === 'object' && !_.isArray(res.data)) {
+                                Citrix.agent(res.data).then(() => {
                                     connector.core().readers().then(() => {
                                         Citrix.updateLocation();
                                         available.resolve(true);
@@ -170,12 +166,12 @@
         let citrixAgent;
         let citrixEnvironment = false;
         let citrixPort = undefined;
-        let citrixUser = {};
+        let citrixUserSelectionParams = {};
 
         this.agent = agent;
         this.environment = environment;
         this.port = port;
-        this.user = user;
+        this.userSelectionParams = userSelectionParams;
         this.checkUserName = checkUserName;
         this.invalidLocalAgent = invalidLocalAgent;
         this.updateLocation = updateLocation;
@@ -200,18 +196,18 @@
             return citrixPort;
         }
 
-        function user(userName) {
-            if (userName) { citrixUser.id = userName; }
-            return citrixUser;
+        function userSelectionParams(params) {
+            if (params) { citrixUserSelectionParams = params; }
+            return citrixUserSelectionParams;
         }
 
         function invalidLocalAgent() {
             let defer = $q.defer();
 
-            // re-prompt for username
-            promptUsername(true).then(username => {
-                if (username) {
-                    defer.resolve(user(username));
+            // re-prompt for params
+            promptUsername(true).then(params => {
+                if (params) {
+                    defer.resolve(userSelectionParams(params));
                 } else { defer.resolve(invalidLocalAgent()); }
             });
             return defer.promise;
@@ -219,13 +215,13 @@
 
         function checkUserName() {
             let defer = $q.defer();
-            let username = $location.search().username;
+            let params = $location.search();
 
-            if (username) { defer.resolve(user(username)); }
+            if (params && !_.isEmpty(params)) { defer.resolve(userSelectionParams(params)); }
             else {
-                promptUsername(false).then(username => {
-                    if (username) {
-                        defer.resolve(user(username));
+                promptUsername(false).then(params => {
+                    if (params) {
+                        defer.resolve(userSelectionParams(params));
                     } else { defer.reject(invalidLocalAgent()); }
                 });
             }
@@ -246,7 +242,9 @@
         }
 
         function updateLocation() {
-            $location.search({ username: citrixUser.id });
+            _.forEach(citrixUserSelectionParams, (val, key) => {
+                $location.search(key, val);
+            });
         }
     }
 

@@ -49,16 +49,17 @@
         </div>
 
         <div class="viz-container">
-            <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
+            <mobib-viz reader-id="$ctrl.readerId" card-data="$ctrl.cardData" is-basic="$ctrl.cardType === 'MOBIB Basic'" ng-if="$ctrl.cardType === 'MOBIB' || $ctrl.cardType === 'MOBIB Basic'"></mobib-viz>
 
-            <lux-visualizer ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
+            <lux-visualizer reader-id="$ctrl.readerId" ng-if="$ctrl.cardType === 'LuxID'"></lux-visualizer>
 
             <beid-visualizer rn-data="$ctrl.cardData.rn"
                              address-data="$ctrl.cardData.address"
                              pic-data="$ctrl.cardData.picture"
                              cert-data="$ctrl.cardData"
+                             reader-id="$ctrl.readerId"
                              ng-if="$ctrl.cardType === 'BeID'"></beid-visualizer>
-            <emv-visualizer data="$ctrl.cardData" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
+            <emv-visualizer data="$ctrl.cardData" reader-id="$ctrl.readerId" ng-if="$ctrl.cardType === 'EMV'"></emv-visualizer>
         </div>
     </div>
 </div>

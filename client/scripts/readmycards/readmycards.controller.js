@@ -8,6 +8,7 @@
            .controller('ModalUserNameCtrl', modalUserNameCtrl)
            .controller('ModalSendCommandCtrl', modalSendCommandCtrl)
            .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
+           .controller('ModalEmvPinCheckCtrl', modalEmvPinCheckCtrl)
            .controller('RootCtrl', rootCtrl)
            .controller('ReaderCtrl', readerCtrl);
 
@@ -70,17 +71,54 @@
         }
     }
 
-    function modalUserNameCtrl($scope, $uibModalInstance, retry) {
+    function modalUserNameCtrl($scope, $uibModalInstance, $location, retry, _) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.retry = retry;
+        $scope.params = useCurrentParams() || [ { key: "username", value: "" }];
+        $scope.addParam = addParam;
+        $scope.insufficientParameters = insufficientParameters;
+        $scope.removeParam = removeParam;
 
-        function ok(username) {
-            $uibModalInstance.close(username);
+        function ok() {
+            let paramObject = {};
+            _.forEach($scope.params, p => {
+                paramObject[p.key] = p.value;
+            });
+            $uibModalInstance.close(paramObject);
         }
 
         function cancel() {
             $uibModalInstance.dismiss("cancel");
+        }
+
+        function addParam() {
+            $scope.params.push({ key: "", value: ""});
+        }
+
+        function insufficientParameters() {
+            if ($scope.params.length) {
+                let result = false;
+                _.forEach($scope.params, p => {
+                    if (!p.key.length || !p.value.length) { result = true; }
+                });
+                return result;
+            } else { return true; }
+        }
+
+        function removeParam(param) {
+            _.remove($scope.params, param);
+        }
+
+        function useCurrentParams() {
+            let params = $location.search();
+            if (params && !_.isEmpty(params)) {
+                let deconstructed = [];
+                _.forEach(params, (value, key) => {
+                    deconstructed.push({ key, value });
+                });
+                return deconstructed;
+            } else { return undefined }
         }
     }
 
@@ -211,6 +249,62 @@
         });
     }
 
+    function modalEmvPinCheckCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, Connector, _) {
+        $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        $scope.pincode = {
+            value: ''
+        };
+        $scope.pinpad = pinpad;
+        $scope.ok = ok;
+        $scope.cancel = cancel;
+        $scope.onKeyPressed = onKeyPressed;
+        $scope.submitPin = submitPin;
+
+        init();
+
+        function init() {
+            // If pinpad reader, send verification request directly to reader
+            if (pinpad) {
+                Connector.get().beid(readerId).verifyPin({}).then(handleVerificationSuccess, handleVerificationError);
+            }
+            // else, wait until user enters pin
+        }
+
+        function handleVerificationSuccess(res) {
+            $uibModalInstance.close('verified');
+        }
+
+        function handleVerificationError(err) {
+            $uibModalInstance.dismiss(err.data);
+        }
+
+        function ok() {
+            $uibModalInstance.close('ok');
+        }
+
+        function cancel() {
+            $uibModalInstance.dismiss('cancel');
+        }
+
+        function onKeyPressed(data) {
+            if (data === '<') {
+                if (_.isEmpty($scope.pincode.value)) $uibModalInstance.dismiss('cancel');else $scope.pincode.value = $scope.pincode.value.slice(0, $scope.pincode.value.length - 1);
+            } else if (data === '>') {
+                submitPin();
+            } else {
+                $scope.pincode.value += data;
+            }
+        }
+
+        function submitPin() {
+            Connector.get().emv(readerId).verifyPin({ pin: $scope.pincode.value }).then(handleVerificationSuccess, handleVerificationError);
+        }
+
+        $scope.$on(EVENTS.START_OVER, function () {
+            $scope.cancel();
+        });
+    }
+
     function rootCtrl($scope, $rootScope, $location, $state, $timeout, $uibModal, gclAvailable, readers, cardPresent,
                       RMC, EVENTS, _, Analytics, Connector) {
         let controller = this;
@@ -237,7 +331,7 @@
         let pollIterations = 0;
 
         $rootScope.$on('$locationChangeSuccess', () => {
-            if ($location.search().username !== controller.currentUserName) {
+            if ($location.search() !== controller.currentAgentParams) {
                 location.reload();
             }
         });
@@ -427,7 +521,7 @@
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
-            controller.currentUserName = $location.search().username;
+            controller.currentAgentParams = $location.search();
 
             // Determine initial action we need to take
             if (!controller.cardPresent) {
@@ -450,6 +544,10 @@
                 // A card is present, determine type and read its data
                 readCard();
             }
+
+            $scope.$on(EVENTS.SELECT_READER, (event, reader) => {
+                controller.readerWithCard = reader;
+            });
 
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
                 Analytics.trackEvent('T1C', 'install', 'Trust1Connector installed');
@@ -494,9 +592,8 @@
                                 $scope.$broadcast(EVENTS.REINITIALIZE);
                             });
                         } else {
-                            $state.go('root.reader', { readerId: _.find(result.data, function (reader) {
-                                return _.has(reader, 'card');
-                            }).id});
+                            console.log("other reader has card");
+                            readCard();
                         }
                     } else {
                         $timeout(() => {
@@ -628,7 +725,6 @@
                 controller.readerWithCard = _.find(controller.readers, function (o) {
                     return _.has(o, 'card');
                 });
-                $state.go('root.reader', { readerId: controller.readerWithCard.id });
             });
         }
 

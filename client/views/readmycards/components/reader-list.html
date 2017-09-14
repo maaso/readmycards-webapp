@@ -1,16 +1,15 @@
 <div class="card-viz-container">
     <div class="card-viz-title hit-the-floor">Card Contents</div>
 
-    <div class="card-list" ng-if="$ctrl.readers.length > 1">
+    <div class="card-list" ng-show="$ctrl.readers.length > 1">
         <span class="reader-list-header">Select Card:</span>
-        <reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>
-        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
-        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
-        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
-        <!--<reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1" reader="reader"></reader-icon>-->
+        <reader-icon ng-repeat="reader in $ctrl.readers" index="$index + 1"
+                     reader="reader"
+                     current-reader-id="$ctrl.currentReaderId">
+        </reader-icon>
     </div>
 
-    <div ui-view></div>
+    <card-visualizer reader-id="$ctrl.currentReaderId"></card-visualizer>
 </div>
 
 

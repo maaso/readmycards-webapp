@@ -1,17 +1,32 @@
 <div class="modal-header">
-  <h3>Enter Agent Username</h3>
+  <h3>Select Agent</h3>
 </div>
 <div class="modal-body">
   <!--<h4 class="text-info text-light">Username</h4>-->
-  <form ng-submit="ok(username)">
-    <p ng-if="retry">No active Agent was found for the previously entered username, please try again.</p>
-    <input id="username" type="text" class="form-control" ng-model="username">
+  <form class="form-inline" ng-submit="ok()">
+    <p ng-if="retry">No active Agent was found for the previously parameters, please try again.</p>
+    <p ng-if="!retry">Enter Agent selection parameters:</p>
+    <div ng-repeat="param in params" class="form-row" style="margin-bottom: 10px;">
+      <div class="form-group col">
+        <label for="param_key_{{$index}}">Key</label>
+        <input id="param_key_{{$index}}" type="text" class="form-control" ng-model="param.key">
+      </div>
+      <div class="form-group col">
+        <label for="param_val_{{$index}}">Value</label>
+          <input id="param_val_{{$index}}" type="text" class="form-control" ng-model="param.value">
+      </div>
+      <div class="form-group col">
+        <i class="btn btn-line-primary btn-sm fa fa-times" ng-click="removeParam(param)" type="button"></i>
+      </div>
+    </div>
   </form>
 
-
+  <div style="margin-top: 10px;">
+    <span class="btn btn-default btn-sm fa fa-plus" ng-click="addParam()"></span>
+  </div>
 
 </div>
 <div class="modal-footer">
-  <span class="btn btn-primary" ng-click="ok(username)"
-        data-ng-disabled="!username || !username.length">OK</span>
+  <span class="btn btn-primary" ng-click="ok()"
+        data-ng-disabled="insufficientParameters()">OK</span>
 </div>

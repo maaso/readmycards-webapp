@@ -3,14 +3,17 @@
 
     const luxVisualizer = {
         templateUrl: 'views/cards/lux/lux-viz.html',
-        controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, API, Connector) {
+        bindings: {
+            readerId: '<'
+        },
+        controller: function ($rootScope, $uibModal, $compile, $http, $q, $timeout, API, Connector) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.needPin = true;
 
                 // check type of reader
-                Connector.get().core().reader($stateParams.readerId).then(res => {
+                Connector.get().core().reader(controller.readerId).then(res => {
                     controller.pinpad = res.data.pinpad;
                     if (!controller.pinpad) controller.pincode = { value: '' };
                     else {
@@ -27,7 +30,7 @@
 
             function getAllData(pin) {
                 controller.readingData = true;
-                Connector.get().luxeid($stateParams.readerId, pin).allData([]).then(res => {
+                Connector.get().luxeid(controller.readerId, pin).allData([]).then(res => {
                     controller.readingData = false;
                     controller.pinStatus = 'valid';
                     controller.certStatus = 'checking';

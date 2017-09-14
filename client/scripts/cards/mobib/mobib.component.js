@@ -189,7 +189,8 @@
         templateUrl: 'views/cards/mobib/mobib-viz.html',
         bindings: {
             cardData: '<',
-            isBasic: '<'
+            isBasic: '<',
+            readerId: '<'
         },
         controller: function () {
             let controller = this;
