@@ -19,7 +19,6 @@
         /// ===== UTILITY FUNCTIONS ======
         /// ==============================
         function isGCLAvailable() {
-            console.log("check gcl available");
             let available = $q.defer();
             // get Connector
             let connector = Connector.get();
@@ -88,7 +87,7 @@
         }
     }
 
-    function ReadMyCardsService($rootScope, $q, $timeout, $state, Connector, EVENTS, _) {
+    function ReadMyCardsService($rootScope, $q, $timeout, Connector, EVENTS, _) {
         this.monitorCardRemoval = monitorCardRemoval;
         this.checkCardRemoval = checkCardRemoval;
         this.checkReaderRemoval = checkReaderRemoval;
@@ -103,7 +102,7 @@
         function monitorCardRemoval(readerId, card) {
             $timeout(function () {
                 checkCardRemoval(readerId, card).then(function (removed) {
-                    if (removed) $rootScope.$broadcast(EVENTS.START_OVER, $state.params.readerId);
+                    if (removed) $rootScope.$broadcast(EVENTS.START_OVER);
                     else monitorCardRemoval(readerId, card);
                 });
             }, 500);

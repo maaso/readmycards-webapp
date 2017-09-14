@@ -305,7 +305,7 @@
         });
     }
 
-    function rootCtrl($scope, $rootScope, $location, $state, $timeout, $uibModal, gclAvailable, readers, cardPresent,
+    function rootCtrl($scope, $rootScope, $location, $timeout, $uibModal, gclAvailable, readers, cardPresent,
                       RMC, EVENTS, _, Analytics, Connector) {
         let controller = this;
         let connector = Connector.get();
@@ -350,7 +350,7 @@
                 templateUrl: "views/cards/emv/belfius/open-session.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     belfius: () => {
                         return false;
@@ -367,7 +367,7 @@
                 templateUrl: "views/cards/emv/belfius/get-atr.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'atr';
@@ -384,7 +384,7 @@
                 templateUrl: "views/cards/emv/belfius/get-ccid-features.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'ccid-features';
@@ -401,7 +401,7 @@
                 templateUrl: "views/cards/emv/belfius/get-nonce.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'nonce';
@@ -418,7 +418,7 @@
                 templateUrl: "views/cards/emv/belfius/is-present.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'is-present';
@@ -435,7 +435,7 @@
                 templateUrl: "views/cards/emv/belfius/send-apdu.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'apdu';
@@ -452,7 +452,7 @@
                 templateUrl: "views/cards/emv/belfius/send-command.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'command';
@@ -469,7 +469,7 @@
                 templateUrl: "views/cards/emv/belfius/send-stx.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'stx';
@@ -486,7 +486,7 @@
                 templateUrl: "views/cards/emv/belfius/close-session.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'close-session';
@@ -503,7 +503,7 @@
                 templateUrl: "views/cards/emv/belfius/verify-ccid-feature.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'ccid';
@@ -576,25 +576,11 @@
 
             $scope.$on(EVENTS.START_OVER, function (event, currentReaderId) {
                 Connector.get().core().readers().then(function (result) {
+                    controller.readers = result.data;
                     if (_.find(result.data, function (reader) {
                             return _.has(reader, 'card');
                         })) {
-                        // check if current reader has card
-                        if (_.find(result.data, function (reader) {
-                                return _.has(reader, 'card') && reader.id === currentReaderId;
-                            })) {
-                            $timeout(() => {
-                                controller.readers = result.data;
-                                controller.readerWithCard = _.find(result.data, function (reader) {
-                                    return reader.id === currentReaderId;
-                                });
-                                controller.cardPresent = true;
-                                $scope.$broadcast(EVENTS.REINITIALIZE);
-                            });
-                        } else {
-                            console.log("other reader has card");
-                            readCard();
-                        }
+                        $timeout(() => { readCard(); });
                     } else {
                         $timeout(() => {
                             controller.readers = result.data;
@@ -707,8 +693,8 @@
                 // if enough time has passed, show the card not recognized message
                 if (pollIterations >= 5) controller.pollTimeout = true;
                 RMC.checkReaderRemoval().then(function (removed) {
-                    if (removed) controller.pollingCard = false;
-                    else pollForCard();
+                    if (removed) { controller.pollingCard = false; }
+                    else { pollForCard(); }
                 });
             });
         }
@@ -721,6 +707,7 @@
         }
 
         function readCard() {
+            console.log("read card");
             $timeout(() => {
                 controller.readerWithCard = _.find(controller.readers, function (o) {
                     return _.has(o, 'card');
@@ -733,7 +720,7 @@
                 templateUrl: "views/cards/emv/belfius/emv-applications.html",
                 resolve: {
                     data: () => {
-                        return Connector.get().emv($state.params.readerId).applications().then(res => {
+                        return Connector.get().emv(controller.readerWithCard.id).applications().then(res => {
                             return JSON.stringify(res);
                         });
                     }
@@ -748,7 +735,7 @@
                 templateUrl: "views/cards/emv/belfius/emv-application-data.html",
                 resolve: {
                     data: () => {
-                        return Connector.get().emv($state.params.readerId).applicationData().then(res => {
+                        return Connector.get().emv(controller.readerWithCard.id).applicationData().then(res => {
                             return JSON.stringify(res);
                         });
                     }
@@ -763,7 +750,7 @@
                 templateUrl: "views/cards/emv/belfius/emv-issuer-cert.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'emv-issuer';
@@ -779,7 +766,7 @@
                 templateUrl: "views/cards/emv/belfius/emv-icc-cert.html",
                 resolve: {
                     readerId: () => {
-                        return $state.params.readerId;
+                        return controller.readerWithCard.id;
                     },
                     type: () => {
                         return 'emv-icc';
