@@ -241,9 +241,7 @@
         }
 
         function updateLocation() {
-            _.forEach(citrixUserSelectionParams, (val, key) => {
-                $location.search(key, val);
-            });
+            $location.search(citrixUserSelectionParams);
         }
     }
 
