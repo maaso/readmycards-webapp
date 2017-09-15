@@ -54,7 +54,6 @@
                    function (event, toState, toParams, fromState, fromParams) {
                        //save location.search so we can add it back after transition is done
                        locationSearch = $location.search();
-                       console.log(locationSearch);
                    });
 
                $rootScope.$on('$stateChangeSuccess',

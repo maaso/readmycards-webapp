@@ -13,46 +13,49 @@
 
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
     <div id="rmc-content">
-        <div class="text-center" style="margin-top: 15px;">
-            <div>
+        <div class="citrix-buttons text-center" ng-if="root.readerWithCard">
+            <div style="margin-top: 15px;">
+                <div>
                 <span class="btn btn-default btn-summary-download"
                       ng-click="root.openSession()">Open Session</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.sendCommand()">Send Command(s)</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.getCcidFeatures()">Get CCID Features</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.sendCcidCommand()">Send CCID Command</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.getNonce()">Get Nonce</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.sendSTX()">Send STX</span>
-            </div>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.sendCommand()">Send Command(s)</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.getCcidFeatures()">Get CCID Features</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.sendCcidCommand()">Send CCID Command</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.getNonce()">Get Nonce</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.sendSTX()">Send STX</span>
+                </div>
 
-            <div style="margin-top: 5px;">
+                <div style="margin-top: 5px;">
                 <span class="btn btn-default btn-summary-download"
                       ng-click="root.isPresent()">Verify Card Present</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.getAtr()">Get ATR</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.sendApdu()">Send APDU(s)</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.closeSession()">Close Session</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.getAtr()">Get ATR</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.sendApdu()">Send APDU(s)</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.closeSession()">Close Session</span>
+                </div>
             </div>
-        </div>
-        <div class="text-center" style="margin-top: 15px;">
-            <h4>EMV</h4>
-            <div>
+            <div style="margin-top: 15px;">
+                <h4>EMV</h4>
+                <div>
                 <span class="btn btn-default btn-summary-download"
                       ng-click="root.emvApplications()">Applications</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.emvApplicationData()">Application Data</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.emvIssuerCert()">Issuer PK Cert</span>
-                <span class="btn btn-default btn-summary-download"
-                      ng-click="root.emvIccCert()">ICC PK Cert</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.emvApplicationData()">Application Data</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.emvIssuerCert()">Issuer PK Cert</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.emvIccCert()">ICC PK Cert</span>
+                </div>
             </div>
         </div>
+
 
         <download-gcl dl-url="root.dlLink" is-firefox="root.isFirefox" ng-if="!root.gclAvailable"></download-gcl>
 
