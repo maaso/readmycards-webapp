@@ -165,6 +165,9 @@
                 case 'command':
                     connector.readerapi(readerId).command(angular.fromJson(payload), sessionId).then(handleSuccess, handleError);
                     break;
+                case 'is-belfius-reader':
+                    connector.belfius(readerId).isBelfiusReader(sessionId).then(handleSuccess, handleError);
+                    break;
                 case 'is-present':
                     connector.readerapi(readerId).isPresent(sessionId).then(handleSuccess, handleError);
                     break;
@@ -321,6 +324,7 @@
         controller.getAtr = getAtr;
         controller.getCcidFeatures = getCcidFeatures;
         controller.getNonce = getNonce;
+        controller.isBelfiusReader = isBelfiusReader;
         controller.isPresent = isPresent;
         controller.sendApdu = sendApdu;
         controller.sendCommand = sendCommand;
@@ -349,7 +353,6 @@
         }
 
         function openSession() {
-            console.log("open session");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/open-session.html",
                 resolve: {
@@ -366,7 +369,6 @@
         }
 
         function getAtr() {
-            console.log("get ATR");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/get-atr.html",
                 resolve: {
@@ -383,7 +385,6 @@
         }
 
         function getCcidFeatures() {
-            console.log("get CCID features");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/get-ccid-features.html",
                 resolve: {
@@ -400,7 +401,6 @@
         }
 
         function getNonce() {
-            console.log("get nonce");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/get-nonce.html",
                 resolve: {
@@ -416,8 +416,23 @@
             });
         }
 
+        function isBelfiusReader() {
+            $uibModal.open({
+                templateUrl: "views/cards/emv/belfius/is-belfius-reader.html",
+                resolve: {
+                    readerId: () => {
+                        return controller.readerWithCard.id;
+                    },
+                    type: () => {
+                        return 'is-belfius-reader';
+                    }
+                },
+                backdrop: 'static',
+                controller: 'ModalSendCommandCtrl'
+            });
+        }
+
         function isPresent() {
-            console.log("isPresent");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/is-present.html",
                 resolve: {
@@ -434,7 +449,6 @@
         }
 
         function sendApdu() {
-            console.log("send APDU");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/send-apdu.html",
                 resolve: {
@@ -451,7 +465,6 @@
         }
 
         function sendCommand() {
-            console.log("send command");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/send-command.html",
                 resolve: {
@@ -468,7 +481,6 @@
         }
 
         function sendSTX() {
-            console.log("send STX");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/send-stx.html",
                 resolve: {
@@ -485,7 +497,6 @@
         }
 
         function closeSession() {
-            console.log("close session");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/close-session.html",
                 resolve: {
@@ -502,7 +513,6 @@
         }
 
         function sendCcidCommand() {
-            console.log("sendCcidCommand");
             $uibModal.open({
                 templateUrl: "views/cards/emv/belfius/verify-ccid-feature.html",
                 resolve: {

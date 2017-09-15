@@ -25,21 +25,24 @@
                           ng-click="root.getCcidFeatures()">Get CCID Features</span>
                     <span class="btn btn-default btn-summary-download"
                           ng-click="root.sendCcidCommand()">Send CCID Command</span>
-                    <span class="btn btn-default btn-summary-download"
-                          ng-click="root.getNonce()">Get Nonce</span>
-                    <span class="btn btn-default btn-summary-download"
-                          ng-click="root.sendSTX()">Send STX</span>
                 </div>
-
                 <div style="margin-top: 5px;">
                 <span class="btn btn-default btn-summary-download"
-                      ng-click="root.isPresent()">Verify Card Present</span>
+                      ng-click="root.isPresent()">Card Present?</span>
                     <span class="btn btn-default btn-summary-download"
                           ng-click="root.getAtr()">Get ATR</span>
                     <span class="btn btn-default btn-summary-download"
                           ng-click="root.sendApdu()">Send APDU(s)</span>
                     <span class="btn btn-default btn-summary-download"
                           ng-click="root.closeSession()">Close Session</span>
+                </div>
+                <div style="margin-top: 5px;">
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.isBelfiusReader()">Is Belfius Reader?</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.getNonce()">Get Nonce</span>
+                    <span class="btn btn-default btn-summary-download"
+                          ng-click="root.sendSTX()">Send STX</span>
                 </div>
             </div>
             <div style="margin-top: 15px;">
