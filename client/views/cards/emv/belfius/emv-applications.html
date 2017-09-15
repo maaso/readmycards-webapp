@@ -30,8 +30,8 @@
 </div>
 <div class="modal-body">
   <div>
-    <label for="command-out">Result:</label>
-    <textarea id="command-out" class="command-output" data-ng-model="data"></textarea>
+    <label for="command-out">{{ error ? "Error" : "Result"}}:</label>
+    <textarea id="command-out" ng-class="{ 'command-error': error, 'command-output': !error }" data-ng-model="data"></textarea>
   </div>
 </div>
 <div class="modal-footer">

@@ -1,3 +1,30 @@
+<style>
+  .command-input, .command-output, .command-error {
+    width: 100%;
+    height: 200px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    resize: none;
+    font-family: "Courier New", monospace;
+  }
+
+  .command-input, .command-output {
+    border: 2px solid #ccc;
+    background-color: #f8f8f8;
+  }
+
+  .command-error {
+    border: 2px solid #c33;
+    background-color: #f8eeee;
+  }
+
+  label {
+    color: #666;
+    font-weight: 300;
+  }
+</style>
+
 <div class="modal-header">
   <h3>Opening Session</h3>
 </div>
@@ -19,6 +46,10 @@
     </div>
   </div>
 
+  <div ng-show="error" style="margin-top: 20px;">
+    <label for="command-error">Error:</label>
+    <textarea id="command-error" class="command-error" data-ng-model="error"></textarea>
+  </div>
 
 </div>
 <div class="modal-footer">

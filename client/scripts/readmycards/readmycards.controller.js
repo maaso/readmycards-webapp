@@ -37,14 +37,17 @@
                 connector.belfius(readerId).openSession(timeout).then((res) => {
                     RMC.sessionStatus(true);
                     $scope.sessionId = res.data;
-                });
+                }, handleError);
             } else {
                 connector.readerapi(readerId).openSession(timeout).then(res => {
                     RMC.sessionStatus(true);
                     $scope.sessionId = res.data;
-                })
+                }, handleError)
             }
 
+            function handleError(err) {
+                $scope.error = angular.toJson(err);
+            }
         }
 
         function ok() {
@@ -56,11 +59,12 @@
         }
     }
 
-    function modalStaticDataCtrl($scope, $uibModalInstance, data) {
+    function modalStaticDataCtrl($scope, $uibModalInstance, data, error) {
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.open = open;
         $scope.data = data;
+        $scope.error = error;
 
         function ok() {
             $uibModalInstance.close("ok");
@@ -716,32 +720,50 @@
         }
 
         function emvApplications() {
-            $uibModal.open({
-                templateUrl: "views/cards/emv/belfius/emv-applications.html",
-                resolve: {
-                    data: () => {
-                        return Connector.get().emv(controller.readerWithCard.id).applications().then(res => {
-                            return JSON.stringify(res);
-                        });
-                    }
-                },
-                backdrop: 'static',
-                controller: 'ModalStaticDataCtrl'
+            Connector.get().emv(controller.readerWithCard.id).applications().then(res => {
+                $uibModal.open({
+                    templateUrl: "views/cards/emv/belfius/emv-applications.html",
+                    resolve: {
+                        data: () => { return JSON.stringify(res); },
+                        error: () => { return false; }
+                    },
+                    backdrop: 'static',
+                    controller: 'ModalStaticDataCtrl'
+                });
+            }, err => {
+                $uibModal.open({
+                    templateUrl: "views/cards/emv/belfius/emv-applications.html",
+                    resolve: {
+                        data: () => { return JSON.stringify(err); },
+                        error: () => { return true; }
+                    },
+                    backdrop: 'static',
+                    controller: 'ModalStaticDataCtrl'
+                });
             });
         }
 
         function emvApplicationData() {
-            $uibModal.open({
-                templateUrl: "views/cards/emv/belfius/emv-application-data.html",
-                resolve: {
-                    data: () => {
-                        return Connector.get().emv(controller.readerWithCard.id).applicationData().then(res => {
-                            return JSON.stringify(res);
-                        });
-                    }
-                },
-                backdrop: 'static',
-                controller: 'ModalStaticDataCtrl'
+            Connector.get().emv(controller.readerWithCard.id).applicationData().then(res => {
+                $uibModal.open({
+                    templateUrl: "views/cards/emv/belfius/emv-application-data.html",
+                    resolve: {
+                        data: () => { return JSON.stringify(res); },
+                        error: () => { return false; }
+                    },
+                    backdrop: 'static',
+                    controller: 'ModalStaticDataCtrl'
+                });
+            }, err => {
+                $uibModal.open({
+                    templateUrl: "views/cards/emv/belfius/emv-application-data.html",
+                    resolve: {
+                        data: () => { return JSON.stringify(err); },
+                        error: () => { return true; }
+                    },
+                    backdrop: 'static',
+                    controller: 'ModalStaticDataCtrl'
+                });
             });
         }
 
