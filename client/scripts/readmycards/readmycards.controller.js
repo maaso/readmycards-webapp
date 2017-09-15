@@ -711,7 +711,6 @@
         }
 
         function readCard() {
-            console.log("read card");
             $timeout(() => {
                 controller.readerWithCard = _.find(controller.readers, function (o) {
                     return _.has(o, 'card');

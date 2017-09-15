@@ -30,6 +30,8 @@
                         connector.agent().get(Citrix.userSelectionParams()).then(res => {
                             if (res.data && typeof res.data === 'object' && !_.isArray(res.data)) {
                                 Citrix.agent(res.data).then(() => {
+                                    // Need to get new connector instance with agent port!
+                                    connector = Connector.get();
                                     connector.core().readers().then(() => {
                                         Citrix.updateLocation();
                                         available.resolve(true);
