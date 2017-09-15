@@ -265,7 +265,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                Connector.get().beid(readerId).verifyPin({}).then(handleVerificationSuccess, handleVerificationError);
+                Connector.get().emv(readerId).verifyPin({}).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
