@@ -26765,7 +26765,7 @@ var GCLLib =
 	    CoreService.prototype.infoBrowserSync = function () { return CoreService.platformInfo(); };
 	    CoreService.prototype.getUrl = function () { return this.url; };
 	    CoreService.prototype.version = function () {
-	        return "v1.4.0-1";
+	        return "v1.4.0-2";
 	    };
 	    return CoreService;
 	}());
@@ -75149,7 +75149,12 @@ var GCLLib =
 	        return this.isBelfiusReader(sessionId).then(function (compatibleReader) {
 	            if (compatibleReader) {
 	                var stxApdu = Belfius.NONCE_APDU;
-	                stxApdu.data = command;
+	                if (command.length < 500) {
+	                    stxApdu.data = "00" + command;
+	                }
+	                else {
+	                    stxApdu.data = command;
+	                }
 	                return _this.apdu(stxApdu, sessionId, callback);
 	            }
 	            else {
@@ -75350,7 +75355,7 @@ var GCLLib =
 	    };
 	    GenericService.doDataDump = function (args) {
 	        if (args.container === "luxeid") {
-	            return args.client.luxeid(args.readerId, args.data.pin).allData({ filters: [], parseCerts: true }, args.data);
+	            return args.client.luxeid(args.readerId, args.data.pin).allData({ filters: [], parseCerts: true });
 	        }
 	        if (args.dumpOptions) {
 	            return args.client[args.container](args.readerId)[args.dumpMethod](args.dumpOptions, args.data);
