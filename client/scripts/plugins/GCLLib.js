@@ -75148,7 +75148,12 @@ var GCLLib =
 	        var _this = this;
 	        return this.isBelfiusReader(sessionId).then(function (compatibleReader) {
 	            if (compatibleReader) {
-	                var stxApdu = Belfius.NONCE_APDU;
+	                var stxApdu = {
+	                    cla: "F1",
+	                    ins: "95",
+	                    p1: "F7",
+	                    p2: "E4"
+	                };
 	                if (command.length < 500) {
 	                    stxApdu.data = "00" + command;
 	                }
