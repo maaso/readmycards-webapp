@@ -16,7 +16,7 @@
                 controller.certStatus = 'checking';
                 controller.pinStatus = 'idle';
                 const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
-                Connector.get().beid(controller.readerId).allCerts(filter).then(res => {
+                Connector.plugin('beid', 'allCerts', [ controller.readerId ], [filter]).then(res => {
                     let validationReq = {
                         certificateChain: [
                             { order: 0, certificate: res.data.authentication_certificate.base64 },
@@ -25,7 +25,7 @@
                         ]
                     };
                     Analytics.trackEvent('beid', 'cert-check', 'Start certificate check');
-                    Connector.get().ocv().validateCertificateChain(validationReq).then(res => {
+                    Connector.ocv('validateCertificateChain', [validationReq]).then(res => {
                         if (res.crlResponse.status && res.ocspResponse.status) {
                             Analytics.trackEvent('beid', 'cert-valid', 'Certificates are valid');
                             controller.certStatus = 'valid';
@@ -50,9 +50,9 @@
                             return controller.readerId
                         },
                         pinpad: () => {
-                            return Connector.get().core().reader(controller.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
-                            })
+                            });
                         }
                     },
                     backdrop: 'static',
@@ -86,7 +86,7 @@
                 } else {
                     if (!controller.loadingCerts) {
                         controller.loadingCerts = true;
-                        Connector.get().beid(controller.readerId).allCerts([]).then(res => {
+                        Connector.plugin('beid', 'allCerts', [controller.readerId], []).then(res => {
                             controller.loadingCerts = false;
                             controller.certData = res.data;
                         });
@@ -103,7 +103,7 @@
                             return controller.readerId
                         },
                         pinpad: () => {
-                            return Connector.get().core().reader(controller.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
                         }

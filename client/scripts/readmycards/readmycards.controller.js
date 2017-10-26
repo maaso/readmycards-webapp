@@ -30,16 +30,15 @@
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.open = open;
-        let connector = Connector.get();
 
         function open(timeout) {
             if (belfius) {
-                connector.belfius(readerId).openSession(timeout).then((res) => {
+                Connector.plugin('belfius', 'openSession', [ readerId ], [timeout]).then(res => {
                     RMC.sessionStatus(true);
                     $scope.sessionId = res.data;
                 }, handleError);
             } else {
-                connector.readerapi(readerId).openSession(timeout).then(res => {
+                Connector.plugin('readerapi', 'openSession', [ readerId ], [timeout]).then(res => {
                     RMC.sessionStatus(true);
                     $scope.sessionId = res.data;
                 }, handleError)
@@ -131,8 +130,6 @@
         $scope.cancel = cancel;
         $scope.submit = submit;
 
-        let connector = Connector.get();
-
         function ok() {
             $uibModalInstance.close("ok");
         }
@@ -145,43 +142,43 @@
             clearVars();
             switch (type) {
                 case 'apdu':
-                    connector.readerapi(readerId).apdu(angular.fromJson(payload), sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('readerapi', 'apdu', [readerId], [angular.fromJson(payload), sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'atr':
-                    connector.readerapi(readerId).atr(sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('readerapi', 'atr', [readerId], [sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'ccid-features':
-                    connector.readerapi(readerId).ccidFeatures(sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('readerapi', 'ccidFeatures', [readerId], [sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'ccid':
-                    connector.readerapi(readerId).ccid(payload, secondaryPayload, sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('readerapi', 'ccid', [readerId], [payload, secondaryPayload, sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'close-session':
-                    connector.readerapi(readerId).closeSession(sessionId).then(res => {
+                    Connector.plugin('readerapi', 'closeSession', [readerId], [sessionId]).then(() => {
                         $scope.result = { sessionId };
                         RMC.sessionStatus(false);
                     }, handleError);
                     break;
                 case 'command':
-                    connector.readerapi(readerId).command(angular.fromJson(payload), sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('readerapi', 'command', [readerId], [angular.fromJson(payload, sessionId)]).then(handleSuccess, handleError);
                     break;
                 case 'is-belfius-reader':
-                    connector.belfius(readerId).isBelfiusReader(sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('belfius', 'isBelfiusReader', [readerId], [sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'is-present':
-                    connector.readerapi(readerId).isPresent(sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('readerapi', 'isPresent', [readerId], [sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'nonce':
-                    connector.belfius(readerId).nonce(sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('belfius', 'nonce', [readerId], [sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'stx':
-                    connector.belfius(readerId).stx(payload, sessionId).then(handleSuccess, handleError);
+                    Connector.plugin('belfius', 'stx', [readerId], [payload, sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'emv-issuer':
-                    connector.emv(readerId).issuerPublicKeyCertificate(payload).then(handleSuccess, handleSuccess);
+                    Connector.plugin('emv', 'issuerPublicKeyCertificate', [readerId], [payload]).then(handleSuccess, handleSuccess);
                     break;
                 case 'emv-icc':
-                    connector.emv(readerId).iccPublicKeyCertificate(payload).then(handleSuccess, handleError);
+                    Connector.plugin('emv', 'iccPublicKeyCertificate', [readerId], [payload]).then(handleSuccess, handleError);
                     break;
             }
 
@@ -216,7 +213,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                Connector.get().beid(readerId).verifyPin({}).then(handleVerificationSuccess, handleVerificationError);
+                Connector.plugin('beid', 'verifyPin', [readerId], [{}]).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
@@ -248,7 +245,7 @@
         }
 
         function submitPin() {
-            Connector.get().beid(readerId).verifyPin({ pin: $scope.pincode.value }).then(handleVerificationSuccess, handleVerificationError);
+            Connector.plugin('beid', 'verifyPin', [readerId], [{ pin: $scope.pincode.value }]).then(handleVerificationSuccess, handleVerificationError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {
@@ -272,7 +269,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                Connector.get().emv(readerId).verifyPin({}).then(handleVerificationSuccess, handleVerificationError);
+                Connector.plugin('emv', 'verifyPin', [readerId], [{}]).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
@@ -304,7 +301,7 @@
         }
 
         function submitPin() {
-            Connector.get().emv(readerId).verifyPin({ pin: $scope.pincode.value }).then(handleVerificationSuccess, handleVerificationError);
+            Connector.plugin('emv', 'verifyPin', [readerId], [{ pin: $scope.pincode.value }]).then(handleVerificationSuccess, handleVerificationError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {
@@ -315,7 +312,6 @@
     function rootCtrl($scope, $rootScope, $location, $timeout, $uibModal, gclAvailable, readers, cardPresent,
                       RMC, EVENTS, _, Analytics, Connector) {
         let controller = this;
-        let connector = Connector.get();
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
         controller.cardPresent = cardPresent;
@@ -530,7 +526,9 @@
 
         function init() {
             if (gclAvailable) {
-                console.log('Using T1C-js ' + Connector.get().core().version());
+                Connector.core('version').then(version => {
+                    console.log('Using T1C-JS ' + version);
+                });
             } else { console.log("No GCL installation found"); }
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -588,8 +586,8 @@
                 controller.faqOpen = !controller.faqOpen;
             });
 
-            $scope.$on(EVENTS.START_OVER, function (event, currentReaderId) {
-                Connector.get().core().readers().then(function (result) {
+            $scope.$on(EVENTS.START_OVER, function () {
+                Connector.core('readers').then(result => {
                     controller.readers = result.data;
                     if (_.find(result.data, function (reader) {
                             return _.has(reader, 'card');
@@ -634,7 +632,7 @@
         function pollForReaders() {
             if (!controller.pollingReaders) controller.pollingReaders = true;
             controller.error = false;
-            Connector.get().core().pollReaders(30, function (err, result) {
+            Connector.core('pollReaders', [ 30, function (err, result) {
                 // Success callback
                 // Found at least one reader, poll for cards
                 if (err) {
@@ -663,13 +661,13 @@
                 // controller.pollTimeout = true;
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
                 pollForReaders();
-            });
+            }]);
         }
 
         function pollForCard() {
             if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            Connector.get().core().pollCardInserted(3, function (err, result) {
+            Connector.core('pollCardInserted', [3, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
@@ -686,7 +684,7 @@
                         // else toastr.success('Reader found!');
                         // Found a card, attempt to read it
                         // Refresh reader list first
-                        Connector.get().core().readers().then(function (result) {
+                        Connector.core('readers').then(result => {
                             controller.readers = result.data;
                             readCard();
                         }, function () {
@@ -710,12 +708,12 @@
                     if (removed) { controller.pollingCard = false; }
                     else { pollForCard(); }
                 });
-            });
+            }]);
         }
 
         function promptDownload() {
             // Prompt for dl
-            connector.download().then(res => {
+            Connector.plugin('download').then(res => {
                 controller.dlLink = res.url;
             });
         }
@@ -729,7 +727,7 @@
         }
 
         function emvApplications() {
-            Connector.get().emv(controller.readerWithCard.id).applications().then(res => {
+            Connector.plugin('emv', 'applications', [controller.readerWithCard.id]).then(res => {
                 $uibModal.open({
                     templateUrl: "views/cards/emv/belfius/emv-applications.html",
                     resolve: {
@@ -753,7 +751,7 @@
         }
 
         function emvApplicationData() {
-            Connector.get().emv(controller.readerWithCard.id).applicationData().then(res => {
+            Connector.plugin('emv', 'applicationData', [ controller.readerWithCard.id ]).then(res => {
                 $uibModal.open({
                     templateUrl: "views/cards/emv/belfius/emv-application-data.html",
                     resolve: {

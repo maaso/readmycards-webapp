@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body">
   <!--<h4 class="text-info text-light">Username</h4>-->
-  <form class="form-inline" ng-submit="ok()">
+  <form class="form-inline" data-ng-submit="ok()">
     <p ng-if="retry">No active Agent was found for the previously parameters, please try again.</p>
     <p ng-if="!retry">Enter Agent selection parameters:</p>
     <div ng-repeat="param in params" class="form-row" style="margin-bottom: 10px;">
@@ -19,6 +19,7 @@
         <i class="btn btn-line-primary btn-sm fa fa-times" ng-click="removeParam(param)" type="button"></i>
       </div>
     </div>
+    <input type="submit" class="hidden">
   </form>
 
   <div style="margin-top: 10px;">
@@ -27,6 +28,6 @@
 
 </div>
 <div class="modal-footer">
-  <span class="btn btn-primary" ng-click="ok()"
+  <span class="btn btn-primary" data-ng-click="ok()"
         data-ng-disabled="insufficientParameters()">OK</span>
 </div>

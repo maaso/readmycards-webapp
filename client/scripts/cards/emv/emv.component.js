@@ -64,7 +64,7 @@
                             return controller.readerId
                         },
                         pinpad: () => {
-                            return Connector.get().core().reader(controller.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
                         }

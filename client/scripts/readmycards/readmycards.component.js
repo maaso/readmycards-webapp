@@ -20,7 +20,7 @@
                     controller.errorReadingCard = false;
                     controller.unknownCard = false;
                     // Detect Type and read data
-                    Connector.get().core().reader(controller.readerId).then(function (readerInfo) {
+                    Connector.core('reader', [controller.readerId]).then(readerInfo => {
                         controller.cardType = CardService.detectType(readerInfo.data.card);
                         controller.card = readerInfo.data.card;
 
@@ -31,7 +31,7 @@
                             controller.loading = false;
                             RMC.monitorCardRemoval(controller.readerId, controller.card);
                         } else {
-                            Connector.get().dumpData(readerInfo.data.id).then(res => {
+                            Connector.generic('dumpData', [readerInfo.data.id]).then(res => {
                                 controller.cardData = res.data;
                                 controller.loading = false;
                                 RMC.monitorCardRemoval(controller.readerId, controller.card)
@@ -107,10 +107,10 @@
 
                 function pollForGcl() {
                     $timeout(function () {
-                        Connector.get().core().info().then(function (res) {
+                        Connector.core('info').then(() => {
                             // Info retrieved, GCL is installed
                             $scope.$emit(EVENTS.GCL_INSTALLED);
-                        }, function (err) {
+                        }, () => {
                             pollForGcl();
                         });
                     }, 2500)

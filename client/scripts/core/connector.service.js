@@ -2,15 +2,111 @@
     'use strict';
 
     angular.module('app.connector', [])
+           .controller('ConsentCtrl', ConsentCtrl)
+           .service('ConsentService', ConsentService)
            .service('Connector', Connector);
 
-    function Connector($q) {
+    function ConsentCtrl($scope, $uibModalInstance, Connector) {
+        // Define pool of chars to use
+        const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        // Generate random code
+        $scope.code = Random.string(pool)(Random.engines.browserCrypto, 6);
+
+        Connector.get().core().getConsent('Grant access to ReadMyCards?', $scope.code, 1).then(res => {
+            $uibModalInstance.close(res);
+        })
+    }
+
+    function ConsentService($uibModal) {
+        this.showConsentModal = showConsentModal;
+
+        function showConsentModal() {
+            return $uibModal.open({
+                templateUrl: "views/readmycards/modals/consent.html",
+                backdrop: 'static',
+                controller: 'ConsentCtrl'
+            }).result;
+        }
+    }
+
+    function Connector($q, $rootScope) {
         let connector;
-        this.get = getConnector;
+        this.core = sendCoreRequest;
+        this.generic = sendGenericRequest;
+        this.ocv = sendOcvRequest;
+        this.plugin = sendPluginRequest;
+        this.get = get;
         this.init = initializeLib;
 
+        // TODO make sure connector is initialized before sending requests
 
-        function getConnector() {
+        function errorHandler(erroredRequest) {
+            if (!erroredRequest.pluginArgs) { erroredRequest.pluginArgs = []; }
+            const error = erroredRequest.error;
+            if (error.status === 401) {
+                // Unauthorized, need to request consent
+                const consent = $q.defer();
+                $rootScope.$emit('consent-required');
+
+                $rootScope.$on('consent-result', (event, result) => {
+                    consent.resolve(result);
+                });
+
+                return consent.promise.then(res => {
+                    if (res.data) {
+                        // consent given, re-fire original request
+                        if (erroredRequest.plugin) {
+                            return connector[erroredRequest.plugin](...erroredRequest.pluginArgs)[erroredRequest.func](...erroredRequest.args);
+                        } else { return connector[erroredRequest.func](...erroredRequest.args); }
+                    } else {
+                        // TODO handle denied consent
+                    }
+                }, err => {
+                    // TODO handle error?
+                });
+            } else {
+                return $q.reject(error);
+            }
+        }
+
+        function sendCoreRequest(func, args) {
+            if (!args) { args = []; }
+            return connector.core()[func](...args).then(res => {
+                return $q.when(res);
+            }, error => {
+                return $q.when({ error, plugin: 'core', func, args }).then(errorHandler);
+            });
+        }
+
+        function sendGenericRequest(func, args) {
+            if (!args) { args = []; }
+            return connector[func](...args).then(res => {
+                return $q.when(res);
+            }, error => {
+                return $q.when({ error, func, args }).then(errorHandler);
+            });
+        }
+
+        function sendOcvRequest(func, args) {
+            if (!args) { args = []; }
+            return connector.ocv()[func](...args).then(res => {
+                return $q.when(res);
+            }, error => {
+                return $q.when({ error, plugin: 'ocv', func, args }).then(errorHandler);
+            });
+        }
+
+        function sendPluginRequest(plugin, func, pluginArgs, args) {
+            if (!args) { args = []; }
+            if (!pluginArgs) { pluginArgs = []; }
+            return connector[plugin](...pluginArgs)[func](...args).then(res => {
+                return $q.when(res);
+            }, error => {
+                return $q.when({ error, plugin, func, pluginArgs, args }).then(errorHandler);
+            });
+        }
+
+        function get() {
             return connector;
         }
 

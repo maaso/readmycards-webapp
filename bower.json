@@ -24,7 +24,8 @@
     "ngclipboard": "^1.1.1",
     "base-64": "^0.1.0",
     "utf8": "^2.1.2",
-    "ngstorage": "^0.3.11"
+    "ngstorage": "^0.3.11",
+    "random": "^1.0.8"
   },
   "devDependencies": {
     "less": "2.7.1"

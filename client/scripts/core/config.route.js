@@ -23,7 +23,7 @@
                                },
                                readers: function ($q, gclAvailable, Connector) {
                                    if (gclAvailable) {
-                                       return Connector.get().core().readers().then(function (response) {
+                                       return Connector.core('readers').then(response => {
                                            return response;
                                        }, function () {
                                            // Should an error occur, we don't want it to block the app
@@ -47,7 +47,7 @@
                        })
                }
            )
-           .run( function ($rootScope, $location, _) {
+           .run( function ($rootScope, $location, _, ConsentService) {
                let locationSearch;
 
                $rootScope.$on('$stateChangeStart',
@@ -61,6 +61,12 @@
                        //restore all query string parameters back to $location.search
                        $location.search(locationSearch);
                    });
+
+               $rootScope.$on('consent-required', () => {
+                   ConsentService.showConsentModal().then(res => {
+                       $rootScope.$broadcast('consent-result', res);
+                   });
+               });
            });
 
 })();

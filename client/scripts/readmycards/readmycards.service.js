@@ -24,15 +24,15 @@
             let connector = Connector.get();
 
             if (connector && connector.GCLInstalled) {
-                connector.core().info().then(res => {
+                Connector.core('info').then(res => {
                     if (_.isBoolean(res.data.citrix) && res.data.citrix) {
                         Citrix.environment(res.data.citrix);
-                        connector.agent().get(Citrix.userSelectionParams()).then(res => {
+                        Connector.plugin('agent', 'get', [], [Citrix.userSelectionParams()]).then(res => {
                             if (res.data && typeof res.data === 'object' && !_.isArray(res.data)) {
                                 Citrix.agent(res.data).then(() => {
                                     // Need to get new connector instance with agent port!
-                                    connector = Connector.get();
-                                    connector.core().readers().then(() => {
+                                    Connector.core('readers').then(() => {
+                                    // connector.core().readers().then(() => {
                                         Citrix.updateLocation();
                                         available.resolve(true);
                                     }, () => {
@@ -118,7 +118,7 @@
                 if (sessionOpen) {
                     return $q.when(false);
                 } else {
-                    return Connector.get().core().readersCardAvailable().then(function (readerData) {
+                    return Connector.core('readersCardAvailable').then(function (readerData) {
                         $rootScope.$broadcast(EVENTS.READERS_WITH_CARDS, readerData);
                         if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
                             // no connected readers with cards
@@ -143,7 +143,7 @@
 
         function checkReaderRemoval() {
             // check reader still connected
-            return Connector.get().core().readers().then(function (readerData) {
+            return Connector.core('readers').then(function (readerData) {
                 if (!_.has(readerData, 'data') || _.isEmpty(readerData.data)) {
                     // no connected readers
                     // broadcast removal event
@@ -308,7 +308,7 @@
                 return data;
             }, function () {
                 return {};
-            }), Connector.get().core().infoBrowser().then(function (data) {
+            }), Connector.core('infoBrowser').then(function (data) {
                 return data;
             }, function () {
                 return {};

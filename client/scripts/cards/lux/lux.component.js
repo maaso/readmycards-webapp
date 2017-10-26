@@ -13,7 +13,7 @@
                 controller.needPin = true;
 
                 // check type of reader
-                Connector.get().core().reader(controller.readerId).then(res => {
+                Connector.core('reader', [controller.readerId]).then(res => {
                     controller.pinpad = res.data.pinpad;
                     if (!controller.pinpad) controller.pincode = { value: '' };
                     else {
@@ -30,7 +30,7 @@
 
             function getAllData(pin) {
                 controller.readingData = true;
-                Connector.get().luxeid(controller.readerId, pin).allData([]).then(res => {
+                Connector.plugin('luxeid', 'allData', [ controller.readerId, pin ], []).then(res => {
                     controller.readingData = false;
                     controller.pinStatus = 'valid';
                     controller.certStatus = 'checking';

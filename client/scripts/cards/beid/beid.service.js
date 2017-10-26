@@ -24,9 +24,9 @@
 
         function generateSummaryToSign(readerId) {
             let promises = [
-                Connector.get().beid(readerId).rnData(),
-                Connector.get().beid(readerId).address(),
-                Connector.get().beid(readerId).picture()
+                Connector.plugin('beid', 'rnData', [readerId]),
+                Connector.plugin('beid', 'address', [readerId]),
+                Connector.plugin('beid', 'picture', [readerId])
             ];
 
             return $q.all(promises).then(function (results) {
@@ -79,7 +79,7 @@
 
         // OK
         function readRnData(readerId) {
-            return Connector.get().beid(readerId).rnData().then(function (result) {
+            return Connector.plugin('beid', 'rnData', [readerId]).then(result => {
                 fullName = result.data.first_names.split(" ", 1) + ' ' + result.data.name;
                 return readerId;
             });
@@ -87,7 +87,7 @@
 
         // OK
         function signWithGcl(readerId, pin, hash, algorithm) {
-            return Connector.get().beid(readerId).signData({ pin: pin, algorithm_reference: algorithm, data: hash }).then(function (res) {
+            return Connector.plugin('beid', 'signData', [readerId], [{ pin: pin, algorithm_reference: algorithm, data: hash }]).then(res => {
                 return res.data;
             }, function (err) {
                 return $q.reject(err);
@@ -96,7 +96,7 @@
 
         // OK
         function rootCert(readerId) {
-            return Connector.get().beid(readerId).rootCertificate().then(function (res) {
+            return Connector.plugin('beid', 'rootCertificate', [readerId]).then(res => {
                 rootCertificate = res.data.base64;
                 return readerId;
             });
@@ -104,7 +104,7 @@
 
         // OK
         function citizenCert(readerId) {
-            return Connector.get().beid(readerId).citizenCertificate().then(function (res) {
+            return Connector.plugin('beid', 'citizenCertificate', [readerId]).then(res => {
                 citizenCertificate = res.data.base64;
                 return readerId;
             });
@@ -112,7 +112,7 @@
 
         // OK
         function nonRepudiationCert(readerId) {
-            return Connector.get().beid(readerId).nonRepudiationCertificate().then(function (res) {
+            return Connector.plugin('beid', 'nonRepudiationCertificate', [readerId]).then(res => {
                 nonRepudiationCertificate = res.data.base64;
                 return readerId;
             });
