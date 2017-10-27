@@ -60,6 +60,7 @@
             </div>
         </div>
 
+        <rmc-consent ng-if="root.noConsent"></rmc-consent>
 
         <download-gcl dl-url="root.dlLink" is-firefox="root.isFirefox" ng-if="!root.gclAvailable"></download-gcl>
 

@@ -49,6 +49,7 @@
         }
 
         function errorHandler(erroredRequest) {
+            console.log(erroredRequest);
             if (!erroredRequest.pluginArgs) { erroredRequest.pluginArgs = []; }
             const error = erroredRequest.error;
             if (error.status === 401) {
@@ -69,8 +70,7 @@
                             });
                         } else { return connectorPromise().then(conn => { return conn[erroredRequest.func](...erroredRequest.args); }); }
                     } else {
-                        // TODO handle denied consent
-                        $state.go('consent-required')
+                        $state.go('consent-required');
                     }
                 }, err => {
                     // TODO handle error?

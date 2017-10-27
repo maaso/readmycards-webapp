@@ -227,7 +227,15 @@
                templateUrl: 'views/readmycards/components/faq.html'
            })
            .component('rmcConsent', {
-               templateUrl: 'views/readmycards/components/no-consent.html'
+               templateUrl: 'views/readmycards/components/no-consent.html',
+               controller: function($window) {
+                   this.reload = reload;
+
+                   function reload() {
+                       console.log("reloading");
+                       $window.location.reload();
+                   }
+               }
            })
            .component('rmcFooter', {
                templateUrl: 'views/readmycards/components/footer.html',
