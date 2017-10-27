@@ -12,10 +12,11 @@
         // Generate random code
         $scope.code = Random.string(pool)(Random.engines.browserCrypto, 6);
 
-        console.log($location);
-
         Connector.get().core().getConsent('Grant access to ' + $location.protocol() + '://' + $location.host() + ($location.port() !== 80 || $location.port() !== 443 ? ':' + $location.port() : '') + '?', $scope.code, 1).then(res => {
             $uibModalInstance.close(res);
+        }, () => {
+            // TODO inspect error and react accordingly
+            $uibModalInstance.close({ data: false, success: true });
         })
     }
 
@@ -31,7 +32,7 @@
         }
     }
 
-    function Connector($q, $rootScope) {
+    function Connector($q, $rootScope, $state) {
         let connector;
         this.core = sendCoreRequest;
         this.generic = sendGenericRequest;
@@ -69,6 +70,7 @@
                         } else { return connectorPromise().then(conn => { return conn[erroredRequest.func](...erroredRequest.args); }); }
                     } else {
                         // TODO handle denied consent
+                        $state.go('consent-required')
                     }
                 }, err => {
                     // TODO handle error?

@@ -45,6 +45,10 @@
                            },
                            controller: 'RootCtrl as root'
                        })
+                       .state('consent-required', {
+                           templateUrl: '/views/root.html',
+                           controller: 'NoConsentCtrl as root'
+                       })
                }
            )
            .run( function ($rootScope, $location, _, ConsentService) {
@@ -60,6 +64,12 @@
                    function () {
                        //restore all query string parameters back to $location.search
                        $location.search(locationSearch);
+                   });
+
+               $rootScope.$on('$stateChangeError',
+                   function(event, toState, toParams, fromState, fromParams, err) {
+                       console.log(event);
+                       console.log(err);
                    });
 
                $rootScope.$on('consent-required', () => {

@@ -9,6 +9,7 @@
            .controller('ModalSendCommandCtrl', modalSendCommandCtrl)
            .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
            .controller('ModalEmvPinCheckCtrl', modalEmvPinCheckCtrl)
+           .controller('NoConsentCtrl', noConsentCtrl)
            .controller('RootCtrl', rootCtrl)
            .controller('ReaderCtrl', readerCtrl);
 
@@ -307,6 +308,42 @@
         $scope.$on(EVENTS.START_OVER, function () {
             $scope.cancel();
         });
+    }
+
+    function noConsentCtrl($scope, EVENTS) {
+        let controller = this;
+        controller.dismissPanels = dismissPanels;
+
+        init();
+
+        function dismissPanels() {
+            $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
+            controller.cardTypesOpen = false;
+            controller.faqOpen = false;
+        }
+
+        function init() {
+            controller.noConsent = true;
+            controller.gclAvailable = true;
+
+
+            $scope.$on(EVENTS.OPEN_SIDEBAR, function () {
+                // Make sure the FAQ panel is closed when opening sidebar
+                if (!controller.cardTypesOpen) {
+                    controller.faqOpen = false;
+                }
+                controller.cardTypesOpen = !controller.cardTypesOpen;
+            });
+
+            $scope.$on(EVENTS.OPEN_FAQ, function () {
+                // Make sure the side panel is closed when opening FAQ
+                if (!controller.faqOpen) {
+                    $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
+                    controller.cardTypesOpen = false;
+                }
+                controller.faqOpen = !controller.faqOpen;
+            });
+        }
     }
 
     function rootCtrl($scope, $rootScope, $location, $timeout, $uibModal, gclAvailable, readers, cardPresent,
