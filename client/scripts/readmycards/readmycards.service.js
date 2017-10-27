@@ -32,13 +32,14 @@
                                 Citrix.agent(res.data).then(() => {
                                     // Need to get new connector instance with agent port!
                                     Connector.core('readers').then(() => {
-                                    // connector.core().readers().then(() => {
                                         Citrix.updateLocation();
                                         available.resolve(true);
-                                    }, () => {
-                                        Citrix.invalidLocalAgent().then(() => {
-                                            available.resolve(isGCLAvailable());
-                                        });
+                                    }, (err) => {
+                                        if (!err.noConsent) {
+                                            Citrix.invalidLocalAgent().then(() => {
+                                                available.resolve(isGCLAvailable());
+                                            });
+                                        }
                                     });
                                 });
                             } else {

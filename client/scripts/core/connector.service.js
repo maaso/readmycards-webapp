@@ -34,6 +34,7 @@
 
     function Connector($q, $rootScope, $state) {
         let connector;
+        let consent;
         this.core = sendCoreRequest;
         this.generic = sendGenericRequest;
         this.ocv = sendOcvRequest;
@@ -49,17 +50,18 @@
         }
 
         function errorHandler(erroredRequest) {
-            console.log(erroredRequest);
             if (!erroredRequest.pluginArgs) { erroredRequest.pluginArgs = []; }
             const error = erroredRequest.error;
             if (error.status === 401) {
                 // Unauthorized, need to request consent
-                const consent = $q.defer();
-                $rootScope.$emit('consent-required');
+                if (!consent) {
+                    consent = $q.defer();
+                    $rootScope.$emit('consent-required');
 
-                $rootScope.$on('consent-result', (event, result) => {
-                    consent.resolve(result);
-                });
+                    $rootScope.$on('consent-result', (event, result) => {
+                        consent.resolve(result);
+                    });
+                }
 
                 return consent.promise.then(res => {
                     if (res.data) {
@@ -71,9 +73,13 @@
                         } else { return connectorPromise().then(conn => { return conn[erroredRequest.func](...erroredRequest.args); }); }
                     } else {
                         $state.go('consent-required');
+                        return $q.reject({ noConsent: true });
                     }
-                }, err => {
+                }, () => {
                     // TODO handle error?
+                    return $q.reject({ noConsent: true });
+                }).finally(() => {
+                    consent = undefined;
                 });
             } else {
                 return $q.reject(error);
