@@ -750,7 +750,7 @@
 
         function promptDownload() {
             // Prompt for dl
-            Connector.plugin('download').then(res => {
+            Connector.generic('download').then(res => {
                 controller.dlLink = res.url;
             });
         }

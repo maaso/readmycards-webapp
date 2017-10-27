@@ -95,9 +95,9 @@
                    isFirefox: '<'
                },
                controller: function ($scope, $uibModal, Connector, $timeout, API, EVENTS) {
-                   var controller = this;
-                   this.firefoxModal = firefoxModal;
-                   this.registerDownload = registerDownload;
+                   let controller = this;
+                   controller.firefoxModal = firefoxModal;
+                   controller.registerDownload = registerDownload;
 
                    controller.$onInit = () => {
                        controller.sendUpdates = {

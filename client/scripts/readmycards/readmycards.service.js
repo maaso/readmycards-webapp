@@ -320,9 +320,9 @@
                     email: mail,
                     emailOptIn: mailOptIn,
                     dlUrl: dlUrl,
-                    platformName: results[1].os.name,
+                    platformName: results[1].data.os.name,
                     type: 'GCLdownload',
-                    payload: createPayload(results[0].data, results[1])
+                    payload: createPayload(results[0].data, results[1].data)
                 };
                 return $http.post('/api/dl', data);
             }, function (err) {
