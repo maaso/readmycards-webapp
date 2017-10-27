@@ -161,7 +161,7 @@
                     }, handleError);
                     break;
                 case 'command':
-                    Connector.plugin('readerapi', 'command', [readerId], [angular.fromJson(payload, sessionId)]).then(handleSuccess, handleError);
+                    Connector.plugin('readerapi', 'command', [readerId], [angular.fromJson(payload), sessionId]).then(handleSuccess, handleError);
                     break;
                 case 'is-belfius-reader':
                     Connector.plugin('belfius', 'isBelfiusReader', [readerId], [sessionId]).then(handleSuccess, handleError);
