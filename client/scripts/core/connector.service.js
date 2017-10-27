@@ -6,13 +6,16 @@
            .service('ConsentService', ConsentService)
            .service('Connector', Connector);
 
-    function ConsentCtrl($scope, $location, $uibModalInstance, Connector) {
+    function ConsentCtrl($scope, $location, $uibModalInstance, Connector, _) {
         // Define pool of chars to use
         const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         // Generate random code
         $scope.code = Random.string(pool)(Random.engines.browserCrypto, 6);
 
-        Connector.get().core().getConsent('Grant access to ' + $location.protocol() + '://' + $location.host() + ($location.port() !== 80 || $location.port() !== 443 ? ':' + $location.port() : '') + '?', $scope.code, 1).then(res => {
+        let port = '';
+        if (!_.includes([ 80, 443], $location.port())) { port = ':' + $location.port(); }
+
+        Connector.get().core().getConsent('Grant access to ' + $location.protocol() + '://' + $location.host() + port + '?', $scope.code, 1).then(res => {
             $uibModalInstance.close(res);
         }, () => {
             // TODO inspect error and react accordingly
