@@ -35,10 +35,15 @@
         this.generic = sendGenericRequest;
         this.ocv = sendOcvRequest;
         this.plugin = sendPluginRequest;
+        this.promise = connectorPromise;
         this.get = get;
         this.init = initializeLib;
 
         // TODO make sure connector is initialized before sending requests
+
+        function connectorPromise() {
+            return $q.when(connector);
+        }
 
         function errorHandler(erroredRequest) {
             if (!erroredRequest.pluginArgs) { erroredRequest.pluginArgs = []; }
@@ -56,8 +61,10 @@
                     if (res.data) {
                         // consent given, re-fire original request
                         if (erroredRequest.plugin) {
-                            return connector[erroredRequest.plugin](...erroredRequest.pluginArgs)[erroredRequest.func](...erroredRequest.args);
-                        } else { return connector[erroredRequest.func](...erroredRequest.args); }
+                            return connectorPromise().then(conn => {
+                                return conn[erroredRequest.plugin](...erroredRequest.pluginArgs)[erroredRequest.func](...erroredRequest.args);
+                            });
+                        } else { return connectorPromise().then(conn => { return conn[erroredRequest.func](...erroredRequest.args); }); }
                     } else {
                         // TODO handle denied consent
                     }
@@ -71,38 +78,46 @@
 
         function sendCoreRequest(func, args) {
             if (!args) { args = []; }
-            return connector.core()[func](...args).then(res => {
-                return $q.when(res);
-            }, error => {
-                return $q.when({ error, plugin: 'core', func, args }).then(errorHandler);
+            return connectorPromise().then(conn => {
+                return conn.core()[func](...args).then(res => {
+                    return $q.when(res);
+                }, error => {
+                    return $q.when({ error, plugin: 'core', func, args }).then(errorHandler);
+                });
             });
         }
 
         function sendGenericRequest(func, args) {
             if (!args) { args = []; }
-            return connector[func](...args).then(res => {
-                return $q.when(res);
-            }, error => {
-                return $q.when({ error, func, args }).then(errorHandler);
+            return connectorPromise().then(conn => {
+                return conn[func](...args).then(res => {
+                    return $q.when(res);
+                }, error => {
+                    return $q.when({ error, func, args }).then(errorHandler);
+                });
             });
         }
 
         function sendOcvRequest(func, args) {
             if (!args) { args = []; }
-            return connector.ocv()[func](...args).then(res => {
-                return $q.when(res);
-            }, error => {
-                return $q.when({ error, plugin: 'ocv', func, args }).then(errorHandler);
+            return connectorPromise().then(conn => {
+                return conn.ocv()[func](...args).then(res => {
+                    return $q.when(res);
+                }, error => {
+                    return $q.when({ error, plugin: 'ocv', func, args }).then(errorHandler);
+                });
             });
         }
 
         function sendPluginRequest(plugin, func, pluginArgs, args) {
             if (!args) { args = []; }
             if (!pluginArgs) { pluginArgs = []; }
-            return connector[plugin](...pluginArgs)[func](...args).then(res => {
-                return $q.when(res);
-            }, error => {
-                return $q.when({ error, plugin, func, pluginArgs, args }).then(errorHandler);
+            return connectorPromise().then(conn => {
+                return conn[plugin](...pluginArgs)[func](...args).then(res => {
+                    return $q.when(res);
+                }, error => {
+                    return $q.when({ error, plugin, func, pluginArgs, args }).then(errorHandler);
+                });
             });
         }
 
