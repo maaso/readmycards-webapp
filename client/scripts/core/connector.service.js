@@ -6,13 +6,15 @@
            .service('ConsentService', ConsentService)
            .service('Connector', Connector);
 
-    function ConsentCtrl($scope, $uibModalInstance, Connector) {
+    function ConsentCtrl($scope, $location, $uibModalInstance, Connector) {
         // Define pool of chars to use
         const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         // Generate random code
         $scope.code = Random.string(pool)(Random.engines.browserCrypto, 6);
 
-        Connector.get().core().getConsent('Grant access to ReadMyCards?', $scope.code, 1).then(res => {
+        console.log($location);
+
+        Connector.get().core().getConsent('Grant access to ' + $location.protocol() + '://' + $location.host() + ($location.port() !== 80 || $location.port() !== 443 ? ':' + $location.port() : '') + '?', $scope.code, 1).then(res => {
             $uibModalInstance.close(res);
         })
     }
