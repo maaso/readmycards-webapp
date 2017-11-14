@@ -18,7 +18,7 @@
         // "Please confirm that https://www.belfius.be is currently displaying the code ‘ABCDEFG’.”
 
         Connector.get().core().getConsent('Grant access to ' + $location.protocol() + '://' + $location.host() + port + '?',
-            'Please confirm that ' + $location.protocol() + '://' + $location.host() + port + ' is currently displaying the code ' + $scope.code, 1).then(res => {
+            'Please confirm that ' + $location.protocol() + '://' + $location.host() + port + ' is currently displaying the code ' + $scope.code, 1, 'warning', 'bottom_right').then(res => {
             $uibModalInstance.close(res);
         }, () => {
             // TODO inspect error and react accordingly
