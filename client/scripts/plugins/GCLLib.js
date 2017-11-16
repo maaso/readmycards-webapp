@@ -9001,18 +9001,14 @@ var GCLLib =
 	    }
 	    GCLClient.initialize = function (cfg, callback) {
 	        return new es6_promise_1.Promise(function (resolve, reject) {
-	            console.log('init lib');
 	            var client = new GCLClient(cfg, true);
-	            console.log('get config');
 	            client.GCLInstalled = true;
 	            client.initLibrary().then(function () {
-	                console.log('init success');
 	                if (callback && typeof callback === 'function') {
 	                    callback(null, client);
 	                }
 	                resolve(client);
 	            }, function (error) {
-	                console.log('init error');
 	                if (callback && typeof callback === 'function') {
 	                    callback(error, null);
 	                }
@@ -9083,7 +9079,6 @@ var GCLLib =
 	        var self_cfg = this.cfg;
 	        return new es6_promise_1.Promise(function (resolve, reject) {
 	            self.core().info().then(function (infoResponse) {
-	                console.log(infoResponse);
 	                self_cfg.citrix = infoResponse.data.citrix;
 	                self_cfg.tokenCompatible = GCLClient.checkTokenCompatible(infoResponse.data.version);
 	                var activated = infoResponse.data.activated;
@@ -9102,7 +9097,6 @@ var GCLLib =
 	                }
 	                else {
 	                    _this.core().getPubKey().then(function () {
-	                        console.log('pub key set');
 	                        resolve();
 	                    }, function (err) {
 	                        if (err && !err.success && err.code === 201) {
@@ -28238,7 +28232,7 @@ var GCLLib =
 	    CoreService.prototype.infoBrowserSync = function () { return CoreService.platformInfo(); };
 	    CoreService.prototype.getUrl = function () { return this.url; };
 	    CoreService.prototype.version = function () {
-	        return es6_promise_1.Promise.resolve('v1.5.1-1');
+	        return es6_promise_1.Promise.resolve('v1.5.1-2');
 	    };
 	    return CoreService;
 	}());
