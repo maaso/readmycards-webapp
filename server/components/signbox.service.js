@@ -11,7 +11,7 @@ const q = require('q');
 function assignDocumentToWorkflow(documentId, jwt) {
     let options = {
         uri: config.signbox.uri + config.signbox.path + '/organizations/divisions/' + config.signbox.division_id + '/workflows/assign',
-        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'bearer ' + jwt },
+        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'Bearer ' + jwt },
         json: true,
         body: {
             docId: documentId,
@@ -42,7 +42,7 @@ function downloadDocument(documentName, jwt) {
 function getDataToSign(data, jwt) {
     let options = {
         uri: config.signbox.uri + config.signbox.path + '/organizations/divisions/' + config.signbox.division_id + '/workflows/dataToSign',
-        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'bearer ' + jwt },
+        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'Bearer ' + jwt },
         json: true,
         body: data
     };
@@ -55,9 +55,10 @@ function getDataToSign(data, jwt) {
  *
  */
 function uploadDocument(fileBuffer, fileName, fileType, jwt) {
+    console.log(jwt);
     let options = {
         uri: config.signbox.uri + config.signbox.path + '/documents/upload',
-        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'bearer ' + jwt },
+        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'Bearer ' + jwt },
         formData: {
             file: {
                 value:  fileBuffer,
@@ -68,7 +69,7 @@ function uploadDocument(fileBuffer, fileName, fileType, jwt) {
             }
         }
     };
-
+    console.log(options);
     return rp.post(options);
 }
 
@@ -80,7 +81,7 @@ function uploadDocument(fileBuffer, fileName, fileType, jwt) {
 function workflowSign(data, jwt) {
     let options = {
         uri: config.signbox.uri + config.signbox.path + '/organizations/divisions/' + config.signbox.division_id + '/workflows/sign',
-        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'bearer ' + jwt },
+        headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'Bearer ' + jwt },
         json: true,
         body: data
     };

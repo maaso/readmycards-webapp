@@ -22,15 +22,21 @@ function generateSummaryToSign(data, jwt) {
             return summaryPromise.reject(err);
         })
         .on('finished', conversion => {
+            // console.log("CC ok");
             miss.toPromise(request.get('http:' + conversion.output.url)).then(buffer => {
-
+                // console.log("retrieve OK");
                 let fileName = data.rnData.name + '_' + _.join(_.split(data.rnData.first_names, ' '), '_') + '_'
                     + data.rnData.third_name + '_summary.pdf';
 
+                // console.log(buffer);
+                // console.log(fileName);
+                // console.log(jwt);
                 signboxApi.uploadDocument(buffer, fileName, 'application/pdf', jwt).then(res => {
+                    // console.log("upload OK");
                     let parsedBody = JSON.parse(res);
 
                     signboxApi.assignDocumentToWorkflow(parsedBody[0].uuid, jwt).then(result => {
+                        // console.log("assign WF ok");
                         return summaryPromise.resolve(result);
                     }, err => {
                         return summaryPromise.reject(err);

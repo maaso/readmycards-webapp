@@ -27,7 +27,7 @@ function getJWT(fn) {
 function refreshJWT(token, fn) {
     let options = {
         method: "POST",
-        url: config.auth.uri + config.auth.path +  "/login/idp/token/refresh",
+        url: config.auth.uri + config.auth.path +  "/login/token/refresh",
         headers: { apikey: config.auth.apikey, "content-type": "application/json" },
         body: { originalJWT: token },
         json: true
