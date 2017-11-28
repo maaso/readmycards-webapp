@@ -58,8 +58,7 @@
       <dnie-visualizer ng-if="$ctrl.cardType === 'dnie'"
                        card-data="$ctrl.cardData"></dnie-visualizer>
 
-      <emv-visualizer pan-data="$ctrl.cardData.pan"
-                      ng-if="$ctrl.cardType === 'emv'"></emv-visualizer>
+      <emv-visualizer data="$ctrl.cardData" reader-id="$ctrl.readerId" ng-if="$ctrl.cardType === 'emv'"></emv-visualizer>
 
       <lux-visualizer ng-if="$ctrl.cardType === 'luxeid'"></lux-visualizer>
       <lux-trust-visualizer card-data="$ctrl.cardData"

@@ -1,5 +1,9 @@
-<div id="emv-viz" class="clearfix mb15 top-info" ng-if="$ctrl.panData">
-    <div class="emv-text col-sm-12">
-        <strong>PAN:</strong> {{$ctrl.panData}}
+<div id="emv-viz" class="clearfix top-info">
+    <div class="status-wrapper">
+        <!--<emv-certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></emv-certificate-status>-->
+        <emv-pin-check-status status="$ctrl.pinStatus"></emv-pin-check-status>
     </div>
+
+    <emv-card card-data="$ctrl.data"></emv-card>
+
 </div>
