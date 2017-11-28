@@ -8,8 +8,14 @@
         },
         controller: function ($rootScope, $q, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, API, PtUtils, Analytics, _) {
             let controller = this;
+            controller.addressData = addressData;
+            controller.checkPin = checkPin;
+            controller.toggleCerts = toggleCerts;
+            controller.downloadSummary = downloadSummary;
+            controller.trackCertificatesClick = trackCertificatesClick;
 
             controller.$onInit = () => {
+                console.log(controller.cardData);
                 controller.certStatus = 'checking';
                 controller.pinStatus = 'idle';
 
@@ -45,7 +51,53 @@
                 });
             };
 
-            controller.checkPin = () => {
+            function addressData() {
+                let modal = $uibModal.open({
+                    templateUrl: "views/readmycards/modals/check-pin.html",
+                    resolve: {
+                        readerId: () => {
+                            return $stateParams.readerId
+                        },
+                        pinpad: () => {
+                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                                return res.data.pinpad;
+                            })
+                        },
+                        plugin: () => {
+                            return PtUtils;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'ModalPtAddressPinCheckCtrl'
+                });
+
+                modal.result.then(function (addressResponse) {
+                    console.log(addressResponse);
+                    // Analytics.trackEvent('beid', 'pin-correct', 'Correct PIN entered');
+                    controller.pinStatus = 'valid';
+                    controller.addressInfo = addressResponse.data;
+                }, function (err) {
+                    // Analytics.trackEvent('beid', 'pin-incorrect', 'Incorrect PIN entered');
+                    switch (err.code) {
+                        case 103:
+                            controller.pinStatus = '2remain';
+                            break;
+                        case 104:
+                            controller.pinStatus = '1remain';
+                            break;
+                        case 105:
+                            // Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
+                            controller.pinStatus = 'blocked';
+                            break;
+                        case 109:
+                            // cancelled on reader
+                            controller.pinStatus = 'cancelled';
+                            break;
+                    }
+                });
+            }
+
+            function checkPin() {
                 // Analytics.trackEvent('button', 'click', 'PIN check clicked');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/check-pin.html",
@@ -88,9 +140,9 @@
                             break;
                     }
                 });
-            };
+            }
 
-            controller.toggleCerts = () => {
+            function toggleCerts() {
                 if (controller.certData) {
                     controller.certData = undefined;
                 } else {
@@ -102,9 +154,9 @@
                         });
                     }
                 }
-            };
+            }
 
-            controller.downloadSummary = () => {
+            function downloadSummary() {
                 // Analytics.trackEvent('button', 'click', 'Print button clicked');
                 let modal = $uibModal.open({
                     templateUrl: "views/readmycards/modals/summary-download.html",
@@ -134,9 +186,9 @@
                 }, function (err) {
 
                 });
-            };
+            }
 
-            controller.trackCertificatesClick = () => {
+            function trackCertificatesClick() {
                 // Analytics.trackEvent('button', 'click', 'Click on certificates feature');
             }
         }
@@ -160,7 +212,7 @@
         }
     };
 
-    angular.module('app.cards.beid')
+    angular.module('app.cards.pteid')
            .component('pteidVisualizer', pteidVisualizer)
            .component('pteidCard', pteidCard);
 })();

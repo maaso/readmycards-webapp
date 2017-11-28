@@ -2,13 +2,52 @@
 
     <div class="status-wrapper">
         <certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></certificate-status>
-        <pin-check-status status="$ctrl.pinStatus" max-tries="3" ok-text="'PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
+        <pin-check-status status="$ctrl.pinStatus" max-tries="3" initial-text="'Click to check sign PIN'" ok-text="'Sign PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
     </div>
 
     <pteid-card id-data="$ctrl.cardData" photo="$ctrl.photo"></pteid-card>
 
     <div class="print-button">
         <print-summary print-function="$ctrl.downloadSummary"></print-summary>
+    </div>
+
+    <div class="additional-info col-sm-12">
+        <!--<span class="size-h3 text-primary">Additional Information</span>-->
+        <div class="status-wrapper">
+            <pin-check-status status="$ctrl.pinStatus" max-tries="3" initial-text="'Click to check address PIN'" ok-text="'Address PIN ok.'" pin-check-func="$ctrl.addressData"></pin-check-status>
+        </div>
+        <div class="col-sm-12" data-ng-show="$ctrl.addressInfo">
+            <h4 class="text-info text-light">Address Data</h4>
+
+            <div class="col-sm-6">
+                <p><strong>Abbr. Building Type:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.abbr_building_type}}</p>
+                <p><strong>Abbr. Street Type:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.abbr_street_type}}</p>
+                <p><strong>Building Type:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.building_type}}</p>
+                <p><strong>Civil Parish:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.civil_parish}}</p>
+                <p><strong>Civil Parish Description:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.civil_parish_description}}</p>
+                <p><strong>District:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.district}}</p>
+                <p><strong>District Description:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.district_description}}</p>
+                <p><strong>Door No.:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.door_no}}</p>
+                <p><strong>Floor:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.floor}}</p>
+                <p><strong>Gen. Address Num.:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.gen_address_num}}</p>
+                <p><strong>Is National:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.is_national}}</p>
+            </div>
+
+            <div class="col-sm-6">
+                <p><strong>Locality:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.locality}}</p>
+                <p><strong>Municipality:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.municipality}}</p>
+                <p><strong>Municipality Description:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.municipality_description}}</p>
+                <p><strong>Place:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.place}}</p>
+                <p><strong>Postal Locality:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.postal_locality}}</p>
+                <p><strong>Side:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.side}}</p>
+                <p><strong>Street Name:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.street_name}}</p>
+                <p><strong>Street Type:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.street_type}}</p>
+                <p><strong>Type:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.type}}</p>
+                <p><strong>ZIP3:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.zip3}}</p>
+                <p><strong>ZIP4:</strong>&nbsp;&nbsp;{{$ctrl.addressInfo.zip4}}</p>
+            </div>
+        </div>
+
     </div>
 
     <div class="certificates-toggle col-sm-12">
