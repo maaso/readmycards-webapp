@@ -4,7 +4,7 @@
     angular.module('app.cards.beid')
         .service('BeUtils', BeUtils);
 
-    function BeUtils($http, $q, CheckDigit, T1C, _) {
+    function BeUtils($http, $q, CheckDigit, Connector, _) {
         this.constructMachineReadableStrings = constructMachineReadableStrings;
         this.formatCardNumber = formatCardNumber;
         this.formatRRNR = formatRRNR;
@@ -21,9 +21,9 @@
 
         function generateSummaryToSign(readerId) {
             let promises = [
-                T1C.beid.getRnData(readerId),
-                T1C.beid.getAddress(readerId),
-                T1C.beid.getPic(readerId)
+                Connector.plugin('beid', 'rnData', [readerId]),
+                Connector.plugin('beid', 'address', [readerId]),
+                Connector.plugin('beid', 'picture', [readerId])
             ];
 
             return $q.all(promises).then(function (results) {

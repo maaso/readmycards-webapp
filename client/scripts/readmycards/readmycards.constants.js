@@ -12,7 +12,8 @@
             'RETRY_READER': 'retry-reader',
             'RETRY_CARD': 'retry-card',
             'NETWORK_ERROR': 'Network Error',
-            'READERS_WITH_CARDS': 'readers-with-cards'
+            'READERS_WITH_CARDS': 'readers-with-cards',
+            'SELECT_READER': 'select-reader'
         })
 
 })();

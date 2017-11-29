@@ -44,6 +44,7 @@
                     $q.all(promises).then(results => {
                         let status = 'valid';
                         _.forEach(results, res => {
+                            console.log(res);
                             if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
                         });
                         controller.certStatus = status;

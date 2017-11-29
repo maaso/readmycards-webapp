@@ -5,7 +5,8 @@
         .controller('ModalCtrl', modalCtrl)
         .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
         .controller('ModalChallengeCtrl', modalChallengeCtrl)
-        .controller('RootCtrl', rootCtrl)
+           .controller('NoConsentCtrl', noConsentCtrl)
+           .controller('RootCtrl', rootCtrl)
         .controller('ReaderCtrl', readerCtrl);
 
 
@@ -22,8 +23,7 @@
         }
     }
 
-    function modalPinCheckCtrl($scope, readerId, pinpad, plugin, $uibModalInstance, EVENTS, T1C, _) {
-        $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    function modalPinCheckCtrl($scope, readerId, pinpad, Connector, $uibModalInstance, EVENTS, _) {
         $scope.pincode = {
             value: ''
         };
@@ -38,7 +38,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                plugin.verifyPin(readerId).then(handleVerificationSuccess, handleVerificationError);
+                Connector.generic('verifyPin', [readerId, {}]).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
@@ -74,7 +74,7 @@
         }
 
         function submitPin() {
-            plugin.verifyPin(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
+            Connector.generic('verifyPin', [readerId, { pin: $scope.pincode.value }]).then(handleVerificationSuccess, handleVerificationError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {
@@ -137,7 +137,44 @@
         });
     }
 
-    function rootCtrl($scope, $state, gclAvailable, readers, cardPresent, RMC, T1C, EVENTS, _, Analytics) {
+    function noConsentCtrl($scope, EVENTS) {
+        let controller = this;
+        controller.dismissPanels = dismissPanels;
+
+        init();
+
+        function dismissPanels() {
+            $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
+            controller.cardTypesOpen = false;
+            controller.faqOpen = false;
+        }
+
+        function init() {
+            controller.noConsent = true;
+            controller.gclAvailable = true;
+
+
+            $scope.$on(EVENTS.OPEN_SIDEBAR, function () {
+                // Make sure the FAQ panel is closed when opening sidebar
+                if (!controller.cardTypesOpen) {
+                    controller.faqOpen = false;
+                }
+                controller.cardTypesOpen = !controller.cardTypesOpen;
+            });
+
+            $scope.$on(EVENTS.OPEN_FAQ, function () {
+                // Make sure the side panel is closed when opening FAQ
+                if (!controller.faqOpen) {
+                    $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
+                    controller.cardTypesOpen = false;
+                }
+                controller.faqOpen = !controller.faqOpen;
+            });
+        }
+    }
+
+    function rootCtrl($scope, $timeout, gclAvailable, readers, cardPresent,
+                      RMC, EVENTS, _, Analytics, Connector) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
@@ -155,9 +192,11 @@
         }
 
         function init() {
-            T1C.core.version().then(version => {
-                console.log('Using T1C-js ' + version);
-            });
+            if (gclAvailable) {
+                Connector.core('version').then(version => {
+                    console.log('Using T1C-JS ' + version);
+                });
+            } else { console.log("No GCL installation found"); }
 
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
@@ -183,10 +222,14 @@
                 readCard();
             }
 
+            $scope.$on(EVENTS.SELECT_READER, (event, reader) => {
+                controller.readerWithCard = reader;
+            });
+
             $scope.$on(EVENTS.GCL_INSTALLED, function () {
                 Analytics.trackEvent('T1C', 'install', 'Trust1Connector installed');
                 controller.gclAvailable = true;
-                T1C.core.initializeAfterInstall().then(function (res) {
+                Connector.init().then(() => {
                     pollForReaders();
                 });
             });
@@ -208,41 +251,32 @@
                 controller.faqOpen = !controller.faqOpen;
             });
 
-            $scope.$on(EVENTS.START_OVER, function (event, currentReaderId) {
-                T1C.core.getReaders().then(function (result) {
+            $scope.$on(EVENTS.START_OVER, function () {
+                Connector.core('readers').then(result => {
+                    controller.readers = result.data;
                     if (_.find(result.data, function (reader) {
-                       return _.has(reader, 'card');
-                    })) {
-                        // check if current reader has card
-                        if (_.find(result.data, function (reader) {
-                                return _.has(reader, 'card') && reader.id === currentReaderId;
-                            })) {
-                            controller.readers = result.data;
-                            controller.readerWithCard = _.find(result.data, function (reader) {
-                                return reader.id === currentReaderId;
-                            });
-                            controller.cardPresent = true;
-                            $scope.$broadcast(EVENTS.REINITIALIZE);
-                        } else {
-                            $state.go('root.reader', { readerId: _.find(result.data, function (reader) {
-                                return _.has(reader, 'card');
-                            }).id});
-                        }
+                            return _.has(reader, 'card');
+                        })) {
+                        $timeout(() => { readCard(); });
                     } else {
-                        controller.readers = result.data;
-                        controller.readerWithCard = undefined;
-                        controller.cardPresent = false;
-                        if (_.isEmpty(controller.readers)) {
-                            pollForReaders();
-                        } else {
-                            pollForCard();
-                        }
+                        $timeout(() => {
+                            controller.readers = result.data;
+                            controller.readerWithCard = undefined;
+                            controller.cardPresent = false;
+                            if (_.isEmpty(controller.readers)) {
+                                pollForReaders();
+                            } else {
+                                pollForCard();
+                            }
+                        });
                     }
                 }, function () {
-                    controller.readers = [];
-                    controller.readerWithCard = undefined;
-                    controller.cardPresent = false;
-                    pollForReaders();
+                    $timeout(() => {
+                        controller.readers = [];
+                        controller.readerWithCard = undefined;
+                        controller.cardPresent = false;
+                        pollForReaders();
+                    })
                 });
             });
 
@@ -260,71 +294,74 @@
             });
         }
 
-
         function pollForReaders() {
             if (!controller.pollingReaders) controller.pollingReaders = true;
             controller.error = false;
-            T1C.core.getConnector().core().pollReaders(30, function (err, result) {
+            Connector.core('pollReaders', [ 30, function (err, result) {
                 // Success callback
                 // Found at least one reader, poll for cards
                 if (err) {
-                    controller.error = true;
-                    $scope.$apply();
+                    $timeout(() => {
+                        controller.error = true;
+                    });
                 }
                 else {
-                    controller.readers = result.data;
-                    controller.pollingReaders = false;
-                    Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
-                    $scope.$apply();
-                    // if (controller.readers.length > 1) toastr.success('Readers found!');
-                    // else toastr.success('Reader found!');
-                    pollForCard();
+                    $timeout(() => {
+                        controller.readers = result.data;
+                        controller.pollingReaders = false;
+                        Analytics.trackEvent('reader', 'connect', 'Reader connected: ' + _.join(_.map(controller.readers, 'name'), ','));
+                        // if (controller.readers.length > 1) toastr.success('Readers found!');
+                        // else toastr.success('Reader found!');
+                        pollForCard();
+                    })
                 }
             }, function () {
                 // Not used
-                controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
-                $scope.$apply();
+                $timeout(() => {
+                    controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
+                });
             }, function () {
                 // timeout
                 // controller.pollingReaders = false;
                 // controller.pollTimeout = true;
                 // toastr.warning('30 seconds have passed without a reader being connected. Please try again.', 'Timeout');
-                // $scope.$apply();
                 pollForReaders();
-            });
+            }]);
         }
 
         function pollForCard() {
             if (!controller.pollingCard) controller.pollingCard = true;
             controller.error = false;
-            T1C.core.getConnector().core().pollCardInserted(3, function (err, result) {
+            Connector.core('pollCardInserted', [3, function (err, result) {
                 // Success callback
                 // controller.readers = result.data;
                 if (err) {
-                    controller.error = true;
-                    $scope.$apply();
-                }
-                else {
-                    controller.pollingCard = false;
-                    controller.pollTimeout = false;
-                    Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
-                    pollIterations = 0;
-                    $scope.$apply();
-                    // if ($scope.readers.length > 1) toastr.success('Readers found!');
-                    // else toastr.success('Reader found!');
-                    // Found a card, attempt to read it
-                    // Refresh reader list first
-                    T1C.core.getReaders().then(function (result) {
-                        controller.readers = result.data;
-                        readCard();
-                    }, function () {
-                        pollForCard();
+                    $timeout(() => {
+                        controller.error = true;
+                    })
+                } else {
+                    $timeout(() => {
+                        controller.pollingCard = false;
+                        controller.pollTimeout = false;
+                        Analytics.trackEvent('card', 'insert', 'Card inserted: ' + result.card.atr);
+                        pollIterations = 0;
+                        // if ($scope.readers.length > 1) toastr.success('Readers found!');
+                        // else toastr.success('Reader found!');
+                        // Found a card, attempt to read it
+                        // Refresh reader list first
+                        Connector.core('readers').then(result => {
+                            controller.readers = result.data;
+                            readCard();
+                        }, function () {
+                            pollForCard();
+                        });
                     });
                 }
             }, function () {
                 // "Waiting for reader connection" callback
-                controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
-                $scope.$apply();
+                $timeout(() => {
+                    controller.pollSecondsRemaining = controller.pollSecondsRemaining - 1;
+                });
             }, function () {
                 // "Waiting for card" callback
             }, function () {
@@ -333,29 +370,25 @@
                 // if enough time has passed, show the card not recognized message
                 if (pollIterations >= 5) controller.pollTimeout = true;
                 RMC.checkReaderRemoval().then(function (removed) {
-                    if (removed) controller.pollingCard = false;
-                    else pollForCard();
+                    if (removed) { controller.pollingCard = false; }
+                    else { pollForCard(); }
                 });
-            });
+            }]);
         }
 
         function promptDownload() {
             // Prompt for dl
-            T1C.ds.getDownloadLink().then(function (res) {
+            Connector.generic('download').then(res => {
                 controller.dlLink = res.url;
-            })
+            });
         }
 
         function readCard() {
-            controller.readerWithCard = _.find(controller.readers, function (o) {
-                return _.has(o, 'card');
+            $timeout(() => {
+                controller.readerWithCard = _.find(controller.readers, function (o) {
+                    return _.has(o, 'card');
+                });
             });
-            if (controller.readerWithCard) {
-                $state.go('root.reader', { readerId: controller.readerWithCard.id});
-            } else {
-                // this normally should not happen, attempt to recover by polling for card
-                pollForCard();
-            }
         }
     }
 
