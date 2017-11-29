@@ -5,8 +5,9 @@
         templateUrl: 'views/cards/oberthur/oberthur-viz.html',
         bindings: {
             cardData: '<',
+            readerId: '<'
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, Core, OberthurUtils, T1C, Analytics) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $timeout, OberthurUtils, Connector, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -23,7 +24,7 @@
                     ]
                 };
                 Analytics.trackEvent('oberthur', 'cert-check', 'Start certificate check');
-                T1C.ocv.validateCertificateChain(validationReq).then(res => {
+                Connector.ocv('validateCertificateChain', [validationReq]).then(res => {
                     if (res.crlResponse.status && res.ocspResponse.status) {
                         Analytics.trackEvent('oberthur', 'cert-valid', 'Certificates are valid');
                         controller.certStatus = 'valid';
@@ -44,19 +45,10 @@
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
                             return false;
-                        },
-                        plugin: () => {
-                            return {
-                                verifyPin: function verifyPin(readerId, pin) {
-                                    let data = {};
-                                    if (pin) data.pin = pin;
-                                    return Core.getConnector().oberthur(readerId).verifyPin(data);
-                                }
-                            };
                         }
                     },
                     backdrop: 'static',
@@ -93,7 +85,7 @@
                     templateUrl: "views/readmycards/modals/xml-download.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
                             // Oberthur cards can have very long pins, incompatible with pin card readers
@@ -124,10 +116,10 @@
             //         templateUrl: "views/readmycards/modals/summary-download.html",
             //         resolve: {
             //             readerId: () => {
-            //                 return $stateParams.readerId
+            //                 return controller.readerId
             //             },
             //             pinpad: () => {
-            //                 return T1C.core.getReader($stateParams.readerId).then(function (res) {
+            //                 return T1C.core.getReader(controller.readerId).then(function (res) {
             //                     return res.data.pinpad;
             //                 })
             //             },

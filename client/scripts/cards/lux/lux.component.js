@@ -3,19 +3,20 @@
 
     const luxVisualizer = {
         templateUrl: 'views/cards/lux/eid/lux-viz.html',
-        controller: function ($rootScope, $uibModal, $compile, $http, $q, $stateParams, $timeout, LuxUtils, T1C, API, _) {
+        bindings: {
+            readerId: '<'
+        },
+        controller: function ($rootScope, $uibModal, $compile, $http, $q, $timeout, LuxUtils, Connector, API, _) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.needPin = true;
 
                 // check type of reader
-                T1C.core.getReader($stateParams.readerId).then(res => {
+                Connector.core('reader', [controller.readerId]).then(res => {
                     controller.pinpad = res.data.pinpad;
                     if (!controller.pinpad) {
                         controller.pincode = { value: '' };
-                        // // TODO remove
-                        // controller.submitPin('1234');
                     }
                     else {
                         // launch data request
@@ -34,7 +35,7 @@
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
                             return controller.pinpad;
@@ -64,8 +65,7 @@
 
             function getAllData(pin) {
                 controller.readingData = true;
-                T1C.luxId.allData($stateParams.readerId, pin).then(res => {
-                    console.log(res);
+                Connector.plugin('luxeid', 'allData', [controller.readerId, pin]).then(res => {
                     controller.pinStatus = 'valid';
                     controller.certStatus = 'checking';
                     controller.biometricData = res.data.biometric;
@@ -104,8 +104,7 @@
                             { order: 2, certificate: res.data.root_certificates[0].base64 },
                         ]
                     };
-                    let promises = [ T1C.ocv.validateCertificateChain(validationReq1), T1C.ocv.validateCertificateChain(validationReq2)];
-
+                    let promises = [ Connector.ocv('validateCertificateChain', [validationReq1]), Connector.ocv('validateCertificateChain', [validationReq2]) ];
                     $q.all(promises).then(results => {
                         let status = 'valid';
                         _.forEach(results, res => {
@@ -120,9 +119,10 @@
     const luxTrustVisualizer = {
         templateUrl: 'views/cards/lux/luxtrust/luxtrust-viz.html',
         bindings: {
-            cardData: '<'
+            cardData: '<',
+            readerId: '<'
         },
-        controller: function ($q, $stateParams, $timeout, $uibModal, T1C, LuxTrustUtils, _) {
+        controller: function ($q, $timeout, $uibModal, Connector, LuxTrustUtils, _) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -143,7 +143,7 @@
                         { order: 2, certificate: controller.cardData.root_certificates[0].base64 },
                     ]
                 };
-                let promises = [ T1C.ocv.validateCertificateChain(validationReq1), T1C.ocv.validateCertificateChain(validationReq2)];
+                let promises = [ Connector.ocv('validateCertificateChain', [validationReq1]), Connector.ocv('validateCertificateChain', [validationReq2]) ];
 
                 $q.all(promises).then(results => {
                     let status = 'valid';
@@ -159,15 +159,12 @@
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             });
-                        },
-                        plugin: () => {
-                            return T1C.luxtrust;
                         }
                     },
                     backdrop: 'static',
@@ -205,10 +202,10 @@
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             });
                         },
@@ -236,7 +233,7 @@
                     templateUrl: "views/readmycards/modals/xml-download.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
                             return controller.pinpad;
@@ -268,9 +265,10 @@
     const luxOtpVisualizer = {
         templateUrl: 'views/cards/lux/otp/luxotp-viz.html',
         bindings: {
-            cardData: '<'
+            cardData: '<',
+            readerId: '<'
         },
-        controller: function ($q, $stateParams, $timeout, $uibModal, T1C, _) {
+        controller: function ($q, $timeout, $uibModal, Connector, _) {
             let controller = this;
 
             controller.challenge = () => {
@@ -278,10 +276,10 @@
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
                         }

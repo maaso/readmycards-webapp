@@ -4,7 +4,7 @@
     const emvCard = {
         templateUrl: 'views/cards/emv/emv-card.html',
         bindings: {
-            cardData: '<',
+            cardData: '<'
         },
         controller: function (_, EmvUtils) {
             let controller = this;

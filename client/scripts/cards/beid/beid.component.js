@@ -7,15 +7,16 @@
             rnData: '<',
             addressData: '<',
             picData: '<',
+            readerId: '<'
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, BeUtils, Connector, Analytics) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $timeout, BeUtils, Connector, Analytics) {
             let controller = this;
 
             controller.$onInit = () => {
                 controller.certStatus = 'checking';
                 controller.pinStatus = 'idle';
                 const filter = ['authentication-certificate', 'citizen-certificate', 'root-certificate'];
-                Connector.plugin('beid', 'allCerts', [$stateParams.readerId], filter).then(res => {
+                Connector.plugin('beid', 'allCerts', [controller.readerId], filter).then(res => {
                     let validationReq = {
                         certificateChain: [
                             { order: 0, certificate: res.data.authentication_certificate.base64 },
@@ -46,10 +47,10 @@
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return Connector.core('reader', [$stateParams.readerId]).then(res => {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
                         }
@@ -89,7 +90,7 @@
                 } else {
                     if (!controller.loadingCerts) {
                         controller.loadingCerts = true;
-                        Connector.plugin('beid', 'allCerts', [$stateParams.readerId]).then(res => {
+                        Connector.plugin('beid', 'allCerts', [controller.readerId]).then(res => {
                             controller.loadingCerts = false;
                             controller.certData = res.data;
                         });
@@ -103,10 +104,10 @@
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return Connector.core('reader', [$stateParams.readerId]).then((res) => {
+                            return Connector.core('reader', [controller.readerId]).then((res) => {
                                 return res.data.pinpad;
                             });
                         },

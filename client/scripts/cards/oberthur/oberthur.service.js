@@ -4,7 +4,7 @@
     angular.module('app.cards.oberthur')
         .service('OberthurUtils', OberthurUtils);
 
-    function OberthurUtils($http, $q, Core) {
+    function OberthurUtils($http, $q) {
         this.generateXMLToSign = generateXMLToSign;
 
 

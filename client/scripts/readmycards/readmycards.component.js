@@ -7,11 +7,13 @@
                bindings: {
                    readerId: '<'
                },
-               controller: function ($scope, $timeout, $rootScope, CardService, T1C, Connector, API, RMC, EVENTS) {
+               controller: function ($scope, $timeout, $rootScope, CardService, Connector, API, RMC, EVENTS) {
                    let controller = this;
                    controller.readAnother = readAnother;
                    this.registerUnknownType = registerUnknownType;
                    this.showSupportedCardTypes = toggleCardTypes;
+
+                   let currentReaderId = controller.readerId;
 
                    this.$onInit = function () {
                        controller.loading = true;
@@ -19,10 +21,7 @@
                        controller.unknownCard = false;
                        // Detect Type and read data
                        Connector.core('reader', [controller.readerId]).then(readerInfo => {
-                           console.log(readerInfo);
-                           // T1C.core.getReader(controller.readerId).then(function (readerInfo) {
                            CardService.detectType(readerInfo.data.id).then(type => {
-                               console.log(type);
                                controller.cardType = type;
                                controller.cardTypePretty = CardService.getCardTypeName(type, readerInfo.data.card);
                                controller.card = readerInfo.data.card;
@@ -53,7 +52,6 @@
                                    });
                                }
                            }).catch(err => {
-                               console.log(err);
                                controller.unknownCard = true;
                                controller.loading = false;
                                RMC.monitorCardRemoval(controller.readerId, readerInfo.data.card);
@@ -69,6 +67,13 @@
                            }
                        });
 
+                   };
+
+                   this.$onChanges = (changed) => {
+                       if (changed.readerId && changed.readerId.currentValue !== currentReaderId) {
+                           currentReaderId = changed.readerId.currentValue;
+                           controller.$onInit();
+                       }
                    };
 
                    $scope.$on(EVENTS.REINITIALIZE, function () {
@@ -109,7 +114,7 @@
                    dlUrl: '<',
                    isFirefox: '<'
                },
-               controller: function ($scope, $uibModal, T1C, $timeout, API, EVENTS) {
+               controller: function ($scope, $uibModal, Connector, $timeout, API, EVENTS) {
                    var controller = this;
                    this.firefoxModal = firefoxModal;
                    this.registerDownload = registerDownload;
@@ -122,7 +127,7 @@
 
                    function pollForGcl() {
                        $timeout(function () {
-                           T1C.core.getInfo().then(function (res) {
+                           Connector.core('info', []).then(() => {
                                // Info retrieved, GCL is installed
                                $scope.$emit(EVENTS.GCL_INSTALLED);
                            }, function (err) {
@@ -192,7 +197,9 @@
                        if (args.data.length !== controller.readers.length) {
                            controller.readers = args.data;
                            _.forEach(controller.readers, function (reader) {
-                               reader.cardType = CardService.detectType(reader.card);
+                               CardService.detectCardTypeName(reader.id, reader.card).then(name => {
+                                   reader.cardType = name;
+                               });
                            });
                        }
                    });

@@ -4,7 +4,7 @@
     angular.module('app.cards.mobib')
         .service('MobibUtils', MobibUtils);
 
-    function MobibUtils($q, T1C, _) {
+    function MobibUtils($q, _) {
         this.getContractName = getContractName;
         this.formatBirthDate = formatBirthDate;
         this.formatValidity = formatValidity;

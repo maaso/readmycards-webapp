@@ -2,12 +2,12 @@
     'use strict';
 
     angular.module('app.readmycards')
-        .controller('ModalCtrl', modalCtrl)
-        .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
-        .controller('ModalChallengeCtrl', modalChallengeCtrl)
+           .controller('ModalCtrl', modalCtrl)
+           .controller('ModalPinCheckCtrl', modalPinCheckCtrl)
+           .controller('ModalChallengeCtrl', modalChallengeCtrl)
            .controller('NoConsentCtrl', noConsentCtrl)
            .controller('RootCtrl', rootCtrl)
-        .controller('ReaderCtrl', readerCtrl);
+           .controller('ReaderCtrl', readerCtrl);
 
 
     function modalCtrl($scope, $uibModalInstance) {
@@ -48,7 +48,7 @@
         }
 
         function handleVerificationError(err) {
-            $uibModalInstance.dismiss(err.data);
+            $uibModalInstance.dismiss(err);
         }
 
         function ok() {
@@ -82,7 +82,7 @@
         });
     }
 
-    function modalChallengeCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, T1C, _) {
+    function modalChallengeCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, Connector, _) {
         $scope.pincode = {
             value: ''
         };
@@ -97,7 +97,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                T1C.getConnector().ocra(readerId).challenge({ challenge: "kgg0MTQ4NTkzNZMA" }).then(handleSuccess, handleError);
+                Connector.plugin('ocra', 'challenge', [readerId], [{ challenge: "kgg0MTQ4NTkzNZMA" }]).then(handleSuccess, handleError);
             }
             // else, wait until user enters pin
         }
@@ -129,7 +129,7 @@
         }
 
         function submitPin() {
-            T1C.core.getConnector().ocra(readerId).challenge({ challenge: "kgg0MTQ4NTkzNZMA", pin: $scope.pincode.value }).then(handleSuccess, handleError);
+            Connector.plugin('ocra', 'challenge', [readerId], [{ challenge: "kgg0MTQ4NTkzNZMA" }]).then(handleSuccess, handleError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {

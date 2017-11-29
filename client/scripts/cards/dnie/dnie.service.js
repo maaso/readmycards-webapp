@@ -4,7 +4,7 @@
     angular.module('app.cards.dnie')
         .service('DNIeUtils', DNIeUtils);
 
-    function DNIeUtils($http, $q, CheckDigit, T1C, _) {
+    function DNIeUtils($http, $q, CheckDigit, Connector, _) {
         this.constructMachineReadableStrings = constructMachineReadableStrings;
         this.formatCardNumber = formatCardNumber;
         this.formatRRNR = formatRRNR;
@@ -21,9 +21,9 @@
 
         function generateSummaryToSign(readerId) {
             let promises = [
-                T1C.dnie.getRnData(readerId),
-                T1C.dnie.getAddress(readerId),
-                T1C.dnie.getPic(readerId)
+                Connector.plugin('dnie', 'rnData', [readerId]),
+                Connector.plugin('dnie', 'address', [readerId]),
+                Connector.plugin('dnie', 'picture', [readerId])
             ];
 
             return $q.all(promises).then(function (results) {

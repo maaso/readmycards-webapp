@@ -5,7 +5,7 @@
         .controller('PivPinCheckCtrl', pivPinCheckCtrl);
 
 
-    function pivPinCheckCtrl($scope, readerId, pinpad, plugin, $uibModalInstance, EVENTS, T1C, _) {
+    function pivPinCheckCtrl($scope, readerId, pinpad, plugin, $uibModalInstance, EVENTS, _) {
             $scope.keys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
             $scope.pincode = {
                 value: ''

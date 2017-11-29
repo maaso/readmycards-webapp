@@ -5,8 +5,9 @@
         templateUrl: 'views/cards/dnie/dnie-viz.html',
         bindings: {
             cardData: '<',
+            readerId: '<'
         },
-        controller: function ($rootScope, $uibModal, $compile, $http, $stateParams, $timeout, DNIeUtils, T1C, Analytics) {
+        controller: function ($rootScope, $uibModal, $compile, $http, $timeout, DNIeUtils, Connector, Analytics) {
             let controller = this;
             //
             controller.$onInit = () => {
@@ -16,8 +17,7 @@
 
                 const filter = ['authentication-certificate', 'signing-certificate', 'intermediate-certificate'];
                 console.log(filter);
-                T1C.dnie.allCerts($stateParams.readerId, filter).then(res => {
-                    console.log(res.data);
+                Connector.plugin('dnie', 'allCerts', [controller.readerId], filter).then(res => {
                     let validationReq = {
                         certificateChain: [
                             { "order": 0, certificate: res.data.authentication_certificate.base64 },
@@ -26,8 +26,7 @@
                         ]
                     };
                     Analytics.trackEvent('dnie', 'cert-check', 'Start certificate check');
-                    T1C.ocv.validateCertificateChain(validationReq).then(res => {
-                        console.log(res);
+                    Connector.ocv('validateCertificateChain', [validationReq]).then(res => {
                         if (res.crlResponse.status || res.ocspResponse.status) {
                             Analytics.trackEvent('dnie', 'cert-valid', 'Certificates are valid');
                             controller.certStatus = 'valid';
@@ -49,15 +48,12 @@
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
-                                return res.data.pinpad;
+                            return Connector.core('reader', [controller.readerId]).then(res => {
+                                return res.data.pinpad
                             })
-                        },
-                        plugin: () => {
-                            return T1C.dnie;
                         }
                     },
                     backdrop: 'static',
@@ -100,10 +96,10 @@
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
                         }

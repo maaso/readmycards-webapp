@@ -5,7 +5,7 @@
            .service('LuxUtils', LuxUtils)
            .service('LuxTrustUtils', LuxTrustUtils);
 
-    function LuxUtils($http, $q, T1C, API, CheckDigit, _) {
+    function LuxUtils($http, $q, Connector, API, CheckDigit, _) {
         this.constructMachineReadableStrings = constructMachineReadableStrings;
         this.formatBirthDate = formatBirthDate;
         this.formatValidity = formatValidity;
@@ -66,7 +66,7 @@
         }
 
         function generateSummaryToSign(readerId, pin) {
-            return T1C.luxId.allData(readerId, pin).then(function (results) {
+            return Connector.plugin('luxeid', 'allData', [readerId, pin]).then(results => {
                 let conversions = [];
                 conversions.push(API.convertJPEG2000toJPEG(results.data.picture.image));
 
@@ -108,7 +108,7 @@
         }
     }
 
-    function LuxTrustUtils($http, $q, T1C, _) {
+    function LuxTrustUtils($http, $q, _) {
         this.generateSummaryToSign = generateSummaryToSign;
         this.generateXMLToSign = generateXMLToSign;
 

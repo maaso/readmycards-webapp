@@ -4,15 +4,12 @@
     angular.module('app.cards.pteid')
            .service('PtUtils', PtUtils);
 
-    function PtUtils($q, $http, API, Core, _) {
+    function PtUtils($q, $http, API, Connector, _) {
         this.address = address;
         this.generateSummaryToSign = generateSummaryToSign;
-        this.verifyPin = verifyPin;
 
         function generateSummaryToSign(readerId) {
-            let pt = Core.getConnector().pteid(readerId);
-
-            return pt.idData().then(idData => {
+            return Connector.plugin('pteid', 'idData', [readerId], []).then(idData => {
                 return API.convertJPEG2000toJPEG(idData.data.photo).then(photo => {
                     let documentNumberComponents = _.split(idData.data.document_number, " ");
                     let summaryData = {
@@ -62,11 +59,7 @@
             //     },
             //     success: true
             // });
-            return Core.getConnector().pteid(readerId).address({ pin });
-        }
-
-        function verifyPin(readerId, pin) {
-            return Core.getConnector().verifyPin(readerId, { pin });
+            return Connector.plugin('pteid', 'address', [readerId], [{ pin }]);
         }
     }
 

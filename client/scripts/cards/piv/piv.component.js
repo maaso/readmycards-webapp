@@ -4,9 +4,10 @@
     const pivViz = {
         templateUrl: 'views/cards/piv/piv-viz.html',
         bindings: {
-            cardData: '<'
+            cardData: '<',
+            readerId: '<'
         },
-        controller: function ($uibModal, $stateParams, Core) {
+        controller: function ($uibModal, Connector) {
             let controller = this;
 
             controller.$onInit = () => {
@@ -14,7 +15,7 @@
                 controller.needPin = true;
 
                 // check type of reader
-                Core.getReader($stateParams.readerId).then(res => {
+                Connector.core('reader', [controller.readerId]).then(res => {
                     controller.pinpad = res.data.pinpad;
                     if (!controller.pinpad) {
                         controller.pincode = { value: '' };
@@ -33,7 +34,7 @@
 
             function getAllData(pin) {
                 controller.readingData = true;
-                Core.getConnector().piv($stateParams.readerId).printedInformation({ pin }).then(res => {
+                Connector.plugin('piv', 'printedInformation', [controller.readerId], [{ pin }]).then(res => {
                     console.log(res);
                     controller.cardData = res.data;
                     controller.pinStatus = 'valid';

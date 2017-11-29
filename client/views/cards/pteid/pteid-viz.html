@@ -2,10 +2,10 @@
 
     <div class="status-wrapper">
         <certificate-status status="$ctrl.certStatus" ng-click="$ctrl.trackCertificatesClick()"></certificate-status>
-        <pin-check-status status="$ctrl.pinStatus" max-tries="3" initial-text="'Click to check sign PIN'" ok-text="'Sign PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
+        <pin-check-status status="$ctrl.signPinStatus" max-tries="3" initial-text="'Click to check sign PIN'" ok-text="'Sign PIN check ok.'" pin-check-func="$ctrl.checkPin"></pin-check-status>
     </div>
 
-    <pteid-card id-data="$ctrl.cardData" photo="$ctrl.photo"></pteid-card>
+    <pteid-card id-data="$ctrl.cardData.id" photo="$ctrl.photo"></pteid-card>
 
     <div class="print-button">
         <print-summary print-function="$ctrl.downloadSummary"></print-summary>
@@ -14,7 +14,7 @@
     <div class="additional-info col-sm-12">
         <!--<span class="size-h3 text-primary">Additional Information</span>-->
         <div class="status-wrapper">
-            <pin-check-status status="$ctrl.pinStatus" max-tries="3" initial-text="'Click to check address PIN'" ok-text="'Address PIN ok.'" pin-check-func="$ctrl.addressData"></pin-check-status>
+            <pin-check-status status="$ctrl.addressPinStatus" max-tries="3" initial-text="'Click to check address PIN'" ok-text="'Address PIN ok.'" pin-check-func="$ctrl.addressData"></pin-check-status>
         </div>
         <div class="col-sm-12" data-ng-show="$ctrl.addressInfo">
             <h4 class="text-info text-light">Address Data</h4>

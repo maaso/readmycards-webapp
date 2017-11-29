@@ -4,7 +4,7 @@
     angular.module('app.cards.piv')
         .service('PIVUtils', PIVUtils);
 
-    function PIVUtils($http, $q, T1C, _) {
+    function PIVUtils($http, $q, _) {
 
     }
 

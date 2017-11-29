@@ -5,7 +5,7 @@
            .controller('ModalPtAddressPinCheckCtrl', modalPinCheckCtrl);
 
 
-    function modalPinCheckCtrl($scope, readerId, pinpad, plugin, $uibModalInstance, EVENTS, T1C, _) {
+    function modalPinCheckCtrl($scope, readerId, pinpad, $uibModalInstance, EVENTS, Connector, _) {
         $scope.pincode = {
             value: ''
         };
@@ -20,7 +20,7 @@
         function init() {
             // If pinpad reader, send verification request directly to reader
             if (pinpad) {
-                plugin.address(readerId).then(handleVerificationSuccess, handleVerificationError);
+                Connector.plugin('pteid', 'address', [readerId], [{ }]).then(handleVerificationSuccess, handleVerificationError);
             }
             // else, wait until user enters pin
         }
@@ -30,7 +30,7 @@
         }
 
         function handleVerificationError(err) {
-            $uibModalInstance.dismiss(err.data);
+            $uibModalInstance.dismiss(err);
         }
 
         function ok() {
@@ -56,7 +56,7 @@
         }
 
         function submitPin() {
-            plugin.address(readerId, $scope.pincode.value).then(handleVerificationSuccess, handleVerificationError);
+            Connector.plugin('pteid', 'address', [readerId], [{ pin: $scope.pincode.value }]).then(handleVerificationSuccess, handleVerificationError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {

@@ -4,9 +4,10 @@
     const pteidVisualizer = {
         templateUrl: 'views/cards/pteid/pteid-viz.html',
         bindings: {
-            cardData: '<'
+            cardData: '<',
+            readerId: '<'
         },
-        controller: function ($rootScope, $q, $uibModal, $compile, $http, $stateParams, $timeout, Core, T1C, API, PtUtils, Analytics, _) {
+        controller: function ($rootScope, $q, $uibModal, $compile, $http, $timeout, Connector, API, PtUtils, Analytics, _) {
             let controller = this;
             controller.addressData = addressData;
             controller.checkPin = checkPin;
@@ -15,13 +16,13 @@
             controller.trackCertificatesClick = trackCertificatesClick;
 
             controller.$onInit = () => {
-                console.log(controller.cardData);
                 controller.certStatus = 'checking';
-                controller.pinStatus = 'idle';
+                controller.addressPinStatus = 'idle';
+                controller.signPinStatus = 'idle';
 
                 // validate certificate chain
-                Core.getConnector().pteid($stateParams.readerId).allCerts({ filter: [], parseCerts: false}).then(res => {
-                    API.convertJPEG2000toJPEG(controller.cardData.photo).then(converted => {
+                Connector.plugin('pteid', 'allCerts', [controller.readerId], [ { filter: [], parseCerts: false }]).then(res => {
+                    API.convertJPEG2000toJPEG(controller.cardData.id.photo).then(converted => {
                         controller.photo = converted.data.base64Pic
                     });
 
@@ -39,12 +40,11 @@
                             { order: 2, certificate: res.data.root_certificate.base64 },
                         ]
                     };
-                    const promises = [ T1C.ocv.validateCertificateChain(validationReq), T1C.ocv.validateCertificateChain(validationReq2) ];
+                    const promises = [ Connector.ocv('validateCertificateChain', [validationReq]), Connector.ocv('validateCertificateChain', [validationReq2]) ];
 
                     $q.all(promises).then(results => {
                         let status = 'valid';
                         _.forEach(results, res => {
-                            console.log(res);
                             if (!(res.crlResponse.status && res.ocspResponse.status)) status = 'invalid';
                         });
                         controller.certStatus = status;
@@ -57,15 +57,12 @@
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
-                        },
-                        plugin: () => {
-                            return PtUtils;
                         }
                     },
                     backdrop: 'static',
@@ -73,26 +70,25 @@
                 });
 
                 modal.result.then(function (addressResponse) {
-                    console.log(addressResponse);
                     // Analytics.trackEvent('beid', 'pin-correct', 'Correct PIN entered');
-                    controller.pinStatus = 'valid';
+                    controller.addressPinStatus = 'valid';
                     controller.addressInfo = addressResponse.data;
                 }, function (err) {
                     // Analytics.trackEvent('beid', 'pin-incorrect', 'Incorrect PIN entered');
                     switch (err.code) {
                         case 103:
-                            controller.pinStatus = '2remain';
+                            controller.addressPinStatus = '2remain';
                             break;
                         case 104:
-                            controller.pinStatus = '1remain';
+                            controller.addressPinStatus = '1remain';
                             break;
                         case 105:
                             // Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
-                            controller.pinStatus = 'blocked';
+                            controller.addressPinStatus = 'blocked';
                             break;
                         case 109:
                             // cancelled on reader
-                            controller.pinStatus = 'cancelled';
+                            controller.addressPinStatus = 'cancelled';
                             break;
                     }
                 });
@@ -104,15 +100,12 @@
                     templateUrl: "views/readmycards/modals/check-pin.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
-                        },
-                        plugin: () => {
-                            return PtUtils;
                         }
                     },
                     backdrop: 'static',
@@ -121,23 +114,23 @@
 
                 modal.result.then(function () {
                     // Analytics.trackEvent('beid', 'pin-correct', 'Correct PIN entered');
-                    controller.pinStatus = 'valid';
+                    controller.signPinStatus = 'valid';
                 }, function (err) {
                     // Analytics.trackEvent('beid', 'pin-incorrect', 'Incorrect PIN entered');
                     switch (err.code) {
                         case 103:
-                            controller.pinStatus = '2remain';
+                            controller.signPinStatus = '2remain';
                             break;
                         case 104:
-                            controller.pinStatus = '1remain';
+                            controller.signPinStatus = '1remain';
                             break;
                         case 105:
                             // Analytics.trackEvent('beid', 'pin-blocked', 'Card blocked; too many incorrect attempts');
-                            controller.pinStatus = 'blocked';
+                            controller.signPinStatus = 'blocked';
                             break;
                         case 109:
                             // cancelled on reader
-                            controller.pinStatus = 'cancelled';
+                            controller.signPinStatus = 'cancelled';
                             break;
                     }
                 });
@@ -149,7 +142,7 @@
                 } else {
                     if (!controller.loadingCerts) {
                         controller.loadingCerts = true;
-                        Core.getConnector().pteid($stateParams.readerId).allCerts({ filter: [], parseCerts: false}).then(res => {
+                        Connector.plugin('pteid', 'allCerts', [controller.readerId], [{ filter: [], parseCerts: false }]).then(res => {
                             controller.loadingCerts = false;
                             controller.certData = res.data;
                         });
@@ -163,10 +156,10 @@
                     templateUrl: "views/readmycards/modals/summary-download.html",
                     resolve: {
                         readerId: () => {
-                            return $stateParams.readerId
+                            return controller.readerId
                         },
                         pinpad: () => {
-                            return T1C.core.getReader($stateParams.readerId).then(function (res) {
+                            return Connector.core('reader', [controller.readerId]).then(res => {
                                 return res.data.pinpad;
                             })
                         },

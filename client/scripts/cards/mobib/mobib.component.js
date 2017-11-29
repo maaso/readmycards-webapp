@@ -193,7 +193,8 @@
         templateUrl: 'views/cards/mobib/mobib-viz.html',
         bindings: {
             cardData: '<',
-            isBasic: '<'
+            isBasic: '<',
+            readerId: '<'
         },
         controller: function (MobibUtils, _) {
             let controller = this;
@@ -238,7 +239,7 @@
 
                     contract.validityStart = startDate.format(dateFormat);
 
-                    if (_.has(contract, 'tariff.counter.type') && contract.tariff.counter.type != 0) {
+                    if (_.has(contract, 'tariff.counter.type') && contract.tariff.counter.type !== 0) {
                         // Determine further processing based on counter type
                         switch (contract.tariff.counter.type) {
                             case 0:

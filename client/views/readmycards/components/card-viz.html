@@ -53,27 +53,31 @@
                        address-data="$ctrl.cardData.address"
                        pic-data="$ctrl.cardData.picture"
                        cert-data="$ctrl.cardData"
+                       reader-id="$ctrl.readerId"
                        ng-if="$ctrl.cardType === 'beid'"></beid-visualizer>
 
       <dnie-visualizer ng-if="$ctrl.cardType === 'dnie'"
+                       reader-id="$ctrl.readerId"
                        card-data="$ctrl.cardData"></dnie-visualizer>
 
       <emv-visualizer data="$ctrl.cardData" reader-id="$ctrl.readerId" ng-if="$ctrl.cardType === 'emv'"></emv-visualizer>
 
-      <lux-visualizer ng-if="$ctrl.cardType === 'luxeid'"></lux-visualizer>
+      <lux-visualizer reader-id="$ctrl.readerId" ng-if="$ctrl.cardType === 'luxeid'"></lux-visualizer>
       <lux-trust-visualizer card-data="$ctrl.cardData"
+                            reader-id="$ctrl.readerId"
                             ng-if="$ctrl.cardType === 'luxtrust'"></lux-trust-visualizer>
       <lux-otp-visualizer card-data="$ctrl.cardData"
                           ng-if="$ctrl.cardType === 'ocra'"></lux-otp-visualizer>
 
-      <mobib-viz card-data="$ctrl.cardData" is-basic="$ctrl.cardTypePretty === 'MOBIB Basic'"
+      <mobib-viz card-data="$ctrl.cardData" reader-id="$ctrl.readerId" is-basic="$ctrl.cardTypePretty === 'MOBIB Basic'"
                  ng-if="$ctrl.cardType === 'mobib'"></mobib-viz>
 
       <oberthur-visualizer card-data="$ctrl.cardData"
+                           reader-id="$ctrl.readerId"
                            ng-if="$ctrl.cardType === 'oberthur'"></oberthur-visualizer>
 
-      <piv-visualizer ng-if="$ctrl.cardType === 'piv'" card-data="$ctrl.cardData"></piv-visualizer>
-      <pteid-visualizer ng-if="$ctrl.cardType === 'pteid'" card-data="$ctrl.cardData"></pteid-visualizer>
+      <piv-visualizer ng-if="$ctrl.cardType === 'piv'" reader-id="$ctrl.readerId" card-data="$ctrl.cardData"></piv-visualizer>
+      <pteid-visualizer ng-if="$ctrl.cardType === 'pteid'" reader-id="$ctrl.readerId" card-data="$ctrl.cardData"></pteid-visualizer>
     </div>
   </div>
 </div>

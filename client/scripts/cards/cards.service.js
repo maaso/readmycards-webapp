@@ -7,6 +7,7 @@
 
     function CardService($q, $http, Connector, _) {
         this.detectType = detectContainer;
+        this.detectCardTypeName = detectCardTypeName;
         this.getCardTypeName = getCardTypeName;
         this.signDocument = signDocument;
 
@@ -15,6 +16,12 @@
                 // change result for unsupported card types
                 if (res.data === 'aventra') { return 'unknown'; }
                 return res.data;
+            });
+        }
+
+        function detectCardTypeName(readerId, card) {
+            return detectContainer(readerId).then(container => {
+                return getCardTypeName(container, card);
             });
         }
 
