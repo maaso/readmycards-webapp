@@ -6,7 +6,9 @@ class JWT {
     constructor(token) {
         this.originalToken = token;
         this.parsedToken = jsonwebtoken.decode(token);
-        this.expires = moment(this.parsedToken.exp * 1000);
+        if (this.parsedToken && this.parsedToken.exp) {
+            this.expires = moment(this.parsedToken.exp * 1000);
+        } else { this.expires = 0; }
     }
 
     get token() {

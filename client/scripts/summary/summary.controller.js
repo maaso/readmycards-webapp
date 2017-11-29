@@ -70,26 +70,23 @@
                     generatedFile = res;
                     $scope.currentStep = 2;
                     $scope.generateText = 'Generated';
-                    $scope.pinText = 'Signing...';
-                    CardService.signDocument(generatedFile.id, readerId, $scope.pincode.value).then(() => {
-                        $scope.currentStep = 3;
-                        $scope.pinText = 'Signed';
-                        $scope.downloadText = 'Download Ready!';
-                    }, err => {
-                        console.log('sign error');
-                        console.log(err);
-                    })
+                    doSign();
                 })
             } else {
                 // summary has been generated, do sign
+                doSign();
+            }
+
+            function doSign() {
                 $scope.pinText = "Signing...";
-                CardService.signDocument(generatedFile.id, readerId, $scope.pincode.value).then(() => {
+                let pin = undefined;
+                if ($scope.pincode.value && $scope.pincode.value.length) { pin = $scope.pincode.value }
+                CardService.signDocument(generatedFile.id, readerId, pin).then(() => {
                     $scope.currentStep = 3;
                     $scope.pinText = 'Signed';
                     $scope.downloadText = 'Download Ready!';
                 });
             }
-
         }
 
         function startProcess() {
@@ -107,7 +104,7 @@
                     if (pinpad) {
                         // start signing process
                         $scope.pinText = 'Enter PIN on reader...';
-                        CardService.signDocument(generatedFile.id, readerId, null).then(() => {
+                        CardService.signDocument(generatedFile.id, readerId, undefined).then(() => {
                             $scope.currentStep = 3;
                             $scope.pinText = 'Signed';
                             $scope.downloadText = 'Download Ready!'
