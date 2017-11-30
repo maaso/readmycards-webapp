@@ -22,6 +22,7 @@
                        // Detect Type and read data
                        Connector.core('reader', [controller.readerId]).then(readerInfo => {
                            CardService.detectType(readerInfo.data.id).then(type => {
+                               console.log(type);
                                controller.cardType = type;
                                controller.cardTypePretty = CardService.getCardTypeName(type, readerInfo.data.card);
                                controller.card = readerInfo.data.card;
@@ -44,6 +45,7 @@
                                        controller.loading = false;
                                        RMC.monitorCardRemoval(controller.readerId, controller.card);
                                    }, function (error) {
+                                       console.log(error);
                                        if (error.status === 412 && (error.data.code === 900 || error.data.code === 0)) {
                                            // this usually means the card was removed during reading, check if it is still present
                                            RMC.checkCardRemoval(controller.readerId, controller.card).then(function (removed) {
@@ -58,6 +60,7 @@
                                    });
                                }
                            }).catch(err => {
+                               console.log(err);
                                controller.unknownCard = true;
                                controller.loading = false;
                                RMC.monitorCardRemoval(controller.readerId, readerInfo.data.card);
