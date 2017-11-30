@@ -67,6 +67,7 @@
                             reader-id="$ctrl.readerId"
                             ng-if="$ctrl.cardType === 'luxtrust'"></lux-trust-visualizer>
       <lux-otp-visualizer card-data="$ctrl.cardData"
+                          reader-id="$ctrl.readerId"
                           ng-if="$ctrl.cardType === 'ocra'"></lux-otp-visualizer>
 
       <mobib-viz card-data="$ctrl.cardData" reader-id="$ctrl.readerId" is-basic="$ctrl.cardTypePretty === 'MOBIB Basic'"

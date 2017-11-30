@@ -7,7 +7,7 @@
                bindings: {
                    readerId: '<'
                },
-               controller: function ($scope, $timeout, $rootScope, CardService, Connector, API, RMC, EVENTS) {
+               controller: function ($scope, $timeout, $rootScope, CardService, Connector, API, RMC, EVENTS, _) {
                    let controller = this;
                    controller.readAnother = readAnother;
                    this.registerUnknownType = registerUnknownType;
@@ -32,11 +32,17 @@
                                    controller.unknownCard = true;
                                    controller.loading = false;
                                    RMC.monitorCardRemoval(controller.readerId, controller.card);
+                               } else if (_.includes(['luxeid', 'piv'], type)) {
+                                   // return $q.when('Not Supported');
+                                   $timeout(() => {
+                                       controller.loading = false;
+                                   });
+                                   RMC.monitorCardRemoval(controller.readerId, controller.card);
                                } else {
                                    Connector.generic('dumpData', [readerInfo.data.id]).then(res => {
                                        controller.cardData = res.data;
                                        controller.loading = false;
-                                       RMC.monitorCardRemoval(controller.readerId, controller.card)
+                                       RMC.monitorCardRemoval(controller.readerId, controller.card);
                                    }, function (error) {
                                        if (error.status === 412 && (error.data.code === 900 || error.data.code === 0)) {
                                            // this usually means the card was removed during reading, check if it is still present

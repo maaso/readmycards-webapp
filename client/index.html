@@ -61,10 +61,10 @@ identité, fedict middleware alternative, ing card reader, belfius card reader, 
 <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
 <script src="../bower_components/keycloak/dist/keycloak.js"></script>
 <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-<!--<script src="../bower_components/trust1connector/dist/GCLLib.js"></script>-->
+<script src="scripts/plugins/GCLLib.js"></script>
 <script src="../bower_components/lodash/lodash.js"></script>
 <script src="../bower_components/moment/moment.js"></script>
-<script src="../bower_components/ngKeypad/dist/ng-keypad.min.js"></script>
+<script src="../bower_components/ngKeypad/dist/ng-keypad.js"></script>
 <script src="../bower_components/angular-google-analytics/dist/angular-google-analytics.js"></script>
 <script src="../bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
 <script src="../bower_components/clipboard/dist/clipboard.js"></script>
@@ -72,10 +72,11 @@ identité, fedict middleware alternative, ing card reader, belfius card reader, 
 <script src="../bower_components/base-64/base64.js"></script>
 <script src="../bower_components/utf8/utf8.js"></script>
 <script src="../bower_components/ngFitText/dist/ng-FitText.min.js"></script>
+<script src="../bower_components/ngstorage/ngStorage.js"></script>
+<script src="../bower_components/random/lib/random.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
-<script src="scripts/plugins/GCLLib.js"></script>
 
 
 <!--build:js scripts/app.js -->
@@ -99,6 +100,7 @@ identité, fedict middleware alternative, ing card reader, belfius card reader, 
 
 <script src="scripts/cards/beid/beid.module.js"></script>
 <script src="scripts/cards/beid/beid.component.js"></script>
+<script src="scripts/cards/beid/beid.controller.js"></script>
 <script src="scripts/cards/beid/beid.service.js"></script>
 
 <script src="scripts/cards/dnie/dnie.module.js"></script>

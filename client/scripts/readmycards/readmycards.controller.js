@@ -87,6 +87,7 @@
             value: ''
         };
         $scope.pinpad = pinpad;
+        $scope.pinpad = false;
         $scope.ok = ok;
         $scope.cancel = cancel;
         $scope.onKeyPressed = onKeyPressed;
@@ -96,8 +97,9 @@
 
         function init() {
             // If pinpad reader, send verification request directly to reader
+            // TODO only works with non-pinpad readers for now!
             if (pinpad) {
-                Connector.plugin('ocra', 'challenge', [readerId], [{ challenge: "kgg0MTQ4NTkzNZMA" }]).then(handleSuccess, handleError);
+                Connector.plugin('ocra', 'challenge', [readerId], [{ challenge: "kgg0MTQ4NTkzNZMA", pin: undefined }]).then(handleSuccess, handleError);
             }
             // else, wait until user enters pin
         }
@@ -129,7 +131,7 @@
         }
 
         function submitPin() {
-            Connector.plugin('ocra', 'challenge', [readerId], [{ challenge: "kgg0MTQ4NTkzNZMA" }]).then(handleSuccess, handleError);
+            Connector.plugin('ocra', 'challenge', [readerId], [{ challenge: "kgg0MTQ4NTkzNZMA", pin: $scope.pincode.value }]).then(handleSuccess, handleError);
         }
 
         $scope.$on(EVENTS.START_OVER, function () {

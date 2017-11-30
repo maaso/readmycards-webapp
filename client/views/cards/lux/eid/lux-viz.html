@@ -33,7 +33,7 @@
         </div>
 
         <div class="certificates-toggle col-sm-12">
-            <span class="text-small" ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>
+            <span ng-click="$ctrl.toggleCerts()" ng-class="{ 'clickable': !$ctrl.loadingCerts }">{{ $ctrl.certData ? 'Hide extended info': 'Show extended info'}}</span>
         </div>
         <div>
             <div uib-collapse="!$ctrl.certData">
@@ -75,24 +75,24 @@
 
                 <div class="certificates col-sm-12">
                     <span class="size-h3 text-primary">Biometric Data</span>
-                    <div class="col-sm-12" ng-if="$ctrl.biometric.raw_data">
+                    <div class="col-sm-12" data-ng-if="$ctrl.biometricData.raw_data">
                         <h4 class="text-info text-light">Raw Data</h4>
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $ctrl.biometric.raw_data }}">
+                            <input type="text" class="form-control" value="{{ $ctrl.biometricData.raw_data }}">
                             <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.biometric.raw_data }}"></button>
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.biometricData.raw_data }}"></button>
                         </span>
                         </div>
                     </div>
 
-                    <div class="col-sm-12" ng-if="$ctrl.biometric.signature">
+                    <div class="col-sm-12" ng-if="$ctrl.signatureObject">
                         <h4 class="text-info text-light">Signature</h4>
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ $ctrl.biometric.signature }}">
+                            <input type="text" class="form-control" value="{{ $ctrl.signatureObject }}">
                             <span class="input-group-btn">
-                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.biometric.signature }}"></button>
+                            <button class="btn btn-default fa fa-copy" uib-tooltip="Copy" type="button" ngclipboard data-clipboard-text="{{ $ctrl.biometric.signatureObject }}"></button>
                         </span>
                         </div>
                     </div>

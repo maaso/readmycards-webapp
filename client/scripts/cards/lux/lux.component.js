@@ -69,6 +69,7 @@
                     controller.pinStatus = 'valid';
                     controller.certStatus = 'checking';
                     controller.biometricData = res.data.biometric;
+                    controller.signatureObject = res.data.signature_object;
                     controller.picData = res.data.picture;
 
                     let conversions = [];
@@ -330,7 +331,6 @@
             let controller = this;
 
             controller.$onInit = () => {
-                console.log(controller.biometricData);
                 controller.formattedBirthDate = LuxUtils.formatBirthDate(controller.biometricData.birthDate);
                 controller.formattedValidFrom = LuxUtils.formatValidity(controller.biometricData.validityStartDate);
                 controller.formattedValidUntil = LuxUtils.formatValidity(controller.biometricData.validityEndDate);
