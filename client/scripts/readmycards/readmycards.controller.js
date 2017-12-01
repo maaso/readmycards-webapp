@@ -614,6 +614,8 @@
             $scope.$on(EVENTS.OPEN_SIDEBAR, function () {
                 // Make sure the FAQ panel is closed when opening sidebar
                 if (!controller.cardTypesOpen) {
+                    $scope.$broadcast(EVENTS.CLOSE_FILE_EXCHANGE);
+                    controller.fileExchangeOpen = false;
                     controller.faqOpen = false;
                 }
                 controller.cardTypesOpen = !controller.cardTypesOpen;
@@ -623,6 +625,7 @@
                 // Make sure the other panels are closed when opening sidebar
                 if (!controller.fileExchangeOpen) {
                     controller.faqOpen = false;
+                    $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
                     controller.cardTypesOpen = false;
                 }
                 controller.fileExchangeOpen = !controller.fileExchangeOpen;
@@ -633,6 +636,8 @@
                 if (!controller.faqOpen) {
                     $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
                     controller.cardTypesOpen = false;
+                    $scope.$broadcast(EVENTS.CLOSE_FILE_EXCHANGE);
+                    controller.fileExchangeOpen = false;
                 }
                 controller.faqOpen = !controller.faqOpen;
             });
