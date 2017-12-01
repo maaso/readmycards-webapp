@@ -205,6 +205,7 @@
                    let controller = this;
                    this.home = home;
                    this.toggleCardTypes = toggleCardTypes;
+                   this.toggleFileExchange = toggleFileExchange;
 
                    function home() {
                        $scope.$emit(EVENTS.START_OVER);
@@ -214,13 +215,25 @@
                        $scope.$emit(EVENTS.OPEN_SIDEBAR);
                    }
 
+                   function toggleFileExchange() {
+                       $scope.$emit(EVENTS.OPEN_FILE_EXCHANGE)
+                   }
+
                    $scope.$on(EVENTS.OPEN_SIDEBAR, function () {
                        controller.menuOpen = !controller.menuOpen;
                    });
 
+                   $scope.$on(EVENTS.OPEN_FILE_EXCHANGE, function () {
+                       controller.fileExchOpen = !controller.fileExchOpen;
+                   });
+
                    $scope.$on(EVENTS.CLOSE_SIDEBAR, function () {
                        controller.menuOpen = false;
-                   })
+                   });
+
+                   $scope.$on(EVENTS.CLOSE_FILE_EXCHANGE, function () {
+                       controller.fileExchOpen = false;
+                   });
                }
            })
            .component('rmcFaq', {

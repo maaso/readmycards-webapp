@@ -1,0 +1,30 @@
+<div class="fe-buttons">
+  <!--<span class="btn btn-primary" data-ng-click="$ctrl.setUpload()">Set Upload Folder</span>-->
+  <!--<span class="btn btn-primary" data-ng-click="$ctrl.setDownload()">Set Download Folder</span>-->
+
+  <div class="fe-button">
+    <div class="fe-button-title">Upload path:</div>
+    <div class="fe-button-input">
+      <div class="input-group input-group-sm">
+        <input type="text" class="form-control" data-ng-model="$ctrl.uploadPath.value" placeholder="Not set..." disabled>
+        <span class="input-group-btn">
+        <button class="btn btn-primary" data-ng-click="$ctrl.setUpload()" type="button">Change</button>
+      </span>
+      </div><!-- /input-group -->
+    </div>
+  </div>
+
+  <div class="fe-button">
+    <div class="fe-button-title">Download path:</div>
+    <div class="fe-button-input">
+      <div class="input-group input-group-sm">
+        <input type="text" class="form-control" data-ng-model="$ctrl.downloadPath.value" placeholder="Not set..." disabled>
+        <span class="input-group-btn">
+        <button class="btn btn-primary" data-ng-click="$ctrl.setDownload()" type="button">Change</button>
+      </span>
+      </div><!-- /input-group -->
+    </div>
+  </div>
+
+
+</div>

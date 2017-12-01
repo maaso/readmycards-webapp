@@ -19,7 +19,8 @@
         'app.plugin.lodash',
         'app.readmycards',
         'app.cards',
-        'app.connector'
+        'app.connector',
+        'app.file-exchange'
 
     ]);
 

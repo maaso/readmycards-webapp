@@ -4,6 +4,8 @@
     angular.module('app.readmycards')
         .constant('EVENTS', {
             'GCL_INSTALLED': 'gcl-installed',
+            'CLOSE_FILE_EXCHANGE': 'close-file-exchange',
+            'OPEN_FILE_EXCHANGE': 'open-file-exchange',
             'CLOSE_SIDEBAR': 'close-sidebar',
             'OPEN_SIDEBAR': 'open-sidebar',
             'OPEN_FAQ': 'open-faq',

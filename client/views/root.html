@@ -11,6 +11,12 @@
         <div class="not-supported">Don't find your card in the list?<br>Send us an email with the card you want supported!</div>
     </nav>
 
+    <nav class="st-file-exchange sliding-file-exchange" ng-class="{ 'st-file-exchange-open': root.fileExchangeOpen }" id="menu-file-exchange">
+        <div class="fe-buttons-wrapper">
+            <fe-buttons></fe-buttons>
+        </div>
+    </nav>
+
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
     <div id="rmc-content">
         <div class="citrix-buttons text-center" ng-if="root.readerWithCard">

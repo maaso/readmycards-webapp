@@ -381,6 +381,7 @@
 
         function dismissPanels() {
             $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
+            $scope.$broadcast(EVENTS.CLOSE_FILE_EXCHANGE);
             controller.cardTypesOpen = false;
             controller.faqOpen = false;
         }
@@ -562,6 +563,10 @@
         }
 
         function init() {
+            // TODO remove
+            controller.fileExchangeOpen = true;
+
+
             if (gclAvailable) {
                 Connector.core('version').then(version => {
                     console.log('Using T1C-JS ' + version);
@@ -612,6 +617,15 @@
                     controller.faqOpen = false;
                 }
                 controller.cardTypesOpen = !controller.cardTypesOpen;
+            });
+
+            $scope.$on(EVENTS.OPEN_FILE_EXCHANGE, function () {
+                // Make sure the other panels are closed when opening sidebar
+                if (!controller.fileExchangeOpen) {
+                    controller.faqOpen = false;
+                    controller.cardTypesOpen = false;
+                }
+                controller.fileExchangeOpen = !controller.fileExchangeOpen;
             });
 
             $scope.$on(EVENTS.OPEN_FAQ, function () {
