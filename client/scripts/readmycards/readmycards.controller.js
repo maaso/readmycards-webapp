@@ -347,7 +347,7 @@
     }
 
     function rootCtrl($scope, $rootScope, $location, $timeout, $uibModal, gclAvailable, readers, cardPresent,
-                      RMC, EVENTS, _, Analytics, Connector) {
+                      RMC, EVENTS, _, Analytics, Connector, FileService) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
@@ -576,6 +576,8 @@
             controller.isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
             controller.currentAgentParams = $location.search();
+
+            controller.fileService = FileService;
 
             // Determine initial action we need to take
             if (!controller.cardPresent) {

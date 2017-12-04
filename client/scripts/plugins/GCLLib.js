@@ -32927,10 +32927,10 @@ var GCLLib =
 	    }
 	    GenericContainer.prototype.containerSuffix = function (path) {
 	        if (path && path.length) {
-	            return this.containerUrl + '/' + path;
+	            return this.containerUrl + path;
 	        }
 	        else {
-	            return this.containerUrl + '/';
+	            return this.containerUrl;
 	        }
 	    };
 	    return GenericContainer;
@@ -77016,7 +77016,7 @@ var GCLLib =
 	        return _super !== null && _super.apply(this, arguments) || this;
 	    }
 	    FileExchange.prototype.listFiles = function (data, callback) {
-	        return this.connection.post(this.baseUrl, this.containerSuffix(FileExchange.LIST), data, undefined, callback);
+	        return this.connection.post(this.baseUrl, this.containerSuffix(FileExchange.FOLDER), data, undefined, callback);
 	    };
 	    FileExchange.prototype.setFolder = function (callback) {
 	        return this.connection.get(this.baseUrl, this.containerSuffix(FileExchange.FOLDER), undefined, callback);
@@ -77024,7 +77024,6 @@ var GCLLib =
 	    return FileExchange;
 	}(Card_1.GenericContainer));
 	FileExchange.FOLDER = '/folder';
-	FileExchange.LIST = '/list';
 	exports.FileExchange = FileExchange;
 
 

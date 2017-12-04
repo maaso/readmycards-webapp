@@ -1,8 +1,70 @@
 .fe-buttons-wrapper {
   margin: 40px;
+  background: #fff;
+  padding: 15px 30px;
+}
+
+.fe-file-list-wrapper {
+  background: #ddd;
 }
 
 
+.fe-tabs {
+  main {
+    min-width: 320px;
+    padding: 30px;
+    margin: 40px;
+    background: #fff;
+  }
+
+  section {
+    display: none;
+    padding: 20px 0 0;
+    border-top: 1px solid #ddd;
+  }
+
+  input {
+    display: none;
+  }
+
+  label {
+    display: inline-block;
+    margin: 0 0 -1px;
+    padding: 15px 25px;
+    font-weight: 600;
+    text-align: center;
+    color: #bbb;
+    border: 1px solid transparent;
+  }
+
+  label:before {
+    font-family: fontawesome;
+    font-weight: normal;
+    margin-right: 10px;
+  }
+
+  label[for*='1']:before { content: '\f093'; }
+  label[for*='2']:before { content: '\f019'; }
+
+  label:hover {
+    color: #888;
+    cursor: pointer;
+  }
+
+  input:checked + label {
+    color: #555;
+    border: 1px solid #ddd;
+    border-top: 2px solid @brand-primary;
+    border-bottom: 1px solid #fff;
+  }
+
+  #tab1:checked ~ #content1,
+  #tab2:checked ~ #content2,
+  #tab3:checked ~ #content3,
+  #tab4:checked ~ #content4 {
+    display: block;
+  }
+}
 
 .fe-buttons {
 

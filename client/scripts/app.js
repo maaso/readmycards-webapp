@@ -14,6 +14,7 @@
         'ngFileSaver',
         'ngclipboard',
         'ngStorage',
+        'ngFilesizeFilter',
 
         /* custom modules */
         'app.plugin.lodash',

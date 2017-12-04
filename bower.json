@@ -25,7 +25,8 @@
     "base-64": "^0.1.0",
     "utf8": "^2.1.2",
     "ngstorage": "^0.3.11",
-    "random": "^1.0.8"
+    "random": "^1.0.8",
+    "angular-filesize-filter": "0.1.3"
   },
   "devDependencies": {
     "less": "2.7.1"

@@ -15,6 +15,38 @@
         <div class="fe-buttons-wrapper">
             <fe-buttons></fe-buttons>
         </div>
+
+        <div class="fe-tabs">
+            <main>
+                <input id="tab1" type="radio" name="tabs" checked>
+                <label for="tab1">Upload</label>
+
+                <input id="tab2" type="radio" name="tabs">
+                <label for="tab2">Download</label>
+
+                <section id="content1">
+                    <div class="fe-file-list-wrapper">
+                        <fe-file-list file-list="root.fileService.getUploadFiles()"></fe-file-list>
+                    </div>
+                </section>
+
+                <section id="content2">
+                    <fe-file-list file-list="root.fileService.getDownloadFiles()"></fe-file-list>
+                </section>
+            </main>
+        </div>
+
+        <!--<div class="fe-file-list-wrapper">-->
+
+            <!--<uib-tabset active="active">-->
+                <!--<uib-tab index="0" heading="Upload Folder">-->
+                    <!--<fe-file-list file-list="root.fileService.getUploadFiles()"></fe-file-list>-->
+                <!--</uib-tab>-->
+                <!--<uib-tab index="1" heading="Download Folder" select="alertMe()">-->
+                    <!--<fe-file-list file-list="root.fileService.getDownloadFiles()"></fe-file-list>-->
+                <!--</uib-tab>-->
+            <!--</uib-tabset>-->
+        <!--</div>-->
     </nav>
 
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
