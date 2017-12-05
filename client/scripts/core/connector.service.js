@@ -87,11 +87,11 @@
             const error = erroredRequest.error;
             if (error.status === 401) {
                 // Unauthorized, need to request consent
-                if (!consent && erroredRequest.plugin !== 'fileExchange') {
+                if (!consent) {
                     consent = $q.defer();
 
                     if (erroredRequest.plugin === 'fileExchange') {
-
+                        $rootScope.$emit('file-consent-required');
                     } else { $rootScope.$emit('consent-required'); }
 
                     $rootScope.$on('consent-result', (event, result) => {
