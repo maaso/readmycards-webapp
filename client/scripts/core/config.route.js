@@ -77,6 +77,12 @@
                        $rootScope.$broadcast('consent-result', res);
                    });
                });
+
+               $rootScope.$on('file-consent-required', () => {
+                   ConsentService.showFileConsentModal().then(res => {
+                       $rootScope.$broadcast('consent-result', res);
+                   });
+               });
            });
 
 })();

@@ -39,10 +39,34 @@
         bindings: {
             fileList: '<'
         },
-        controller: function(FileService, $timeout) {
+        controller: function($uibModal) {
             let controller = this;
+            controller.signFile = signFile;
             controller.setFileTypeClass = setFileTypeClass;
             console.log(controller.fileList);
+
+
+            function signFile(file) {
+                console.log(file);
+
+                let modal = $uibModal.open({
+                    templateUrl: "views/file-exchange/modals/sign-and-download.html",
+                    resolve: {
+                        file: () => {
+                            return file;
+                        }
+                    },
+                    backdrop: 'static',
+                    controller: 'FileSignController',
+                    size: 'lg'
+                });
+
+                modal.result.then(function () {
+                    // TODO handle result
+                }, function (err) {
+                    // TODO handle error
+                });
+            }
 
             function setFileTypeClass(file) {
                 switch (file.extension.toLowerCase()) {

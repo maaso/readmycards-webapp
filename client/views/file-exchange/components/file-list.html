@@ -16,7 +16,9 @@
     <td><b>{{file.name}}</b></td>
     <td>{{file.last_modification_date}}&nbsp;&nbsp;{{file.last_modification_time}}</td>
     <td>{{file.size | filesize}}</td>
-    <td></td>
+    <td>
+      <span class="clickable" data-ng-click="$ctrl.signFile(file)">Sign</span>
+    </td>
   </tr>
   </tbody>
 </table>

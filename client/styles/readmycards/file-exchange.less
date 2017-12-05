@@ -86,3 +86,100 @@
   }
 
 }
+
+
+.fe-download-modal {
+
+  .header {
+    margin: 0 30px;
+
+    .title {
+      font-size: 40px;
+      color: @brand-primary;
+    }
+
+    .info-text {
+      color: #333;
+      font-weight: 300;
+    }
+
+    .start-text {
+      font-weight: normal;
+      color: @brand-primary;
+    }
+  }
+
+  .summary-start {
+    padding-top: 15px;
+    min-height: 60px;
+  }
+
+
+  .step-list {
+    list-style-type: none;
+
+    .pinpad {
+      position: absolute;
+      right: 0;
+      top: 175px;
+      max-width: 500px;
+      z-index: 100;
+      background: #fff;
+    }
+
+    .step {
+      margin: 50px 0;
+
+      &:first-of-type {
+        margin: 20px 0 50px 0;
+      }
+
+
+      > div {
+        display: inline-block;
+      }
+
+      &.completed {
+        .step-number {
+          background: @brand-success;
+        }
+      }
+
+      &.active {
+        .step-number {
+          background: @brand-primary;
+        }
+
+        .step-desc {
+          color: #333;
+        }
+      }
+
+      .step-number {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: #aaa;
+        color: #fff;
+
+        font-size: 60px;
+        //font-weight: 300;
+      }
+
+
+      .step-desc {
+        position: relative;
+        margin-left: 40px;
+        font-size: 30px;
+        vertical-align: text-bottom;
+        color: #999;
+        z-index: 110;
+      }
+
+    }
+  }
+}

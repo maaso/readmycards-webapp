@@ -6,7 +6,7 @@
            .service('ConsentService', ConsentService)
            .service('Connector', Connector);
 
-    function ConsentCtrl($scope, $location, $uibModalInstance, Connector, _) {
+    function ConsentCtrl($scope, $location, $uibModalInstance, Connector, file, _) {
         // Define pool of chars to use
         const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         // Generate random code
@@ -17,8 +17,15 @@
 
         // "Please confirm that https://www.belfius.be is currently displaying the code ‘ABCDEFG’.”
 
-        Connector.get().core().getConsent('Grant access to ' + $location.protocol() + '://' + $location.host() + port + '?',
-            'Please confirm that ' + $location.protocol() + '://' + $location.host() + port + ' is currently displaying the code ' + $scope.code, 1, 'warning', 'bottom_right').then(res => {
+        let title = 'Grant access to ' + $location.protocol() + '://' + $location.host() + port + '?';
+        let type = 'reader';
+        if (file) {
+            title = 'Grant file access to ' + $location.protocol() + '://' + $location.host() + port + '?'
+            type = 'file_exchange'
+        }
+
+        Connector.get().core().getConsent(title,
+            'Please confirm that ' + $location.protocol() + '://' + $location.host() + port + ' is currently displaying the code ' + $scope.code, 1, 'warning', 'bottom_right', type).then(res => {
             $uibModalInstance.close(res);
         }, () => {
             // TODO inspect error and react accordingly
@@ -28,11 +35,30 @@
 
     function ConsentService($uibModal) {
         this.showConsentModal = showConsentModal;
+        this.showFileConsentModal = showFileConsentModal;
 
         function showConsentModal() {
             return $uibModal.open({
                 templateUrl: "views/readmycards/modals/consent.html",
                 backdrop: 'static',
+                resolve: {
+                    file: () => {
+                        return false;
+                    }
+                },
+                controller: 'ConsentCtrl'
+            }).result;
+        }
+
+        function showFileConsentModal() {
+            return $uibModal.open({
+                templateUrl: "views/readmycards/modals/consent.html",
+                backdrop: 'static',
+                resolve: {
+                    file: () => {
+                        return true;
+                    }
+                },
                 controller: 'ConsentCtrl'
             }).result;
         }
@@ -56,13 +82,17 @@
         }
 
         function errorHandler(erroredRequest) {
+            console.log(erroredRequest);
             if (!erroredRequest.pluginArgs) { erroredRequest.pluginArgs = []; }
             const error = erroredRequest.error;
             if (error.status === 401) {
                 // Unauthorized, need to request consent
-                if (!consent) {
+                if (!consent && erroredRequest.plugin !== 'fileExchange') {
                     consent = $q.defer();
-                    $rootScope.$emit('consent-required');
+
+                    if (erroredRequest.plugin === 'fileExchange') {
+
+                    } else { $rootScope.$emit('consent-required'); }
 
                     $rootScope.$on('consent-result', (event, result) => {
                         consent.resolve(result);
