@@ -100,7 +100,7 @@
             }
 
             function viewFile(file) {
-                if (file.extension === '.pdf') {
+                if (file.extension.toLowerCase() === '.pdf') {
                     $uibModal.open({
                         templateUrl: "views/file-exchange/modals/document-view.html",
                         resolve: {
