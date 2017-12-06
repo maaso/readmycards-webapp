@@ -13,21 +13,13 @@
 
             function setDownload() {
                 return FileService.setDownloadPath().then(() => {
-                    $timeout(() => {
-                        FileService.updateDownloadFiles().then(res => {
-                            console.log(res);
-                        });
-                    }, 1000);
+                    FileService.updateDownloadFiles();
                 });
             }
 
             function setUpload() {
                 return FileService.setUploadPath().then(() => {
-                    $timeout(() => {
-                        FileService.updateUploadFiles().then(res => {
-                            console.log(res);
-                        });
-                    }, 1000);
+                    FileService.updateUploadFiles();
                 });
             }
 
@@ -37,18 +29,15 @@
     const feFileList = {
         templateUrl: 'views/file-exchange/components/file-list.html',
         bindings: {
-            fileList: '<'
+            fileList: '<',
+            showActions: '<'
         },
         controller: function($uibModal) {
             let controller = this;
             controller.signFile = signFile;
             controller.setFileTypeClass = setFileTypeClass;
-            console.log(controller.fileList);
-
 
             function signFile(file) {
-                console.log(file);
-
                 let modal = $uibModal.open({
                     templateUrl: "views/file-exchange/modals/sign-and-download.html",
                     resolve: {

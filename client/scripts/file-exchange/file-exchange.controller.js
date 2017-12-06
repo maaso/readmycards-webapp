@@ -14,10 +14,6 @@
             value: ''
         };
 
-        // 6. Sign with pincode
-        // 7. WorkflowSign
-        // 8. Download signed file
-
         let generatedFile, reader;
 
         init();
@@ -38,15 +34,13 @@
         }
 
         function doDownload() {
+            // download signed file
             FileService.downloadFromSignbox(generatedFile.origFilename).then(function (signedPdf) {
-                handleDownload(signedPdf.data, generatedFile.origFilename);
-                ok();
+                let blob = new Blob([signedPdf.data], { type: 'application/pdf' });
+                FileService.downloadFileToGCL('/Users/maarten/dev/file-exchange-test/download', blob, generatedFile.origFilename).then(() => {
+                    ok();
+                });
             });
-        }
-
-        function handleDownload(data, fileName) {
-            let blob = new Blob([data], { type: 'application/pdf' });
-            FileSaver.saveAs(blob, fileName);
         }
 
         function onKeyPressed(data) {

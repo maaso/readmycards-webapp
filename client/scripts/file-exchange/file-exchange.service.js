@@ -14,8 +14,10 @@
         this.updateDownloadFiles = updateDownloadFiles;
         this.setUploadPath = setUploadPath;
         this.setDownloadPath = setDownloadPath;
+        this.isUploadSet = isUploadSet;
+        this.isDownloadSet = isDownloadSet;
         this.uploadFile = uploadFile;
-        this.downloadFile = downloadFileToGCL;
+        this.downloadFileToGCL = downloadFileToGCL;
         this.signDocument = signDocumentWithPin;
         this.downloadFromSignbox = downloadFromSignbox;
 
@@ -113,6 +115,14 @@
                 downloadPath.value = res.data;
                 return downloadPath;
             });
+        }
+
+        function isDownloadSet() {
+            return !_.isEmpty(downloadPath.value);
+        }
+
+        function isUploadSet() {
+            return !_.isEmpty(uploadPath.value);
         }
 
         function uploadFile(filePath, fileName) {

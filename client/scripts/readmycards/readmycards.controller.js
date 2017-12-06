@@ -372,9 +372,7 @@
         let pollIterations = 0;
 
         $rootScope.$on('$locationChangeSuccess', () => {
-            if ($location.search() !== controller.currentAgentParams) {
-                location.reload();
-            }
+            if ($location.search() !== controller.currentAgentParams) { location.reload(); }
         });
 
         init();
@@ -566,7 +564,6 @@
             // TODO remove
             controller.fileExchangeOpen = true;
 
-
             if (gclAvailable) {
                 Connector.core('version').then(version => {
                     console.log('Using T1C-JS ' + version);
@@ -578,6 +575,8 @@
             controller.currentAgentParams = $location.search();
 
             controller.fileService = FileService;
+            controller.uploadFiles = FileService.getUploadFiles();
+            controller.downloadFiles = FileService.getDownloadFiles();
 
             // Determine initial action we need to take
             if (!controller.cardPresent) {
