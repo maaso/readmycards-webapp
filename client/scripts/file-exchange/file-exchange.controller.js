@@ -5,7 +5,7 @@
            .controller('FileSignController', fileSignCtrl);
 
 
-    function fileSignCtrl($scope, $uibModalInstance, $timeout, file, FileService, Blob, EVENTS, Analytics, _, Connector) {
+    function fileSignCtrl($scope, $uibModalInstance, $q, $timeout, file, FileService, Blob, EVENTS, Analytics, _, Connector) {
         $scope.doDownload = doDownload;
         $scope.onKeyPressed = onKeyPressed;
         $scope.startProcess = startProcess;
@@ -38,7 +38,9 @@
             FileService.downloadFromSignbox(generatedFile.origFilename).then(function (signedPdf) {
                 let blob = new Blob([signedPdf.data], { type: 'application/pdf' });
                 FileService.downloadFileToGCL(FileService.getDownloadPath().value, blob, generatedFile.origFilename).then(() => {
-                    ok();
+                    $q.all([ FileService.updateDownloadFiles(), FileService.updateUploadFiles()]).then(() => {
+                        ok();
+                    })
                 });
             });
         }
