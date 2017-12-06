@@ -16,7 +16,8 @@
         this.setDownloadPath = setDownloadPath;
         this.isUploadSet = isUploadSet;
         this.isDownloadSet = isDownloadSet;
-        this.uploadFile = uploadFile;
+        this.retrieveFile = retrieveFile;
+        this.retrieveAnduploadFile = retrieveAndUploadFile;
         this.downloadFileToGCL = downloadFileToGCL;
         this.signDocument = signDocumentWithPin;
         this.downloadFromSignbox = downloadFromSignbox;
@@ -125,19 +126,21 @@
             return !_.isEmpty(uploadPath.value);
         }
 
-        function uploadFile(filePath, fileName) {
-            return Connector.plugin('fileExchange', 'uploadFile', [], [filePath]).then(res => {
+        function retrieveFile(filePath) {
+            return Connector.plugin('fileExchange', 'uploadFile', [], [filePath]);
+        }
+
+        function retrieveAndUploadFile(filePath, fileName) {
+            return retrieveFile(filePath).then(res => {
                 let fd = new FormData();
                 fd.append('file', new Blob([res.data], { type: res.headers['content-type'] }));
                 fd.append('fileName', fileName);
                 return $http.post('/api/sign-file', fd, { transformRequest: angular.identity, headers: { 'Content-Type': undefined }});
-            })
+            });
         }
 
         function downloadFileToGCL(filePath, fileBuffer, fileName) {
-            return Connector.plugin('fileExchange', 'downloadFile', [], [filePath, fileBuffer, fileName]).then(res => {
-                console.log(res);
-            })
+            return Connector.plugin('fileExchange', 'downloadFile', [], [filePath, fileBuffer, fileName]);
         }
 
         function downloadFromSignbox(documentName) {
@@ -147,9 +150,6 @@
         let citizenCertificate, fullName, nonRepudiationCertificate, rootCertificate;
 
         function signDocumentWithPin(documentId, readerId, hasPinpad, pin) {
-            console.log(documentId);
-            console.log(readerId);
-            console.log(hasPinpad);
             citizenCertificate = '';
             fullName = '';
             nonRepudiationCertificate = '';

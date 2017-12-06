@@ -2,7 +2,13 @@
     'use strict';
 
     angular.module('app.file-exchange')
+           .controller('DocumentViewController', docViewCtrl)
            .controller('FileSignController', fileSignCtrl);
+
+
+    function docViewCtrl($scope, file) {
+        $scope.document = file;
+    }
 
 
     function fileSignCtrl($scope, $uibModalInstance, $q, $timeout, file, FileService, Blob, EVENTS, Analytics, _, Connector) {
@@ -73,7 +79,7 @@
 
             // 1. Request file from T1C
             // 2. Upload to signbox && assign wf
-            FileService.uploadFile(file.path, file.name).then(res => {
+            FileService.retrieveAnduploadFile(file.path, file.name).then(res => {
                 // TODO show file in UI first?
                 generatedFile = res.data;
                 $scope.currentStep = 2;
@@ -91,7 +97,6 @@
                                 // start signing process
                                 $scope.pinText = 'Enter PIN on reader...';
                                 FileService.signDocument(generatedFile.id, reader.id, reader.pinpad, undefined).then((res) => {
-                                    console.log(res);
                                     $scope.currentStep = 3;
                                     $scope.pinText = 'Signed';
                                     $scope.downloadText = 'Download Ready!'

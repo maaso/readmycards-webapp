@@ -561,8 +561,6 @@
         }
 
         function init() {
-            // TODO remove
-            controller.fileExchangeOpen = true;
 
             if (gclAvailable) {
                 Connector.core('version').then(version => {

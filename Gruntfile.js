@@ -57,13 +57,13 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.dest %>",
-                src: ["index.html", "apublicfile.txt", "images/**/*", "fonts/**/*", "views/**/*"]
+                src: ["index.html", "apublicfile.txt", "images/**/*", "fonts/**/*", "views/**/*", "pdfjs/**/*"]
             },
             local: {
                 expand: true,
                 cwd: "<%= dir.src %>",
                 dest: "<%= dir.local %>",
-                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*", "scripts/plugins/**/*.js" ]
+                src: [ "images/**/*", "views/**/*", "fonts/**/*", "styles/**/*", "scripts/plugins/**/*.js", "pdfjs/**/*" ]
             },
             fa : {
                 expand: true,

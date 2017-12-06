@@ -1,0 +1,13 @@
+<div class="document-viewer">
+  <div class="loading-preview">
+    <i class="fa fa-circle-o-notch fa-spin" ng-show="$ctrl.loading"></i>
+    <span class="loading-message" data-translate="LOADING_PREVIEW" ng-show="$ctrl.loading"></span>
+    <span class="loading-message" data-translate="PREVIEW_NOT_SUPPORTED" ng-show="$ctrl.notSupported"></span>
+    <span class="loading-message" data-translate="PREVIEW_LOADING_FAILED" ng-show="$ctrl.fail"></span>
+  </div>
+  <iframe id="pdf-viewer"
+          class="viewer-frame"
+          ng-attr-src="{{$ctrl.trustedLink()}}"
+          frameborder="0"
+          ng-if="!$ctrl.notSupported"></iframe>
+</div>

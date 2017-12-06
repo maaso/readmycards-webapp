@@ -18,4 +18,9 @@
             'SELECT_READER': 'select-reader'
         })
 
+           .constant('DOC_VIEWER', {
+               'OFFICE_VIEWER_BASE_URL': 'https://view.officeapps.live.com/op/view.aspx?src=',
+               'PDFJS_VIEWER_BASE_URL': '/pdfjs/web/viewer.html?file='
+           });
+
 })();
