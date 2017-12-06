@@ -10,7 +10,7 @@
         <th>Name</th>
         <th width="250px">Last Modified</th>
         <th width="125px">Size</th>
-        <th width="125px" data-ng-if="$ctrl.showActions">Actions</th>
+        <th width="125px">Actions</th>
       </tr>
       </thead>
       <tbody>
@@ -21,8 +21,19 @@
         <td><b>{{file.name}}</b></td>
         <td>{{file.last_modification_date}}&nbsp;&nbsp;{{file.last_modification_time}}</td>
         <td>{{file.size | filesize}}</td>
-        <td data-ng-if="$ctrl.showActions">
-          <span class="clickable" data-ng-click="$ctrl.signFile(file)">Sign</span>
+        <td>
+          <span class="clickable text-primary" data-ng-if="$ctrl.showActions"
+                data-uib-tooltip="Sign"
+                data-tooltip-placement="top"
+                data-ng-click="$ctrl.signFile(file)">
+            <i class="fa fa-lg fa-pencil"></i>
+          </span>
+          <span class="clickable text-primary" data-ng-if="!$ctrl.showActions"
+                data-uib-tooltip="View File"
+                data-tooltip-placement="top"
+                data-ng-click="$ctrl.viewFile(file)">
+            <i class="fa fa-lg fa-search"></i>
+          </span>
         </td>
       </tr>
       </tbody>

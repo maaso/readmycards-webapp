@@ -15,6 +15,7 @@
         'ngclipboard',
         'ngStorage',
         'ngFilesizeFilter',
+        'toastr',
 
         /* custom modules */
         'app.plugin.lodash',
