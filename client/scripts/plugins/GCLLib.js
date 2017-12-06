@@ -30506,7 +30506,6 @@ var GCLLib =
 	            axios_1.default.post(UrlUtil_1.UrlUtil.create(basePath, suffix, config, false), body, {
 	                responseType: 'blob', headers: headers
 	            }).then(function (response) {
-	                console.log(response);
 	                callback(null, response);
 	                return resolve(response);
 	            }, function (error) {
