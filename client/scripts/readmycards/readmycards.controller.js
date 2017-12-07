@@ -347,7 +347,7 @@
     }
 
     function rootCtrl($scope, $rootScope, $location, $timeout, $uibModal, gclAvailable, readers, cardPresent,
-                      RMC, EVENTS, _, Analytics, Connector) {
+                      RMC, EVENTS, _, Analytics, Connector, FileService) {
         let controller = this;
         controller.gclAvailable = gclAvailable;
         controller.readers = readers.data;
@@ -372,15 +372,14 @@
         let pollIterations = 0;
 
         $rootScope.$on('$locationChangeSuccess', () => {
-            if ($location.search() !== controller.currentAgentParams) {
-                location.reload();
-            }
+            if ($location.search() !== controller.currentAgentParams) { location.reload(); }
         });
 
         init();
 
         function dismissPanels() {
             $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
+            $scope.$broadcast(EVENTS.CLOSE_FILE_EXCHANGE);
             controller.cardTypesOpen = false;
             controller.faqOpen = false;
         }
@@ -572,6 +571,10 @@
 
             controller.currentAgentParams = $location.search();
 
+            controller.fileService = FileService;
+            controller.uploadFiles = FileService.getUploadFiles();
+            controller.downloadFiles = FileService.getDownloadFiles();
+
             // Determine initial action we need to take
             if (!controller.cardPresent) {
                 // No card is present, check if we have readers
@@ -609,9 +612,21 @@
             $scope.$on(EVENTS.OPEN_SIDEBAR, function () {
                 // Make sure the FAQ panel is closed when opening sidebar
                 if (!controller.cardTypesOpen) {
+                    $scope.$broadcast(EVENTS.CLOSE_FILE_EXCHANGE);
+                    controller.fileExchangeOpen = false;
                     controller.faqOpen = false;
                 }
                 controller.cardTypesOpen = !controller.cardTypesOpen;
+            });
+
+            $scope.$on(EVENTS.OPEN_FILE_EXCHANGE, function () {
+                // Make sure the other panels are closed when opening sidebar
+                if (!controller.fileExchangeOpen) {
+                    controller.faqOpen = false;
+                    $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
+                    controller.cardTypesOpen = false;
+                }
+                controller.fileExchangeOpen = !controller.fileExchangeOpen;
             });
 
             $scope.$on(EVENTS.OPEN_FAQ, function () {
@@ -619,6 +634,8 @@
                 if (!controller.faqOpen) {
                     $scope.$broadcast(EVENTS.CLOSE_SIDEBAR);
                     controller.cardTypesOpen = false;
+                    $scope.$broadcast(EVENTS.CLOSE_FILE_EXCHANGE);
+                    controller.fileExchangeOpen = false;
                 }
                 controller.faqOpen = !controller.faqOpen;
             });

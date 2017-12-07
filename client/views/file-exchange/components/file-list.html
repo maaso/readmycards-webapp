@@ -1,0 +1,42 @@
+<div>
+  <div class="no-files text-center text-light" data-ng-if="!$ctrl.fileList.length">
+    <p>No files in this directory.</p>
+  </div>
+  <div data-ng-if="$ctrl.fileList.length">
+    <table class="table table-hover table-striped">
+      <thead>
+      <tr>
+        <th width="1%">Type</th>
+        <th>Name</th>
+        <th width="250px">Last Modified</th>
+        <th width="125px">Size</th>
+        <th width="125px">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr data-ng-repeat="file in $ctrl.fileList">
+        <td>
+          <span class="fa fa-lg" data-ng-class="file.fileTypeClass ? file.fileTypeClass : $ctrl.setFileTypeClass(file)" data-uib-tooltip="{{ file.fileTypeName }}"></span>
+        </td>
+        <td><b>{{file.name}}</b></td>
+        <td>{{file.last_modification_date}}&nbsp;&nbsp;{{file.last_modification_time}}</td>
+        <td>{{file.size | filesize}}</td>
+        <td class="actions">
+          <span class="clickable text-primary" data-ng-if="$ctrl.showActions"
+                data-uib-tooltip="Sign"
+                data-tooltip-placement="top"
+                data-ng-click="$ctrl.signFile(file)">
+            <i class="fa fa-lg fa-pencil"></i>
+          </span>
+          <span class="clickable text-primary"
+                data-uib-tooltip="View File"
+                data-tooltip-placement="top"
+                data-ng-click="$ctrl.viewFile(file)">
+            <i class="fa fa-lg fa-search"></i>
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

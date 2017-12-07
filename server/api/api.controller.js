@@ -5,6 +5,7 @@ const request = require('request');
 const rp = require('request-promise-native');
 const _ = require('lodash');
 const q = require('q');
+const commonService = require(__base + 'server/api/cards/cards.common.service.js');
 const service = require('./api.service');
 const response = require(__base + 'server/util/response.util');
 
@@ -16,7 +17,11 @@ let datastore  = gcloud.datastore({
 module.exports = {
     convertJP2toJPEG: convertJP2toJPEG,
     processDownload: processDownload,
-    processUnknownCard: processUnknownCard
+    processUnknownCard: processUnknownCard,
+    downloadSignedFile: downloadSignedFile,
+    getDataToSign: getDataToSign,
+    uploadFileToSign: uploadFileToSign,
+    workflowSign: workflowSign
 };
 
 
@@ -28,6 +33,36 @@ function convertJP2toJPEG(req, res) {
     }, err => {
         return response.error(err, res);
     })
+}
+
+function downloadSignedFile(req, res) {
+    return commonService.download(req.body.documentName, req.jwt).pipe(res);
+}
+
+
+function uploadFileToSign(req, res) {
+    service.uploadFileToSign(req.file.buffer, req.body.fileName, req.file.mimetype, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    });
+}
+
+function getDataToSign(req, res) {
+    commonService.getDataToSign(req.body, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    })
+}
+
+function workflowSign(req, res) {
+    commonService.workflowSign(req.body, req.jwt).then(result => {
+        return res.status(200).json(result);
+    }, error => {
+        return response.error(error, res);
+    })
+
 }
 
 function processDownload(req, res) {

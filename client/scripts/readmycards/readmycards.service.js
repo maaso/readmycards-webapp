@@ -3,7 +3,6 @@
 
     angular.module('app.readmycards')
            .service('T1C', T1CUtilityService)
-           .service('CardService', CardService)
            .service('CheckDigit', CheckDigit)
            .service('RMC', ReadMyCardsService)
            .service('Citrix', CitrixService)
@@ -245,31 +244,6 @@
 
         function updateLocation() {
             $location.search(citrixUserSelectionParams);
-        }
-    }
-
-    function CardService(_) {
-        this.detectType = detectType;
-
-        function detectType(card) {
-            if (!_.isEmpty(card) && !_.isEmpty(card.description)) {
-                switch (card.description[0]) {
-                    case 'Belgium Electronic ID card':
-                        return 'BeID';
-                    case 'Grand Duchy of Luxembourg / Identity card with LuxTrust certificate (eID)':
-                        return 'LuxID';
-                    case 'MOBIB Card':
-                        return 'MOBIB';
-                    case 'MOBIB Basic (Transport)':
-                        return 'MOBIB Basic';
-                    case 'Axa Bank (Belgium) Mastercard Gold / Axa Bank Belgium':
-                        return 'EMV';
-                    default:
-                        return 'Unknown';
-                }
-            } else {
-                return 'Unknown';
-            }
         }
     }
 

@@ -55,7 +55,6 @@ function getDataToSign(data, jwt) {
  *
  */
 function uploadDocument(fileBuffer, fileName, fileType, jwt) {
-    console.log(jwt);
     let options = {
         uri: config.signbox.uri + config.signbox.path + '/documents/upload',
         headers: { apikey: config.signbox.apikey, 'x-consumer-jwt': jwt, 'authorization': 'Bearer ' + jwt },
@@ -69,7 +68,6 @@ function uploadDocument(fileBuffer, fileName, fileType, jwt) {
             }
         }
     };
-    console.log(options);
     return rp.post(options);
 }
 

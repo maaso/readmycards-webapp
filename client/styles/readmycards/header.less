@@ -35,3 +35,27 @@
     background-color: @brand-info;
   }
 }
+
+.file-exchange-toggle {
+  position: absolute;
+  display: inline-block;
+  right: 0;
+  top: 0;
+  padding: 5px 10px;
+  border-bottom-left-radius: 5px;
+  background-color: @brand-primary;
+  color: #fff;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  z-index: 1001;
+  //font-size: 18px;
+  //min-height: 40px;
+
+  &:hover {
+    background-color: @brand-info;
+  }
+
+  &.menu-open {
+    left: 300px;
+  }
+}

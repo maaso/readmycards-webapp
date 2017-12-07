@@ -11,6 +11,43 @@
         <div class="not-supported">Don't find your card in the list?<br>Send us an email with the card you want supported!</div>
     </nav>
 
+    <nav class="st-file-exchange sliding-file-exchange" ng-class="{ 'st-file-exchange-open': root.fileExchangeOpen }" id="menu-file-exchange">
+        <div class="fe-buttons-wrapper">
+            <fe-buttons></fe-buttons>
+        </div>
+
+        <div class="fe-tabs">
+            <main>
+                <input id="tab1" type="radio" name="tabs" checked>
+                <label for="tab1">Upload</label>
+
+                <input id="tab2" type="radio" name="tabs">
+                <label for="tab2">Download</label>
+
+                <section id="content1">
+                    <div class="text-center text-light" data-ng-if="!root.fileService.isUploadSet()">
+                        <p>No upload folder set!<br>Use the button above to set a folder.</p>
+                    </div>
+
+                    <div class="fe-file-list-wrapper" data-ng-if="root.fileService.isUploadSet()">
+                        <fe-file-list file-list="root.fileService.getUploadFiles()" show-actions="true"></fe-file-list>
+                    </div>
+                </section>
+
+                <section id="content2">
+                    <div class="text-center text-light" data-ng-if="!root.fileService.isDownloadSet()">
+                        <p>No download folder set!<br>Use the button above to set a folder.</p>
+                    </div>
+
+                    <div class="fe-file-list-wrapper" data-ng-if="root.fileService.isDownloadSet()">
+                        <fe-file-list file-list="root.fileService.getDownloadFiles()" show-actions="false"></fe-file-list>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+    </nav>
+
     <div class="content-overlay" ng-show="root.cardTypesOpen || root.faqOpen" ng-class="{ 'visible': root.cardTypesOpen || root.faqOpen }" ng-click="root.dismissPanels()"></div>
     <div id="rmc-content">
         <div class="citrix-buttons text-center" ng-if="root.readerWithCard">
