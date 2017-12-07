@@ -201,11 +201,21 @@
            })
            .component('rmcHeader', {
                templateUrl: 'views/readmycards/components/header.html',
-               controller: function ($scope, EVENTS) {
+               controller: function ($scope, Connector, EVENTS) {
                    let controller = this;
                    this.home = home;
                    this.toggleCardTypes = toggleCardTypes;
                    this.toggleFileExchange = toggleFileExchange;
+
+                   controller.$onInit = () => {
+                       controller.fileExchangeCompatible = false;
+                       Connector.core('info').then(info => {
+                           console.log('Using T1C-GCL ' + info.data.version);
+                           if (semver.gt(info.data.version, '1.6.0')) {
+                               controller.fileExchangeCompatible = true;
+                           }
+                       });
+                   };
 
                    function home() {
                        $scope.$emit(EVENTS.START_OVER);

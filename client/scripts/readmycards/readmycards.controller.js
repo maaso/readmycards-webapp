@@ -561,7 +561,6 @@
         }
 
         function init() {
-
             if (gclAvailable) {
                 Connector.core('version').then(version => {
                     console.log('Using T1C-JS ' + version);

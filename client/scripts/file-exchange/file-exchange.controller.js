@@ -41,10 +41,12 @@
 
         function doDownload() {
             // download signed file
+            $scope.downloading = true;
             FileService.downloadFromSignbox(generatedFile.origFilename).then(function (signedPdf) {
                 let blob = new Blob([signedPdf.data], { type: 'application/pdf' });
                 FileService.downloadFileToGCL(FileService.getDownloadPath().value, blob, generatedFile.origFilename).then(() => {
                     $q.all([ FileService.updateDownloadFiles(), FileService.updateUploadFiles()]).then(() => {
+                        $scope.downloading = false;
                         ok();
                     })
                 });

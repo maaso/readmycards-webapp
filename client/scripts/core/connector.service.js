@@ -10,6 +10,7 @@
         // Define pool of chars to use
         const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         // Generate random code
+        $scope.file = file;
         $scope.code = Random.string(pool)(Random.engines.browserCrypto, 6);
 
         let port = '';

@@ -1,5 +1,5 @@
 <div>
-  <div class="text-center text-light" data-ng-if="!$ctrl.fileList.length">
+  <div class="no-files text-center text-light" data-ng-if="!$ctrl.fileList.length">
     <p>No files in this directory.</p>
   </div>
   <div data-ng-if="$ctrl.fileList.length">
@@ -16,12 +16,12 @@
       <tbody>
       <tr data-ng-repeat="file in $ctrl.fileList">
         <td>
-          <span class="fa fa-lg" ng-class="file.fileTypeClass ? file.fileTypeClass : $ctrl.setFileTypeClass(file)" data-uib-tooltip="{{ file.fileTypeName }}"></span>
+          <span class="fa fa-lg" data-ng-class="file.fileTypeClass ? file.fileTypeClass : $ctrl.setFileTypeClass(file)" data-uib-tooltip="{{ file.fileTypeName }}"></span>
         </td>
         <td><b>{{file.name}}</b></td>
         <td>{{file.last_modification_date}}&nbsp;&nbsp;{{file.last_modification_time}}</td>
         <td>{{file.size | filesize}}</td>
-        <td>
+        <td class="actions">
           <span class="clickable text-primary" data-ng-if="$ctrl.showActions"
                 data-uib-tooltip="Sign"
                 data-tooltip-placement="top"

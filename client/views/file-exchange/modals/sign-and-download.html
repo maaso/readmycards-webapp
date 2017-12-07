@@ -47,7 +47,7 @@
 
 
   <div class="summary-download text-center">
-    <span ng-if="currentStep === 3" class="btn btn-lg btn-primary btn-w200" ng-click="doDownload()">Download</span>
+    <span data-ng-if="currentStep === 3" class="btn btn-lg btn-primary btn-w200" data-ng-disabled="downloading" data-ng-click="doDownload()">Download to folder</span>
   </div>
 
 </div>

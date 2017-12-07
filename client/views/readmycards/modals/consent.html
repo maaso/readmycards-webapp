@@ -3,7 +3,14 @@
 </div>
 <div class="modal-body">
 
-    <p>To use this website, you need to consent to your reader(s) being used.<br>Without consent, we are unable to access your card reader(s).</p>
+    <div data-ng-if="!file">
+        <p>To use this website, you need to consent to your reader(s) being used.</p>
+        <p>Without consent, we are unable to access your card reader(s).</p>
+    </div>
+    <div data-ng-if="file">
+        <p>To use the File Exchange POC, you need to consent to your file system being accessed by Trust1Connector.</p>
+        <p>Without consent, we are unable to read and save files.</p>
+    </div>
 
     <p>You should see a popup on your screen.</p>
 
